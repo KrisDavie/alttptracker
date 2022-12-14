@@ -106,10 +106,13 @@ body {
 }
 
 .location {
-  width: 24;
-  height: 24;
-  margin-left: -12px;
-  margin-top: -12px;
+  border-color:#000;
+  border-style: solid;
+  border-width: 1.25px;
+  width: 16;
+  height: 16;
+  margin-left: -8px;
+  margin-top: -8px;
   position: absolute;
   background-size: 100% 100%;
 }
@@ -121,10 +124,13 @@ body {
 }
 
 #map .boss {
-  width: 24px;
-  height: 24px;
-  margin-left: -12px;
-  margin-top: -12px;
+  border-color:#000;
+  border-style: solid;
+  border-width: 1px;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  margin-top: -10px;
   position: absolute;
   background-repeat: no-repeat;
   background-position: center;
@@ -134,26 +140,29 @@ body {
 
 #bossMapAgahnim { background-color: transparent; }
 .castle {
-  width: 36px;
-  height: 36px;
-  margin-left: -18px;
-  margin-top: -18px;
+  border-color:#000;
+  border-style: solid;
+  border-width: 2.5px;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
   position: absolute;
   background-size: 100% 100%;
 }
 
 .dungeon {
-  width: 48px;
-  height: 48px;
-  margin-left: -24px;
-  margin-top: -24px;
+  border-color:#000;
+  border-style: solid;
+  border-width: 2.5px;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
   position: absolute;
   background-size: 100% 100%;
 }
 
-.location,
-.castle,
-.dungeon { background-image: url(../images/overlay/poi.png); }
 .chest.highlight,
 .castle.highlight,
 .location.highlight,
@@ -162,13 +171,13 @@ body {
 .chest-0.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge0.png); }
 .location.rightclick,
 .dungeon.rightclick { background-image: url(../images/overlay/highlighted2.png); }
-.unavailable { background-color: red; }
+.unavailable { background-color: rgba(255, 0, 0, 0.5); }
 .available { background-color: lime; }
 .possible { background-color: yellow; }
 .information { background-color: orange; }
-.darkavailable { background-color: blue; }
-.darkpossible { background-color: purple; }
+.darkavailable { background-color: rgb(35, 69, 224); }
 .partialavailable { background-color: rgb(23, 170, 238); }
+.darkpossible { background-color: purple; } 
 .opened { background-color: #7f7f7f; }
 .hidden { width: 0px!important; height: 0px!important; }
 

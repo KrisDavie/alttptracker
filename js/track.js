@@ -1331,7 +1331,20 @@
 						var entrancetype = '';
 						if (entrances[k].is_available()) {
 							if (entrances[k].known_location != '') {
-								entrancetype = isDungeon(entrances[k].known_location) ? 'dungeon' : 'keylocation';
+								if (isDungeonConnector(entrances[k].known_location) === true) {
+									entrancetype = 'dungeonconnector';
+								} else if (isDungeon(entrances[k].known_location) === true) {
+									entrancetype = 'dungeon';
+								} else if (isDark(entrances[k].known_location) === true) {
+									entrancetype = 'dark';
+								} else if (requireItem(entrances[k].known_location) === true) {
+									entrancetype = 'itemlocked';
+								} else if (isUnknownConnector(entrances[k].known_location) === true) {
+									entrancetype = 'unknownconnector';
+								}
+								else {
+									entrancetype = 'other';
+								}
 							} else if (entrances[k].is_connector) {
 								entrancetype = 'connector';
 							}
@@ -1800,22 +1813,22 @@
 		document.getElementById('link').style.backgroundColor = '#000';
 		document.getElementById('sanc').style.backgroundColor = '#000';
 		document.getElementById('mount').style.backgroundColor = '#000';
-		document.getElementById('chest').style.backgroundColor = '#000';
+		document.getElementById('item').style.backgroundColor = '#000';
 		document.getElementById('gt').style.backgroundColor = '#000';
 		document.getElementById('ganon').style.backgroundColor = '#000';
 		document.getElementById('magic').style.backgroundColor = '#000';
 		document.getElementById('kid').style.backgroundColor = '#000';
 		document.getElementById('smith').style.backgroundColor = '#000';
 		document.getElementById('bat').style.backgroundColor = '#000';
-		document.getElementById('library').style.backgroundColor = '#000';
-		document.getElementById('sahas').style.backgroundColor = '#000';
-		document.getElementById('mimic').style.backgroundColor = '#000';
+		document.getElementById('lib').style.backgroundColor = '#000';
+		document.getElementById('saha').style.backgroundColor = '#000';
+		document.getElementById('mimc').style.backgroundColor = '#000';
 		document.getElementById('rupee').style.backgroundColor = '#000';
 		document.getElementById('shop').style.backgroundColor = '#000';
 		document.getElementById('dark').style.backgroundColor = '#000';
 		document.getElementById('connector').style.backgroundColor = '#000';
 		document.getElementById('bomb').style.backgroundColor = '#000';
-		document.getElementById('bumper').style.backgroundColor = '#000';
+		document.getElementById('bump').style.backgroundColor = '#000';
 		document.getElementById('spike').style.backgroundColor = '#000';
 		document.getElementById('hook').style.backgroundColor = '#000';
 		document.getElementById('dam').style.backgroundColor = '#000';
@@ -2051,22 +2064,22 @@
 		document.getElementById('link').style.backgroundColor = '#000';
 		document.getElementById('sanc').style.backgroundColor = '#000';
 		document.getElementById('mount').style.backgroundColor = '#000';
-		document.getElementById('chest').style.backgroundColor = '#000';
+		document.getElementById('item').style.backgroundColor = '#000';
 		document.getElementById('gt').style.backgroundColor = '#000';
 		document.getElementById('ganon').style.backgroundColor = '#000';
 		document.getElementById('magic').style.backgroundColor = '#000';
 		document.getElementById('kid').style.backgroundColor = '#000';
 		document.getElementById('smith').style.backgroundColor = '#000';
 		document.getElementById('bat').style.backgroundColor = '#000';
-		document.getElementById('library').style.backgroundColor = '#000';
-		document.getElementById('sahas').style.backgroundColor = '#000';
-		document.getElementById('mimic').style.backgroundColor = '#000';
+		document.getElementById('lib').style.backgroundColor = '#000';
+		document.getElementById('saha').style.backgroundColor = '#000';
+		document.getElementById('mimc').style.backgroundColor = '#000';
 		document.getElementById('rupee').style.backgroundColor = '#000';
 		document.getElementById('shop').style.backgroundColor = '#000';
 		document.getElementById('dark').style.backgroundColor = '#000';
 		document.getElementById('connector').style.backgroundColor = '#000';
 		document.getElementById('bomb').style.backgroundColor = '#000';
-		document.getElementById('bumper').style.backgroundColor = '#000';
+		document.getElementById('bump').style.backgroundColor = '#000';
 		document.getElementById('spike').style.backgroundColor = '#000';
 		document.getElementById('hook').style.backgroundColor = '#000';
 		document.getElementById('dam').style.backgroundColor = '#000';
@@ -2091,22 +2104,24 @@
 				var loc = document.getElementById('entranceMap' + document.getElementById('entranceID').value);
 				
 				if (loc.offsetTop < 20) {
-					divtoadd.style.top = loc.offsetTop + 15;
+					divtoadd.style.top = loc.offsetTop + 12;
 				} else {
-					divtoadd.style.top = loc.offsetTop - 15;
+					divtoadd.style.top = loc.offsetTop - 12;
 				}
 				
 				
-				divtoadd.style.left = loc.offsetLeft - 14;
+				divtoadd.style.left = loc.offsetLeft - 5;
 				divtoadd.className = 'informationdiv';
 
-				divtoadd.style.width = 40;
-				divtoadd.style.height = 12;
+				divtoadd.style.width = 20;
+				divtoadd.style.height = 10;
 				divtoadd.style.position = 'absolute';
 				
 				divtoadd.innerHTML = n.replace('_','-').toUpperCase();
 				
-				document.getElementById('informationDiv').appendChild(divtoadd);
+				if (n != 'connector' && n != 'item' && n != 'dark' && n != 'sanc' && n != 'link') {
+					document.getElementById('informationDiv').appendChild(divtoadd);
+				}
 			}		
 		}
 		hideEntranceModal();
@@ -2218,7 +2233,7 @@
 					divtoadd.id = 'connectordiv' + connectorid;
 					var connector1 = document.getElementById('entranceMap' + x);
 					var connector2 = document.getElementById('entranceMap' + document.getElementById('entranceID').value);
-					
+
 					if (connector1.offsetTop > connector2.offsetTop) {
 						divtoadd.style.top = connector2.offsetTop + (flags.mapmode === "C" ? 4.5 : 6);
 					} else {
@@ -2379,19 +2394,19 @@
 		defineEntranceType(26, 'lwkey', 'kid', 'Lazy Kid');
 		defineEntranceType(27, 'lwkey', 'smith', 'Swordsmiths');
 		defineEntranceType(28, 'lwkey', 'bat', 'Magic Bat');
-		defineEntranceType(29, 'lwkey', 'library', 'Library');
-		defineEntranceType(30, 'lwkey', 'sahas', 'Sahasrahla\'s Hut');
-		defineEntranceType(31, 'lwkey', 'mimic', 'Mimic Cave');
+		defineEntranceType(29, 'lwkey', 'lib', 'Library');
+		defineEntranceType(30, 'lwkey', 'saha', 'Sahasrahla\'s Hut');
+		defineEntranceType(31, 'lwkey', 'mimc', 'Mimic Cave');
 		defineEntranceType(32, 'lwkey', 'dam', 'Dam');
 		defineEntranceType(33, 'dwkey', 'bomb', 'Bomb Shop');
-		defineEntranceType(34, 'dwkey', 'bumper', 'Bumper Cave');
+		defineEntranceType(34, 'dwkey', 'bump', 'Bumper Cave');
 		defineEntranceType(35, 'dwkey', 'spike', 'Spike Cave');
 		defineEntranceType(36, 'dwkey', 'hook', 'Hookshot Cave');
 		defineEntranceType(37, 'generalkey', 'rupee', 'Rupee Cave');
 		defineEntranceType(38, 'generalkey', 'shop', 'Shop');
 		defineEntranceType(39, 'generalkey', 'dark', 'Dark Cave');
 		defineEntranceType(40, 'generalkey', 'connector', 'Unknown Connector');
-		defineEntranceType(41, 'generalkey', 'chest', 'Room/Cave w/ Chest');
+		defineEntranceType(41, 'generalkey', 'item', 'Room/Cave w/ Chest');
 		defineEntranceType(1000, 'null', '', '???');
 	}
 
@@ -2405,7 +2420,49 @@
 	window.isDungeon = function(x) {
 		return entranceNameToGroup[x].endsWith('dungeon');
 	}
-	
+
+	window.isDungeonConnector = function(x) {
+		return (x != 'dp_n' && (x.startsWith('hc') || x.startsWith('dp') || x.startsWith('tr')));
+	}	
+
+	window.isDark = function(x) {
+		switch (x) {
+			case 'dark':
+				return true;
+				break;
+			}
+		return false;
+	}	
+
+	window.requireItem = function(x) {
+		switch (x) {
+			case 'magic':
+			case 'kid':
+			case 'smith':
+			case 'bat':
+			case 'lib':
+			case 'saha':
+			case 'mimc':
+			case 'dam':
+			case 'bomb':
+			case 'bump':
+			case 'spike':
+			case 'hook':
+				return true
+				break;
+			}
+		return false;
+	}
+
+	window.isUnknownConnector = function(x) {
+		switch (x) {
+			case 'connector':
+				return true
+				break;
+		}
+		return false;
+	}	
+
 	window.findItems = function(items) {
 		if(/*spoilerLoaded && */flags.mapmode != "N")
 		{

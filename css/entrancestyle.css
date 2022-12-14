@@ -106,22 +106,29 @@ body {
 }
 
 .location {
-  width: 16;
-  height: 16;
+  border-color:#000;
+  border-style: solid;
+  border-width: 1.25px;
+  width: 14;
+  height: 14;
   margin-left: -12px;
   margin-top: -12px;
   position: absolute;
   background-size: 100% 100%;
 }
 
+
 .entrance {
+  border-radius: 50%;
+  border-color:#000;
+  border-style: solid;
+  border-width: 1.25px;
   width: 12;
   height: 12;
-  margin-left: -12px;
-  margin-top: -12px;
   position: absolute;
   background-size: 100% 100%;
-  transform: rotateY(0deg) rotate(45deg);
+  margin-left: -12px;
+  margin-top: -12px;
 }
 
 .lowerchest {
@@ -161,31 +168,35 @@ body {
   background-size: 100% 100%;
 }
 
-.location,
-.entrance,
-.castle,
-.dungeon { background-image: url(../images/overlay/poi.png); }
 .chest.highlight,
 .castle.highlight,
 .location.highlight,
 .entrance.highlight,
-.dungeon.highlight { background-image: url(../images/overlay/highlighted.png); }
+.dungeon.highlight { border-color:rgb(255, 238, 0); }
 .chest.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge.png); }
 .chest-0.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge0.png); }
 .location.rightclick,
-.dungeon.rightclick { background-image: url(../images/overlay/highlighted2.png); }
-.unavailable { background-color: red; }
-.unavailabledungeon { background-color: red; }
-.unavailableconnector { background-color: red; }
-.unavailablekeylocation { background-color: red; }
-.available { background-color: lime; }
-.availableconnector { background-color: turquoise; }
-.availabledungeon { background-color: violet; }
-.availablekeylocation { background-color: blue; }
+.dungeon.rightclick { border-color:rgb(255, 255, 255); }
+.unavailable { background-color: rgba(255, 0, 0, 0.5); border-width: 0.5px;;}
+.unavailabledungeon { background-color: rgba(255, 0, 0, 1);}
+.unavailableconnector { background-color: rgba(255, 0, 0, 0.5);}
+.unavailabledark { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.unavailableitemlocked { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.unavailableother { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.unavailablekeylocation { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.available { background-color: rgb(55, 255, 65);}
+.availableconnector { background-color: rgb(255,0,249); width: 14; height: 14; margin-left: -12px; margin-top: -12px;}
+.availableunknownconnector { background-color: rgb(255,0,249); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
+.availabledungeon { background-color: rgb(0, 234, 255); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
+.availabledungeonconnector { background-color: rgb(72, 162, 211); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
+.availabledark { background-color: rgb(36, 51, 255); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
+.availableitemlocked { background-color: rgb(255, 123, 0); border-color:rgb(255, 255, 255); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
+.availableother { background-color: rgb(81, 255, 58); border-color:rgb(255, 255, 255); border-radius: 0%;}
+.availablekeylocation { background-color: rgb(0, 26, 255); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
 .possible { background-color: yellow; }
 .information { background-color: orange; }
-.darkavailable { background-color: blue; }
-.darkpossible { background-color: purple; }
+.darkavailable { background-color: rgb(36, 51, 255); }
+.darkpossible { background-color: purple; } 
 .partialavailable { background-color: rgb(23, 170, 238); }
 .opened { background-color: #7f7f7f; opacity: 0.5; }
 .hidden { width: 0px!important; height: 0px!important; }
@@ -218,37 +229,34 @@ body {
 }
 
 .crossedleft {
-    background: 
-       linear-gradient(to top left,
-           rgba(0,0,0,0) 0%,
-           rgba(0,0,0,0) calc(50% - 2px),
-           rgba(0,255,255,1) 50%,
-           rgba(0,0,0,0) calc(50% + 2px),
-           rgba(0,0,0,0) 100%);
-   min-height: 2px;
-   min-width: 2px;
+  background: 
+     linear-gradient(to top left,
+         rgba(0,0,0,0) calc(50% - 1px),
+         rgba(255,0,249,1) calc(50% - 0.5px) calc(50% + 0.5px),
+         rgba(0,0,0,0) calc(50% + 1px));
+ min-height: 2px;
+ min-width: 2px;
 }
 
 .crossedright {
-    background: 
-       linear-gradient(to top right,
-           rgba(0,0,0,0) 0%,
-           rgba(0,0,0,0) calc(50% - 2px),
-           rgba(0,255,255,1) 50%,
-           rgba(0,0,0,0) calc(50% + 2px),
-           rgba(0,0,0,0) 100%);
-   min-height: 2px;
-   min-width: 2px;
+  background: 
+     linear-gradient(to top right,
+         rgba(0,0,0,0) calc(50% - 1px),
+         rgba(255,0,249,1) calc(50% - 0.5px) calc(50% + 0.5px),
+         rgba(0,0,0,0) calc(50% + 1px));
+ min-height: 2px;
+ min-width: 2px;
 }
 
 .informationdiv {
-	background: #000;
-	border-style: solid;
-	border-color: #FFF;
-	border-width: 1px;
-	color: #FFF;
-	font-size: 8px;
+	background: rgb(0, 0, 0);
+	border-color: rgb(255, 255, 255);
+  border-style: solid;
+  border-width: 0.75px;
+	color: rgb(255, 255, 255);
+	font-size: 7px;
 	text-align: center;
+  width: 30px;
 }
 
 .notediv {
