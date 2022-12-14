@@ -1331,8 +1331,14 @@
 						var entrancetype = '';
 						if (entrances[k].is_available()) {
 							if (entrances[k].known_location != '') {
-								if (isDungeonConnector(entrances[k].known_location) === true) {
-									entrancetype = 'dungeonconnector';
+								if (isCastleConnector(entrances[k].known_location) === true) {
+									entrancetype = 'castleconnector';
+								} else if (isDesertConnector(entrances[k].known_location) === true) {
+									entrancetype = 'desertconnector';
+								} else if (isTurtleConnector(entrances[k].known_location) === true) {
+									entrancetype = 'turtleconnector';
+								} else if (isSpawn(entrances[k].known_location) === true) {
+									entrancetype = 'spawn';
 								} else if (isDungeon(entrances[k].known_location) === true) {
 									entrancetype = 'dungeon';
 								} else if (isDark(entrances[k].known_location) === true) {
@@ -2104,13 +2110,13 @@
 				var loc = document.getElementById('entranceMap' + document.getElementById('entranceID').value);
 				
 				if (loc.offsetTop < 20) {
-					divtoadd.style.top = loc.offsetTop + 12;
+					divtoadd.style.top = loc.offsetTop + 10;
 				} else {
-					divtoadd.style.top = loc.offsetTop - 12;
+					divtoadd.style.top = loc.offsetTop - 11;
 				}
 				
 				
-				divtoadd.style.left = loc.offsetLeft - 5;
+				divtoadd.style.left = loc.offsetLeft - 5.5;
 				divtoadd.className = 'informationdiv';
 
 				divtoadd.style.width = 20;
@@ -2119,7 +2125,7 @@
 				
 				divtoadd.innerHTML = n.replace('_','-').toUpperCase();
 				
-				if (n != 'connector' && n != 'item' && n != 'dark' && n != 'sanc' && n != 'link') {
+				if (n != 'connector' && n != 'item' && n != 'dark' && n != 'sanc' && n != 'link' && n != 'mount') {
 					document.getElementById('informationDiv').appendChild(divtoadd);
 				}
 			}		
@@ -2423,6 +2429,18 @@
 
 	window.isDungeonConnector = function(x) {
 		return (x != 'dp_n' && (x.startsWith('hc') || x.startsWith('dp') || x.startsWith('tr')));
+	}	
+	window.isCastleConnector = function(x) {
+		return (x.startsWith('hc'));
+	}	
+	window.isDesertConnector = function(x) {
+		return (x != 'dp_n' && x.startsWith('dp'));
+	}	
+	window.isTurtleConnector = function(x) {
+		return (x.startsWith('tr'));
+	}	
+	window.isSpawn = function(x) {
+		return ((x == 'link' || x == 'sanc' || x == 'mount'));
 	}	
 
 	window.isDark = function(x) {
