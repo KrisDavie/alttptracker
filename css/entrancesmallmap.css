@@ -61,6 +61,12 @@
   background-size: 100% 100%;
 }
 
+.bonkable { background-color: rgb(0, 255, 0); width: 10; height: 10;}
+.unbonkable { background-color: rgba(255, 0, 0, 0.5); width: 10; height: 10;}
+.bonked { background-color: rgba(128, 128, 128, 0.5); width: 10; height: 10;}
+.darkbonkable { background-color: rgb(35, 69, 224); width: 10; height: 10;}
+
+
 #bossMap0, #dungeon0 { left: 46.0%; top: 38.8%; }
 #bossMap1, #dungeon1 { left: 3.8%;  top: 78.4%; }
 #bossMap2, #dungeon2 { left: 31.0%; top: 7.2%; }
@@ -98,6 +104,46 @@
 #locationMap20 { left: 47.7%; top: 17.3%; z-index: 2; }
 #locationMap21 { left: 14.4%; top: 66.2%; z-index: 2; }
 #locationMap22 { left: 2.5%;  top: 3.2%; z-index: 2; }
+#locationMap79 { left: 7.2%; top: 15%; z-index: 2;} /* Lost Woods Hideout Tree */
+#locationMap80 { left: 40.7%; top: 9.2%; z-index: 2;} /* Death Mountain Bonk Rocks */
+#locationMap81 { left: 15.5%; top: 14.5%; z-index: 2;} /* Mountain Entry Pull Tree */
+#locationMap82 { left: 17.7%; top: 23%; z-index: 2;} /* Mountain Entry Southeast Tree */
+#locationMap83 { left: 1.6%; top: 30%; z-index: 2;} /* Lost Woods Pass West Tree */
+#locationMap84 { left: 4.9%; top: 31%; z-index: 2;} /* Kakariko Portal Tree */
+#locationMap85 { left: 8.2%; top: 31.7%; z-index: 2;} /* Fortune Bonk Rocks */
+#locationMap86 { left: 17%; top: 29.1%; z-index: 2;} /* Kakariko Pond Tree */
+#locationMap87 { left: 20.6%; top: 31.2%; z-index: 2;} /* Bonk Rocks Tree */
+#locationMap88 { left: 24.1%; top: 30.2%; z-index: 2;} /* Sanctuary Tree */
+#locationMap89 { left: 32.4%; top: 35.5%; z-index: 2;} /* River Bend West Tree */
+#locationMap90 { left: 36.9%; top: 31.4%; z-index: 2;} /* River Bend East Tree */
+#locationMap91 { left: 4.4%; top: 41.7%; z-index: 2;} /* Blinds Hideout Tree */
+#locationMap92 { left: 11%; top: 57.7%; z-index: 2;} /* Kakariko Welcome Tree */
+#locationMap93 { left: 14.1%; top: 47.2%; z-index: 2;} /* Forgotten Forest Southwest Tree */
+#locationMap94 { left: 15.5%; top: 44.7%; z-index: 2;} /* Forgotten Forest Central Tree */
+#locationMap95 { left: 22.8%; top: 46%; z-index: 2;} /* Hyrule Castle Tree */
+#locationMap96 { left: 33.5%; top: 40.5%; z-index: 2;} /* Wooden Bridge Tree */
+#locationMap97 { left: 44.5%; top: 59.5%; z-index: 2;} /* Eastern Palace Tree */
+#locationMap98 { left: 15.1%; top: 72.4%; z-index: 2;} /* Flute Boy South Tree */
+#locationMap99 { left: 17.4%; top: 70.6%; z-index: 2;} /* Flute Boy East Tree */
+#locationMap100 { left: 24%; top: 66.6%; z-index: 2;} /* Central Bonk Rocks Tree */
+#locationMap101 { left: 39.7%; top: 66.4%; z-index: 2;} /* Tree Line Tree 2 */
+#locationMap102 { left: 41.9%; top: 67.4%; z-index: 2;} /* Tree Line Tree 4 */
+#locationMap103 { left: 17.7%; top: 83.2%; z-index: 2;} /* Flute Boy Approach South Tree */
+#locationMap104 { left: 18%; top: 78.7%; z-index: 2;} /* Flute Boy Approach North Tree */
+#locationMap105 { left: 64%; top: 9%; z-index: 2;} /* Dark Lumberjack Tree */
+#locationMap106 { left: 58.2%; top: 31.8%; z-index: 2;} /* Dark Fortune Bonk Rocks (2) */
+#locationMap107 { left: 75.4%; top: 30%; z-index: 2;} /* Dark Graveyard West Bonk Rocks */
+#locationMap108 { left: 77.9%; top: 32%; z-index: 2;} /* Dark Graveyard North Bonk Rocks */
+#locationMap109 { left: 80.5%; top: 30%; z-index: 2;} /* Dark Graveyard Tomb Bonk Rocks */
+#locationMap110 { left: 83.5%; top: 35.7%; z-index: 2;} /* Qirn Jump West Tree */
+#locationMap111 { left: 86.6%; top: 31.8%; z-index: 2;} /* Qirn Jump East Tree */
+#locationMap112 { left: 88.9%; top: 30.9%; z-index: 2;} /* Dark Witch Tree */
+#locationMap113 { left: 73.5%; top: 54.5%; z-index: 2;} /* Pyramid Area */
+#locationMap114 { left: 97.5%; top: 56.5%; z-index: 2;} /* Palace of Darkness Area */
+#locationMap115 { left: 89.7%; top: 66.1%; z-index: 2;} /* Dark Tree Line Tree 2 */
+#locationMap116 { left: 90.9%; top: 66.7%; z-index: 2;} /* Dark Tree Line Tree 3 */
+#locationMap117 { left: 92.1%; top: 67.3%; z-index: 2;} /* Dark Tree Line Tree 4 */
+#locationMap118 { left: 77.9%; top: 83.5%; z-index: 2;} /* Hype Cave Area */
 
 #connectorStop { left: 41%!important; width: 37.5px; }
 #connectorStop img { width: 100%; }

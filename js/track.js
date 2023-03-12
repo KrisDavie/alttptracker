@@ -357,6 +357,7 @@
 					"ambrosia":flags.ambrosia,
 					"nonprogressivebows":flags.nonprogressivebows,
 					"activatedflute":flags.activatedflute,
+					"bonkshuffle":flags.bonkshuffle,
 					"goals":flags.goals,
 					"opentower":flags.opentower,
 					"opentowercount":flags.opentowercount,
@@ -551,6 +552,47 @@
 					"location76":chests[76].is_opened,
 					"location77":chests[77].is_opened,
 					"location78":chests[78].is_opened,
+					"location79":chests[79].is_opened,
+					"location80":chests[80].is_opened,
+					"location81":chests[81].is_opened,
+					"location82":chests[82].is_opened,
+					"location83":chests[83].is_opened,
+					"location84":chests[84].is_opened,
+					"location85":chests[85].is_opened,
+					"location86":chests[86].is_opened,
+					"location87":chests[87].is_opened,
+					"location88":chests[88].is_opened,
+					"location89":chests[89].is_opened,
+					"location90":chests[90].is_opened,
+					"location91":chests[91].is_opened,
+					"location92":chests[92].is_opened,
+					"location93":chests[93].is_opened,
+					"location94":chests[94].is_opened,
+					"location95":chests[95].is_opened,
+					"location96":chests[96].is_opened,
+					"location97":chests[97].is_opened,
+					"location98":chests[98].is_opened,
+					"location99":chests[99].is_opened,
+					"location100":chests[100].is_opened,
+					"location101":chests[101].is_opened,
+					"location102":chests[102].is_opened,
+					"location103":chests[103].is_opened,
+					"location104":chests[104].is_opened,
+					"location105":chests[105].is_opened,
+					"location106":chests[106].is_opened,
+					"location107":chests[107].is_opened,
+					"location108":chests[108].is_opened,
+					"location109":chests[109].is_opened,
+					"location110":chests[110].is_opened,
+					"location111":chests[111].is_opened,
+					"location112":chests[112].is_opened,
+					"location113":chests[113].is_opened,
+					"location114":chests[114].is_opened,
+					"location115":chests[115].is_opened,
+					"location116":chests[116].is_opened,
+					"location117":chests[117].is_opened,
+					"location118":chests[118].is_opened,
+					"location119":chests[119].is_opened,
 					"prize0":prizes[0],
 					"prize1":prizes[1],
 					"prize2":prizes[2],
@@ -600,6 +642,7 @@
 					"ambrosia":flags.ambrosia,
 					"nonprogressivebows":flags.nonprogressivebows,
 					"activatedflute":flags.activatedflute,
+					"bonkshuffle":flags.bonkshuffle,
 					"goals":flags.goals,
 					"opentower":flags.opentower,
 					"opentowercount":flags.opentowercount,
@@ -738,6 +781,46 @@
 					"location20":chests[20].is_opened,
 					"location21":chests[21].is_opened,
 					"location22":chests[22].is_opened,
+					"location79":chests[79].is_opened,
+					"location80":chests[80].is_opened,
+					"location81":chests[81].is_opened,
+					"location82":chests[82].is_opened,
+					"location83":chests[83].is_opened,
+					"location84":chests[84].is_opened,
+					"location85":chests[85].is_opened,
+					"location86":chests[86].is_opened,
+					"location87":chests[87].is_opened,
+					"location88":chests[88].is_opened,
+					"location89":chests[89].is_opened,
+					"location90":chests[90].is_opened,
+					"location91":chests[91].is_opened,
+					"location92":chests[92].is_opened,
+					"location93":chests[93].is_opened,
+					"location94":chests[94].is_opened,
+					"location95":chests[95].is_opened,
+					"location96":chests[96].is_opened,
+					"location97":chests[97].is_opened,
+					"location98":chests[98].is_opened,
+					"location99":chests[99].is_opened,
+					"location100":chests[100].is_opened,
+					"location101":chests[101].is_opened,
+					"location102":chests[102].is_opened,
+					"location103":chests[103].is_opened,
+					"location104":chests[104].is_opened,
+					"location105":chests[105].is_opened,
+					"location106":chests[106].is_opened,
+					"location107":chests[107].is_opened,
+					"location108":chests[108].is_opened,
+					"location109":chests[109].is_opened,
+					"location110":chests[110].is_opened,
+					"location111":chests[111].is_opened,
+					"location112":chests[112].is_opened,
+					"location113":chests[113].is_opened,
+					"location114":chests[114].is_opened,
+					"location115":chests[115].is_opened,
+					"location116":chests[116].is_opened,
+					"location117":chests[117].is_opened,
+					"location118":chests[118].is_opened,
 					"prize0":prizes[0],
 					"prize1":prizes[1],
 					"prize2":prizes[2],
@@ -818,6 +901,7 @@
 						flags.ambrosia = megapack.ambrosia;
 						flags.nonprogressivebows = megapack.nonprogressivebows;
 						flags.activatedflute = megapack.activatedflute;
+						flags.bonkshuffle = megapack.bonkshuffle;
 						flags.goals = megapack.goals;
 						flags.opentower = megapack.opentower;
 						flags.opentowercount = megapack.opentowercount;
@@ -956,6 +1040,46 @@
 						chests[20].is_opened = megapack.location20;
 						chests[21].is_opened = megapack.location21;
 						chests[22].is_opened = megapack.location22;
+						chests[79].is_opened = megapack.location79;
+						chests[80].is_opened = megapack.location80;
+						chests[81].is_opened = megapack.location81;
+						chests[82].is_opened = megapack.location82;
+						chests[83].is_opened = megapack.location83;
+						chests[84].is_opened = megapack.location84;
+						chests[85].is_opened = megapack.location85;
+						chests[86].is_opened = megapack.location86;
+						chests[87].is_opened = megapack.location87;
+						chests[88].is_opened = megapack.location88;
+						chests[89].is_opened = megapack.location89;
+						chests[90].is_opened = megapack.location90;
+						chests[91].is_opened = megapack.location91;
+						chests[92].is_opened = megapack.location92;
+						chests[93].is_opened = megapack.location93;
+						chests[94].is_opened = megapack.location94;
+						chests[95].is_opened = megapack.location95;
+						chests[96].is_opened = megapack.location96;
+						chests[97].is_opened = megapack.location97;
+						chests[98].is_opened = megapack.location98;
+						chests[99].is_opened = megapack.location99;
+						chests[100].is_opened = megapack.location100;
+						chests[101].is_opened = megapack.location101;
+						chests[102].is_opened = megapack.location102;
+						chests[103].is_opened = megapack.location103;
+						chests[104].is_opened = megapack.location104;
+						chests[105].is_opened = megapack.location105;
+						chests[106].is_opened = megapack.location106;
+						chests[107].is_opened = megapack.location107;
+						chests[108].is_opened = megapack.location108;
+						chests[109].is_opened = megapack.location109;
+						chests[110].is_opened = megapack.location110;
+						chests[111].is_opened = megapack.location111;
+						chests[112].is_opened = megapack.location112;
+						chests[113].is_opened = megapack.location113;
+						chests[114].is_opened = megapack.location114;
+						chests[115].is_opened = megapack.location115;
+						chests[116].is_opened = megapack.location116;
+						chests[117].is_opened = megapack.location117;
+						chests[118].is_opened = megapack.location118;
 						if (flags.entrancemode === "N") {
 							chests[23].is_opened = megapack.location23;
 							chests[24].is_opened = megapack.location24;
@@ -1013,6 +1137,7 @@
 							chests[76].is_opened = megapack.location76;
 							chests[77].is_opened = megapack.location77;
 							chests[78].is_opened = megapack.location78;
+							chests[119].is_opened = megapack.location119;
 						}
 						prizes[0] = megapack.prize0;
 						prizes[1] = megapack.prize1;
@@ -2205,8 +2330,9 @@
         window.toggle_chest = function(x) {
             chests[x].is_opened = !chests[x].is_opened;
             var highlight = document.getElementById('locationMap'+x).classList.contains('highlight');
+			var checkedType = (x >= 79 && x <= 119) ? 'bonked' : 'opened';
             document.getElementById('locationMap'+x).className = 'location ' +
-                (chests[x].is_opened ? 'opened' : chests[x].is_available()) +
+                (chests[x].is_opened ? checkedType : chests[x].is_available()) +
                 (highlight ? ' highlight' : '');
 				
 			if (flags.restreamer === "T" && loadPrimer === true) {
@@ -2668,6 +2794,7 @@
 		document.getElementById("goalselect").value = flags.goals;
 		document.getElementById("swordselect").value = flags.swordmode;
 		document.getElementById("activatedflute").checked = (flags.activatedflute ? true : false);
+		document.getElementById("bonkshuffle").checked = (flags.bonkshuffle ? true : false);
 		document.getElementById("doorselect").value = flags.doorshuffle;
 		document.getElementById("overworldbox").checked = flags.overworldshuffle != 'N';
 		document.getElementById("shopsanitybox").checked = flags.shopsanity != 'N';
@@ -3267,6 +3394,11 @@
 			flags.activatedflute = document.getElementById('activatedflute').checked;
 		}
 
+		//Bonk Shuffle
+		if (document.getElementById('bonkshuffle').checked != flags.bonkshuffle) {
+			flags.bonkshuffle = document.getElementById('bonkshuffle').checked ? 'Y' : 'N';;
+		}
+
 		//Overworld
 		if (document.getElementById('overworldbox').checked != (flags.overworldshuffle != 'N')) {
 			flags.overworldshuffle = document.getElementById('overworldbox').checked ? 'Y' : 'N';
@@ -3418,6 +3550,12 @@
 		document.getElementById('mirrorscroll').style.visibility = flags.doorshuffle === 'N' ? 'hidden' : 'visible';
 		
 		document.getElementById('showpathsdiv').style.visibility = flags.doorshuffle === 'N' && flags.overworldshuffle === 'N' ? 'hidden' : 'visible';
+
+		//Hide bonk locations outside of Bonk Shuffle
+		for (var k = 79; k < 120; k++) {
+			document.getElementById('locationMap'+k).style.visibility = flags.bonkshuffle === 'N' ? 'hidden' : 'visible';
+		}
+
 	};
 
     window.updateLayoutTowers = function() {

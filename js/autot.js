@@ -244,7 +244,48 @@ function autotrackDoTracking(data) {
 		updatechest_group(64, [[0x228, 0x10], [0x228, 0x20]]); // Waterfall Fairy Left + Right
 		//updatechest(65, 0x1C0, 0x10); // Castle Tower - Room 03
 		//updatechest(66, 0x1A0, 0x10); // Castle Tower - Dark Maze
-	} else {
+        updatechest(79, 0x280, 0x10); // Lost Woods Hideout Tree
+        updatechest(80, 0x285, 0x10); // Death Mountain Bonk Rocks
+        updatechest(81, 0x28A, 0x10); // Mountain Entry Pull Tree
+        updatechest(82, 0x28A, 0x08); // Mountain Entry Southeast Tree
+        updatechest(83, 0x290, 0x10); // Lost Woods Pass West Tree
+        updatechest(84, 0x290, 0x08); // Kakariko Portal Tree
+        updatechest(85, 0x291, 0x10); // Fortune Bonk Rocks
+        updatechest(86, 0x292, 0x10); // Kakariko Pond Tree
+        updatechest(87, 0x293, 0x10); // Bonk Rocks Tree
+        updatechest(88, 0x293, 0x08); // Sanctuary Tree
+        updatechest(89, 0x295, 0x10); // River Bend West Tree
+        updatechest(90, 0x295, 0x08); // River Bend East Tree
+        updatechest(91, 0x298, 0x10); // Blinds Hideout Tree
+        updatechest(92, 0x298, 0x08); // Kakariko Welcome Tree
+        updatechest(93, 0x29A, 0x10); // Forgotten Forest Southwest Tree
+        updatechest(94, 0x29A, 0x08); // Forgotten Forest Central Tree
+        updatechest(95, 0x29B, 0x10); // Hyrule Castle Tree
+        updatechest(96, 0x29D, 0x10); // Wooden Bridge Tree
+        updatechest(97, 0x29E, 0x10); // Eastern Palace Tree
+        updatechest(98, 0x2AA, 0x10); // Flute Boy South Tree
+        updatechest(99, 0x2AA, 0x08); // Flute Boy East Tree
+        updatechest(100, 0x2AB, 0x10); // Central Bonk Rocks Tree
+        updatechest(101, 0x2AE, 0x18); // Tree Line Tree 2
+        updatechest(102, 0x2AE, 0x04); // Tree Line Tree 4
+        updatechest(103, 0x2B2, 0x10); // Flute Boy Approach South Tree
+        updatechest(104, 0x2B2, 0x08); // Flute Boy Approach North Tree
+        updatechest(105, 0x2C2, 0x10); // Dark Lumberjack Tree
+        updatechest(106, 0x2D1, 0x18); // Dark Fortune Bonk Rocks (2)
+        updatechest(107, 0x2D4, 0x10); // Dark Graveyard West Bonk Rocks
+        updatechest(108, 0x2D4, 0x08); // Dark Graveyard North Bonk Rocks
+        updatechest(109, 0x2D4, 0x04); // Dark Graveyard Tomb Bonk Rocks
+        updatechest(110, 0x2D5, 0x10); // Qirn Jump West Tree
+        updatechest(111, 0x2D5, 0x08); // Qirn Jump East Tree
+        updatechest(112, 0x2D6, 0x10); // Dark Witch Tree
+        updatechest(113, 0x2DB, 0x10); // Pyramid Area
+        updatechest(114, 0x2DE, 0x10); // Palace of Darkness Area
+        updatechest(115, 0x2EE, 0x10); // Dark Tree Line Tree 2
+        updatechest(116, 0x2EE, 0x08); // Dark Tree Line Tree 3
+        updatechest(117, 0x2EE, 0x04); // Dark Tree Line Tree 4
+        updatechest(118, 0x2F4, 0x10); // Hype Cave Area
+        updatechest(119, 0x288, 0x10); // Cold Fairy Statue
+    } else {
 		updatechest(0, 0x2BB, 0x40); // Sunken Treasure
 		updatechest(1, 0x208, 0x10); // Link's House
 		updatechest(2, 0x3C9, 0x02); // Bottle Vendor
@@ -268,7 +309,47 @@ function autotrackDoTracking(data) {
 		updatechest(20, 0x301, 0x40); // Zora's Ledge
 		updatechest(21, 0x2AA, 0x40); // Dig/Flute Spot
 		updatechest(22, 0x300, 0x40); // Pedestal
-	}
+        updatechest(79, 0x280, 0x10); // Lost Woods Hideout Tree
+        updatechest(80, 0x285, 0x10); // Death Mountain Bonk Rocks
+        updatechest(81, 0x28A, 0x10); // Mountain Entry Pull Tree
+        updatechest(82, 0x28A, 0x08); // Mountain Entry Southeast Tree
+        updatechest(83, 0x290, 0x10); // Lost Woods Pass West Tree
+        updatechest(84, 0x290, 0x08); // Kakariko Portal Tree
+        updatechest(85, 0x291, 0x10); // Fortune Bonk Rocks
+        updatechest(86, 0x292, 0x10); // Kakariko Pond Tree
+        updatechest(87, 0x293, 0x10); // Bonk Rocks Tree
+        updatechest(88, 0x293, 0x08); // Sanctuary Tree
+        updatechest(89, 0x295, 0x10); // River Bend West Tree
+        updatechest(90, 0x295, 0x08); // River Bend East Tree
+        updatechest(91, 0x298, 0x10); // Blinds Hideout Tree
+        updatechest(92, 0x298, 0x08); // Kakariko Welcome Tree
+        updatechest(93, 0x29A, 0x10); // Forgotten Forest Southwest Tree
+        updatechest(94, 0x29A, 0x08); // Forgotten Forest Central Tree
+        updatechest(95, 0x29B, 0x10); // Hyrule Castle Tree
+        updatechest(96, 0x29D, 0x10); // Wooden Bridge Tree
+        updatechest(97, 0x29E, 0x10); // Eastern Palace Tree
+        updatechest(98, 0x2AA, 0x10); // Flute Boy South Tree
+        updatechest(99, 0x2AA, 0x08); // Flute Boy East Tree
+        updatechest(100, 0x2AB, 0x10); // Central Bonk Rocks Tree
+        updatechest(101, 0x2AE, 0x18); // Tree Line Tree 2
+        updatechest(102, 0x2AE, 0x04); // Tree Line Tree 4
+        updatechest(103, 0x2B2, 0x10); // Flute Boy Approach South Tree
+        updatechest(104, 0x2B2, 0x08); // Flute Boy Approach North Tree
+        updatechest(105, 0x2C2, 0x10); // Dark Lumberjack Tree
+        updatechest(106, 0x2D1, 0x18); // Dark Fortune Bonk Rocks (2)
+        updatechest(107, 0x2D4, 0x10); // Dark Graveyard West Bonk Rocks
+        updatechest(108, 0x2D4, 0x08); // Dark Graveyard North Bonk Rocks
+        updatechest(109, 0x2D4, 0x04); // Dark Graveyard Tomb Bonk Rocks
+        updatechest(110, 0x2D5, 0x10); // Qirn Jump West Tree
+        updatechest(111, 0x2D5, 0x08); // Qirn Jump East Tree
+        updatechest(112, 0x2D6, 0x10); // Dark Witch Tree
+        updatechest(113, 0x2DB, 0x10); // Pyramid Area
+        updatechest(114, 0x2DE, 0x10); // Palace of Darkness Area
+        updatechest(115, 0x2EE, 0x10); // Dark Tree Line Tree 2
+        updatechest(116, 0x2EE, 0x08); // Dark Tree Line Tree 3
+        updatechest(117, 0x2EE, 0x04); // Dark Tree Line Tree 4
+        updatechest(118, 0x2F4, 0x10); // Hype Cave Area
+    }
 	
     function update_boss(boss, offset) {
         if (newbit(offset, 0x08) && !items[boss]) {
