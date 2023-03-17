@@ -266,8 +266,8 @@ function autotrackDoTracking(data) {
         updatechest(98, 0x2AA, 0x10); // Flute Boy South Tree
         updatechest(99, 0x2AA, 0x08); // Flute Boy East Tree
         updatechest(100, 0x2AB, 0x10); // Central Bonk Rocks Tree
-        updatechest(101, 0x2AE, 0x18); // Tree Line Tree 2
-        updatechest(102, 0x2AE, 0x04); // Tree Line Tree 4
+        updatechest(101, 0x2AE, 0x14); // Tree Line Tree 2
+        updatechest(102, 0x2AE, 0x08); // Tree Line Tree 4
         updatechest(103, 0x2B2, 0x10); // Flute Boy Approach South Tree
         updatechest(104, 0x2B2, 0x08); // Flute Boy Approach North Tree
         updatechest(105, 0x2C2, 0x10); // Dark Lumberjack Tree
@@ -284,7 +284,7 @@ function autotrackDoTracking(data) {
         updatechest(116, 0x2EE, 0x08); // Dark Tree Line Tree 3
         updatechest(117, 0x2EE, 0x04); // Dark Tree Line Tree 4
         updatechest(118, 0x2F4, 0x10); // Hype Cave Area
-        updatechest(119, 0x288, 0x10); // Cold Fairy Statue
+        updatechest(119, 0x241, 0x02); // Cold Fairy Statue
     } else {
 		updatechest(0, 0x2BB, 0x40); // Sunken Treasure
 		updatechest(1, 0x208, 0x10); // Link's House

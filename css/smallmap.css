@@ -58,10 +58,10 @@
   background-size: 100% 100%;
 }
 
-.bonkable { background-color: rgb(0, 255, 0); width: 10; height: 10;}
-.unbonkable { background-color: rgba(255, 0, 0, 0.5); width: 10; height: 10;}
-.bonked { background-color: rgba(128, 128, 128, 0.5); width: 10; height: 10;}
-.darkbonkable { background-color: rgb(35, 69, 224); width: 10; height: 10;}
+.bonkable { background-color: rgb(0, 255, 0); width: 9; height: 9;}
+.unbonkable { background-color: rgba(255, 0, 0, 0.5); width: 9; height: 9;}
+.bonked { background-color: rgba(128, 128, 128, 0.5); width: 9; height: 9;}
+.darkbonkable { background-color: rgb(35, 69, 224); width: 9; height: 9;}
 
 #bossMap0, #dungeon0 { left: 46.0%; top: 38.8%; }
 #bossMap1, #dungeon1 { left: 3.8%;  top: 78.4%; }
@@ -100,100 +100,100 @@
 #locationMap20 { left: 44.2%; top: 76.9%; }
 #locationMap21 { left: 91.6%; top: 9.6%; }
 #locationMap22 { left: 91.6%; top: 3.4%; }
-#locationMap23 { left: 52.1%; top: 46.4%; }
-#locationMap24 { left: 4.5%;  top: 47.3%; }
-#locationMap25 { left: 40.7%; top: 48.0%; }
-#locationMap26 { left: 65.5%; top: 68.6%; }
-#locationMap27 { left: 8.1%;  top: 51.1%; }
-#locationMap28 { left: 65.2%; top: 52.2%; }
-#locationMap29 { left: 35.4%; top: 69.7%; }
-#locationMap30 { left: 21.0%; top: 3.4%; }
-#locationMap31 { left: 11.0%; top: 92.2%; }
-#locationMap32 { left: 96.0%; top: 17.2%; }
-#locationMap33 { left: 48.0%; top: 10.6%; }
-#locationMap34 { left: 20.8%; top: 20.4%; }
-#locationMap35 { left: 40.8%; top: 32.5%; }
-#locationMap36 { left: 9.4%;  top: 13.0%; }
-#locationMap37 { left: 15.1%; top: 7.6%; }
-#locationMap38 { left: 24.3%; top: 14.8%; }
-#locationMap39 { left: 14.1%; top: 84.1%; }
-#locationMap40 { left: 28.1%; top: 27.0%; }
-#locationMap41 { left: 9.3%;  top: 77.3%; }
-#locationMap42 { left: 65.8%; top: 59.1%; }
-#locationMap43 { left: 7.7%;  top: 65.9%; }
-#locationMap44 { left: 6.2%;  top: 8.6%; }
-#locationMap45 { left: 25.4%; top: 8.5%; }
-#locationMap46 { left: 40.2%; top: 3.4%; }
-#locationMap47 { left: 1.8%;  top: 67.0%; }
-#locationMap48 { left: 1.8%;  top: 91.0%; }
-#locationMap49 { left: 36.1%; top: 82.9%; }
-#locationMap50 { left: 67.1%; top: 15.2%; }
-#locationMap51 { left: 79.0%; top: 43.5%; }
-#locationMap52 { left: 52.9%; top: 69.2%; }
-#locationMap53 { left: 47.7%; top: 17.3%; }
-#locationMap54 { left: 14.4%; top: 66.2%; }
-#locationMap55 { left: 26.8%; top: 32.4%; }
-#locationMap56 { left: 29.8%; top: 41.8%; }
-#locationMap57 { left: 25.0%; top: 44.1%; }
-#locationMap58 { left: 22.7%; top: 27%; }
-#locationMap59 { left: 16.0%; top: 58.0%; }
-#locationMap60 { left: 15.2%; top: 51.8%; }
-#locationMap61 { left: 73.5%; top: 48.5%; }
-#locationMap62 { left: 2.5%;  top: 3.4%; }
-#locationMap63 { left: 25.6%; top: 38.2%; }
-#locationMap64 { left: 44.9%; top: 15.2%; }
-#locationMap65 { left: 21.0%; top: 52.6%; }
-#locationMap66 { left: 29.0%; top: 52.6%; }
-#locationMap67 { left: 37.0%; top: 76.0%; }
-#locationMap68 { left: 5.0%; top: 60.0%; }
-#locationMap69 { left: 38.5%; top: 17.1%; }
-#locationMap70 { left: 83.5%; top: 78.5%; }
-#locationMap71 { left: 61.5%; top: 53.4%; }
-#locationMap72 { left: 93.3%; top: 21.2%; }
-#locationMap73 { left: 90.8%; top: 32.5%; }
-#locationMap74 { left: 66.6%; top: 6.3%; }
-#locationMap75 { left: 66.5%; top: 44.2%; }
-#locationMap76 { left: 40.0%; top: 27.0%; }
-#locationMap77 { left: 39.8%; top: 84.5%; }
-#locationMap78 { left: 77.4%; top: 67.9%; }
-#locationMap79 { left: 7.2%; top: 15%; } /* Lost Woods Hideout Tree */
-#locationMap80 { left: 40.7%; top: 9.2%; } /* Death Mountain Bonk Rocks */
-#locationMap81 { left: 15.5%; top: 14.5%; } /* Mountain Entry Pull Tree */
-#locationMap82 { left: 17.7%; top: 23%; } /* Mountain Entry Southeast Tree */
-#locationMap83 { left: 1.6%; top: 30%; } /* Lost Woods Pass West Tree */
-#locationMap84 { left: 4.9%; top: 31%; } /* Kakariko Portal Tree */
-#locationMap85 { left: 8.2%; top: 31.7%; } /* Fortune Bonk Rocks */
-#locationMap86 { left: 17%; top: 29.1%; } /* Kakariko Pond Tree */
-#locationMap87 { left: 20.6%; top: 31.2%; } /* Bonk Rocks Tree */
-#locationMap88 { left: 24.1%; top: 30.2%; } /* Sanctuary Tree */
-#locationMap89 { left: 32.4%; top: 35.5%; } /* River Bend West Tree */
-#locationMap90 { left: 36.9%; top: 31.4%; } /* River Bend East Tree */
-#locationMap91 { left: 4.4%; top: 41.7%; } /* Blinds Hideout Tree */
-#locationMap92 { left: 11%; top: 57.7%; } /* Kakariko Welcome Tree */
-#locationMap93 { left: 14.1%; top: 47.2%; } /* Forgotten Forest Southwest Tree */
-#locationMap94 { left: 15.5%; top: 44.7%; } /* Forgotten Forest Central Tree */
-#locationMap95 { left: 22.8%; top: 46%; } /* Hyrule Castle Tree */
-#locationMap96 { left: 33.5%; top: 40.5%; } /* Wooden Bridge Tree */
-#locationMap97 { left: 44.5%; top: 59.5%; } /* Eastern Palace Tree */
-#locationMap98 { left: 15.1%; top: 72.4%; } /* Flute Boy South Tree */
-#locationMap99 { left: 17.4%; top: 70.6%; } /* Flute Boy East Tree */
-#locationMap100 { left: 24%; top: 66.6%; } /* Central Bonk Rocks Tree */
-#locationMap101 { left: 39.7%; top: 66.4%; } /* Tree Line Tree 2 */
-#locationMap102 { left: 41.9%; top: 67.4%; } /* Tree Line Tree 4 */
-#locationMap103 { left: 17.7%; top: 83.2%; } /* Flute Boy Approach South Tree */
-#locationMap104 { left: 18%; top: 78.7%; } /* Flute Boy Approach North Tree */
-#locationMap105 { left: 64%; top: 9%; } /* Dark Lumberjack Tree */
-#locationMap106 { left: 58.2%; top: 31.8%; } /* Dark Fortune Bonk Rocks (2) */
-#locationMap107 { left: 75.4%; top: 30%; } /* Dark Graveyard West Bonk Rocks */
-#locationMap108 { left: 77.9%; top: 32%; } /* Dark Graveyard North Bonk Rocks */
-#locationMap109 { left: 80.5%; top: 30%; } /* Dark Graveyard Tomb Bonk Rocks */
-#locationMap110 { left: 83.5%; top: 35.7%; } /* Qirn Jump West Tree */
-#locationMap111 { left: 86.6%; top: 31.8%; } /* Qirn Jump East Tree */
-#locationMap112 { left: 88.9%; top: 30.9%; } /* Dark Witch Tree */
-#locationMap113 { left: 73.5%; top: 54.5%; } /* Pyramid Area */
-#locationMap114 { left: 97.5%; top: 56.5%; } /* Palace of Darkness Area */
-#locationMap115 { left: 89.7%; top: 66.1%; } /* Dark Tree Line Tree 2 */
-#locationMap116 { left: 90.9%; top: 66.7%; } /* Dark Tree Line Tree 3 */
-#locationMap117 { left: 92.1%; top: 67.3%; } /* Dark Tree Line Tree 4 */
-#locationMap118 { left: 77.9%; top: 83.5%; } /* Hype Cave Area */
-#locationMap119 { left: 47%; top: 77.5%; } /* Cold Fairy Statue */
+#locationMap23 { left: 7.2%; top: 15%; } /* Lost Woods Hideout Tree */
+#locationMap24 { left: 40.7%; top: 9.2%; } /* Death Mountain Bonk Rocks */
+#locationMap25 { left: 15.5%; top: 14.5%; } /* Mountain Entry Pull Tree */
+#locationMap26 { left: 17.7%; top: 23%; } /* Mountain Entry Southeast Tree */
+#locationMap27 { left: 1.6%; top: 30%; } /* Lost Woods Pass West Tree */
+#locationMap28 { left: 4.9%; top: 31%; } /* Kakariko Portal Tree */
+#locationMap29 { left: 8.2%; top: 31.7%; } /* Fortune Bonk Rocks */
+#locationMap30 { left: 17%; top: 29.1%; } /* Kakariko Pond Tree */
+#locationMap31 { left: 20.6%; top: 31.2%; } /* Bonk Rocks Tree */
+#locationMap32 { left: 24.1%; top: 30.2%; } /* Sanctuary Tree */
+#locationMap33 { left: 32.4%; top: 35.5%; } /* River Bend West Tree */
+#locationMap34 { left: 36.9%; top: 31.4%; } /* River Bend East Tree */
+#locationMap35 { left: 4.4%; top: 41.7%; } /* Blinds Hideout Tree */
+#locationMap36 { left: 11%; top: 57.7%; } /* Kakariko Welcome Tree */
+#locationMap37 { left: 14.1%; top: 47.2%; } /* Forgotten Forest Southwest Tree */
+#locationMap38 { left: 15.5%; top: 44.7%; } /* Forgotten Forest Central Tree */
+#locationMap39 { left: 22.8%; top: 46%; } /* Hyrule Castle Tree */
+#locationMap40 { left: 33.5%; top: 40.5%; } /* Wooden Bridge Tree */
+#locationMap41 { left: 44.5%; top: 59.5%; } /* Eastern Palace Tree */
+#locationMap42 { left: 15.1%; top: 72.4%; } /* Flute Boy South Tree */
+#locationMap43 { left: 17.4%; top: 70.6%; } /* Flute Boy East Tree */
+#locationMap44 { left: 24%; top: 66.6%; } /* Central Bonk Rocks Tree */
+#locationMap45 { left: 39.7%; top: 66.4%; } /* Tree Line Tree 2 */
+#locationMap46 { left: 41.9%; top: 67.4%; } /* Tree Line Tree 4 */
+#locationMap47 { left: 17.7%; top: 83.2%; } /* Flute Boy Approach South Tree */
+#locationMap48 { left: 18%; top: 78.7%; } /* Flute Boy Approach North Tree */
+#locationMap49 { left: 64%; top: 9%; } /* Dark Lumberjack Tree */
+#locationMap50 { left: 58.2%; top: 31.8%; } /* Dark Fortune Bonk Rocks (2) */
+#locationMap51 { left: 75.4%; top: 30%; } /* Dark Graveyard West Bonk Rocks */
+#locationMap52 { left: 77.9%; top: 32%; } /* Dark Graveyard North Bonk Rocks */
+#locationMap53 { left: 80.5%; top: 30%; } /* Dark Graveyard Tomb Bonk Rocks */
+#locationMap54 { left: 83.5%; top: 35.7%; } /* Qirn Jump West Tree */
+#locationMap55 { left: 86.6%; top: 31.8%; } /* Qirn Jump East Tree */
+#locationMap56 { left: 88.9%; top: 30.9%; } /* Dark Witch Tree */
+#locationMap57 { left: 73.5%; top: 54.5%; } /* Pyramid Area */
+#locationMap58 { left: 97.5%; top: 56.5%; } /* Palace of Darkness Area */
+#locationMap59 { left: 89.7%; top: 66.1%; } /* Dark Tree Line Tree 2 */
+#locationMap60 { left: 90.9%; top: 66.7%; } /* Dark Tree Line Tree 3 */
+#locationMap61 { left: 92.1%; top: 67.3%; } /* Dark Tree Line Tree 4 */
+#locationMap62 { left: 77.9%; top: 83.5%; } /* Hype Cave Area */
+#locationMap63 { left: 47%; top: 77.5%; } /* Cold Fairy Statue */
+#locationMap64 { left: 52.1%; top: 46.4%; }
+#locationMap65 { left: 4.5%;  top: 47.3%; }
+#locationMap66 { left: 40.7%; top: 48.0%; }
+#locationMap67 { left: 65.5%; top: 68.6%; }
+#locationMap68 { left: 8.1%;  top: 51.1%; }
+#locationMap69 { left: 65.2%; top: 52.2%; }
+#locationMap70 { left: 35.4%; top: 69.7%; }
+#locationMap71 { left: 21.0%; top: 3.4%; }
+#locationMap72 { left: 11.0%; top: 92.2%; }
+#locationMap73 { left: 96.0%; top: 17.2%; }
+#locationMap74 { left: 48.0%; top: 10.6%; }
+#locationMap75 { left: 20.8%; top: 20.4%; }
+#locationMap76 { left: 40.8%; top: 32.5%; }
+#locationMap77 { left: 9.4%;  top: 13.0%; }
+#locationMap78 { left: 15.1%; top: 7.6%; }
+#locationMap79 { left: 24.3%; top: 14.8%; }
+#locationMap80 { left: 14.1%; top: 84.1%; }
+#locationMap81 { left: 28.1%; top: 27.0%; }
+#locationMap82 { left: 9.3%;  top: 77.3%; }
+#locationMap83 { left: 65.8%; top: 59.1%; }
+#locationMap84 { left: 7.7%;  top: 65.9%; }
+#locationMap85 { left: 6.2%;  top: 8.6%; }
+#locationMap86 { left: 25.4%; top: 8.5%; }
+#locationMap87 { left: 40.2%; top: 3.4%; }
+#locationMap88 { left: 1.8%;  top: 67.0%; }
+#locationMap89 { left: 1.8%;  top: 91.0%; }
+#locationMap90 { left: 36.1%; top: 82.9%; }
+#locationMap91 { left: 67.1%; top: 15.2%; }
+#locationMap92 { left: 79.0%; top: 43.5%; }
+#locationMap93 { left: 52.9%; top: 69.2%; }
+#locationMap94 { left: 47.7%; top: 17.3%; }
+#locationMap95 { left: 14.4%; top: 66.2%; }
+#locationMap96 { left: 26.8%; top: 32.4%; }
+#locationMap97 { left: 29.8%; top: 41.8%; }
+#locationMap98 { left: 25.0%; top: 44.1%; }
+#locationMap99 { left: 22.7%; top: 27%; }
+#locationMap100 { left: 16.0%; top: 58.0%; }
+#locationMap101 { left: 15.2%; top: 51.8%; }
+#locationMap102 { left: 73.5%; top: 48.5%; }
+#locationMap103 { left: 2.5%;  top: 3.4%; }
+#locationMap104 { left: 25.6%; top: 38.2%; }
+#locationMap105 { left: 44.9%; top: 15.2%; }
+#locationMap106 { left: 21.0%; top: 52.6%; }
+#locationMap107 { left: 29.0%; top: 52.6%; }
+#locationMap108 { left: 37.0%; top: 76.0%; }
+#locationMap109 { left: 5.0%; top: 60.0%; }
+#locationMap110 { left: 38.5%; top: 17.1%; }
+#locationMap111 { left: 83.5%; top: 78.5%; }
+#locationMap112 { left: 61.5%; top: 53.4%; }
+#locationMap113 { left: 93.3%; top: 21.2%; }
+#locationMap114 { left: 90.8%; top: 32.5%; }
+#locationMap115 { left: 66.6%; top: 6.3%; }
+#locationMap116 { left: 66.5%; top: 44.2%; }
+#locationMap117 { left: 40.0%; top: 27.0%; }
+#locationMap118 { left: 39.8%; top: 84.5%; }
+#locationMap119 { left: 77.4%; top: 67.9%; }

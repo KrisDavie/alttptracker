@@ -2330,7 +2330,7 @@
         window.toggle_chest = function(x) {
             chests[x].is_opened = !chests[x].is_opened;
             var highlight = document.getElementById('locationMap'+x).classList.contains('highlight');
-			var checkedType = (x >= 79 && x <= 119) ? 'bonked' : 'opened';
+			var checkedType = (x >= 23 && x <= 63) ? 'bonked' : 'opened';
             document.getElementById('locationMap'+x).className = 'location ' +
                 (chests[x].is_opened ? checkedType : chests[x].is_available()) +
                 (highlight ? ' highlight' : '');
@@ -3778,8 +3778,8 @@
 
 		//Hide map if not using
         if (flags.mapmode != 'N') {
-            for (var k = 0; k < 79; k++) {
-                document.getElementById('locationMap'+k).className = 'location ' + (k >= chests.length || chests[k].is_opened ? 'opened' : chests[k].is_available());
+	        for (var k = 0; k < chests.length; k++) {
+                document.getElementById('locationMap'+k).className = 'location ' + (k >= chests.length || chests[k].is_opened ? ( k > 22 && k < 79 ? 'bonked' : 'opened') : chests[k].is_available());
             }
 			
 			if (flags.mapmode === 'C') {				
