@@ -2331,7 +2331,7 @@
 				caption: 'Qirn Jump East Tree',
 				is_opened: false,
 				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthEastShopArea() ? 'bonkable' : 'unbonkable';
+					return canGetBonkableItem() && canReachInvertedNorthEastShopArea() ? 'bonkable' : (items.sword && items.quake && canReachInvertedNorthDW() ? 'bonkinfo' : 'unbonkable');
 				}
 			}, { // [56]
 				caption: 'Dark Witch Tree',
@@ -6196,7 +6196,7 @@
 				caption: 'Qirn Jump East Tree',
 				is_opened: false,
 				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldNorthEastShopArea() ? 'bonkable' : 'unbonkable';
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldNorthEastShopArea() ? 'bonkable' : (items.moonpearl && items.sword && items.quake && canReachOutcast() ? 'bonkinfo' : 'unbonkable');
 				}
 			}, { // [56]
 				caption: 'Dark Witch Tree',

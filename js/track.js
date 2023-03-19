@@ -781,46 +781,46 @@
 					"location20":chests[20].is_opened,
 					"location21":chests[21].is_opened,
 					"location22":chests[22].is_opened,
-					"location79":chests[79].is_opened,
-					"location80":chests[80].is_opened,
-					"location81":chests[81].is_opened,
-					"location82":chests[82].is_opened,
-					"location83":chests[83].is_opened,
-					"location84":chests[84].is_opened,
-					"location85":chests[85].is_opened,
-					"location86":chests[86].is_opened,
-					"location87":chests[87].is_opened,
-					"location88":chests[88].is_opened,
-					"location89":chests[89].is_opened,
-					"location90":chests[90].is_opened,
-					"location91":chests[91].is_opened,
-					"location92":chests[92].is_opened,
-					"location93":chests[93].is_opened,
-					"location94":chests[94].is_opened,
-					"location95":chests[95].is_opened,
-					"location96":chests[96].is_opened,
-					"location97":chests[97].is_opened,
-					"location98":chests[98].is_opened,
-					"location99":chests[99].is_opened,
-					"location100":chests[100].is_opened,
-					"location101":chests[101].is_opened,
-					"location102":chests[102].is_opened,
-					"location103":chests[103].is_opened,
-					"location104":chests[104].is_opened,
-					"location105":chests[105].is_opened,
-					"location106":chests[106].is_opened,
-					"location107":chests[107].is_opened,
-					"location108":chests[108].is_opened,
-					"location109":chests[109].is_opened,
-					"location110":chests[110].is_opened,
-					"location111":chests[111].is_opened,
-					"location112":chests[112].is_opened,
-					"location113":chests[113].is_opened,
-					"location114":chests[114].is_opened,
-					"location115":chests[115].is_opened,
-					"location116":chests[116].is_opened,
-					"location117":chests[117].is_opened,
-					"location118":chests[118].is_opened,
+					"location23":chests[23].is_opened,
+					"location24":chests[24].is_opened,
+					"location25":chests[25].is_opened,
+					"location26":chests[26].is_opened,
+					"location27":chests[27].is_opened,
+					"location28":chests[28].is_opened,
+					"location29":chests[29].is_opened,
+					"location30":chests[30].is_opened,
+					"location31":chests[31].is_opened,
+					"location32":chests[32].is_opened,
+					"location33":chests[33].is_opened,
+					"location34":chests[34].is_opened,
+					"location35":chests[35].is_opened,
+					"location36":chests[36].is_opened,
+					"location37":chests[37].is_opened,
+					"location38":chests[38].is_opened,
+					"location39":chests[39].is_opened,
+					"location40":chests[40].is_opened,
+					"location41":chests[41].is_opened,
+					"location42":chests[42].is_opened,
+					"location43":chests[43].is_opened,
+					"location44":chests[44].is_opened,
+					"location45":chests[45].is_opened,
+					"location46":chests[46].is_opened,
+					"location47":chests[47].is_opened,
+					"location48":chests[48].is_opened,
+					"location49":chests[49].is_opened,
+					"location50":chests[50].is_opened,
+					"location51":chests[51].is_opened,
+					"location52":chests[52].is_opened,
+					"location53":chests[53].is_opened,
+					"location54":chests[54].is_opened,
+					"location55":chests[55].is_opened,
+					"location56":chests[56].is_opened,
+					"location57":chests[57].is_opened,
+					"location58":chests[58].is_opened,
+					"location59":chests[59].is_opened,
+					"location60":chests[60].is_opened,
+					"location61":chests[61].is_opened,
+					"location62":chests[62].is_opened,
 					"prize0":prizes[0],
 					"prize1":prizes[1],
 					"prize2":prizes[2],
@@ -1040,87 +1040,47 @@
 						chests[20].is_opened = megapack.location20;
 						chests[21].is_opened = megapack.location21;
 						chests[22].is_opened = megapack.location22;
-						chests[79].is_opened = megapack.location79;
-						chests[80].is_opened = megapack.location80;
-						chests[81].is_opened = megapack.location81;
-						chests[82].is_opened = megapack.location82;
-						chests[83].is_opened = megapack.location83;
-						chests[84].is_opened = megapack.location84;
-						chests[85].is_opened = megapack.location85;
-						chests[86].is_opened = megapack.location86;
-						chests[87].is_opened = megapack.location87;
-						chests[88].is_opened = megapack.location88;
-						chests[89].is_opened = megapack.location89;
-						chests[90].is_opened = megapack.location90;
-						chests[91].is_opened = megapack.location91;
-						chests[92].is_opened = megapack.location92;
-						chests[93].is_opened = megapack.location93;
-						chests[94].is_opened = megapack.location94;
-						chests[95].is_opened = megapack.location95;
-						chests[96].is_opened = megapack.location96;
-						chests[97].is_opened = megapack.location97;
-						chests[98].is_opened = megapack.location98;
-						chests[99].is_opened = megapack.location99;
-						chests[100].is_opened = megapack.location100;
-						chests[101].is_opened = megapack.location101;
-						chests[102].is_opened = megapack.location102;
-						chests[103].is_opened = megapack.location103;
-						chests[104].is_opened = megapack.location104;
-						chests[105].is_opened = megapack.location105;
-						chests[106].is_opened = megapack.location106;
-						chests[107].is_opened = megapack.location107;
-						chests[108].is_opened = megapack.location108;
-						chests[109].is_opened = megapack.location109;
-						chests[110].is_opened = megapack.location110;
-						chests[111].is_opened = megapack.location111;
-						chests[112].is_opened = megapack.location112;
-						chests[113].is_opened = megapack.location113;
-						chests[114].is_opened = megapack.location114;
-						chests[115].is_opened = megapack.location115;
-						chests[116].is_opened = megapack.location116;
-						chests[117].is_opened = megapack.location117;
-						chests[118].is_opened = megapack.location118;
+						chests[23].is_opened = megapack.location23;
+						chests[24].is_opened = megapack.location24;
+						chests[25].is_opened = megapack.location25;
+						chests[26].is_opened = megapack.location26;
+						chests[27].is_opened = megapack.location27;
+						chests[28].is_opened = megapack.location28;
+						chests[29].is_opened = megapack.location29;
+						chests[30].is_opened = megapack.location30;
+						chests[31].is_opened = megapack.location31;
+						chests[32].is_opened = megapack.location32;
+						chests[33].is_opened = megapack.location33;
+						chests[34].is_opened = megapack.location34;
+						chests[35].is_opened = megapack.location35;
+						chests[36].is_opened = megapack.location36;
+						chests[37].is_opened = megapack.location37;
+						chests[38].is_opened = megapack.location38;
+						chests[39].is_opened = megapack.location39;
+						chests[40].is_opened = megapack.location40;
+						chests[41].is_opened = megapack.location41;
+						chests[42].is_opened = megapack.location42;
+						chests[43].is_opened = megapack.location43;
+						chests[44].is_opened = megapack.location44;
+						chests[45].is_opened = megapack.location45;
+						chests[46].is_opened = megapack.location46;
+						chests[47].is_opened = megapack.location47;
+						chests[48].is_opened = megapack.location48;
+						chests[49].is_opened = megapack.location49;
+						chests[50].is_opened = megapack.location50;
+						chests[51].is_opened = megapack.location51;
+						chests[52].is_opened = megapack.location52;
+						chests[53].is_opened = megapack.location53;
+						chests[54].is_opened = megapack.location54;
+						chests[55].is_opened = megapack.location55;
+						chests[56].is_opened = megapack.location56;
+						chests[57].is_opened = megapack.location57;
+						chests[58].is_opened = megapack.location58;
+						chests[59].is_opened = megapack.location59;
+						chests[60].is_opened = megapack.location60;
+						chests[61].is_opened = megapack.location61;
+						chests[62].is_opened = megapack.location62;
 						if (flags.entrancemode === "N") {
-							chests[23].is_opened = megapack.location23;
-							chests[24].is_opened = megapack.location24;
-							chests[25].is_opened = megapack.location25;
-							chests[26].is_opened = megapack.location26;
-							chests[27].is_opened = megapack.location27;
-							chests[28].is_opened = megapack.location28;
-							chests[29].is_opened = megapack.location29;
-							chests[30].is_opened = megapack.location30;
-							chests[31].is_opened = megapack.location31;
-							chests[32].is_opened = megapack.location32;
-							chests[33].is_opened = megapack.location33;
-							chests[34].is_opened = megapack.location34;
-							chests[35].is_opened = megapack.location35;
-							chests[36].is_opened = megapack.location36;
-							chests[37].is_opened = megapack.location37;
-							chests[38].is_opened = megapack.location38;
-							chests[39].is_opened = megapack.location39;
-							chests[40].is_opened = megapack.location40;
-							chests[41].is_opened = megapack.location41;
-							chests[42].is_opened = megapack.location42;
-							chests[43].is_opened = megapack.location43;
-							chests[44].is_opened = megapack.location44;
-							chests[45].is_opened = megapack.location45;
-							chests[46].is_opened = megapack.location46;
-							chests[47].is_opened = megapack.location47;
-							chests[48].is_opened = megapack.location48;
-							chests[49].is_opened = megapack.location49;
-							chests[50].is_opened = megapack.location50;
-							chests[51].is_opened = megapack.location51;
-							chests[52].is_opened = megapack.location52;
-							chests[53].is_opened = megapack.location53;
-							chests[54].is_opened = megapack.location54;
-							chests[55].is_opened = megapack.location55;
-							chests[56].is_opened = megapack.location56;
-							chests[57].is_opened = megapack.location57;
-							chests[58].is_opened = megapack.location58;
-							chests[59].is_opened = megapack.location59;
-							chests[60].is_opened = megapack.location60;
-							chests[61].is_opened = megapack.location61;
-							chests[62].is_opened = megapack.location62;
 							chests[63].is_opened = megapack.location63;
 							chests[64].is_opened = megapack.location64;
 							chests[65].is_opened = megapack.location65;
@@ -1137,6 +1097,46 @@
 							chests[76].is_opened = megapack.location76;
 							chests[77].is_opened = megapack.location77;
 							chests[78].is_opened = megapack.location78;
+							chests[79].is_opened = megapack.location79;
+							chests[80].is_opened = megapack.location80;
+							chests[81].is_opened = megapack.location81;
+							chests[82].is_opened = megapack.location82;
+							chests[83].is_opened = megapack.location83;
+							chests[84].is_opened = megapack.location84;
+							chests[85].is_opened = megapack.location85;
+							chests[86].is_opened = megapack.location86;
+							chests[87].is_opened = megapack.location87;
+							chests[88].is_opened = megapack.location88;
+							chests[89].is_opened = megapack.location89;
+							chests[90].is_opened = megapack.location90;
+							chests[91].is_opened = megapack.location91;
+							chests[92].is_opened = megapack.location92;
+							chests[93].is_opened = megapack.location93;
+							chests[94].is_opened = megapack.location94;
+							chests[95].is_opened = megapack.location95;
+							chests[96].is_opened = megapack.location96;
+							chests[97].is_opened = megapack.location97;
+							chests[98].is_opened = megapack.location98;
+							chests[99].is_opened = megapack.location99;
+							chests[100].is_opened = megapack.location100;
+							chests[101].is_opened = megapack.location101;
+							chests[102].is_opened = megapack.location102;
+							chests[103].is_opened = megapack.location103;
+							chests[104].is_opened = megapack.location104;
+							chests[105].is_opened = megapack.location105;
+							chests[106].is_opened = megapack.location106;
+							chests[107].is_opened = megapack.location107;
+							chests[108].is_opened = megapack.location108;
+							chests[109].is_opened = megapack.location109;
+							chests[110].is_opened = megapack.location110;
+							chests[111].is_opened = megapack.location111;
+							chests[112].is_opened = megapack.location112;
+							chests[113].is_opened = megapack.location113;
+							chests[114].is_opened = megapack.location114;
+							chests[115].is_opened = megapack.location115;
+							chests[116].is_opened = megapack.location116;
+							chests[117].is_opened = megapack.location117;
+							chests[118].is_opened = megapack.location118;
 							chests[119].is_opened = megapack.location119;
 						}
 						prizes[0] = megapack.prize0;
@@ -1921,48 +1921,48 @@
 		
 		document.getElementById('entranceModalNote').focus();
 		
-		document.getElementById('hc_m').style.backgroundColor = '#000';
-		document.getElementById('hc_w').style.backgroundColor = '#000';
-		document.getElementById('hc_e').style.backgroundColor = '#000';
-		document.getElementById('ct').style.backgroundColor = '#000';
-		document.getElementById('ep').style.backgroundColor = '#000';
-		document.getElementById('dp_m').style.backgroundColor = '#000';
-		document.getElementById('dp_w').style.backgroundColor = '#000';
-		document.getElementById('dp_e').style.backgroundColor = '#000';
-		document.getElementById('dp_n').style.backgroundColor = '#000';
-		document.getElementById('toh').style.backgroundColor = '#000';
-		document.getElementById('pod').style.backgroundColor = '#000';
-		document.getElementById('sp').style.backgroundColor = '#000';
-		document.getElementById('sw').style.backgroundColor = '#000';
-		document.getElementById('tt').style.backgroundColor = '#000';
-		document.getElementById('ip').style.backgroundColor = '#000';
-		document.getElementById('mm').style.backgroundColor = '#000';
-		document.getElementById('tr_m').style.backgroundColor = '#000';
-		document.getElementById('tr_w').style.backgroundColor = '#000';
-		document.getElementById('tr_e').style.backgroundColor = '#000';
-		document.getElementById('tr_b').style.backgroundColor = '#000';
-		document.getElementById('link').style.backgroundColor = '#000';
-		document.getElementById('sanc').style.backgroundColor = '#000';
-		document.getElementById('mount').style.backgroundColor = '#000';
-		document.getElementById('item').style.backgroundColor = '#000';
-		document.getElementById('gt').style.backgroundColor = '#000';
+		document.getElementById('hc_m').style.backgroundColor = '#14439a';
+		document.getElementById('hc_w').style.backgroundColor = '#14439a';
+		document.getElementById('hc_e').style.backgroundColor = '#14439a';
+		document.getElementById('ct').style.backgroundColor = '#00eaff';
+		document.getElementById('ep').style.backgroundColor = '#00eaff';
+		document.getElementById('dp_m').style.backgroundColor = '#cdca27';
+		document.getElementById('dp_w').style.backgroundColor = '#cdca27';
+		document.getElementById('dp_e').style.backgroundColor = '#cdca27';
+		document.getElementById('dp_n').style.backgroundColor = '#00eaff';
+		document.getElementById('toh').style.backgroundColor = '#00eaff';
+		document.getElementById('pod').style.backgroundColor = '#00eaff';
+		document.getElementById('sp').style.backgroundColor = '#00eaff';
+		document.getElementById('sw').style.backgroundColor = '#00eaff';
+		document.getElementById('tt').style.backgroundColor = '#00eaff';
+		document.getElementById('ip').style.backgroundColor = '#00eaff';
+		document.getElementById('mm').style.backgroundColor = '#00eaff';
+		document.getElementById('tr_m').style.backgroundColor = '#d44a00';
+		document.getElementById('tr_w').style.backgroundColor = '#d44a00';
+		document.getElementById('tr_e').style.backgroundColor = '#d44a00';
+		document.getElementById('tr_b').style.backgroundColor = '#d44a00';
+		document.getElementById('link').style.backgroundColor = '#00ddff';
+		document.getElementById('sanc').style.backgroundColor = '#00ddff';
+		document.getElementById('mount').style.backgroundColor = '#00ddff';
+		document.getElementById('item').style.backgroundColor = '#51ff3a';
+		document.getElementById('gt').style.backgroundColor = '#00eaff';
 		document.getElementById('ganon').style.backgroundColor = '#000';
-		document.getElementById('magic').style.backgroundColor = '#000';
-		document.getElementById('kid').style.backgroundColor = '#000';
-		document.getElementById('smith').style.backgroundColor = '#000';
-		document.getElementById('bat').style.backgroundColor = '#000';
-		document.getElementById('lib').style.backgroundColor = '#000';
-		document.getElementById('saha').style.backgroundColor = '#000';
-		document.getElementById('mimc').style.backgroundColor = '#000';
-		document.getElementById('rupee').style.backgroundColor = '#000';
-		document.getElementById('shop').style.backgroundColor = '#000';
-		document.getElementById('dark').style.backgroundColor = '#000';
-		document.getElementById('connector').style.backgroundColor = '#000';
-		document.getElementById('bomb').style.backgroundColor = '#000';
-		document.getElementById('bump').style.backgroundColor = '#000';
-		document.getElementById('spike').style.backgroundColor = '#000';
-		document.getElementById('hook').style.backgroundColor = '#000';
-		document.getElementById('dam').style.backgroundColor = '#000';
+		document.getElementById('magic').style.backgroundColor = '#ff7b00';
+		document.getElementById('kid').style.backgroundColor = '#ff7b00';
+		document.getElementById('smith').style.backgroundColor = '#ff7b00';
+		document.getElementById('bat').style.backgroundColor = '#ff7b00';
+		document.getElementById('lib').style.backgroundColor = '#ff7b00';
+		document.getElementById('saha').style.backgroundColor = '#ff7b00';
+		document.getElementById('mimc').style.backgroundColor = '#ff7b00';
+		document.getElementById('rupee').style.backgroundColor = '#51ff3a';
+		document.getElementById('shop').style.backgroundColor = '#51ff3a';
+		document.getElementById('dark').style.backgroundColor = '#2433ff';
+		document.getElementById('connector').style.backgroundColor = '#ff00f9';
+		document.getElementById('bomb').style.backgroundColor = '#ff7b00';
+		document.getElementById('bump').style.backgroundColor = '#ff7b00';
+		document.getElementById('spike').style.backgroundColor = '#ff7b00';
+		document.getElementById('hook').style.backgroundColor = '#ff7b00';
+		document.getElementById('dam').style.backgroundColor = '#ff7b00';
 		
 		if (entrances[n].known_location != '') {
 			document.getElementById(entrances[n].known_location).style.backgroundColor = '#00F';
@@ -3442,21 +3442,21 @@
 		
 		if (flags.gametype === "S" && flags.entrancemode === 'N') {
 			document.getElementById('locationMap2').classList.remove('unavailable');
-			document.getElementById('locationMap56').classList.remove('unavailable');
-			document.getElementById('locationMap58').classList.remove('unavailable');
+			document.getElementById('locationMap97').classList.remove('unavailable');
+			document.getElementById('locationMap98').classList.remove('unavailable');
 			document.getElementById('locationMap2').classList.add('opened');
-			document.getElementById('locationMap56').classList.add('opened');
-			document.getElementById('locationMap58').classList.add('opened');
+			document.getElementById('locationMap97').classList.add('opened');
+			document.getElementById('locationMap99').classList.add('opened');
 			chests[2].is_opened = true;
-			chests[56].is_opened = true;
-			chests[58].is_opened = true;
+			chests[97].is_opened = true;
+			chests[99].is_opened = true;
 			if (flags.doorshuffle === 'N') {
-				document.getElementById('locationMap57').classList.remove('unavailable');
-				document.getElementById('locationMap63').classList.remove('unavailable');
-				document.getElementById('locationMap57').classList.add('opened');
-				document.getElementById('locationMap63').classList.add('opened');
-				chests[57].is_opened = true;
-				chests[63].is_opened = true;
+				document.getElementById('locationMap98').classList.remove('unavailable');
+				document.getElementById('locationMap104').classList.remove('unavailable');
+				document.getElementById('locationMap98').classList.add('opened');
+				document.getElementById('locationMap104').classList.add('opened');
+				chests[98].is_opened = true;
+				chests[104].is_opened = true;
 			}
 		}
 		
@@ -3512,10 +3512,10 @@
 			window.document.getElementById('locationMap1').style.visibility = 'inherit';
 			if (flags.gametype === 'I' && flags.overworldshuffle === 'N') {
 				document.getElementById('locationMap2').style.left = "77.4%";
-				document.getElementById('locationMap78').style.left = "27.4%";
+				document.getElementById('locationMap119').style.left = "27.4%";
 			} else {
 				document.getElementById('locationMap2').style.left = "27.4%";
-				document.getElementById('locationMap78').style.left = "77.4%";
+				document.getElementById('locationMap119').style.left = "77.4%";
 			}
 			updateLayoutTowers();
 		}
@@ -3526,12 +3526,12 @@
 		}
 		
 		//Replace HC and CT overworld locations by dungeons if Door Shuffle is on
-		document.getElementById('locationMap55').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
-		document.getElementById('locationMap57').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
-		document.getElementById('locationMap58').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
-		document.getElementById('locationMap63').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
-		document.getElementById('locationMap65').style.visibility = flags.doorshuffle != 'N' || (!flags.wildkeys && flags.gametype != 'R') ? 'hidden' : 'visible';
-		document.getElementById('locationMap66').style.visibility = flags.doorshuffle != 'N' || (!flags.wildkeys && flags.gametype != 'R') ? 'hidden' : 'visible';
+		document.getElementById('locationMap96').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
+		document.getElementById('locationMap97').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
+		document.getElementById('locationMap98').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
+		document.getElementById('locationMap104').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
+		document.getElementById('locationMap106').style.visibility = flags.doorshuffle != 'N' || (!flags.wildkeys && flags.gametype != 'R') ? 'hidden' : 'visible';
+		document.getElementById('locationMap107').style.visibility = flags.doorshuffle != 'N' || (!flags.wildkeys && flags.gametype != 'R') ? 'hidden' : 'visible';
 		document.getElementById('bossMapAgahnim').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
 		document.getElementById('castle').style.visibility = flags.doorshuffle != 'N' ? 'hidden' : 'visible';
 		document.getElementById('bossMap11').style.visibility = flags.doorshuffle != 'N' ? 'visible' : 'hidden';
@@ -3539,11 +3539,16 @@
 		document.getElementById('bossMap12').style.visibility = flags.doorshuffle != 'N' ? 'visible' : 'hidden';
 		document.getElementById('dungeon12').style.visibility = flags.doorshuffle != 'N' ? 'visible' : 'hidden';
 
+		//Hide bonk locations outside of Bonk Shuffle
+		for (var k = 23; k < 64; k++) {
+			document.getElementById('locationMap'+k).style.visibility = flags.bonkshuffle === 'N' ? 'hidden' : 'visible';
+		}
+
 		//Hide shops outside of Shopsanity
-		for (var k = 67; k < 79; k++) {
+		for (var k = 108; k < 120; k++) {
 			document.getElementById('locationMap'+k).style.visibility = flags.shopsanity === 'N' ? 'hidden' : 'visible';
 		}
-		document.getElementById('locationMap78').style.visibility = 'hidden';//Bomb Shop items not randomized yet
+		document.getElementById('locationMap119').style.visibility = 'hidden';//Bomb Shop items not randomized yet
 		
 		document.getElementById('bombfloor').style.visibility = flags.doorshuffle != 'C' ? 'hidden' : 'visible';
 		
@@ -3551,10 +3556,6 @@
 		
 		document.getElementById('showpathsdiv').style.visibility = flags.doorshuffle === 'N' && flags.overworldshuffle === 'N' ? 'hidden' : 'visible';
 
-		//Hide bonk locations outside of Bonk Shuffle
-		for (var k = 79; k < 120; k++) {
-			document.getElementById('locationMap'+k).style.visibility = flags.bonkshuffle === 'N' ? 'hidden' : 'visible';
-		}
 
 	};
 
@@ -3562,11 +3563,11 @@
 		//Moved locations in Inverted and Overworld Shuffle
 		if (flags.entrancemode === 'N') {
 			if (flags.overworldshuffle === 'N' ? flags.gametype === 'I' : swapTowers) {
-				document.getElementById('locationMap65').style.left = "74.5%";
-				document.getElementById('locationMap65').style.top = "5%";
+				document.getElementById('locationMap106').style.left = "74.5%";
+				document.getElementById('locationMap106').style.top = "5%";
 				
-				document.getElementById('locationMap66').style.left = "81.6%";
-				document.getElementById('locationMap66').style.top = "5%";
+				document.getElementById('locationMap107').style.left = "81.6%";
+				document.getElementById('locationMap107').style.top = "5%";
 				
 				document.getElementById('bossMapAgahnim').style.left = "78%";
 				document.getElementById('bossMapAgahnim').style.top = flags.mapmode === 'C' ? "5.5%" : "4.5%";
@@ -3583,11 +3584,11 @@
 				document.getElementById('dungeon12').style.left = "79.0%";
 				document.getElementById('dungeon12').style.top = flags.mapmode === 'C' ? "7.2%" : "5.5%";
 			} else {
-				document.getElementById('locationMap65').style.left = "21.0%";
-				document.getElementById('locationMap65').style.top = "52.6%";
+				document.getElementById('locationMap106').style.left = "21.0%";
+				document.getElementById('locationMap106').style.top = "52.6%";
 				
-				document.getElementById('locationMap66').style.left = "29.0%";
-				document.getElementById('locationMap66').style.top = "52.6%";
+				document.getElementById('locationMap107').style.left = "29.0%";
+				document.getElementById('locationMap107').style.top = "52.6%";
 				
 				document.getElementById('bossMapAgahnim').style.left = "25.0%";
 				document.getElementById('bossMapAgahnim').style.top = "52.6%";
