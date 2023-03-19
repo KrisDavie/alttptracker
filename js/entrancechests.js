@@ -2145,7 +2145,7 @@
 				caption: 'Death Mountain Bonk Rocks',
 				is_opened: false,
 				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedEastDeathMountain() ? 'bonkable' : 'unbonkable';
+					return items.moonpearl && canGetBonkableItem() && canReachInvertedEastDeathMountain() ? 'bonkable' : 'unbonkable';
 				}
 			}, { // [25]
 				caption: 'Mountain Entry Pull Tree',
