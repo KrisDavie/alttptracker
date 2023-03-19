@@ -2366,7 +2366,7 @@
 				caption: 'Gary\'s Lunchbox (save the frog first)',
 				is_opened: false,
 				is_available: function() {
-					return (items.mirror || (items.glove === 2 && (items.moonpearl || items.agahnim))) && canReachLightWorldBunny() ? 'available' : 'unavailable';
+					return (items.mirror || (items.glove === 2 && activeFlute()) || (items.glove === 2 && (items.moonpearl || items.agahnim))) && canReachLightWorldBunny() ? 'available' : 'unavailable';
 				}
 			}, { // [70]
 				caption: 'Fugitive under the bridge {flippers}',
@@ -2604,7 +2604,7 @@
 				caption: 'Take the frog home',
 				is_opened: false,
 				is_available: function() {
-					return (items.mirror || (items.glove === 2 && (items.moonpearl || items.agahnim))) && canReachLightWorldBunny() ? 'available' : 'unavailable';
+					return (items.mirror || (items.glove === 2 && activeFlute()) || (items.glove === 2 && (items.moonpearl || items.agahnim))) && canReachLightWorldBunny() ? 'available' : 'unavailable';
 				}
 			}, { // [102]
 				caption: 'Fat Fairy: Buy OJ bomb from Light Link\'s House after {crystal}5 {crystal}6 (2 items)',
