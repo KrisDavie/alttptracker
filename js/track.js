@@ -2794,7 +2794,7 @@
 		document.getElementById("goalselect").value = flags.goals;
 		document.getElementById("swordselect").value = flags.swordmode;
 		document.getElementById("activatedflute").checked = (flags.activatedflute ? true : false);
-		document.getElementById("bonkshuffle").checked = (flags.bonkshuffle ? true : false);
+		document.getElementById("bonkshuffle").checked = (flags.bonkshuffle === 'Y' ? true : false);
 		document.getElementById("doorselect").value = flags.doorshuffle;
 		document.getElementById("overworldbox").checked = flags.overworldshuffle != 'N';
 		document.getElementById("shopsanitybox").checked = flags.shopsanity != 'N';
@@ -3395,8 +3395,8 @@
 		}
 
 		//Bonk Shuffle
-		if (document.getElementById('bonkshuffle').checked != flags.bonkshuffle) {
-			flags.bonkshuffle = document.getElementById('bonkshuffle').checked ? 'Y' : 'N';;
+		if (document.getElementById('bonkshuffle').checked != (flags.bonkshuffle === 'Y')) {
+			flags.bonkshuffle = document.getElementById('bonkshuffle').checked ? 'Y' : 'N';
 		}
 
 		//Overworld
