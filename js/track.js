@@ -1266,13 +1266,10 @@
 
     // Event of clicking on the item tracker
     window.toggle = function(label) {
-		if(rightClickedLocation != -1)
-		{
+		if(rightClickedLocation != -1) {
 			var name = getNiceName(label);
-			if(rightClickedType === "chest")
-			{
-				if(name.charAt(0) < 'a' || name.charAt(0) > 'z')
-				{
+			if(rightClickedType === "chest") {
+				if(name.charAt(0) < 'a' || name.charAt(0) > 'z') {
 					if(!chests[rightClickedLocation].content)
 						chests[rightClickedLocation].content = name;
 					else
@@ -1281,10 +1278,8 @@
 				}
 				document.getElementById('locationMap'+rightClickedLocation).classList.remove('rightclick');
 			}
-			if(rightClickedType === "dungeon")
-			{
-				if(name.charAt(0) < 'a' || name.charAt(0) > 'z')
-				{
+			if(rightClickedType === "dungeon") {
+				if(name.charAt(0) < 'a' || name.charAt(0) > 'z') {
 					if(!dungeons[rightClickedLocation].content)
 						dungeons[rightClickedLocation].content = name;
 					else
@@ -1298,12 +1293,10 @@
 			if (flags.restreamer === "T" && loadPrimer === true) {
 				resetTrackerTimer();
 			}
-
 			return;
 		}
 
-		if(label === 'mirror' && flags.doorshuffle != 'N')
-		{
+		if(label === 'mirror' && flags.doorshuffle != 'N') {
 			document.getElementById('mirrorscroll').style.display = items.mirror ?'block' :'none';
 		}
 
@@ -1372,6 +1365,7 @@
 				skipkey = true;
 			}
         }		
+
 		if (label.substring(0,8) === 'smallkey' && label.substring(0,12) != 'smallkeyhalf') {
 			if (flags.gametype != 'R') {
 				var value = items.inc(label);
@@ -1390,24 +1384,25 @@
 			if ((typeof items[label]) === 'boolean') {
 				items[label] = !items[label];
 				
-				if (items[label] == true)
+				if (items[label] == true) {
 					lastItem = label;
-				else
-					lastItem = null;
-				nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
-			} else {
-				if (label === 'sword' && flags.swordmode === 'S') {
 				} else {
-					var value = items.inc(label);
-					if (label === 'bow' && value === 1 && window.flags.nonprogressivebows === false) value = items.inc(label);
-					nodes.forEach(node=>{node.className = node.className.replace(/ ?active-\w+/, '')});
-					if (value)
-						nodes.forEach(node=>node.classList.add('active-' + value));
-					
-					if (value)
-						lastItem = label + " active-" + value;
-					else				
-						lastItem = null;
+					lastItem = null;
+				}
+				nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
+			} else if (label != 'sword' || flags.swordmode != 'S') {
+				var value = items.inc(label);
+				if (label === 'bow' && value === 1 && window.flags.nonprogressivebows === false) {
+					value = items.inc(label);
+				}
+				nodes.forEach(node=>{node.className = node.className.replace(/ ?active-\w+/, '')});
+				if (value) {
+					nodes.forEach(node=>node.classList.add('active-' + value));
+				}
+				if (value) {
+					lastItem = label + " active-" + value;
+				} else {			
+					lastItem = null;
 				}
 			}
 			// Initiate bunny graphics!
@@ -1423,6 +1418,7 @@
             if (is_boss) {
                 toggle_boss(label.substring(4));
 			}
+
 			if (label === 'agahnim') {
                 toggle_boss('12');
 			}
@@ -1443,46 +1439,48 @@
 			doorWindow.postMessage(cloneItems(),"*");
     };
 
-	window.updateLocationAvailability = function()
-	{
+	window.updateLocationAvailability = function() {
 		if(flags.mapmode != 'N') {
             for (var k = 0; k < chests.length; k++) {
                 if (!chests[k].is_opened)
                     document.getElementById('locationMap'+k).className = 'location ' + chests[k].is_available();
             }
-			if (flags.entrancemode != 'N') {					
+			if (flags.entrancemode != 'N') {
 				for (var k = 0; k < entrances.length; k++) {
-					if (!entrances[k].is_opened) {
-						var entrancetype = '';
-						if (entrances[k].is_available()) {
-							if (entrances[k].known_location != '') {
-								if (isCastleConnector(entrances[k].known_location) === true) {
-									entrancetype = 'castleconnector';
-								} else if (isDesertConnector(entrances[k].known_location) === true) {
-									entrancetype = 'desertconnector';
-								} else if (isTurtleConnector(entrances[k].known_location) === true) {
-									entrancetype = 'turtleconnector';
-								} else if (isSpawn(entrances[k].known_location) === true) {
-									entrancetype = 'spawn';
-								} else if (isDungeon(entrances[k].known_location) === true) {
-									entrancetype = 'dungeon';
-								} else if (isDark(entrances[k].known_location) === true) {
-									entrancetype = 'dark';
-								} else if (requireItem(entrances[k].known_location) === true) {
-									entrancetype = 'itemlocked';
-								} else if (isUnknownConnector(entrances[k].known_location) === true) {
-									entrancetype = 'unknownconnector';
-								}
-								else {
-									entrancetype = 'other';
-								}
-							} else if (entrances[k].is_connector) {
-								entrancetype = 'connector';
-							}
-						}
-						var ent = document.getElementById('entranceMap'+k);
-						ent.className = 'entrance ' + entrances[k].is_available() + entrancetype + (ent.classList.contains('highlight') ? ' highlight' : '');
+					if (entrances[k].is_opened) {
+						continue;
 					}
+
+					var entrancetype = '';
+					if (entrances[k].is_available()) {
+						var known_location = entrances[k].known_location;
+						if (known_location) {
+							if (isCastleConnector(known_location) === true) {
+								entrancetype = 'castleconnector';
+							} else if (isDesertConnector(known_location) === true) {
+								entrancetype = 'desertconnector';
+							} else if (isTurtleConnector(known_location) === true) {
+								entrancetype = 'turtleconnector';
+							} else if (isSpawn(known_location) === true) {
+								entrancetype = 'spawn';
+							} else if (isDungeon(known_location) === true) {
+								entrancetype = 'dungeon';
+							} else if (isDark(known_location) === true) {
+								entrancetype = 'dark';
+							} else if (requireItem(known_location) === true) {
+								entrancetype = 'itemlocked';
+							} else if (isUnknownConnector(known_location) === true) {
+								entrancetype = 'unknownconnector';
+							}
+							else {
+								entrancetype = 'other';
+							}
+						} else if (entrances[k].is_connector) {
+							entrancetype = 'connector';
+						}
+					}
+					var ent = document.getElementById('entranceMap'+k);
+					ent.className = 'entrance ' + entrances[k].is_available() + entrancetype + (ent.classList.contains('highlight') ? ' highlight' : '');
 				}
 				for (var k = 0; k < dungeonChecks.length; k++) {
 					dungeonChecks[k].can_get_chest();
@@ -1857,32 +1855,28 @@
 	};
 
 	window.rightClickDungeon = function(n) {
-		if(rightClickedLocation === -1)
-		{
+		if(rightClickedLocation === -1) {
 			rightClickedLocation = n;
 			rightClickedType = "dungeon";
             document.getElementById('dungeon'+n).classList.add('rightclick');
 			document.getElementById('caption').innerHTML = caption_to_html('Select an item to place in '+dungeons[rightClickedLocation].caption);
+		} else if (rightClickedType === "dungeon" && rightClickedLocation === n) {
+			dungeons[n].content = "";
+			document.getElementById('caption').innerHTML = caption_to_html('Content of '+dungeons[rightClickedLocation].caption+' cleared');
+			document.getElementById('dungeon'+n).classList.remove('rightclick');
+			rightClickedLocation = -1;
+		} else {
+			if (rightClickedType === "chest") {
+				document.getElementById('locationMap'+rightClickedLocation).classList.remove('rightclick');
+			}
+			if (rightClickedType === "dungeon") {
+				document.getElementById('dungeon'+rightClickedLocation).classList.remove('rightclick');
+			}
+			document.getElementById('dungeon'+n).classList.add('rightclick');
+			rightClickedLocation = n;
+			rightClickedType = "dungeon";
+			document.getElementById('caption').innerHTML = caption_to_html('Select an item to place in '+dungeons[rightClickedLocation].caption);
 		}
-		else
-			if(rightClickedType === "dungeon" && rightClickedLocation === n)
-			{
-				dungeons[n].content = "";
-				document.getElementById('caption').innerHTML = caption_to_html('Content of '+dungeons[rightClickedLocation].caption+' cleared');
-				document.getElementById('dungeon'+n).classList.remove('rightclick');
-				rightClickedLocation = -1;
-			}
-			else
-			{
-				if(rightClickedType === "chest")
-					document.getElementById('locationMap'+rightClickedLocation).classList.remove('rightclick');
-				if(rightClickedType === "dungeon")
-					document.getElementById('dungeon'+rightClickedLocation).classList.remove('rightclick');
-				document.getElementById('dungeon'+n).classList.add('rightclick');
-				rightClickedLocation = n;
-				rightClickedType = "dungeon";
-				document.getElementById('caption').innerHTML = caption_to_html('Select an item to place in '+dungeons[rightClickedLocation].caption);
-			}
 	};
 	
 	window.rightClickEntrance = function(n) {
