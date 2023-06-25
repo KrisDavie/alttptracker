@@ -35,7 +35,7 @@
             <div class="header-main-div">
                <a href="./index.html"><img src="./images/overlay/header.png" class="header-main-img"></a>
                <div class="header-news-div" >
-                  <span class="default-white-text">Build 2.0.025 042023 - Compatible for v31.x.x<br>Report any issues to Dunka (Discord: BigDunka#8354)<br>Check Known Issues for current known outstanding issues</span>
+                  <span class="default-white-text">Build 2.0.025 042023 - Compatible for v31.x.x<br>Report any issues to Dunka (Discord: BigDunka#8354)<br>Beta HMG/MG/NL support by otherTom (Discord: otherTom#4512), please report issues with those modes to him!<br>Check Known Issues for current known outstanding issues</span>
                </div>
             </div>
             <div class="header-links">
@@ -364,7 +364,7 @@
                   </div>
                   <div>
                      <span class="preset-span-double">
-                     Glitches: <span class="south tooltop-character" title="OWG glitches are currently implemented, need to be validated. Inverted/OWG is not currently implemented. Major/No Logic will show all locations available.">[?]</span>
+                     Glitches: <span class="south tooltop-character" title="OWG glitches are currently implemented, need to be validated.<br>Inverted combined with any glitch mode is not currently implemented.<br>Hybrid and Major Glitches do not currently support any kind of dungeon item shuffle.<br>No Logic will show all locations available except a few obviously impossible checks.">[?]</span>
                      </span>
                      <span class="preset-span">
                      <input id="glitchesnone" value="N" type="radio" name="glitchesgroup" checked />
@@ -374,9 +374,17 @@
                      <input id="glitchesoverworld" value="O" type="radio" name="glitchesgroup" />
                      <label for="glitchesoverworld">Overworld</label>
                      </span>
+                     <span class="preset-span">
+                     <input id="glitcheshybrid" value="H" type="radio" name="glitchesgroup" />
+                     <label for="glitcheshybrid">Hybrid</label>
+                     </span>
                      <span class="preset-span-double">
                      <input id="glitchesmajor" value="M" type="radio" name="glitchesgroup" />
-                     <label for="glitchesmajor">Major/No Logic</label>
+                     <label for="glitchesmajor">Major</label>
+                     </span>
+                     <span class="preset-span-double">
+                     <input id="glitchesnologic" value="Z" type="radio" name="glitchesgroup" />
+                     <label for="glitchesnologic">No Logic</label>
                      </span>
                   </div>
                </div>

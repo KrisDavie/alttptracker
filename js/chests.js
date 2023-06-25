@@ -51,12 +51,12 @@
 	}
 	
 	function can_reach_outcast_glitched() {
-		return (flags.glitches != 'N' && (items.boots || items.glove || items.flute) && ((items.moonpearl && items.boots) || items.mirror));
+		return (flags.glitches != 'N' && (items.boots || items.glove || items.flute) && ((items.moonpearl && items.boots) || items.mirror)) || flags.glitches === 'M';
 	}
 	
 	function canReachDarkWorld()
 	{
-		return items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim || flags.glitches != 'N' && items.boots);
+		return (items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim || flags.glitches != 'N' && items.boots)) || flags.glitches === 'M';
 	}
 	
 	function canReachLightWorld()//Can walk around in Light World as Link
@@ -89,14 +89,20 @@
 		return items.boots && (items.sword || items.hookshot);
 	}
 	
+	function glitchLinkState()
+	{
+		return flags.glitches === 'M' && (items.moonpearl || items.bottle)
+	}
+	
+	
 	// Regional functions, does not cover Inverted
 	
 	function canReachWDM() { // West Death Mountain
-		return items.flute || (flags.glitches != 'N' && items.boots) || items.glove;
+		return items.flute || (flags.glitches != 'N' && items.boots) || items.glove || flags.glitches === 'M';
 	}
 	
 	function canReachEDM() { // East Death Mountain
-		return (flags.glitches != 'N' && items.boots) || (((flags.glitches != 'N' && items.mirror) || items.hookshot) && canReachWDM()) || (items.hammer && canReachToH());
+		return (flags.glitches != 'N' && items.boots) || (((flags.glitches != 'N' && items.mirror) || items.hookshot) && canReachWDM()) || (items.hammer && canReachToH()) || flags.glitches === 'M';
 	}
 	
 	function canReachDDM() { // Dark Death Mountain
@@ -104,11 +110,11 @@
 	}
 	
 	function canReachNWDW() { // North West Dark World
-		return (flags.glitches != 'N' && canReachWDM() && items.mirror) || (items.moonpearl && ((canReachNEDW() && items.hookshot && (items.hammer || items.glove || items.flippers)) || (items.hammer && items.glove) || items.glove === 2 || (flags.glitches != 'N' && items.boots)));
+		return (flags.glitches != 'N' && canReachWDM() && items.mirror) || flags.glitches === 'M' || (items.moonpearl && ((canReachNEDW() && items.hookshot && (items.hammer || items.glove || items.flippers)) || (items.hammer && items.glove) || items.glove === 2 || (flags.glitches != 'N' && items.boots)));
 	}
 	
 	function canReachNEDW() { // North East Dark World
-		return (flags.glitches != 'N' && items.moonpearl && items.boots) || (flags.glitches != 'N' && items.mirror && canReachWDM() && (items.boots || items.moonpearl)) || items.agahnim || (items.moonpearl && items.hammer && items.glove) || ((items.glove === 2 || (flags.glitches != 'N' && (canSpinSpeed() || items.mirror))) && items.moonpearl && (items.hammer || items.flippers || flags.glitches != 'N')); // This last glitched logic stands for a Fake Flippers, in the code it also requires being able to take damage, sounds like Qirn Jump ?
+		return (flags.glitches != 'N' && items.moonpearl && items.boots) || flags.glitches === 'M' || (flags.glitches != 'N' && items.mirror && canReachWDM() && (items.boots || items.moonpearl)) || items.agahnim || (items.moonpearl && items.hammer && items.glove) || ((items.glove === 2 || (flags.glitches != 'N' && (canSpinSpeed() || items.mirror))) && items.moonpearl && (items.hammer || items.flippers || flags.glitches != 'N')); // This last glitched logic stands for a Fake Flippers, in the code it also requires being able to take damage, sounds like Qirn Jump ?
 	}
 	
 	function canReachSDW() { // South Dark World
@@ -124,13 +130,13 @@
 	}
 	
 	function canReachMireArea() {
-		return (items.glove === 2 && (items.flute || (flags.glitches != 'N' && items.boots))) || (items.moonpearl && (flags.glitches != 'N' && items.boots) && canReachSDW()); 
+		return (items.glove === 2 && (items.flute || (flags.glitches != 'N' && items.boots))) || (items.moonpearl && (flags.glitches != 'N' && items.boots) && canReachSDW()) || flags.glitches === 'M'; 
 	}
 	
 	window.loadChestFlagsItem = function() {
 			
 		//Is OWG Mode, does not cover Inverted
-		if (flags.glitches === "O")
+		if (flags.glitches === "O" || flags.glitches === 'H' || flags.glitches === 'M')
 		{
 			// define dungeon chests
 			window.dungeons = [{ // [0]
@@ -164,19 +170,35 @@
 				caption: 'Palace of Darkness',
 				is_beaten: false,
 				is_beatable: function() {
+					if (flags.glitches === 'H' || flags.glitches === 'M') {
+						return (items.boots || (flags.glitches === 'M')) ? window.PoDBoss() : 'unavailable';
+					} else {
 					return canReachNEDW() && items.moonpearl ? window.PoDBoss() : 'unavailable';
+					}
 				},
 				can_get_chest: function() {
+					if (flags.glitches === 'H' || flags.glitches === 'M') {
+						return (items.boots || (flags.glitches === 'M')) ? window.PoDChests() : 'unavailable';
+					} else {
 					return canReachNEDW() && items.moonpearl ? window.PoDChests() : 'unavailable';
+				}
 				}
 			}, { // [4]
 				caption: 'Swamp Palace {mirror} {flippers}',
 				is_beaten: false,
 				is_beatable: function() {
+					if (flags.glitches === 'H' || flags.glitches === 'M') {
+						return window.SPBoss();
+					} else {
 					return canReachSDW() && items.flippers && items.moonpearl && items.mirror ? window.SPBoss() : 'unavailable';
+					}
 				},
 				can_get_chest: function() {
+					if (flags.glitches === 'H' || flags.glitches === 'M') {
+						return window.SPChests();
+					} else {
 					return canReachSDW() && items.flippers && items.moonpearl && items.mirror ? window.SPChests() : 'unavailable';
+				}
 				}
 			}, { // [5]
 				caption: 'Skull Woods',
@@ -191,43 +213,43 @@
 				caption: 'Thieves\' Town',
 				is_beaten: false,
 				is_beatable: function() {
-					return canReachNWDW() && items.moonpearl ? window.TTBoss() : 'unavailable';
+					return canReachNWDW() && (items.moonpearl || glitchLinkState()) ? window.TTBoss() : 'unavailable';
 				},
 				can_get_chest: function() {
-					return canReachNWDW() && items.moonpearl ? window.TTChests() : 'unavailable';
+					return canReachNWDW() && (items.moonpearl || glitchLinkState()) ? window.TTChests() : 'unavailable';
 				}
 			}, { // [7]
 				caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
 				is_beaten: false,
 				is_beatable: function() {
 					if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return (items.glove === 2) || (canReachSDW() && items.moonpearl && items.boots && items.flippers) ? window.IPBoss() : 'unavailable';
+					return (items.glove === 2) || (canReachSDW() && (items.moonpearl || glitchLinkState()) && (((items.boots || flags.glitches === 'M') && items.flippers) || (flags.glitches === 'M' && items.mirror))) ? window.IPBoss() : 'unavailable';
 				},
 				can_get_chest: function() {
-					if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return (items.glove === 2) || (canReachSDW() && items.moonpearl && items.boots && items.flippers) ? window.IPChests() : 'unavailable';
+					if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S')) && flags.glitches !== 'M' && flags.glitches !== 'H') return 'unavailable';
+					return (items.glove === 2) || (canReachSDW() && (items.moonpearl || glitchLinkState())  && (((items.boots || flags.glitches === 'M') && items.flippers) || (flags.glitches === 'M' && items.mirror))) ? window.IPChests() : 'unavailable';
 				}
 			}, { // [8]
 				caption: 'Misery Mire {medallion0} [{boots}/{hookshot}]',
 				is_beaten: false,
 				is_beatable: function() {
 					if (!items.boots && !items.hookshot) return 'unavailable';
-					return canReachMireArea() && items.moonpearl ? window.MMBoss(medallion_check(0)) : 'unavailable';
+					return canReachMireArea() && (items.moonpearl || glitchLinkState())  ? window.MMBoss(medallion_check(0)) : 'unavailable';
 				},
 				can_get_chest: function() {
 					if (!items.boots && !items.hookshot) return 'unavailable';
-					return canReachMireArea() && items.moonpearl ? window.MMChests(medallion_check(0)) : 'unavailable';
+					return canReachMireArea() && (items.moonpearl || glitchLinkState())  ? window.MMChests(medallion_check(0)) : 'unavailable';
 				}
 			}, { // [9]
 				caption: 'Turtle Rock {medallion0}/{mirror}',
 				is_beaten: false,
 				is_beatable: function() {
-					return (items.mirror || (items.boots && items.moonpearl)) && (items.boots || items.somaria || items.hookshot || items.cape || items.byrna) && items.bigkey9 && canReachDDM() ? window.TRMidBoss() : 
+					return (items.mirror || (items.boots && items.moonpearl) || (flags.glitches === 'M')) && (items.boots || items.somaria || items.hookshot || items.cape || items.byrna || flags.glitches === 'M') && items.bigkey9 && canReachDDM() ? window.TRMidBoss() : 
 						medallionCheck(1) != 'unavailable' && items.moonpearl && items.somaria && ((items.hammer && items.glove === 2 && canReachEDM()) || items.boots) ? window.TRFrontBoss(medallion_check(1)) :
 						'unavailable';
 				},
 				can_get_chest: function() {
-					return (items.mirror || (items.boots && items.moonpearl)) && (items.boots || items.somaria || items.hookshot || items.cape || items.byrna) && canReachDDM() ? window.TRMidChests() : 
+					return (items.mirror || (items.boots && items.moonpearl) || (flags.glitches === 'M')) && (items.boots || items.somaria || items.hookshot || items.cape || items.byrna || flags.glitches === 'M') && canReachDDM() ? window.TRMidChests() : 
 						medallionCheck(1) != 'unavailable' && items.moonpearl && items.somaria && ((items.hammer && items.glove === 2 && canReachEDM()) || items.boots) ? window.TRFrontChests(medallion_check(1)) :
 						'unavailable';
 				}
@@ -238,11 +260,11 @@
 					if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || (!items.agahnim2 && flags.goals != 'F') || !canReachNEDW() || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck()))) return 'unavailable';
 					if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!items.lantern && !items.firerod)) return 'unavailable';
 					//Fast Ganon
-					if (flags.goals === 'F' && (items.sword > 1 || (flags.swordmode === 'S' && items.hammer)) && (items.lantern || items.firerod)) return 'available';
+					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (items.lantern || items.firerod)) return 'available';
 					return window.GTBoss();
 				},
 				can_get_chest: function() {
-					return items.moonpearl && ((crystalCheck() >= flags.opentowercount && canReachDDM()) || (items.boots && canReachWDM())) ? window.GTChests() : 'unavailable';
+					return (items.moonpearl || flags.glitches === 'M') && ((crystalCheck() >= flags.opentowercount && canReachDDM()) || ((items.boots && canReachWDM()) || (flags.glitches === 'M')) ) ? window.GTChests() : 'unavailable';
 				}
 			}, { // [11]
 				caption: 'Hyrule Castle',//Only used with Entrance or Door Shuffle
@@ -297,15 +319,15 @@
 				is_opened: false,
 				is_available: function() {
 					return canReachEDM() ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [4]
-				caption: 'Mimic Cave ({mirror} outside of Turtle Rock)(Yellow = {medallion0} unkown OR possible w/out {firerod})',
+				caption: 'Mimic Cave ({mirror} outside of Turtle Rock)(Yellow = {medallion0} unknown OR possible w/out {firerod})',
 				is_opened: false,
 				is_available: function() {
 					return items.mirror && items.hammer && canReachEDM() ? 
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' : 'unavailable';
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' : 'unavailable';
 				}
 			}, { // [5]
 				caption: 'Tavern',
@@ -319,7 +341,7 @@
 				caption: 'Bombable Hut {bomb}',
 				is_opened: false,
 				is_available: function() {
-					return canReachNWDW() && items.moonpearl ? 'available' : 'unavailable';
+					return canReachNWDW() && (items.moonpearl || glitchLinkState()) ? 'available' : 'unavailable';
 				}
 			}, { // [8]
 				caption: 'C House',
@@ -335,14 +357,14 @@
 				caption: 'Mire Shed (2)',
 				is_opened: false,
 				is_available: function() {
-					return canReachMireArea() && (items.moonpearl || items.mirror) ? 'available' : 'unavailable';
+					return canReachMireArea() && (items.moonpearl || items.mirror || glitchLinkState()) ? 'available' : 'unavailable';
 				}
 			}, { // [11]
 				caption: 'Super Bunny Chests (2)',
 				is_opened: false,
 				is_available: function() {
 					return canReachDDM() ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [12]
@@ -353,8 +375,8 @@
 				caption: 'Byrna Spike Cave',
 				is_opened: false,
 				is_available: function() {
-					return canReachWDM() && items.moonpearl && items.glove && items.hammer && (items.byrna || (items.cape && (items.bottle || items.magic))) ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+					return canReachWDM() && (items.moonpearl || glitchLinkState()) && items.glove && items.hammer && (items.byrna || (items.cape && (items.bottle || items.magic))) ?
+						items.lantern || items.flute || items.boots || glitchLinkState() ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [14]
@@ -369,14 +391,14 @@
 				caption: 'Hype Cave! {bomb} (NPC + 4 {bomb})',
 				is_opened: false,
 				is_available: function() {
-					return canReachSDW() && items.moonpearl ? 'available' : 'unavailable';
+					return canReachSDW() && (items.moonpearl || glitchLinkState()) ? 'available' : 'unavailable';
 				}
 			}, { // [17]
 				caption: 'Paradox Cave (5 + 2 {bomb})',
 				is_opened: false,
 				is_available: function() {
 					return canReachEDM() ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [18]
@@ -397,16 +419,16 @@
 				caption: 'Hookshot Cave (bottom chest) {hookshot}/{boots}',
 				is_opened: false,
 				is_available: function() {
-					return canReachEDM() && items.moonpearl && (items.glove || items.boots) && (items.boots || items.hookshot) ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+					return canReachEDM() && (items.moonpearl || glitchLinkState()) && (items.glove || items.boots || flags.glitches === 'M') && (items.boots || items.hookshot) ?
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [22]
 				caption: 'Hookshot Cave (3 top chests) {hookshot}',
 				is_opened: false,
 				is_available: function() {
-					return canReachEDM() && items.moonpearl && (items.glove || items.boots) && items.hookshot ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+					return canReachEDM() && (items.moonpearl || glitchLinkState()) && (items.glove || items.boots || flags.glitches === 'M') && items.hookshot ?
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [23]
@@ -433,7 +455,7 @@
 				caption: 'Ol\' Stumpy',
 				is_opened: false,
 				is_available: function() {
-					return items.moonpearl && canReachSDW() ? 'available' : 'unavailable';
+					return (items.moonpearl || glitchLinkState() || items.mirror) && canReachSDW() ? 'available' : 'unavailable';
 				}
 			}, { // [27]
 				caption: 'Lazy Drunk Kid: Distract him with {bottle} because he can\'t lay off the sauce!',
@@ -445,7 +467,7 @@
 				caption: 'Gary\'s Lunchbox (save the frog first)',
 				is_opened: false,
 				is_available: function() {
-					return canReachNWDW() && items.moonpearl && items.glove === 2 ? 'available' : 'unavailable';
+					return canReachNWDW() && (items.moonpearl || glitchLinkState()) && (items.glove === 2 || (flags.glitches === 'M' && items.bottle)) ? 'available' : 'unavailable';
 				}
 			}, { // [29]
 				caption: 'Fugitive under the bridge {flippers}',
@@ -457,7 +479,7 @@
 				is_available: function() {
 					return items.book && canReachToH() ?
 						(items.sword >= 2 || (flags.swordmode === 'S' && items.hammer)) ?
-							items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+							items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 							'information' :
 						'unavailable';
 				}
@@ -465,7 +487,7 @@
 				caption: 'Bombos Tablet {mirror}{sword2}{book}',
 				is_opened: false,
 				is_available: function() {
-					return items.book && ((items.mirror && canReachSDW()) || items.boots) ?
+					return items.book && ((items.mirror && canReachSDW()) || items.boots || flags.glitches === 'M') ?
 						(items.sword >= 2 || (flags.swordmode === 'S' && items.hammer))? 'available' : 'information' :
 						'unavailable';
 				}
@@ -473,7 +495,7 @@
 				caption: 'Catfish',
 				is_opened: false,
 				is_available: function() {
-					return canReachNEDW() && items.moonpearl && (items.glove || items.boots) ?
+					return canReachNEDW() && (items.moonpearl || glitchLinkState())  && (items.glove || items.boots || flags.glitches === 'M') ?
 						'available' : 'unavailable';
 				}
 			}, { // [33]
@@ -509,32 +531,32 @@
 				is_opened: false,
 				is_available: function() {
 					return canReachWDM() ?
-						items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+						items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
 			}, { // [39]
 				caption: 'South of Grove {mirror}',
 				is_opened: false,
 				is_available: function() {
-					return (items.mirror && canReachSDW()) || items.boots ? 'available' : 'unavailable';
+					return (items.mirror && canReachSDW()) || (items.boots || flags.glitches === 'M') ? 'available' : 'unavailable';
 				}
 			}, { // [40]
 				caption: 'Graveyard Cliff Cave {mirror}',
 				is_opened: false,
 				is_available: function() {
-					return items.boots || (items.mirror && canReachNWDW() && items.moonpearl) ? 'available' : 'unavailable';
+					return items.boots || (items.mirror && canReachNWDW() && items.moonpearl) || flags.glitches === 'M' ? 'available' : 'unavailable';
 				}
 			}, { // [41]
 				caption: 'Checkerboard Cave {mirror}',
 				is_opened: false,
 				is_available: function() {
-					return items.glove && (items.boots || (canReachMireArea() && items.mirror)) ? 'available' : 'unavailable';
+					return items.glove && (items.boots || flags.glitches === 'M' || (canReachMireArea() && items.mirror)) ? 'available' : 'unavailable';
 				}
 			}, { // [42]
 				caption: '{hammer}{hammer}{hammer}{hammer}{hammer}{hammer}{hammer}{hammer}!!!!!!!!',
 				is_opened: false,
 				is_available: function() {
-					return items.moonpearl && (items.glove === 2 || items.boots) && items.hammer ? 'available' : 'unavailable';
+					return (items.moonpearl || glitchLinkState()) && (items.glove === 2 || items.boots || flags.glitches === 'M') && items.hammer ? 'available' : 'unavailable';
 				}
 			}, { // [43]
 				caption: 'Library {boots}',
@@ -551,8 +573,8 @@
 				is_opened: false,
 				is_available: function() {
 					return canReachWDM() ?
-						items.mirror || items.boots ?
-							items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+						items.mirror || items.boots || flags.glitches === 'M' ?
+							items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 							'information' :
 						'unavailable';
 				}
@@ -561,8 +583,8 @@
 				is_opened: false,
 				is_available: function() {
 					return canReachEDM() ?
-						items.boots || (items.mirror && items.moonpearl && items.glove && canReachDDM()) ?
-							items.lantern || items.flute || items.boots ? 'available' : 'darkavailable' :
+						items.boots || flags.glitches === 'M' || (items.mirror && items.moonpearl && items.glove && canReachDDM()) ?
+							items.lantern || items.flute || items.boots || flags.glitches === 'M' ? 'available' : 'darkavailable' :
 							'information' :
 						'unavailable';
 				}
@@ -580,14 +602,14 @@
 				caption: 'Lake Hylia Island {mirror}',
 				is_opened: false,
 				is_available: function() {
-					return items.boots || (items.moonpearl && items.mirror && items.flippers && canReachNEDW()) ? 'available' : 'information';
+					return items.boots || flags.glitches === 'M' || (items.moonpearl && items.mirror && items.flippers && canReachNEDW()) ? 'available' : 'information';
 				}
 			}, { // [50]
 				caption: 'Bumper Cave {cape}',
 				is_opened: false,
 				is_available: function() {
 					return canReachNWDW() ?
-						items.moonpearl && (items.boots || (items.glove && items.cape)) ? 'available' : 'information' :
+						flags.glitches === 'M' || (items.moonpearl && (items.boots || (items.glove && items.cape))) ? 'available' : 'information' :
 						'unavailable';
 				}
 			}, { // [51]
@@ -600,7 +622,7 @@
 				caption: 'Alec Baldwin\'s Dig-a-Thon: Pay 80 rupees',
 				is_opened: false,
 				is_available: function() {
-					return canReachSDW() && items.moonpearl ? 'available' : 'unavailable';
+					return canReachSDW() && (items.moonpearl || glitchLinkState()) ? 'available' : 'unavailable';
 				}
 			}, { // [53]
 				caption: 'Zora River Ledge {flippers}',
@@ -643,13 +665,13 @@
 				caption: 'Mad Batter {hammer}/{mirror} + {powder}',
 				is_opened: false,
 				is_available: function() {
-					return items.powder && (items.hammer || items.boots || (items.mirror && (items.moonpearl && ((items.glove === 2 && canReachNWDW()) || (canSpinSpeed() && canReachNEDW()))))) ? 'available' : 'unavailable';
+					return items.powder && (items.hammer || items.boots || flags.glitches === 'M' || (items.mirror && (items.moonpearl && ((items.glove === 2 && canReachNWDW()) || (canSpinSpeed() && canReachNEDW()))))) ? 'available' : 'unavailable';
 				}
 			}, { // [60]
 				caption: 'Take the frog home {mirror} / Save+Quit',
 				is_opened: false,
 				is_available: function() {
-					return canReachNWDW() && items.moonpearl && items.glove === 2 ? 'available' : 'unavailable';
+					return canReachNWDW() && (((items.moonpearl || glitchLinkState()) && items.glove === 2) || (flags.glitches === 'M' && items.bottle)) ? 'available' : 'unavailable';
 				}
 			}, { // [61]
 				caption: 'Fat Fairy: Buy OJ bomb from Dark Link\'s House after {crystal}5 {crystal}6 (2 items)',
@@ -661,7 +683,7 @@
 						if (prizes[k] === 4 && items['boss'+k])
 							crystal_count += 1;
 					}
-					return (crystal_count >= 2 && canReachSDW() && ((items.moonpearl && items.hammer) || (items.mirror && items.agahnim))) || (items.mirror && items.boots) ? 'available' : 'unavailable';
+					return (crystal_count >= 2 && canReachSDW() && ((items.moonpearl && items.hammer) || (flags.glitches === 'M' && items.bottle) || (items.mirror && items.agahnim))) || (items.mirror && (items.boots || (flags.glitches === 'M'))) ? 'available' : 'unavailable';
 				}
 			}, { // [62]
 				caption: 'Master Sword Pedestal {pendant0}{pendant1}{pendant2} (can check with {book})',
@@ -775,62 +797,68 @@
 			}];
 		}
 		
-		else if (flags.glitches != "N" && flags.glitches != 'O')
+		// Unsupported glitch mode, with minimal checks for availability aside from hard-locked locations
+		else if (flags.glitches != "N" && flags.glitches != 'O' && flags.glitches != 'H' && flags.glitches != 'M')
 		{
 			window.dungeons = [{ // [0]
 				caption: 'Eastern Palace',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(0); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [1]
 				caption: 'Desert Palace {book}',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(1); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [2]
 				caption: 'Tower of Hera {hammer} [{hookshot}/{glove2}]',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(2); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [3]
 				caption: 'Palace of Darkness',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(3); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [4]
 				caption: 'Swamp Palace {mirror} {flippers}',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(4); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [5]
 				caption: 'Skull Woods',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(5); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [6]
 				caption: 'Thieves\' Town',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(6); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [7]
 				caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(7); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [8]
 				caption: 'Misery Mire {medallion0} [{boots}/{hookshot}',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(8); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [9]
 				caption: 'Turtle Rock {medallion0}/{mirror}',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() { return MinimalBoss(9); },
 				can_get_chest: function() { return 'available'; }
 			}, { // [10]
 				caption: 'Ganon\'s Castle (Crystals)',
 				is_beaten: false,
-				is_beatable: function() { return 'available'; },
+				is_beatable: function() {
+					if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || (!items.agahnim2 && flags.goals != 'F') || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck()))) return 'unavailable';
+					if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!items.lantern && !items.firerod)) return 'unavailable';
+					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (items.lantern || items.firerod)) return 'available';
+					return 'available';
+				},
 				can_get_chest: function() { return 'available'; }
 			}, { // [11]
 				caption: 'Hyrule Castle',//Only used with Entrance or Door Shuffle
@@ -957,7 +985,12 @@
 			}, { // [25]
 				caption: 'Sahasrahla {pendant0}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+						for(var k = 0; k < 10; k++)
+							if(prizes[k] === 1 && items['boss'+k])
+								return 'available';
+						return 'unavailable';
+				}
 			}, { // [26]
 				caption: 'Ol\' Stumpy',
 				is_opened: false,
@@ -965,7 +998,9 @@
 			}, { // [27]
 				caption: 'Lazy Drunk Kid: Distract him with {bottle} because he can\'t lay off the sauce!',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.bottle ? 'available' : 'unavailable'
+				}
 			}, { // [28]
 				caption: 'Gary\'s Lunchbox (save the frog first)',
 				is_opened: false,
@@ -977,11 +1012,17 @@
 			}, { // [30]
 				caption: 'Ether Tablet {sword2}{book}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.book ? (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer) ? 'available' : 'information') :
+						'unavailable';
+				}
 			}, { // [31]
 				caption: 'Bombos Tablet {sword2}{book}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.book ? (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer) ? 'available' : 'information') :
+						'unavailable';
+				}
 			}, { // [32]
 				caption: 'Catfish',
 				is_opened: false,
@@ -997,7 +1038,9 @@
 			}, { // [35]
 				caption: 'Witch: Give her {mushroom}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.mushroom ? 'available' : 'unavailable'
+				}
 			}, { // [36]
 				caption: 'Forest Hideout',
 				is_opened: false,
@@ -1005,7 +1048,9 @@
 			}, { // [37]
 				caption: 'Lumberjack Tree {agahnim}{boots}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.agahnim ? 'available' : 'information';
+				}
 			}, { // [38]
 				caption: 'Spectacle Rock Cave',
 				is_opened: false,
@@ -1029,7 +1074,9 @@
 			}, { // [43]
 				caption: 'Library {boots}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.boots ? 'available' : 'information';
+				}
 			}, { // [44]
 				caption: 'Mushroom',
 				is_opened: false,
@@ -1073,7 +1120,9 @@
 			}, { // [54]
 				caption: 'Buried Item {shovel}',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					return items.shovel ? 'available' : 'unavailable';
+				}
 			}, { // [55]
 				caption: 'Escape Sewer Side Room (3) {bomb}/{boots} (may need small key)',
 				is_opened: false,
@@ -1105,7 +1154,14 @@
 			}, { // [62]
 				caption: 'Master Sword Pedestal {pendant0}{pendant1}{pendant2} (can check with {book})',
 				is_opened: false,
-				is_available: always
+				is_available: function() {
+					var pendant_count = 0;
+					for(var k = 0; k < 10; k++)
+						if((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k])
+							if(++pendant_count === 3)
+								return 'available';
+					return items.book ? 'information' : 'unavailable';
+				}
 			}, { // [63]
 				caption: 'Escape Sewer Dark Room {lantern}',
 				is_opened: false,

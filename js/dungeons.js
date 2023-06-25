@@ -84,6 +84,8 @@
 		return 'unavailable';
 	}
 
+	window.MinimalBoss = function(num) { return enemizer_check(num) } 
+
 	function can_reach_outcast() {
 		return items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim && items.hookshot && (items.hammer || items.glove || items.flippers));
 	}
@@ -143,6 +145,59 @@
 	function activeFlute()
 	{
 		return items.flute && canReachOtherWorld();
+	}
+	
+	function glitchLinkState()
+	{
+		return flags.glitches === 'M' && (items.moonpearl || items.bottle)
+	}
+	// To unlock Swamp, we need to unlock Hera using either the Hera BK or the Mire BK after clipping from Mire,
+	// then have at least one spare Mire key (logic assumes we use two in Mire) to open the switch room door.
+	// 
+	// Since there are no spare keys in vanilla, MG logic assumes we're smart enough to not open the basement door.
+	// However, we still may have to kill the Mire boss and/or check the fire-locked left side to get enough keys,
+	// so we can only be absolutely sure we have enough Mire small keys when we have the ability to full-clear Mire.
+	// 
+	// Assuming we enter Swamp with a Mire key, we can use it to unlock the second waterway door, then carefully 
+	// chain pot keys to unlock the doors on the way from the entrance to the second waterway.
+	// 
+	// The logic assumes we can either hammer the pegs to flood the second waterway after collecting the key, 
+	// or S+Q and clip from either Mire or Hera again just to flood the second waterway. This only really matters 
+	// for wild keys, because otherwise we're clipping from Mire just to unlock Hera/Swamp and hammer is logically 
+	// irrelevant.
+	//
+	// Assuming Swamp is unlocked, we need to either mirror from the DW and drain the dam as normal, or pre-drain
+	// the dam and clip from Hera without taking any overworld transitions. This means we need to either have the
+	// mirror or lantern for Swamp to be fully in logic.
+	//
+	// What if non-keysanity modes were a mistake?
+	function canClipFromMireToSwamp() {
+		if (!items.moonpearl && !glitchLinkState()) return 'unavailable';
+
+		var canReachMireArea = ((flags.glitches === 'H') && items.boots) || (flags.glitches === 'M')
+		if (!canReachMireArea) return 'unavailable';
+
+		if (!items.boots && !items.hookshot) return 'unavailable';
+
+		var med = medallion_check(0)
+		if (med === 'available') {
+			if (items.somaria && (items.lantern || items.firerod)) return 'available';
+			return 'possible';
+		} else {
+			return med
+		}
+	}
+
+	function canWalkIntoSwampMG() {
+		if (items.hammer && items.hookshot && items.flippers && (items.lantern || items.mirror)) {
+			return 'possible';
+		}
+		return 'unavailable';
+	}
+
+	function canDrainDam(status) {
+		if (status === 'unavailable') return status;
+		return items.mirror ? status : (items.lantern ? status : 'dark'+status)
 	}
 	
 	function available_chests(dungeonid, allchests, maxchest, chestcount) {
@@ -763,25 +818,24 @@
 
     window.HeraBoss = function() {
 		var dungeoncheck = enemizer_check(2);
-		if (!items.bigkey2 || dungeoncheck === 'unavailable') return 'unavailable';
-		if (flags.wildbigkeys) {
-			if (dungeoncheck === 'available') {
-				if (flags.entrancemode === 'N' && flags.overworldshuffle === 'N') {
-					return (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available';
-				} else {
-					return 'available';
+		// If we can't kill the boss, nothing else matters.
+		if (dungeoncheck === 'unavailable') return 'unavailable';
 					
-				}
-			} else {
-				if (flags.entrancemode === 'N' && flags.overworldshuffle === 'N') {
-					return (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible';
-				} else {
+		if (flags.glitches === 'H' || flags.glitches === 'M') {
+			// If we are shuffling keys and have BK2 (Hera), we can always walk in and climb
+			if (flags.wildbigkeys && items.bigkey2) return dungeoncheck; 
+			// otherwise, we can definitely access Hera if we can clip from Mire
+			var clipFromMire = (items.moonpearl || glitchLinkState()) && ((flags.glitches === 'H' && (items.boots || items.mirror)) || flags.glitches === 'M') && (items.boots || items.hookshot); 
+			// as long as we either aren't shuffling big keys or have BK8 (Mire), and have the medallion
+			if (clipFromMire && (flags.wildbigkeys ? items.bigkey8 : true) && medallion_check(0) === 'available') return dungeoncheck;
+			// and if we aren't tracking big keys and can't clip from Mire, we can kill the boss if the BK is in the first two 
+			// chests, which we can't determine based on items alone.
 					return 'possible';
-				}				
-			}
-		}	
+		} else {
+		if (flags.wildbigkeys) return (dungeoncheck === 'available' ? ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available') : ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible')); 
 		if ((flags.wildkeys && (items.smallkey2 === 0 && flags.gametype != 'R')) || (!items.lantern && !items.firerod)) return (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible';
 		return (dungeoncheck === 'available' ? ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available') : ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible'));
+		}
     };
 
     window.PoDBoss = function() {
@@ -800,13 +854,26 @@
     };
 
     window.SPBoss = function() {
+		if (flags.glitches === 'M' || flags.glitches === 'H') {
+			if (!items.hookshot || !items.flippers) return 'unavailable';
+
+			var mire = canClipFromMireToSwamp();
+			var walk = canWalkIntoSwampMG();
+
+			if (mire === 'available') return canDrainDam('available');
+			if (mire === 'possible') {
+				return walk === 'unavailable' ? canDrainDam(mire) : walk
+			} else {
+				return canDrainDam(walk);
+			}
+		} else {
 		if (flags.entrancemode != 'N') {
 			if (!hasFoundLocation('dam')) return 'unavailable';
 		}
-		if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
 		var dungeoncheck = enemizer_check(4);
 		if (!items.hammer || !items.hookshot || (items.smallkey4 === 0 && flags.gametype != 'R')) return 'unavailable';
 		return dungeoncheck;
+		}
     };
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
@@ -1098,7 +1165,7 @@
     };
 
     window.HeraChests = function() {
-		var isDark = !items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N';
+		var isDark = !items.flute && !items.lantern && !(flags.glitches != 'N') && flags.entrancemode === 'N' && flags.overworldshuffle === 'N';
 		
 		var chests = ['U','U','U','U','U','U'];
 
@@ -1459,10 +1526,49 @@
     };
 
     window.SPChests = function() {
+		if (!items.flippers) return 'unavailable';
+		var mire = canClipFromMireToSwamp();
+		var walk = canWalkIntoSwampMG();
+
+		function canEnterGlitched() {
+			if (mire === 'available') return canDrainDam('available');
+			if (mire === 'possible') {
+				return walk === 'unavailable' ? canDrainDam(mire) : walk
+			} else {
+				return canDrainDam(walk);
+			}
+		}
+
+		function accessToChest(status) {
+			if (status === 'unavailable') return 'U';
+			else if (status === 'darkpossible') return 'DP';
+			else if (status === 'possible') return 'P';
+			else if (status === 'darkavailable') return 'DA';
+			else return 'A'
+		}
+
+		if (flags.glitches === 'M' || flags.glitches === 'H') {
+			var entry = canEnterGlitched();
+			var chests = ['U','U','U','U','U','U','U','U','U','U'];
+			chests[0] = accessToChest(entry);
+			chests[1] = accessToChest(entry);
+			chests[2] = accessToChest(entry);
+			chests[3] = accessToChest(entry);
+			chests[4] = accessToChest(entry);
+			chests[5] = accessToChest(entry);
+			if (items.hookshot) {
+				chests[6] = accessToChest(entry);
+				chests[7] = accessToChest(entry);
+				chests[8] = accessToChest(entry);
+			}
+			chests[9] = ConvertBossToChest(SPBoss());
+			return available_chests(4, chests, items.maxchest4, items.chest4);
+		} else {
+			
+
 		if (flags.entrancemode != 'N') {
 			if (!hasFoundLocation('dam')) return 'unavailable';
 		}
-		
 		if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
 		var chests = ['U','U','U','U','U','U','U','U','U','U'];
 		
@@ -1513,8 +1619,9 @@
 			}
 		}
 		
+	}
 		return available_chests(4, chests, items.maxchest4, items.chest4);
-    };
+}
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
     window.SWChests = function(front = 'available',back = 'unavailable') {
@@ -1634,7 +1741,7 @@
     };
 
     window.IPChests = function() {
-		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S')) && !(flags.glitches === 'M' || flags.glitches === 'H')) return 'unavailable';
 		var chests = ['U','U','U','U','U','U','U','U'];
 		
         //Compass Chest
@@ -1674,7 +1781,7 @@
 			}
 			
 			//Freezor Chest
-			chests[4] = 'A';
+			chests[4] = (items.firerod || (items.bombos && (items.sword > 0 || flags.swordmode === 'S'))) ? 'A' : 'U';
 			
 			//Iced T Room
 			chests[5] = 'A';
@@ -1783,7 +1890,7 @@
     window.TRFrontChests = function(medcheck) {
 		if (!items.somaria) return 'unavailable';
 		if (medcheck === 'unavailable') return 'unavailable';
-		var isDark = !items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N';
+		var isDark = !items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N' && !(flags.glitches === 'M');
 		
 		if (medcheck === 'possible') return (isDark ? 'darkpossible' : 'possible');
 
@@ -2005,7 +2112,7 @@
     };
 
 	window.TRMidChests = function() {
-		var isDark = !items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N';
+		var isDark = !items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N' && !(flags.glitches === 'M');
 		
 		var chests = ['U','U','U','U','U','U','U','U','U','U','U','U'];
 		
@@ -2445,7 +2552,7 @@
     };
 
     window.GTChests = function() {
-		var isDark = !items.flute && !items.lantern && flags.gametype != 'I' && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N';
+		var isDark = !items.flute && !items.lantern && flags.gametype != 'I' && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && flags.overworldshuffle === 'N' && !(flags.glitches === 'M');
 
 		var chests = ['U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U','U'];
 		
