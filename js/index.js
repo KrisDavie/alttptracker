@@ -106,6 +106,7 @@ function launch_tracker() {
 	var ambrosia = document.querySelector('input[name="ambrosiagroup"]:checked').value;
 	var nonprogressivebows = document.querySelector('input[name="nonprogressivebowsgroup"]:checked').value;
 	var activatedflute = document.querySelector('input[name="activatedflutegroup"]:checked').value;
+	var bonkshuffle = document.querySelector('input[name="bonkshufflegroup"]:checked').value;
 	var goal = document.querySelector('input[name="goalgroup"]:checked').value;
 	var tower = document.querySelector('input[name="towergroup"]:checked').value;
 	var towersel = document.getElementById("towerselect");
@@ -156,7 +157,7 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{color}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{color}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
 			.replace('{world}', world)
 			.replace('{entrance}', entrance)
 			.replace('{door}', door)
@@ -173,6 +174,7 @@ function launch_tracker() {
 			.replace('{ambrosia}', ambrosia)
 			.replace('{nonprogressivebows}', nonprogressivebows)
 			.replace('{activatedflute}', activatedflute)
+			.replace('{bonkshuffle}', bonkshuffle)
 			.replace('{goal}', goal)
 			.replace('{tower}', tower)
 			.replace('{towercrystals}', towercrystals)
@@ -309,6 +311,7 @@ function loadopenpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -366,6 +369,7 @@ function loadopenbootspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -394,6 +398,7 @@ function loadambrosiapreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -422,6 +427,7 @@ function loadmysterypreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -450,6 +456,7 @@ function loadcrosskeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -478,6 +485,7 @@ function loadinvertedkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -506,6 +514,7 @@ function loadenemizerpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -535,6 +544,7 @@ function loadbootspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -563,6 +573,7 @@ function loadopenkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();	
 }
@@ -591,6 +602,7 @@ function loadadkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();	
 }
@@ -619,6 +631,7 @@ function loadreducedpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -647,6 +660,7 @@ function loadinvrosiapreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();		
 	
@@ -676,6 +690,7 @@ function loadstandardpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -704,6 +719,7 @@ function loadmcshufflepreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -735,6 +751,7 @@ function loadpotpourripreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteyes").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -763,6 +780,7 @@ function loadretrancepreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -791,6 +809,7 @@ function loadcswordlesspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -818,6 +837,7 @@ function loadinvertedadkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -847,6 +867,7 @@ function loadgoldrushspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -875,6 +896,7 @@ function loadludicrouspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -903,6 +925,7 @@ function loadhardopenpluspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsyes").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -931,6 +954,7 @@ function loadinvertedspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -959,6 +983,7 @@ function loadmcbosspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -988,6 +1013,7 @@ function loadtinvertedkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteyes").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -1016,6 +1042,7 @@ function loadambroz1apreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsyes").checked = true;
 	document.getElementById("activatedfluteyes").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -1044,6 +1071,7 @@ function loadinvertedcrosskeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -1073,6 +1101,7 @@ function loadchuntpreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }

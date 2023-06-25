@@ -106,22 +106,29 @@ body {
 }
 
 .location {
-  width: 16;
-  height: 16;
+  border-color:#000;
+  border-style: solid;
+  border-width: 1.25px;
+  width: 14;
+  height: 14;
   margin-left: -12px;
   margin-top: -12px;
   position: absolute;
   background-size: 100% 100%;
 }
 
+
 .entrance {
+  border-radius: 50%;
+  border-color:#000;
+  border-style: solid;
+  border-width: 1.25px;
   width: 12;
   height: 12;
-  margin-left: -12px;
-  margin-top: -12px;
   position: absolute;
   background-size: 100% 100%;
-  transform: rotateY(0deg) rotate(45deg);
+  margin-left: -12px;
+  margin-top: -12px;
 }
 
 .lowerchest {
@@ -161,33 +168,45 @@ body {
   background-size: 100% 100%;
 }
 
-.location,
-.entrance,
-.castle,
-.dungeon { background-image: url(../images/overlay/poi.png); }
 .chest.highlight,
 .castle.highlight,
 .location.highlight,
 .entrance.highlight,
-.dungeon.highlight { background-image: url(../images/overlay/highlighted.png); }
+.dungeon.highlight { border-color:rgb(255, 238, 0); }
 .chest.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge.png); }
 .chest-0.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge0.png); }
 .location.rightclick,
-.dungeon.rightclick { background-image: url(../images/overlay/highlighted2.png); }
-.unavailable { background-color: red; }
-.unavailabledungeon { background-color: red; }
-.unavailableconnector { background-color: red; }
-.unavailablekeylocation { background-color: red; }
-.available { background-color: lime; }
-.availableconnector { background-color: turquoise; }
-.availabledungeon { background-color: violet; }
-.availablekeylocation { background-color: blue; }
+.dungeon.rightclick { border-color:rgb(255, 255, 255); }
+.unavailable { background-color: rgba(255, 0, 0, 0.5); border-width: 0.5px;}
+.unavailabledungeon { background-color: rgba(255, 0, 0, 1);}
+.unavailableconnector { background-color: rgba(255, 0, 0, 0.5);}
+.unavailabledark { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.unavailableitemlocked { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.unavailableother { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.unavailablekeylocation { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
+.available { background-color: rgba(55, 255, 65, 0.65); border-width: 0.5px;}
+.availableconnector { background-color: rgb(255,0,249); width: 14; height: 14; margin-left: -12px; margin-top: -12px;}
+.availableunknownconnector { background-color: rgb(255,0,249); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
+.availabledungeon { background-color: rgb(0, 234, 255); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
+.availablecastleconnector { background-color: rgb(20, 67, 154); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
+.availabledesertconnector { background-color: rgb(205, 202, 39); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
+.availableturtleconnector { background-color: rgb(212, 74, 0); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
+.availabledark { background-color: rgb(36, 51, 255); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
+.availableitemlocked { background-color: rgb(255, 123, 0); border-color:rgb(255, 255, 255); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
+.availablespawn { background-color: rgb(0, 221, 255); border-color:rgb(255, 255, 255);}
+.availableother { background-color: rgb(81, 255, 58); border-color:rgb(245, 254, 168); border-radius: 0%;}
+.availablekeylocation { background-color: rgb(0, 26, 255); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
 .possible { background-color: yellow; }
 .information { background-color: orange; }
-.darkavailable { background-color: blue; }
-.darkpossible { background-color: purple; }
+.darkavailable { background-color: rgb(36, 51, 255); }
+.darkpossible { background-color: purple; } 
 .partialavailable { background-color: rgb(23, 170, 238); }
-.opened { background-color: #7f7f7f; opacity: 0.5; }
+.bonkable { background-color: rgba(0, 255, 0, 0.65); width: 12; height: 12;}
+.darkbonkable { background-color: rgba(35, 69, 224, 0.65); width: 12; height: 12;}
+.unbonkable { background-color: rgba(255, 0, 0, 0.5); width: 12; height: 12;}
+.bonkinfo { background-color: rgba(255, 165, 0.5); width: 12; height: 12;}
+.opened { background-color: rgba(128, 128, 128, 0.55); border-width: 0px;}
+.bonked { background-color: rgba(128, 128, 128, 0.55); width: 12; height: 12; border-width: 0px;}
 .hidden { width: 0px!important; height: 0px!important; }
 
 #caption {
@@ -218,36 +237,30 @@ body {
 }
 
 .crossedleft {
-    background: 
-       linear-gradient(to top left,
-           rgba(0,0,0,0) 0%,
-           rgba(0,0,0,0) calc(50% - 2px),
-           rgba(0,255,255,1) 50%,
-           rgba(0,0,0,0) calc(50% + 2px),
-           rgba(0,0,0,0) 100%);
-   min-height: 2px;
-   min-width: 2px;
+  background: 
+     linear-gradient(to top left,
+         rgba(0,0,0,0) calc(50% - 1px),
+         rgba(255,0,249,1) calc(50% - 0.5px) calc(50% + 0.5px),
+         rgba(0,0,0,0) calc(50% + 1px));
+ min-height: 2px;
+ min-width: 2px;
 }
 
 .crossedright {
-    background: 
-       linear-gradient(to top right,
-           rgba(0,0,0,0) 0%,
-           rgba(0,0,0,0) calc(50% - 2px),
-           rgba(0,255,255,1) 50%,
-           rgba(0,0,0,0) calc(50% + 2px),
-           rgba(0,0,0,0) 100%);
-   min-height: 2px;
-   min-width: 2px;
+  background: 
+     linear-gradient(to top right,
+         rgba(0,0,0,0) calc(50% - 1px),
+         rgba(255,0,249,1) calc(50% - 0.5px) calc(50% + 0.5px),
+         rgba(0,0,0,0) calc(50% + 1px));
+ min-height: 2px;
+ min-width: 2px;
 }
 
 .informationdiv {
-	background: #000;
-	border-style: solid;
-	border-color: #FFF;
-	border-width: 1px;
-	color: #FFF;
-	font-size: 8px;
+	background: rgb(0, 0, 0);
+	color: rgb(255, 255, 255);
+  font-family: roboto_condensedregular, Arial, Helvetica, sans-serif;
+  font-size: 7px;
 	text-align: center;
 }
 
@@ -421,29 +434,70 @@ body {
 
 #bossMapAgahnim, #castle { left: 25.0%; top: 52.6%; }
 
-#locationMap0 { left: 22.4%; top: 93.4%; z-index: 2; }
-#locationMap1 { left: 27.4%; top: 67.9%; z-index: 2; }
-#locationMap2 { left: 5%;  top: 46.8%; z-index: 2; }
-#locationMap3 { left: 66%; top: 69.5%; z-index: 2; }
-#locationMap4 { left: 65.2%; top: 52.2%; z-index: 2; }
-#locationMap5 { left: 35.2%; top: 70.3%; z-index: 2; }
-#locationMap6 { left: 21.0%; top: 3.0%; z-index: 2; }
-#locationMap7 { left: 11.0%; top: 92.2%; z-index: 2; }
-#locationMap8 { left: 96.0%; top: 17.2%; z-index: 2; }
-#locationMap9 { left: 48.0%; top: 12.1%; z-index: 2; }
-#locationMap10 { left: 21.8%; top: 22.4%; z-index: 2; }
-#locationMap11 { left: 6.2%;  top: 8.6%; z-index: 2; }
-#locationMap12 { left: 25.4%; top: 8.5%; z-index: 2; }
-#locationMap13 { left: 40.8%; top: 3.0%; z-index: 2; }
-#locationMap14 { left: 1.8%;  top: 69.8%; z-index: 2; }
-#locationMap15 { left: 1.5%;  top: 91.0%; z-index: 2; }
-#locationMap16 { left: 36.5%; top: 83.9%; z-index: 2; }
-#locationMap17 { left: 67.1%; top: 15.2%; z-index: 2; }
-#locationMap18 { left: 79.0%; top: 43.5%; z-index: 2; }
-#locationMap19 { left: 52.9%; top: 69.2%; z-index: 2; }
-#locationMap20 { left: 47.7%; top: 17.3%; z-index: 2; }
-#locationMap21 { left: 14.4%; top: 66.2%; z-index: 2; }
-#locationMap22 { left: 2.5%;  top: 3.2%; z-index: 2; }
+#locationMap0 { left: 22.4%; top: 93.4%; z-index: 2; } /* Sunken Treasure */
+#locationMap1 { left: 27.8%; top: 68.3%; z-index: 2; } /* Link's House */
+#locationMap2 { left: 5%;  top: 47.8%; z-index: 2; } /* Bottle Vendor */
+#locationMap3 { left: 66%; top: 69.5%; z-index: 2; } /* Stumpy */
+#locationMap4 { left: 65.8%; top: 53.4%; z-index: 2; } /* Purple Chest */ 
+#locationMap5 { left: 35.2%; top: 70.3%; z-index: 2; } /* Hobo */
+#locationMap6 { left: 21.9%; top: 3.6%; z-index: 2; } /* Ether Tablet */
+#locationMap7 { left: 11.7%; top: 93.2%; z-index: 2; } /* Bombos Tablet */
+#locationMap8 { left: 95.8%; top: 17.9%; z-index: 2; } /* Catfish */
+#locationMap9 { left: 48.5%; top: 13.8%; z-index: 2; } /* King Zora */
+#locationMap10 { left: 23.2%; top: 21.4%; z-index: 2; } /* Old Man */
+#locationMap11 { left: 6.5%;  top: 8.8%; z-index: 2; } /* Mushroom Spot */
+#locationMap12 { left: 25.9%; top: 8.5%; z-index: 2; } /* Spectacle Rock */
+#locationMap13 { left: 40.8%; top: 3.0%; z-index: 2; } /* Floating Island */
+#locationMap14 { left: 1.8%;  top: 70.2%; z-index: 2; } /* Race Game */
+#locationMap15 { left: 1.5%;  top: 91.0%; z-index: 2; } /* Desert Ledge */
+#locationMap16 { left: 36.5%; top: 83.9%; z-index: 2; } /* Lake Hylia Island */
+#locationMap17 { left: 67.1%; top: 15.6%; z-index: 2; } /* Bumper Cave */
+#locationMap18 { left: 79.5%; top: 43.9%; z-index: 2; } /* Pyramid */
+#locationMap19 { left: 52.9%; top: 69.2%; z-index: 2; } /* Dig Game */
+#locationMap20 { left: 47.9%; top: 17.3%; z-index: 2; } /* Zora Ledge */
+#locationMap21 { left: 15.0%; top: 66.7%; z-index: 2; } /* Flute Spot */
+#locationMap22 { left: 2.0%;  top: 3.2%; z-index: 2; } /* Pedestal */
+#locationMap23 { left: 8.5%; top: 15.8%; z-index: 2; } /* Lost Woods Hideout Tree */
+#locationMap24 { left: 41.8%; top: 7.1%; z-index: 2; } /* Death Mountain Bonk Rocks */
+#locationMap25 { left: 16.0%; top: 15.1%; z-index: 2; } /* Mountain Entry Pull Tree */
+#locationMap26 { left: 18.3%; top: 23.9%; z-index: 2; } /* Mountain Entry Southeast Tree */
+#locationMap27 { left: 2.2%; top: 30.9%; z-index: 2; } /* Lost Woods Pass West Tree */
+#locationMap28 { left: 5.3%; top: 32.0%; z-index: 2; } /* Kakariko Portal Tree */
+#locationMap29 { left: 8.7%; top: 32.5%; z-index: 2; } /* Fortune Bonk Rocks */
+#locationMap30 { left: 17.5%; top: 29.6%; z-index: 2; } /* Kakariko Pond Tree */
+#locationMap31 { left: 21.0%; top: 31.2%; z-index: 2; } /* Bonk Rocks Tree */
+#locationMap32 { left: 24.5%; top: 30.2%; z-index: 2; } /* Sanctuary Tree */
+#locationMap33 { left: 32.9%; top: 36.6%; z-index: 2; } /* River Bend West Tree */
+#locationMap34 { left: 37.5%; top: 31.9%; z-index: 2; } /* River Bend East Tree */
+#locationMap35 { left: 5.4%; top: 42.6%; z-index: 2; } /* Blinds Hideout Tree */
+#locationMap36 { left: 11.5%; top: 58.5%; z-index: 2; } /* Kakariko Welcome Tree */
+#locationMap37 { left: 15.1%; top: 48.2%; z-index: 2; } /* Forgotten Forest Southwest Tree */
+#locationMap38 { left: 15.9%; top: 45.1%; z-index: 2; } /* Forgotten Forest Central Tree */
+#locationMap39 { left: 23.9%; top: 46.8%; z-index: 2; } /* Hyrule Castle Tree */
+#locationMap40 { left: 33.9%; top: 41.1%; z-index: 2; } /* Wooden Bridge Tree */
+#locationMap41 { left: 45.1%; top: 60.3%; z-index: 2; } /* Eastern Palace Tree */
+#locationMap42 { left: 16.1%; top: 73.3%; z-index: 2; } /* Flute Boy South Tree */
+#locationMap43 { left: 17.5%; top: 71.5%; z-index: 2; } /* Flute Boy East Tree */
+#locationMap44 { left: 23.9%; top: 69.8%; z-index: 2; } /* Central Bonk Rocks Tree */
+#locationMap45 { left: 40.9%; top: 67.8%; z-index: 2; } /* Tree Line Tree 2 */
+#locationMap46 { left: 43.1%; top: 68.8%; z-index: 2; } /* Tree Line Tree 4 */
+#locationMap47 { left: 18.3%; top: 83.6%; z-index: 2; } /* Flute Boy Approach South Tree */
+#locationMap48 { left: 18.5%; top: 79.7%; z-index: 2; } /* Flute Boy Approach North Tree */
+#locationMap49 { left: 64.7%; top: 9.7%; z-index: 2; } /* Dark Lumberjack Tree */
+#locationMap50 { left: 58.2%; top: 32.6%; z-index: 2; } /* Dark Fortune Bonk Rocks (2) */
+#locationMap51 { left: 75.4%; top: 30%; z-index: 2; } /* Dark Graveyard West Bonk Rocks */
+#locationMap52 { left: 77.9%; top: 32%; z-index: 2; } /* Dark Graveyard North Bonk Rocks */
+#locationMap53 { left: 80.5%; top: 30%; z-index: 2; } /* Dark Graveyard Tomb Bonk Rocks */
+#locationMap54 { left: 84.2%; top: 36.3%; z-index: 2; } /* Qirn Jump West Tree */
+#locationMap55 { left: 87.3%; top: 32.2%; z-index: 2; } /* Qirn Jump East Tree */
+#locationMap56 { left: 89.0%; top: 31.6%; z-index: 2; } /* Dark Witch Tree */
+#locationMap57 { left: 74.2%; top: 55.0%; z-index: 2; } /* Pyramid Area */
+#locationMap58 { left: 97.7%; top: 58.0%; z-index: 2; } /* Palace of Darkness Area */
+#locationMap59 { left: 89.8%; top: 67.7%; z-index: 2; } /* Dark Tree Line Tree 2 */
+#locationMap60 { left: 91.3%; top: 68.6%; z-index: 2; } /* Dark Tree Line Tree 3 */
+#locationMap61 { left: 92.7%; top: 69.1%; z-index: 2; } /* Dark Tree Line Tree 4 */
+#locationMap62 { left: 78.3%; top: 84.2%; z-index: 2; } /* Hype Cave Area */
+
 
 #entranceModalLightWorld { width: 276px; float: left; }
 #entranceModalGeneral { width: 222px; float: left; }
