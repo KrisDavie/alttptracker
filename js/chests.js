@@ -98,6 +98,11 @@
 	{
 		return flags.glitches === 'M' && (items.moonpearl || items.bottle)
 	}
+
+	function canBunnyPocket()
+	{
+		return items.boots && (items.mirror || items.bottle)
+	}
 	
 	
 	// Regional functions, does not cover Inverted
@@ -209,7 +214,7 @@
 				caption: 'Skull Woods',
 				is_beaten: false,
 				is_beatable: function() {
-					return canReachNWDW() && ((items.moonpearl || (items.boots && (items.mirror || items.bottle)))) ? window.SWBoss() : 'unavailable';
+					return canReachNWDW() && ((items.moonpearl || canBunnyPocket())) ? window.SWBoss() : 'unavailable';
 				},
 				can_get_chest: function() {
 					return canReachNWDW() ? window.SWChests() : 'unavailable';
