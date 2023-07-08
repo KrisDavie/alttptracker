@@ -89,6 +89,10 @@
 	function can_reach_outcast() {
 		return items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim && items.hookshot && (items.hammer || items.glove || items.flippers));
 	}
+
+	function canReachSwampGlitchedAsLink(){
+		return (flags.glitches != 'N' && items.moonpearl && (flags.glitches === 'M' || items.boots))
+	}
 	
 	function canReachOutcastEntrance() {
 		if (items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim && items.hookshot && (items.hammer || items.glove || items.flippers))) return true;
@@ -1550,7 +1554,7 @@
 		if (flags.glitches === 'M' || flags.glitches === 'H') {
 			var entry = canEnterGlitched();
 			var chests = ['U','U','U','U','U','U','U','U','U','U'];
-			chests[0] = accessToChest(entry);
+			chests[0] = (canReachSwampGlitchedAsLink() && items.flippers && items.mirror) ? 'A' :  accessToChest(entry);
 			chests[1] = accessToChest(entry);
 			chests[2] = accessToChest(entry);
 			chests[3] = accessToChest(entry);
