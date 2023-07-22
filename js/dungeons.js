@@ -199,6 +199,19 @@
 		return 'unavailable';
 	}
 
+	function canEnterSwampGlitched() {
+		var mire = canClipFromMireToSwamp();
+		var walk = canWalkIntoSwampMG();
+		if (flags.glitches === 'H' && !items.moonpearl) return 'unavailable';
+
+		if (mire === 'available') return canDrainDam('available');
+		if (mire === 'possible') {
+			return walk === 'unavailable' ? canDrainDam(mire) : walk
+		} else {
+			return canDrainDam(walk);
+		}
+	}
+
 	function canDrainDam(status) {
 		if (status === 'unavailable') return status;
 		return items.mirror ? status : (items.lantern ? status : 'dark'+status)
@@ -860,16 +873,7 @@
     window.SPBoss = function() {
 		if (flags.glitches === 'M' || flags.glitches === 'H') {
 			if (!items.hookshot || !items.flippers) return 'unavailable';
-
-			var mire = canClipFromMireToSwamp();
-			var walk = canWalkIntoSwampMG();
-
-			if (mire === 'available') return canDrainDam('available');
-			if (mire === 'possible') {
-				return walk === 'unavailable' ? canDrainDam(mire) : walk
-			} else {
-				return canDrainDam(walk);
-			}
+			return canEnterSwampGlitched()
 		} else {
 		if (flags.entrancemode != 'N') {
 			if (!hasFoundLocation('dam')) return 'unavailable';
@@ -1531,17 +1535,6 @@
 
     window.SPChests = function() {
 		if (!items.flippers) return 'unavailable';
-		var mire = canClipFromMireToSwamp();
-		var walk = canWalkIntoSwampMG();
-
-		function canEnterGlitched() {
-			if (mire === 'available') return canDrainDam('available');
-			if (mire === 'possible') {
-				return walk === 'unavailable' ? canDrainDam(mire) : walk
-			} else {
-				return canDrainDam(walk);
-			}
-		}
 
 		function accessToChest(status) {
 			if (status === 'unavailable') return 'U';
@@ -1552,7 +1545,7 @@
 		}
 
 		if (flags.glitches === 'M' || flags.glitches === 'H') {
-			var entry = canEnterGlitched();
+			var entry = canEnterSwampGlitched();
 			var chests = ['U','U','U','U','U','U','U','U','U','U'];
 			chests[0] = (canReachSwampGlitchedAsLink() && items.flippers && items.mirror) ? 'A' :  accessToChest(entry);
 			chests[1] = accessToChest(entry);
