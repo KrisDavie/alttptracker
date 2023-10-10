@@ -2803,7 +2803,7 @@
 				caption: 'Potion Shop (3)',
 				is_opened: false,
 				is_available: function() {
-					return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : 'possible') : 'unavailable';
+					return canReachLightWorld() ? 'available' : 'unavailable';
 				}
 			}, { // [118]
 				caption: 'Pond of Happiness (2)',
@@ -3943,7 +3943,7 @@
 				caption: 'Dark Death Mountain Shop (3)',
 				is_opened: false,
 				is_available: function() {
-					return items.moonpearl && items.glove === 2 && (items.hookshot || (items.mirror && items.hammer)) ?
+					return items.glove === 2 && (items.hookshot || (items.mirror && items.hammer)) ?
 						items.lantern || items.flute ? 'available' : 'darkavailable' : 'unavailable';
 				}
 			}, { // [114]
