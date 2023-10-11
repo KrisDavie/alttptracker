@@ -106,6 +106,7 @@ function launch_tracker() {
 	var ambrosia = document.querySelector('input[name="ambrosiagroup"]:checked').value;
 	var nonprogressivebows = document.querySelector('input[name="nonprogressivebowsgroup"]:checked').value;
 	var activatedflute = document.querySelector('input[name="activatedflutegroup"]:checked').value;
+	var bonkshuffle = document.querySelector('input[name="bonkshufflegroup"]:checked').value;
 	var goal = document.querySelector('input[name="goalgroup"]:checked').value;
 	var tower = document.querySelector('input[name="towergroup"]:checked').value;
 	var towersel = document.getElementById("towerselect");
@@ -156,7 +157,7 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{color}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{color}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
 			.replace('{world}', world)
 			.replace('{entrance}', entrance)
 			.replace('{door}', door)
@@ -173,6 +174,7 @@ function launch_tracker() {
 			.replace('{ambrosia}', ambrosia)
 			.replace('{nonprogressivebows}', nonprogressivebows)
 			.replace('{activatedflute}', activatedflute)
+			.replace('{bonkshuffle}', bonkshuffle)
 			.replace('{goal}', goal)
 			.replace('{tower}', tower)
 			.replace('{towercrystals}', towercrystals)
@@ -288,7 +290,36 @@ function loadarchivepreset() {
 	
 }
 
-function loadopenpreset() {
+function loaddoorssotwpreset() {
+	resetallstartingitems();
+	document.getElementById("gametypeopen").checked = true;
+	document.getElementById("entrancesimple").checked = true;
+	document.getElementById("doorcrossed").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossnone").checked = true;
+	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitchesnone").checked = true;
+	document.getElementById("goalfast").checked = true;
+	document.getElementById("goalrandom").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityyes").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = true;
+	document.getElementById("shuffledcompasses").checked = true;
+	document.getElementById("shuffledsmallkeys").checked = true;
+	document.getElementById("shuffledbigkeys").checked = true;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();
+}
+
+function loadadpreset() {
 	resetallstartingitems();
 	document.getElementById("gametypeopen").checked = true;
 	document.getElementById("entrancenone").checked = true;
@@ -296,6 +327,66 @@ function loadopenpreset() {
 	document.getElementById("overworldno").checked = true;
 	document.getElementById("bossnone").checked = true;
 	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitchesnone").checked = true;
+	document.getElementById("goaldungeons").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityno").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = false;
+	document.getElementById("shuffledcompasses").checked = false;
+	document.getElementById("shuffledsmallkeys").checked = false;
+	document.getElementById("shuffledbigkeys").checked = false;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();	
+}
+
+function loadganonhuntpreset() {
+	resetallstartingitems();
+	setstartingitem("boots",22,"1");
+	document.getElementById("gametypeopen").checked = true;
+	document.getElementById("entrancenone").checked = true;
+	document.getElementById("doornone").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossnone").checked = true;
+	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitchesnone").checked = true;
+	document.getElementById("goaldungeons").checked = true;
+	document.getElementById("goalother").checked = true;
+	document.getElementById("towerselect").value = 5;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 2;
+	document.getElementById("swordsassured").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityno").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = false;
+	document.getElementById("shuffledcompasses").checked = false;
+	document.getElementById("shuffledsmallkeys").checked = false;
+	document.getElementById("shuffledbigkeys").checked = true;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();	
+}
+
+function loadenemizerbootspreset() {
+	resetallstartingitems();
+	setstartingitem("boots",22,"1");
+	document.getElementById("gametypeopen").checked = true;
+	document.getElementById("entrancenone").checked = true;
+	document.getElementById("doornone").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossshuffled").checked = true;
+	document.getElementById("enemyshuffled").checked = true;
 	document.getElementById("glitchesnone").checked = true;
 	document.getElementById("goalganon").checked = true;
 	document.getElementById("goalcrystal").checked = true;
@@ -312,6 +403,7 @@ function loadopenpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -319,7 +411,7 @@ function loadopenpreset() {
 function loadopenpreset() {
 	resetallstartingitems();
 	document.getElementById("gametypeopen").checked = true;
-	document.getElementById("entrancenone").checked = true;
+	document.getElementById("entrancesimple").checked = true;
 	document.getElementById("doornone").checked = true;
 	document.getElementById("overworldno").checked = true;
 	document.getElementById("bossnone").checked = true;
@@ -340,6 +432,97 @@ function loadopenpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();
+}
+
+function loadowgpreset() {
+	resetallstartingitems();
+	setstartingitem("boots",22,"1");
+	document.getElementById("gametypeopen").checked = true;
+	document.getElementById("entrancenone").checked = true;
+	document.getElementById("doornone").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossnone").checked = true;
+	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitchesoverworld").checked = true;
+	document.getElementById("goalganon").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityno").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = false;
+	document.getElementById("shuffledcompasses").checked = false;
+	document.getElementById("shuffledsmallkeys").checked = false;
+	document.getElementById("shuffledbigkeys").checked = false;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();
+}
+
+function loadhmgpreset() {
+	resetallstartingitems();
+	setstartingitem("boots",22,"1");
+	document.getElementById("gametypeopen").checked = true;
+	document.getElementById("entrancenone").checked = true;
+	document.getElementById("doornone").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossnone").checked = true;
+	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitcheshybrid").checked = true;
+	document.getElementById("goalganon").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityno").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = false;
+	document.getElementById("shuffledcompasses").checked = false;
+	document.getElementById("shuffledsmallkeys").checked = false;
+	document.getElementById("shuffledbigkeys").checked = false;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();
+}
+
+function loadnologicpreset() {
+	resetallstartingitems();
+	setstartingitem("boots",22,"1");
+	document.getElementById("gametypeopen").checked = true;
+	document.getElementById("entrancenone").checked = true;
+	document.getElementById("doornone").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossnone").checked = true;
+	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitchesnologic").checked = true;
+	document.getElementById("goalganon").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityno").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = true;
+	document.getElementById("shuffledcompasses").checked = true;
+	document.getElementById("shuffledsmallkeys").checked = true;
+	document.getElementById("shuffledbigkeys").checked = true;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -369,6 +552,7 @@ function loadopenbootspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -397,6 +581,7 @@ function loadambrosiapreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -425,6 +610,7 @@ function loadmysterypreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -453,6 +639,7 @@ function loadcrosskeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -481,6 +668,7 @@ function loadinvertedkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -509,6 +697,7 @@ function loadenemizerpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -538,6 +727,7 @@ function loadbootspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -566,6 +756,7 @@ function loadopenkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();	
 }
@@ -594,6 +785,7 @@ function loadadkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();	
 }
@@ -622,6 +814,7 @@ function loadreducedpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -650,6 +843,7 @@ function loadinvrosiapreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();		
 	
@@ -679,6 +873,7 @@ function loadstandardpreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -707,6 +902,7 @@ function loadmcshufflepreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -738,6 +934,7 @@ function loadpotpourripreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteyes").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -766,6 +963,7 @@ function loadretrancepreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -794,6 +992,7 @@ function loadcswordlesspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -821,6 +1020,7 @@ function loadinvertedadkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -850,6 +1050,7 @@ function loadgoldrushspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -878,6 +1079,7 @@ function loadludicrouspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -906,6 +1108,7 @@ function loadhardopenpluspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsyes").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -934,6 +1137,7 @@ function loadinvertedspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -962,6 +1166,7 @@ function loadmcbosspreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -991,6 +1196,7 @@ function loadtinvertedkeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteyes").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -1019,6 +1225,7 @@ function loadambroz1apreset() {
 	document.getElementById("shuffledbigkeys").checked = false;
 	document.getElementById("nonprogressivebowsyes").checked = true;
 	document.getElementById("activatedfluteyes").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -1047,6 +1254,7 @@ function loadinvertedcrosskeyspreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }
@@ -1076,6 +1284,7 @@ function loadchuntpreset() {
 	document.getElementById("shuffledbigkeys").checked = true;
 	document.getElementById("nonprogressivebowsno").checked = true;
 	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	showToast();
 }

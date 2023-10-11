@@ -35,7 +35,7 @@
             <div class="header-main-div">
                <a href="./index.html"><img src="./images/overlay/header.png" class="header-main-img"></a>
                <div class="header-news-div" >
-                  <span class="default-white-text">Build 2.0.030 091123 - Compatible for v31.x.x<br>Report any issues to Dunka (Discord: @bigdunka)<br>Check Known Issues for current known outstanding issues</span>
+                  <span class="default-white-text">Build 2.0.030 091123 - Compatible for v31.x.x<br>Report any issues to Muffins (Discord: mfns.)<br>Check Known Issues for current known outstanding issues</span>
                </div>
             </div>
             <div class="header-links">
@@ -82,6 +82,40 @@
                   </span>
                   <span class="preset-btn-span">
                   <input type="button" value="HUNDO KEYSANITY" class="preset-btn" onclick="loadadkeyspreset()" />
+                  </span>
+               </div>
+               <div class="preset-header" style="cursor: default;">
+                  Glitched Presets
+               </div>
+               <div>
+                  <span class="preset-btn-span">
+                     <input type="button" value="OWG" class="preset-btn" onclick="loadowgpreset()" />
+                  </span>
+                  <span class="preset-btn-span">
+                     <input type="button" value="HMG" class="preset-btn" onclick="loadhmgpreset()" />
+                  </span>
+                  <span class="preset-btn-span">
+                     <input type="button" value="NO LOGIC" class="preset-btn" onclick="loadnologicpreset()" />
+                  </span>
+               </div>
+               <div class="preset-header" style="cursor: default;">
+                  League Presets
+               </div>
+               <div>
+                  <span class="preset-btn-span">
+                     <input type="button" value="DOORS SOTW" class="preset-btn" onclick="loaddoorssotwpreset()" />
+                  </span>
+                  <span class="preset-btn-span">
+                     <input type="button" value="AD" class="preset-btn" onclick="loadadpreset()" />
+                  </span>
+                  <span class="preset-btn-span">
+                     <input type="button" value="AAD KEYS" class="preset-btn" onclick="loadopenkeyspreset()" />
+                  </span>
+                  <span class="preset-btn-span">
+                     <input type="button" value="GANONHUNT" class="preset-btn" onclick="loadganonhuntpreset()" />
+                  </span>
+                  <span class="preset-btn-span">
+                     <input type="button" value="ENEMIZER BOOTS" class="preset-btn" onclick="loadenemizerbootspreset()" />
                   </span>
                </div>
                <div class="preset-header" style="cursor: default;">
@@ -343,6 +377,19 @@
                   </div>
                   <div>
                      <span class="preset-span-double">
+                     Bonk Shuffle:
+                     </span>
+                     <span class="preset-span">
+                     <input id="bonkshuffleno" value="N" type="radio" name="bonkshufflegroup" checked />
+                     <label for="bonkshuffleno">No</label>
+                     </span>
+                     <span class="preset-span">
+                     <input id="bonkshuffleyes" value="Y" type="radio" name="bonkshufflegroup" />
+                     <label for="bonkshuffleyes">Yes</label>
+                     </span>
+                  </div>
+                  <div>
+                     <span class="preset-span-double">
                      Shopsanity:
                      </span>
                      <span class="preset-span">
@@ -356,7 +403,7 @@
                   </div>
                   <div>
                      <span class="preset-span-double">
-                     Glitches: <span class="south tooltop-character" title="OWG glitches are currently implemented, need to be validated. Inverted/OWG is not currently implemented. Major/No Logic will show all locations available.">[?]</span>
+                     Glitches: <span class="south tooltop-character" title="OWG glitches are currently implemented, need to be validated.<br>Inverted combined with any glitch mode is not currently implemented.<br>Hybrid and Major Glitches do not currently support any kind of dungeon item shuffle.<br>No Logic will show all locations available except a few obviously impossible checks.">[?]</span>
                      </span>
                      <span class="preset-span">
                      <input id="glitchesnone" value="N" type="radio" name="glitchesgroup" checked />
@@ -366,9 +413,17 @@
                      <input id="glitchesoverworld" value="O" type="radio" name="glitchesgroup" />
                      <label for="glitchesoverworld">Overworld</label>
                      </span>
-                     <span class="preset-span-double">
+                     <span class="preset-span">
+                     <input id="glitcheshybrid" value="H" type="radio" name="glitchesgroup" />
+                     <label for="glitcheshybrid">HMG</label>
+                     </span>
+                     <span class="preset-span">
                      <input id="glitchesmajor" value="M" type="radio" name="glitchesgroup" />
-                     <label for="glitchesmajor">Major/No Logic</label>
+                     <label for="glitchesmajor">Major</label>
+                     </span>
+                     <span class="preset-span">
+                     <input id="glitchesnologic" value="Z" type="radio" name="glitchesgroup" />
+                     <label for="glitchesnologic">No Logic</label>
                      </span>
                   </div>
                </div>

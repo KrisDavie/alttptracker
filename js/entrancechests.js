@@ -50,6 +50,11 @@
 		return (canReachDarkWorld() && (items.flippers || canReachPyramidWithoutFlippers()));
 	}
 
+	function canGetBonkableItem()
+	{
+		return items.boots || (items.sword && items.quake);
+	}
+
 	function canReachPyramidWithoutFlippers()
 	{
 		return items.hammer || activeFluteInvertedEntrance() || (items.mirror && canReachLightWorldBunny());
@@ -144,6 +149,12 @@
 		if (hasFoundEntrance(120) || hasFoundEntrance(121) || hasFoundEntrance(122) || ((canReachDarkWorld() || canReachDarkWorldEast() || canReachDarkWorldSouth()) && items.flippers && items.moonpearl)) return true;
 	}
 	
+	function canReachDarkWorldNorthEastShopArea() {
+		if (hasFoundEntrance(92)) return true;
+		if (canReachOutcast() && items.moonpearl && items.flippers) return true;
+		return (canReachDarkWorldEast() && items.moonpearl && (items.flippers || items.glove > 0 || items.hammer)) ? true : false;
+	}
+
 	function canReachMiseryMire() {
 		if (hasFoundEntrance(123) || hasFoundEntrance(124) || hasFoundEntrance(125) || hasFoundEntrance(126) || (items.flute && items.glove === 2)) return true;
 	}	
@@ -216,6 +227,17 @@
 		return false;
 	}
 	
+	function canReachInvertedNorthEastShopArea()
+	{
+		if (hasFoundEntrance(92)) return true;
+		if (activeFluteInvertedEntrance()) return true;
+		if (items.mirror && hasFoundEntrance(4)) return true;
+		if (items.mirror && canReachInvertedLightWorld()) return true;
+		if (items.flippers && (canReachInvertedNorthDW() || canReachInvertedSouthDW() || canReachInvertedEastDW())) return true;
+		if ((items.hammer || items.glove) && canReachInvertedEastDW()) return true;
+		return false;
+	}
+
 	function canReachInvertedSouthDW()
 	{
 		// south DW locations
@@ -1258,13 +1280,7 @@
 				known_location: '',
 				is_connector: false,
 				is_available: function() {
-					if (hasFoundEntrance(92)) return 'available';
-					if (activeFluteInvertedEntrance()) return 'available';
-					if (items.mirror && hasFoundEntrance(4)) return 'available';
-					if (items.mirror && canReachInvertedLightWorld()) return 'available';
-					if (items.flippers && (canReachInvertedNorthDW() || canReachInvertedSouthDW() || canReachInvertedEastDW())) return 'available';
-					if ((items.hammer || items.glove) && canReachInvertedEastDW()) return 'available';
-					return 'unavailable';
+					return canReachInvertedNorthEastShopArea() ? 'available' : 'unavailable';
 				}
 			}, { // [93]
 				caption: 'Hyrule Castle Hole',
@@ -2119,6 +2135,247 @@
 								return 'available';
 					return items.book ? 'information' : 'unavailable';
 				}
+			}, { // [23]
+				caption: 'Lost Woods Hideout Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [24]
+				caption: 'Death Mountain Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachInvertedEastDeathMountain() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [25]
+				caption: 'Mountain Entry Pull Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [26]
+				caption: 'Mountain Entry Southeast Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [27]
+				caption: 'Lost Woods Pass West Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [28]
+				caption: 'Kakariko Portal Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [29]
+				caption: 'Fortune Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [30]
+				caption: 'Kakariko Pond Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [31]
+				caption: 'Bonk Rocks Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [32]
+				caption: 'Sanctuary Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [33]
+				caption: 'River Bend West Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [34]
+				caption: 'River Bend East Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [35]
+				caption: 'Blinds Hideout Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [36]
+				caption: 'Kakariko Welcome Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [37]
+				caption: 'Forgotten Forest Southwest Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [38]
+				caption: 'Forgotten Forest Central Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [39]
+				caption: 'Hyrule Castle Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [40]
+				caption: 'Wooden Bridge Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [41]
+				caption: 'Eastern Palace Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [42]
+				caption: 'Flute Boy South Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [43]
+				caption: 'Flute Boy East Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [44]
+				caption: 'Central Bonk Rocks Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachLightWorld()? 'bonkable' : 'unbonkable';
+				}
+			}, { // [45]
+				caption: 'Tree Line Tree 2',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [46]
+				caption: 'Tree Line Tree 4',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [47]
+				caption: 'Flute Boy Approach South Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [48]
+				caption: 'Flute Boy Approach North Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [49]
+				caption: 'Dark Lumberjack Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [50]
+				caption: 'Dark Fortune Bonk Rocks (2)',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [51]
+				caption: 'Dark Graveyard West Bonk Rock',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [52]
+				caption: 'Dark Graveyard North Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [53]
+				caption: 'Dark Graveyard Tomb Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [54]
+				caption: 'Qirn Jump West Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [55]
+				caption: 'Qirn Jump East Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthEastShopArea() ? 'bonkable' : (items.sword && items.quake && canReachInvertedNorthDW() ? 'bonkinfo' : 'unbonkable');
+				}
+			}, { // [56]
+				caption: 'Dark Witch Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedNorthEastShopArea() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [57]
+				caption: 'Pyramid Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedEastDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [58]
+				caption: 'Palace of Darkness Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedEastDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [59]
+				caption: 'Dark Tree Line Tree 2',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedEastDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [60]
+				caption: 'Dark Tree Line Tree 3',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedEastDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [61]
+				caption: 'Dark Tree Line Tree 4',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedEastDW() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [62]
+				caption: 'Hype Cave Statue',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachInvertedSouthDW() ? 'bonkable' : 'unbonkable';
+				}
+
 			}];
 		}
 		else if (flags.glitches != "N") {
@@ -3876,6 +4133,166 @@
 								return 'available';
 					return items.book ? 'information' : 'unavailable';*/
 				}
+			}, { // [23]
+				caption: 'Lost Woods Hideout Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [24]
+				caption: 'Death Mountain Bonk Rocks',
+				is_opened: false,
+				is_available: always
+			}, { // [25]
+				caption: 'Mountain Entry Pull Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [26]
+				caption: 'Mountain Entry Southeast Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [27]
+				caption: 'Lost Woods Pass West Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [28]
+				caption: 'Kakariko Portal Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [29]
+				caption: 'Fortune Bonk Rocks',
+				is_opened: false,
+				is_available: always
+			}, { // [30]
+				caption: 'Kakariko Pond Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [31]
+				caption: 'Bonk Rocks Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [32]
+				caption: 'Sanctuary Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [33]
+				caption: 'River Bend West Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [34]
+				caption: 'River Bend East Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [35]
+				caption: 'Blinds Hideout Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [36]
+				caption: 'Kakariko Welcome Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [37]
+				caption: 'Forgotten Forest Southwest Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [38]
+				caption: 'Forgotten Forest Central Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [39]
+				caption: 'Hyrule Castle Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [40]
+				caption: 'Wooden Bridge Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [41]
+				caption: 'Eastern Palace Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [42]
+				caption: 'Flute Boy South Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [43]
+				caption: 'Flute Boy East Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [44]
+				caption: 'Central Bonk Rocks Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [45]
+				caption: 'Tree Line Tree 2',
+				is_opened: false,
+				is_available: always
+			}, { // [46]
+				caption: 'Tree Line Tree 4',
+				is_opened: false,
+				is_available: always
+			}, { // [47]
+				caption: 'Flute Boy Approach South Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [48]
+				caption: 'Flute Boy Approach North Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [49]
+				caption: 'Dark Lumberjack Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [50]
+				caption: 'Dark Fortune Bonk Rocks (2)',
+				is_opened: false,
+				is_available: always
+			}, { // [51]
+				caption: 'Dark Graveyard West Bonk Rock',
+				is_opened: false,
+				is_available: always
+			}, { // [52]
+				caption: 'Dark Graveyard North Bonk Rocks',
+				is_opened: false,
+				is_available: always
+			}, { // [53]
+				caption: 'Dark Graveyard Tomb Bonk Rocks',
+				is_opened: false,
+				is_available: always
+			}, { // [54]
+				caption: 'Qirn Jump West Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [55]
+				caption: 'Qirn Jump East Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [56]
+				caption: 'Dark Witch Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [57]
+				caption: 'Pyramid Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [58]
+				caption: 'Palace of Darkness Tree',
+				is_opened: false,
+				is_available: always
+			}, { // [59]
+				caption: 'Dark Tree Line Tree 2',
+				is_opened: false,
+				is_available: always
+			}, { // [60]
+				caption: 'Dark Tree Line Tree 3',
+				is_opened: false,
+				is_available: always
+			}, { // [61]
+				caption: 'Dark Tree Line Tree 4',
+				is_opened: false,
+				is_available: always
+			}, { // [62]
+				caption: 'Hype Cave Statue',
+				is_opened: false,
+				is_available: always
 			}];
 		}
 		else
@@ -4764,13 +5181,7 @@
 				known_location: '',
 				is_connector: false,
 				is_available: function() {
-					if (hasFoundEntrance(92)) return 'available';
-					//if (items.moonpearl && items.glove && (items.agahnim || items.hammer || items.glove === 2 && items.flippers)) return 'available';
-					if (canReachOutcast() && items.moonpearl && items.flippers) return 'available';
-					return (canReachDarkWorldEast() && items.moonpearl && (items.flippers || items.glove > 0 || items.hammer)) ? 'available' : 'unavailable';
-					//if (canReachDarkWorldSouth() && items.moonpearl && (items.flippers || items.hammer)) return 'available';
-					//if (canReachDarkWorldEast() && items.moonpearl && (items.flippers || items.hammer || items.glove > 0)) return 'available';
-					//return (!canReachDarkWorld() ) ? 'unavailable' : 'available';
+					return canReachDarkWorldNorthEastShopArea() ? 'available' : 'unavailable';
 				}
 			}, { // [93]
 				caption: 'Pyramid Hole',
@@ -5588,6 +5999,246 @@
 						}
 					}
 					return items.book ? 'information' : 'unavailable';
+				}
+			}, { // [23]
+				caption: 'Lost Woods Hideout Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [24]
+				caption: 'Death Mountain Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() && canReachEDMNorth() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [25]
+				caption: 'Mountain Entry Pull Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [26]
+				caption: 'Mountain Entry Southeast Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [27]
+				caption: 'Lost Woods Pass West Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [28]
+				caption: 'Kakariko Portal Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [29]
+				caption: 'Fortune Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [30]
+				caption: 'Kakariko Pond Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && (canGetBonkableItem()) ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [31]
+				caption: 'Bonk Rocks Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && (canGetBonkableItem()) ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [32]
+				caption: 'Sanctuary Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [33]
+				caption: 'River Bend West Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [34]
+				caption: 'River Bend East Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [35]
+				caption: 'Blinds Hideout Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [36]
+				caption: 'Kakariko Welcome Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [37]
+				caption: 'Forgotten Forest Southwest Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [38]
+				caption: 'Forgotten Forest Central Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [39]
+				caption: 'Hyrule Castle Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [40]
+				caption: 'Wooden Bridge Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [41]
+				caption: 'Eastern Palace Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [42]
+				caption: 'Flute Boy South Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [43]
+				caption: 'Flute Boy East Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [44]
+				caption: 'Central Bonk Rocks Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [45]
+				caption: 'Tree Line Tree 2',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [46]
+				caption: 'Tree Line Tree 4',
+				is_opened: false,
+				is_available: function() {
+					return items.agahnim && canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [47]
+				caption: 'Flute Boy Approach South Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [48]
+				caption: 'Flute Boy Approach North Tree',
+				is_opened: false,
+				is_available: function() {
+					return canGetBonkableItem() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [49]
+				caption: 'Dark Lumberjack Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachOutcast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [50]
+				caption: 'Dark Fortune Bonk Rocks (2)',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachOutcast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [51]
+				caption: 'Dark Graveyard West Bonk Rock',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachOutcast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [52]
+				caption: 'Dark Graveyard North Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachOutcast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [53]
+				caption: 'Dark Graveyard Tomb Bonk Rocks',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachOutcast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [54]
+				caption: 'Qirn Jump West Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachOutcast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [55]
+				caption: 'Qirn Jump East Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldNorthEastShopArea() ? 'bonkable' : (items.moonpearl && items.sword && items.quake && canReachOutcast() ? 'bonkinfo' : 'unbonkable');
+				}
+			}, { // [56]
+				caption: 'Dark Witch Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldNorthEastShopArea() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [57]
+				caption: 'Pyramid Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldEast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [58]
+				caption: 'Palace of Darkness Tree',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldEast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [59]
+				caption: 'Dark Tree Line Tree 2',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldEast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [60]
+				caption: 'Dark Tree Line Tree 3',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldEast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [61]
+				caption: 'Dark Tree Line Tree 4',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldEast() ? 'bonkable' : 'unbonkable';
+				}
+			}, { // [62]
+				caption: 'Hype Cave Statue',
+				is_opened: false,
+				is_available: function() {
+					return items.moonpearl && canGetBonkableItem() && canReachDarkWorldSouth() ? 'bonkable' : 'unbonkable';
 				}
 			}];
 		}
