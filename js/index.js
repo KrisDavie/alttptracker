@@ -411,7 +411,7 @@ function loadenemizerbootspreset() {
 function loadopenpreset() {
 	resetallstartingitems();
 	document.getElementById("gametypeopen").checked = true;
-	document.getElementById("entrancesimple").checked = true;
+	document.getElementById("entrancenone").checked = true;
 	document.getElementById("doornone").checked = true;
 	document.getElementById("overworldno").checked = true;
 	document.getElementById("bossnone").checked = true;
