@@ -177,14 +177,14 @@ body {
 .chest-0.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge0.png); }
 .location.rightclick,
 .dungeon.rightclick { border-color:rgb(255, 255, 255); }
-.unavailable { background-color: rgba(255, 0, 0, 0.5); border-width: 0.5px;}
+.unavailable { background-color: rgba(255, 0, 0); border-width: 0.5px;}
 .unavailabledungeon { background-color: rgba(255, 0, 0, 1);}
-.unavailableconnector { background-color: rgba(255, 0, 0, 0.5);}
-.unavailabledark { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
-.unavailableitemlocked { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
-.unavailableother { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
-.unavailablekeylocation { background-color: rgba(255, 0, 0, 0.5); border-radius: 0%;}
-.available { background-color: rgba(55, 255, 65, 0.65); border-width: 0.5px;}
+.unavailableconnector { background-color: rgba(255, 0, 0);}
+.unavailabledark { background-color: rgba(255, 0, 0); border-radius: 0%;}
+.unavailableitemlocked { background-color: rgba(255, 0, 0); border-radius: 0%;}
+.unavailableother { background-color: rgba(255, 0, 0); border-radius: 0%;}
+.unavailablekeylocation { background-color: rgba(255, 0, 0); border-radius: 0%;}
+.available { background-color: rgba(55, 255, 65); border-width: 0.5px;}
 .availableconnector { background-color: rgb(255,0,249); width: 14; height: 14; margin-left: -12px; margin-top: -12px;}
 .availableunknownconnector { background-color: rgb(255,0,249); border-radius: 0%; transform: rotateY(0deg) rotate(45deg);}
 .availabledungeon { background-color: rgb(0, 234, 255); border-width:1px; width: 16; height: 16; margin-left: -14px; margin-top: -14px; border-radius: 0%;}
@@ -201,12 +201,12 @@ body {
 .darkavailable { background-color: rgb(36, 51, 255); }
 .darkpossible { background-color: purple; } 
 .partialavailable { background-color: rgb(23, 170, 238); }
-.bonkable { background-color: rgba(0, 255, 0, 0.65); width: 12; height: 12;}
-.darkbonkable { background-color: rgba(35, 69, 224, 0.65); width: 12; height: 12;}
-.unbonkable { background-color: rgba(255, 0, 0, 0.5); width: 12; height: 12;}
+.bonkable { background-color: rgba(0, 255, 0); width: 12; height: 12;}
+.darkbonkable { background-color: rgba(35, 69, 224); width: 12; height: 12;}
+.unbonkable { background-color: rgba(255, 0, 0); width: 12; height: 12;}
 .bonkinfo { background-color: rgba(255, 165, 0.5); width: 12; height: 12;}
-.opened { background-color: rgba(128, 128, 128, 0.55); border-width: 0px;}
-.bonked { background-color: rgba(128, 128, 128, 0.55); width: 12; height: 12; border-width: 0px;}
+.opened { background-color: rgba(128, 128, 128); border-width: 0px;}
+.bonked { background-color: rgba(128, 128, 128); width: 12; height: 12; border-width: 0px;}
 .hidden { width: 0px!important; height: 0px!important; }
 
 #caption {
