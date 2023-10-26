@@ -205,8 +205,8 @@ body {
 .darkbonkable { background-color: rgba(35, 69, 224); width: 12; height: 12;}
 .unbonkable { background-color: rgba(255, 0, 0); width: 12; height: 12;}
 .bonkinfo { background-color: rgba(255, 165, 0.5); width: 12; height: 12;}
-.opened { background-color: rgba(128, 128, 128); border-width: 0px;}
-.bonked { background-color: rgba(128, 128, 128); width: 12; height: 12; border-width: 0px;}
+.opened { background-color: rgba(128, 128, 128, 0.65); z-index: 1 !important; border-width: 0px;}
+.bonked { background-color: rgba(128, 128, 128, 0.65); z-index: 1 !important; width: 12; height: 12; border-width: 0px;}
 .hidden { width: 0px!important; height: 0px!important; }
 
 #caption {
@@ -262,6 +262,8 @@ body {
   font-family: roboto_condensedregular, Arial, Helvetica, sans-serif;
   font-size: 7px;
 	text-align: center;
+  pointer-events: none;
+  opacity: 80%;
 }
 
 .notediv {

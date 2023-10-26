@@ -61,9 +61,9 @@
   background-size: 100% 100%;
 }
 
-.bonkable { background-color: rgb(0, 255, 0, 0.65); width: 9; height: 9; border-width: 0.5px;}
+.bonkable { background-color: rgb(0, 255, 0); width: 9; height: 9; border-width: 0.5px;}
 .unbonkable { background-color: rgba(255, 0, 0); width: 9; height: 9; border-width: 0.5px;}
-.bonked { background-color: rgba(128, 128, 128); width: 9; height: 9; border-width: 0px;}
+.bonked { background-color: rgba(128, 128, 128, 0.65); width: 9; height: 9; border-width: 0px;}
 .darkbonkable { background-color: rgb(35, 69, 224); width: 9; height: 9; border-width: 0.5px;}
 .bonkinfo { background-color: rgba(255, 165, 0.5); width: 9; height: 9; border-width: 0.5px;}
 
