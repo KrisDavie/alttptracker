@@ -879,7 +879,7 @@
 			if (!hasFoundLocation('dam')) return 'unavailable';
 		}
 		var dungeoncheck = enemizer_check(4);
-		if (!items.hammer || !items.hookshot || (items.smallkey4 === 0 && flags.gametype != 'R')) return 'unavailable';
+		if (!items.hammer || !items.hookshot || !items.flippers || (items.smallkey4 === 0 && flags.gametype != 'R')) return 'unavailable';
 		return dungeoncheck;
 		}
     };
