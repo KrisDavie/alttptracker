@@ -849,6 +849,9 @@
 			// chests, which we can't determine based on items alone.
 					return 'possible';
 		} else {
+
+		if (!items.bigkey2) return 'unavailable';
+			
 		if (flags.wildbigkeys) return (dungeoncheck === 'available' ? ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available') : ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible')); 
 		if ((flags.wildkeys && (items.smallkey2 === 0 && flags.gametype != 'R')) || (!items.lantern && !items.firerod)) return (!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible';
 		return (dungeoncheck === 'available' ? ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkavailable' : 'available') : ((!items.flute && !items.lantern && !(flags.glitches != 'N' && items.boots)) ? 'darkpossible' : 'possible'));
@@ -878,8 +881,9 @@
 		if (flags.entrancemode != 'N') {
 			if (!hasFoundLocation('dam')) return 'unavailable';
 		}
+		if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
 		var dungeoncheck = enemizer_check(4);
-		if (!items.hammer || !items.hookshot || !items.flippers || (items.smallkey4 === 0 && flags.gametype != 'R')) return 'unavailable';
+		if (!items.hammer || !items.hookshot || (items.smallkey4 === 0 && flags.gametype != 'R')) return 'unavailable';
 		return dungeoncheck;
 		}
     };
