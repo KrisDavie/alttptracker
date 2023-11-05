@@ -319,6 +319,34 @@ function loaddoorssotwpreset() {
 	showToast();
 }
 
+function loaddoorsbeginnerpreset() {
+	document.getElementById("gametypestandard").checked = true;
+	document.getElementById("entrancenone").checked = true;
+	document.getElementById("doorcrossed").checked = true;
+	document.getElementById("overworldno").checked = true;
+	document.getElementById("bossnone").checked = true;
+	document.getElementById("enemynone").checked = true;
+	document.getElementById("glitchesnone").checked = true;
+	document.getElementById("goalganon").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsassured").checked = true;
+	document.getElementById("unknownnone").checked = true;
+	document.getElementById("shopsanityno").checked = true;
+	document.getElementById("ambrosiano").checked = true;
+	document.getElementById("shuffledmaps").checked = false;
+	document.getElementById("shuffledcompasses").checked = false;
+	document.getElementById("shuffledsmallkeys").checked = false;
+	document.getElementById("shuffledbigkeys").checked = false;
+	document.getElementById("nonprogressivebowsno").checked = true;
+	document.getElementById("activatedfluteno").checked = true;
+	document.getElementById("bonkshuffleno").checked = true;
+	window.scrollTo(0,document.body.scrollHeight);
+	showToast();
+}
+
 function loadadpreset() {
 	resetallstartingitems();
 	document.getElementById("gametypeopen").checked = true;
