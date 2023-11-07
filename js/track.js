@@ -2442,13 +2442,13 @@
     }
 	
 	window.crystalGoal = function() {
-		if (flags.opentower === 'R') {
+		if (flags.opentower === 'R' || flags.unknown === 'M') {
 			document.getElementById('crystalsselectdiv').style.visibility = 'inherit';
 		}
 	}
 
 	window.ganonGoal = function() {
-		if (flags.ganonvuln === 'R' && (flags.goals === 'G' || flags.goals === 'F')) {
+		if (flags.ganonvuln === 'R' && (flags.goals === 'G' || flags.goals === 'F') || flags.unknown === 'M') {
 			document.getElementById('ganonselectdiv').style.visibility = 'inherit';
 		}
 	}

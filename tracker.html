@@ -1328,18 +1328,15 @@
 						</tr>
 						<tr>
 							<td width="120px">
-								Activated Flute:
+								Misc:
 							</td>
-							<td>
-								<input id="activatedflute" type="checkbox" style="transform: scale(1.5);" />
-							</td>
-						</tr>
-						<tr>
-							<td width="120px">
-								Bonk Shuffle:
-							</td>
-							<td>
-								<input id="bonkshuffle" type="checkbox" style="transform: scale(1.5);" />
+							<td style="user-select: none;">
+								<input id="activatedflute" type="checkbox" onchange="updateMysteryPointTotal()"/>
+								<label for="activatedflute" style="width:100px">Activated Flute</label>
+								<input id="bonkshuffle" type="checkbox" onchange="updateMysteryPointTotal()"/>
+								<label for="bonkshuffle" style="width:100px">Bonk Shuffle</label><br>
+								<label for="mysterypointtotal" style="width:100px">Total Points</label>
+								<label id="mysterypointtotal">0</label>
 							</td>
 						</tr>
 					</table>
