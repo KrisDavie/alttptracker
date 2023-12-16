@@ -1,0 +1,162 @@
+:root {
+  --available-color: #00ff00;
+  --unavailable-color: #ff0000;
+  --possible-color: #ffff00;
+  --information-color: #ffa500;
+  --darkavailable-color: #2433ff;
+  --darkpossible-color: #800080;
+  --partialavailable-color: #17aaee;
+  --opened-color: #808080a6;
+  --connector-color: #ff00f9;
+  --connector1-color: #ff50f9;
+  --connector3-color: #bf00ff;
+  --hc-color: #14439a;
+  --ct-color: #00eaff;
+  --ep-color: #00eaff;
+  --dp-color: #cdca27;
+  --dp_n-color: #00eaff;
+  --toh-color: #00eaff;
+  --pod-color: #00eaff;
+  --sp-color: #00eaff;
+  --sw-color: #00eaff;
+  --tt-color: #00eaff;
+  --ip-color: #00eaff;
+  --mm-color: #00eaff;
+  --tr-color: #d44a00;
+}
+
+.unavailable {
+  background-color: var(--unavailable-color);
+}
+.available {
+  background-color: var(--available-color);
+}
+.bonkable {
+  background-color: var(--available-color);
+  width: 12;
+  height: 12;
+}
+.darkbonkable {
+  background-color: var(--darkavailable-color);
+  width: 12;
+  height: 12;
+}
+.unbonkable {
+  background-color: var(--unavailable-color);
+  width: 12;
+  height: 12;
+}
+.possible {
+  background-color: var(--possible-color);
+}
+.information {
+  background-color: var(--information-color);
+}
+.darkavailable {
+  background-color: var(--darkavailable-color);
+}
+.partialavailable {
+  background-color: var(--partialavailable-color);
+}
+.darkpossible {
+  background-color: var(--darkpossible-color);
+}
+.opened {
+  background-color: var(--opened-color);
+  border-width: 0px;
+}
+.bonked {
+  background-color: var(--opened-color);
+  width: 12;
+  height: 12;
+  border-width: 0px;
+}
+.bonkinfo {
+  background-color: var(--information-color);
+  width: 12;
+  height: 12;
+}
+
+.unavailabledungeon {
+  background-color: var(--unavailable-color);
+}
+.unavailableconnector {
+  background-color: var(--unavailable-color);
+}
+.unavailabledark {
+  background-color: var(--unavailable-color);
+}
+.unavailableitemlocked {
+  background-color: var(--unavailable-color);
+}
+.unavailableother {
+  background-color: var(--unavailable-color);
+}
+.unavailablekeylocation {
+  background-color: var(--unavailable-color);
+}
+
+.availableconnector {
+  background-color: var(--connector-color);
+}
+.availableunknownconnector {
+  background-color: var(--connector-color);
+}
+
+.availablecastleconnector {
+  background-color: var(--hc-color);
+}
+.availabledesertconnector {
+  background-color: var(--dp-color);
+}
+.availableturtleconnector {
+  background-color: var(--tr-color);
+}
+
+.availablect {
+  background-color: var(--ct-color);
+}
+.availableep {
+  background-color: var(--ep-color);
+}
+.availabledp_n {
+  background-color: var(--dp_n-color);
+}
+.availabletoh {
+  background-color: var(--toh-color);
+}
+.availablepod {
+  background-color: var(--pod-color);
+}
+.availablesp {
+  background-color: var(--sp-color);
+}
+.availablesw {
+  background-color: var(--sw-color);
+}
+.availablett {
+  background-color: var(--tt-color);
+}
+.availableip {
+  background-color: var(--ip-color);
+}
+.availablemm {
+  background-color: var(--mm-color);
+}
+
+.crossedright {
+  background: linear-gradient(
+    to top right,
+    rgba(0, 0, 0, 0) calc(50% - 1px),
+    var(--connector-color) calc(50% - 0.5px) calc(50% + 0.5px),
+    rgba(0, 0, 0, 0) calc(50% + 1px)
+  );
+}
+.crossedleft {
+  background: linear-gradient(
+    to top left,
+    rgba(0, 0, 0, 0) calc(50% - 1px),
+    var(--connector-color) calc(50% - 0.5px) calc(50% + 0.5px),
+    rgba(0, 0, 0, 0) calc(50% + 1px)
+  );
+}

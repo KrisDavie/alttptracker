@@ -1176,7 +1176,7 @@
 							} else if (isSpawn(known_location) === true) {
 								entrancetype = 'spawn';
 							} else if (isDungeon(known_location) === true) {
-								entrancetype = 'dungeon';
+								entrancetype = known_location;
 							} else if (isDark(known_location) === true) {
 								entrancetype = 'dark';
 							} else if (requireItem(known_location) === true) {
@@ -1630,27 +1630,27 @@
 		}
 		
 		document.getElementById('entranceModalNote').focus();
-		
-		document.getElementById('hc_m').style.backgroundColor = '#14439a';
-		document.getElementById('hc_w').style.backgroundColor = '#14439a';
-		document.getElementById('hc_e').style.backgroundColor = '#14439a';
-		document.getElementById('ct').style.backgroundColor = '#00eaff';
-		document.getElementById('ep').style.backgroundColor = '#00eaff';
-		document.getElementById('dp_m').style.backgroundColor = '#cdca27';
-		document.getElementById('dp_w').style.backgroundColor = '#cdca27';
-		document.getElementById('dp_e').style.backgroundColor = '#cdca27';
-		document.getElementById('dp_n').style.backgroundColor = '#00eaff';
-		document.getElementById('toh').style.backgroundColor = '#00eaff';
-		document.getElementById('pod').style.backgroundColor = '#00eaff';
-		document.getElementById('sp').style.backgroundColor = '#00eaff';
-		document.getElementById('sw').style.backgroundColor = '#00eaff';
-		document.getElementById('tt').style.backgroundColor = '#00eaff';
-		document.getElementById('ip').style.backgroundColor = '#00eaff';
-		document.getElementById('mm').style.backgroundColor = '#00eaff';
-		document.getElementById('tr_m').style.backgroundColor = '#d44a00';
-		document.getElementById('tr_w').style.backgroundColor = '#d44a00';
-		document.getElementById('tr_e').style.backgroundColor = '#d44a00';
-		document.getElementById('tr_b').style.backgroundColor = '#d44a00';
+		const curStyle = window.getComputedStyle(document.documentElement);
+		document.getElementById('hc_m').style.backgroundColor = curStyle.getPropertyValue('--hc-color');
+		document.getElementById('hc_w').style.backgroundColor = curStyle.getPropertyValue('--hc-color');
+		document.getElementById('hc_e').style.backgroundColor = curStyle.getPropertyValue('--hc-color');
+		document.getElementById('ct').style.backgroundColor = curStyle.getPropertyValue('--ct-color');
+		document.getElementById('ep').style.backgroundColor = curStyle.getPropertyValue('--ep-color');
+		document.getElementById('dp_m').style.backgroundColor = curStyle.getPropertyValue('--dp-color');
+		document.getElementById('dp_w').style.backgroundColor = curStyle.getPropertyValue('--dp-color');
+		document.getElementById('dp_e').style.backgroundColor = curStyle.getPropertyValue('--dp-color');
+		document.getElementById('dp_n').style.backgroundColor = curStyle.getPropertyValue('--dp_n-color');
+		document.getElementById('toh').style.backgroundColor = curStyle.getPropertyValue('--toh-color');
+		document.getElementById('pod').style.backgroundColor = curStyle.getPropertyValue('--pod-color');
+		document.getElementById('sp').style.backgroundColor = curStyle.getPropertyValue('--sp-color');
+		document.getElementById('sw').style.backgroundColor = curStyle.getPropertyValue('--sw-color');
+		document.getElementById('tt').style.backgroundColor = curStyle.getPropertyValue('--tt-color');
+		document.getElementById('ip').style.backgroundColor = curStyle.getPropertyValue('--ip-color');
+		document.getElementById('mm').style.backgroundColor = curStyle.getPropertyValue('--mm-color');
+		document.getElementById('tr_m').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
+		document.getElementById('tr_w').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
+		document.getElementById('tr_e').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
+		document.getElementById('tr_b').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
 		document.getElementById('link').style.backgroundColor = '#00ddff';
 		document.getElementById('sanc').style.backgroundColor = '#00ddff';
 		document.getElementById('mount').style.backgroundColor = '#00ddff';
@@ -1667,7 +1667,9 @@
 		document.getElementById('rupee').style.backgroundColor = '#51ff3a';
 		document.getElementById('shop').style.backgroundColor = '#51ff3a';
 		document.getElementById('dark').style.backgroundColor = '#2433ff';
-		document.getElementById('connector').style.backgroundColor = '#ff00f9';
+		document.getElementById('connector').style.backgroundColor = curStyle.getPropertyValue('--connector-color');
+		// document.getElementById('connector1').style.backgroundColor = '#ff50f9';
+		// document.getElementById('connector3').style.backgroundColor = '#bf00ff';
 		document.getElementById('bomb').style.backgroundColor = '#ff7b00';
 		document.getElementById('bump').style.backgroundColor = '#ff7b00';
 		document.getElementById('spike').style.backgroundColor = '#ff7b00';
@@ -3463,10 +3465,6 @@
 			setTimeout(setPrimer, 1000);
 		}
 		
-		if (flags.colormode === "Y") {
-			document.getElementById("alternatestyle").href = "css/alternatecolorstyle.css?v="+buildString;
-		}
-		
 		loadStyleAndChests();
 
 		//If spoiler mode, first show the modal to load the spoiler log
@@ -3479,7 +3477,7 @@
 		document.getElementById('summaryFilter1').value = 'knownconnectors';
 		document.getElementById('summaryCleared0').checked = false;
 		document.getElementById('summaryCleared1').checked = false;
-		
+		const curStyle = window.getComputedStyle(document.documentElement);
 		for (const a of ["unavailable","available","possible","information","darkavailable","darkpossible","partialavailable","opened"]) {
 			constantFunctions[a] = ()=>a;
 			constantFunctionsEDC[a] = []
@@ -3487,22 +3485,22 @@
 				const dungeonID = k;
 				constantFunctionsEDC[a].push(function() {
 					if (a === 'available') {
-						document.getElementById('chest'+dungeonID).style.backgroundColor = (flags.colormode === "N" ? 'lime' : '#055fe6');
+						document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--available-color');
 						document.getElementById('chest'+dungeonID).style.color = 'black';
 					} else if (a === 'darkavailable') {
-						document.getElementById('chest'+dungeonID).style.backgroundColor = (flags.colormode === "N" ? 'blue' : '#034f6d');
+						document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkavailable-color');
 						document.getElementById('chest'+dungeonID).style.color = 'white';
 					} else if (a === 'possible') {
-						document.getElementById('chest'+dungeonID).style.backgroundColor = (flags.colormode === "N" ? 'yellow' : '#faf600');
+						document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--possible-color');
 						document.getElementById('chest'+dungeonID).style.color = 'black';
 					} else if (a === 'darkpossible') {
-						document.getElementById('chest'+dungeonID).style.backgroundColor = (flags.colormode === "N" ? 'purple' : '#cdbd00');
+						document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkpossible-color');
 						document.getElementById('chest'+dungeonID).style.color = 'white';
 					} else if (a === 'unavailable') {
-						document.getElementById('chest'+dungeonID).style.backgroundColor = (flags.colormode === "N" ? 'red' : '#c46902');
+						document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--unavailable-color');
 						document.getElementById('chest'+dungeonID).style.color = 'white';
 					} else if (a === 'information') {
-						document.getElementById('chest'+dungeonID).style.backgroundColor = (flags.colormode === "N" ? 'orange' : '#d53ae6');
+						document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--information-color');
 						document.getElementById('chest'+dungeonID).style.color = 'black';
 					}
 				});

@@ -30,7 +30,6 @@
         mapmode: query.d.charAt(0),
         spoilermode: query.d.charAt(1),
         spheresmode: query.d.charAt(2),
-        colormode: query.d.charAt(3),
         autotracking: query.d.charAt(4),
         trackingport: query.d.charAt(5) + query.d.charAt(6) + query.d.charAt(7) + query.d.charAt(8),
         restreamingcode: query.d.charAt(9) + query.d.charAt(10) + query.d.charAt(11) + query.d.charAt(12) + query.d.charAt(13) + query.d.charAt(14),
