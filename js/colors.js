@@ -26,6 +26,8 @@ const mikeColors = {
   "ip-color": "#00eaff",
   "mm-color": "#00eaff",
   "tr-color": "#d44a00",
+  "gt-color": "#00eaff",
+  "ganon-color": "#00eaff",
 };
 
 const dunkaColors = {
@@ -53,6 +55,8 @@ const dunkaColors = {
   "ip-color": "#00eaff",
   "mm-color": "#00eaff",
   "tr-color": "#00eaff",
+  "gt-color": "#00eaff",
+  "ganon-color": "#00eaff",
 };
 
 const altColors = {
@@ -80,6 +84,8 @@ const altColors = {
   "ip-color": "#00eaff",
   "mm-color": "#00eaff",
   "tr-color": "#d44a00",
+  "gt-color": "#00eaff",
+  "ganon-color": "#00eaff",
 };
 
 const colorSets = {
@@ -118,6 +124,9 @@ const handleColorClick = (e) => {
 
 const setColorAndSlider = (item, colorSettings) => {
   const slider = document.querySelector("input.input-color-opacity-slider[data-id='" + item.getAttribute("data-id") + "']");
+  if (!colorSettings[item.getAttribute("data-id")]) {
+    colorSettings[item.getAttribute("data-id")] = mikeColors[item.getAttribute("data-id")];
+  } 
   if (colorSettings[item.getAttribute("data-id")].length < 8) {
     colorSettings[item.getAttribute("data-id")] = colorSettings[item.getAttribute("data-id")] + "ff";
   }

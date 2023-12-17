@@ -23,6 +23,8 @@
   --ip-color: #00eaff;
   --mm-color: #00eaff;
   --tr-color: #d44a00;
+  --gt-color: #00eaff;
+  --ganon-color: #00eaff;
 }
 
 .unavailable {
@@ -142,6 +144,14 @@
 }
 .availablemm {
   background-color: var(--mm-color);
+}
+
+.availablegt {
+  background-color: var(--gt-color);
+}
+
+.availableganon {
+  background-color: var(--ganon-color);
 }
 
 .crossedright {

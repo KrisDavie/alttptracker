@@ -1655,8 +1655,8 @@
 		document.getElementById('sanc').style.backgroundColor = '#00ddff';
 		document.getElementById('mount').style.backgroundColor = '#00ddff';
 		document.getElementById('item').style.backgroundColor = '#51ff3a';
-		document.getElementById('gt').style.backgroundColor = '#00eaff';
-		document.getElementById('ganon').style.backgroundColor = '#000';
+		document.getElementById('gt').style.backgroundColor = curStyle.getPropertyValue('--gt-color');
+		document.getElementById('ganon').style.backgroundColor = curStyle.getPropertyValue('--ganon-color');
 		document.getElementById('magic').style.backgroundColor = '#ff7b00';
 		document.getElementById('kid').style.backgroundColor = '#ff7b00';
 		document.getElementById('smith').style.backgroundColor = '#ff7b00';
