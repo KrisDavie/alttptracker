@@ -117,41 +117,53 @@
 
 .availablect {
   background-color: var(--ct-color);
+  border-radius: 0% !important
 }
 .availableep {
   background-color: var(--ep-color);
+  border-radius: 0% !important
 }
 .availabledp_n {
   background-color: var(--dp_n-color);
+  border-radius: 0% !important
 }
 .availabletoh {
   background-color: var(--toh-color);
+  border-radius: 0% !important
 }
 .availablepod {
   background-color: var(--pod-color);
+  border-radius: 0% !important
 }
 .availablesp {
   background-color: var(--sp-color);
+  border-radius: 0% !important
 }
 .availablesw {
   background-color: var(--sw-color);
+  border-radius: 0% !important
 }
 .availablett {
   background-color: var(--tt-color);
+  border-radius: 0% !important
 }
 .availableip {
   background-color: var(--ip-color);
+  border-radius: 0% !important
 }
 .availablemm {
   background-color: var(--mm-color);
+  border-radius: 0% !important
 }
 
 .availablegt {
   background-color: var(--gt-color);
+  border-radius: 0% !important
 }
 
 .availableganon {
   background-color: var(--ganon-color);
+  border-radius: 0% !important
 }
 
 .crossedright {
