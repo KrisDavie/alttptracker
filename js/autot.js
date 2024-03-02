@@ -287,7 +287,7 @@ function autotrackDoTracking(data) {
             if (autotrackPrevData === null || ((autotrackPrevData[location[0]] & location[1]) === 0))
                 activated = true;
         }
-        return activated;yes
+        return activated
     };
 
     function updatechest(chest, offset, mask) {
