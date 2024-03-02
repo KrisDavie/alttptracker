@@ -93,6 +93,7 @@ function launch_tracker() {
 	var overworld = document.querySelector('input[name="overworldgroup"]:checked').value;
 	var boss = document.querySelector('input[name="bossgroup"]:checked').value;
 	var enemy = document.querySelector('input[name="enemygroup"]:checked').value;
+	var pseudoboots = document.querySelector('input[name="pseudobootsgroup"]:checked').value;
 	var unknown = document.querySelector('input[name="unknowngroup"]:checked').value;
 	var glitches = document.querySelector('input[name="glitchesgroup"]:checked').value;
 	var shuffledmaps = (document.getElementById("shuffledmaps").checked === true ? "1" : "0");
@@ -153,13 +154,14 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
 			.replace('{world}', world)
 			.replace('{entrance}', entrance)
 			.replace('{door}', door)
 			.replace('{overworld}', overworld)
 			.replace('{boss}', boss)
 			.replace('{enemy}', enemy)
+			.replace('{pseudoboots}', pseudoboots)
 			.replace('{unknown}', unknown)
 			.replace('{glitches}', glitches)
 			.replace('{shuffledmaps}', shuffledmaps)

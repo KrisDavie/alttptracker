@@ -96,7 +96,13 @@ body {
   bottom: 16px;
   background-size: 100% 100%;
 }
-
+.pseudoboots {
+  width: 64px;
+  height: 64px;
+  position: absolute;
+  bottom: 0px;
+  background-size: 100% 100%;
+}
 #map {
   width: 884px;
   height: 448px;
@@ -335,6 +341,7 @@ body {
 .mirror { background-image: url(../images/items/mirror.png); }
 .mirrorscroll { background-image: url(../images/dungeons/map.png); }
 .boots { background-image: url(../images/items/boots.png); }
+.pseudoboots { background-image: url(../images/items/pseudoboots.png); }
 .glove { background-image: url(../images/items/glove1.png); }
 .glove.active-2 { background-image: url(../images/items/glove2.png); }
 .flippers { background-image: url(../images/items/flippers.png); }

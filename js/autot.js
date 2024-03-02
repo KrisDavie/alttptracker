@@ -15,6 +15,129 @@ var WRAM_SIZE = 0x20000;
 var SAVEDATA_START = WRAM_START + 0xF000;
 var SAVEDATA_SIZE = 0x500;
 
+const dungeondatamem = {
+    "hc": {
+        "dungeonarrayname": "chest11",
+        "locations": [[0xe4, 0x10], [0xe2, 0x10], [0x100, 0x10], [0x64, 0x10], [0x22, 0x10], [0x22, 0x20], [0x22, 0x40], [0x24, 0x10]],
+        "compass": [0x365, 0x40],
+        "bigkey": [0x367, 0x40],
+        "map": [0x369, 0x40],
+        "smallkeys": 0x4E0
+    },
+    "ep": {
+        "dungeonarrayname": "chest0",
+        "locations": [[0x172, 0x10], [0x154, 0x10], [0x150, 0x10], [0x152, 0x10], [0x170, 0x10], [0x190, 0x800]],
+        "compass": [0x365, 0x20],
+        "bigkey": [0x367, 0x20],
+        "map": [0x369, 0x20],
+        "smallkeys": 0x4E2
+    },
+    "dp": {
+        "dungeonarrayname": "chest1",
+        "locations": [[0xe6, 0x10], [0xe6, 0x400], [0xe8, 0x10], [0x10a, 0x10], [0xea, 0x10], [0x66, 0x800]],
+        "compass": [0x365, 0x10],
+        "bigkey": [0x367, 0x10],
+        "map": [0x369, 0x10],
+        "smallkeys": 0x4E3
+    },
+    "toh": {
+        "dungeonarrayname": "chest2",
+        "locations": [[0x10e, 0x400], [0xee, 0x10], [0x10e, 0x10], [0x4e, 0x10], [0x4e, 0x20], [0xe, 0x800]],
+        "compass": [0x364, 0x20],
+        "bigkey": [0x366, 0x20],
+        "map": [0x368, 0x20],
+        "smallkeys": 0x4EA
+    },
+    "at": {
+        "dungeonarrayname": "chest12",
+        "locations": [[0x1c0, 0x10], [0x1a0, 0x10]],
+        "compass": [0x365, 0x08],
+        "bigkey": [0x367, 0x08],
+        "map": [0x369, 0x08],
+        "smallkeys": 0x4E4
+    },
+    "pod": {
+        "dungeonarrayname": "chest3",
+        "locations": [[0x12, 0x10], [0x56, 0x10], [0x54, 0x10], [0x54, 0x20], [0x74, 0x10], [0x14, 0x10], [0x34, 0x10], [0x34, 0x20], [0x34, 0x40], [0x32, 0x10], [0x32, 0x20], [0xd4, 0x10], [0xd4, 0x20], [0xb4, 0x800]],
+        "compass": [0x365, 0x02],
+        "bigkey": [0x367, 0x02],
+        "map": [0x369, 0x02],
+        "smallkeys": 0x4E6
+    },
+    "sp": {
+        "dungeonarrayname": "chest4",
+        "locations": [[0x50, 0x10], [0x6e, 0x10], [0x6c, 0x10], [0x6a, 0x10], [0x68, 0x10], [0x8c, 0x10], [0xec, 0x10], [0xec, 0x20], [0xcc, 0x10], [0xc, 0x800]],
+        "compass": [0x365, 0x04],
+        "bigkey": [0x367, 0x04],
+        "map": [0x369, 0x04],
+        "smallkeys": 0x4E5
+    },
+    "sw": {
+        "dungeonarrayname": "chest5",
+        "locations": [[0xce, 0x10], [0xd0, 0x10], [0xae, 0x10], [0xae, 0x20], [0xb0, 0x10], [0xb0, 0x20], [0xb2, 0x10], [0x52, 0x800]],
+        "compass": [0x364, 0x80],
+        "bigkey": [0x366, 0x80],
+        "map": [0x368, 0x80],
+        "smallkeys": 0x4E8
+    },
+    "tt": {
+        "dungeonarrayname": "chest6",
+        "locations": [[0x1b6, 0x10], [0x1b6, 0x20], [0x196, 0x10], [0x1b8, 0x10], [0xca, 0x10], [0x8a, 0x10], [0x88, 0x10], [0x158, 0x800]],
+        "compass": [0x364, 0x10],
+        "bigkey": [0x366, 0x10],
+        "map": [0x368, 0x10],
+        "smallkeys": 0x4EB
+    },
+    "ip": {
+        "dungeonarrayname": "chest7",
+        "locations": [[0x5c, 0x10], [0x7e, 0x10], [0x3e, 0x10], [0xbe, 0x10], [0xfc, 0x10], [0x15c, 0x10], [0x13c, 0x10], [0x1bc, 0x800]],
+        "compass": [0x364, 0x40],
+        "bigkey": [0x366, 0x40],
+        "map": [0x368, 0x40],
+        "smallkeys": 0x4E9
+    },
+    "mm": {
+        "dungeonarrayname": "chest8",
+        "locations": [[0x144, 0x10], [0x166, 0x10], [0x184, 0x10], [0x182, 0x10], [0x1a2, 0x10], [0x186, 0x10], [0x186, 0x20], [0x120, 0x800]],
+        "compass": [0x365, 0x01],
+        "bigkey": [0x367, 0x01],
+        "map": [0x369, 0x01],
+        "smallkeys": 0x4E7
+    },
+    "tr": {
+        "dungeonarrayname": "chest9",
+        "locations": [[0x1ac, 0x10], [0x16e, 0x10], [0x16e, 0x20], [0x16c, 0x10], [0x28, 0x10], [0x48, 0x10], [0x8, 0x10], [0x1aa, 0x10], [0x1aa, 0x20], [0x1aa, 0x40], [0x1aa, 0x80], [0x148, 0x800]],
+        "compass": [0x364, 0x08],
+        "bigkey": [0x366, 0x08],
+        "map": [0x368, 0x08],
+        "smallkeys": 0x4EC
+    },
+    "gt": {
+        "dungeonarrayname": "chest10",
+        "locations": [[0x118, 0x400], [0xf6, 0x10], [0xf6, 0x20], [0xf6, 0x40], [0xf6, 0x80], [0x116, 0x10], [0xfa, 0x10], [0xf8, 0x10], [0xf8, 0x20], [0xf8, 0x40], [0xf8, 0x80], [0x118, 0x10], [0x118, 0x20], [0x118, 0x40], [0x118, 0x80], [0x38, 0x10], [0x38, 0x20], [0x38, 0x40], [0x11a, 0x10], [0x13a, 0x10], [0x13a, 0x20], [0x13a, 0x40], [0x13a, 0x80], [0x7a, 0x10], [0x7a, 0x20], [0x7a, 0x40], [0x9a, 0x10]],
+        "compass": [0x364, 0x04],
+        "bigkey": [0x366, 0x04],
+        "map": [0x368, 0x04],
+        "smallkeys": 0x4ED
+    }
+};
+
+let dungeonautotrackCounts = {
+    "hc": 0,
+    "ep": 0,
+    "dp": 0,
+    "toh": 0,
+    "at": 0,
+    "pod": 0,
+    "sp": 0,
+    "sw": 0,
+    "tt": 0,
+    "ip": 0,
+    "mm": 0,
+    "tr": 0,
+    "gt": 0
+};
+
 function autotrackStartTimer() {
     autotrackTimer = setTimeout(autotrackReadMem, autotrackRefreshInterval);
 }
@@ -164,7 +287,7 @@ function autotrackDoTracking(data) {
             if (autotrackPrevData === null || ((autotrackPrevData[location[0]] & location[1]) === 0))
                 activated = true;
         }
-        return activated;
+        return activated;yes
     };
 
     function updatechest(chest, offset, mask) {
@@ -175,8 +298,41 @@ function autotrackDoTracking(data) {
         if (newbit_group(locations) && !chests[chest].is_opened)
             toggle_chest(chest);
     };
+
+    function checkItem(data, item) {
+        return (data[item[0]] & item[1]) !== 0;
+    }
     
-	if (flags.entrancemode === 'N') {
+    // Decrement dungeon count if unless a non-wild dungeon item count is found 
+    if (flags.doorshuffle === 'N') {
+        Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
+            if (items[dungeondata["dungeonarrayname"]] > 0) {
+                let newCheckedLocationCount = dungeondata.locations.filter(location => checkItem(data, location)).length;
+                let newDungeonItemCount = 0;
+
+                if (flags.wildcompasses === 'N' && checkItem(data, dungeondata.compass)) {
+                    newDungeonItemCount++;
+                }
+                if (flags.wildbigkeys === 'N' && checkItem(data, dungeondata.bigkey)) {
+                    newDungeonItemCount++;
+                }
+                if (flags.wildmaps === 'N' && checkItem(data, dungeondata.map)) {
+                    newDungeonItemCount++;
+                }
+                if (flags.wildsmallkeys === 'N') {
+                    newDungeonItemCount += data[dungeondata.smallkeys];
+                }
+
+                newCheckedLocationCount -= newDungeonItemCount;
+                if (newCheckedLocationCount > dungeonautotrackCounts[dungeon]) {
+                    dungeonautotrackCounts[dungeon] = newCheckedLocationCount;
+                    toggle(dungeondata["dungeonarrayname"]);
+                }
+            }
+        });
+    }
+
+    if (flags.entrancemode === 'N') {
 		updatechest(0, 0x226, 0x10); // King's Tomb
 		updatechest_group(1, [[0x2BB, 0x40], [0x216, 0x10]]); // Sunken Treasure + Flooded Chest
 		updatechest(2, 0x208, 0x10); // Link's House
@@ -273,18 +429,18 @@ function autotrackDoTracking(data) {
 		updatechest(93, 0x2E8, 0x40); // Dig Game
 		updatechest(94, 0x301, 0x40); // Zora's Ledge
 		updatechest(95, 0x2AA, 0x40); // Dig/Flute Spot
-		//updatechest_group(96, [[0x022, 0x10], [0x022, 0x20], [0x022, 0x40]]); // Sewers Left + Middle + Right
+		updatechest_group(96, [[0x022, 0x10], [0x022, 0x20], [0x022, 0x40]]); // Sewers Left + Middle + Right
 		updatechest_group(97, [[0x3C6, 0x01], [0x0AA, 0x10]]); // Uncle + Passage
-		//updatechest_group(98, [[0x0E4, 0x10], [0x0E2, 0x10], [0x100, 0x10]]); // Hyrule Castle Map + Boomerang + Zelda
-		//updatechest(99, 0x024, 0x10); // Sanctuary
+		updatechest_group(98, [[0x0E4, 0x10], [0x0E2, 0x10], [0x100, 0x10]]); // Hyrule Castle Map + Boomerang + Zelda
+		updatechest(99, 0x024, 0x10); // Sanctuary
 		updatechest(100, 0x411, 0x80); // Magic Bat
 		updatechest(101, 0x411, 0x04); // Blacksmith
 		updatechest_group(102, [[0x22C, 0x10], [0x22C, 0x20]]); // Pyramid Fairy Left + Right
 		updatechest(103, 0x300, 0x40); // Pedestal
-		//updatechest(104, 0x064, 0x10); // Hyrule Castle - Dark Cross
+		updatechest(104, 0x064, 0x10); // Hyrule Castle - Dark Cross
 		updatechest_group(105, [[0x228, 0x10], [0x228, 0x20]]); // Waterfall Fairy Left + Right
-		//updatechest(106, 0x1C0, 0x10); // Castle Tower - Room 03
-		//updatechest(107, 0x1A0, 0x10); // Castle Tower - Dark Maze
+		updatechest(106, 0x1C0, 0x10); // Castle Tower - Room 03
+		updatechest(107, 0x1A0, 0x10); // Castle Tower - Dark Maze
 
     } else {
 		updatechest(0, 0x2BB, 0x40); // Sunken Treasure
@@ -350,7 +506,13 @@ function autotrackDoTracking(data) {
         updatechest(60, 0x2EE, 0x08); // Dark Tree Line Tree 3
         updatechest(61, 0x2EE, 0x04); // Dark Tree Line Tree 4
         updatechest(62, 0x2F4, 0x10); // Hype Cave Area
-    }
+    };
+
+//    if (!flags.pseudoboots && data[0x18008E] === 0x01) {
+//        flags.pseudoboots = true;
+//        toggle("boots");
+//        toggle("boots");
+//    }
 	
     function update_boss(boss, offset) {
         if (newbit(offset, 0x08) && !items[boss]) {

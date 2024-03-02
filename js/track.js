@@ -56,6 +56,7 @@
 					"overworldshuffle":flags.overworldshuffle,
 					"bossshuffle":flags.bossshuffle,
 					"enemyshuffle":flags.enemyshuffle,
+					"pseudoboots":flags.pseudoboots,
 					"unknown":flags.unknown,
 					"glitches":flags.glitches,
 					"wildmaps":flags.wildmaps,
@@ -341,6 +342,7 @@
 					"overworldshuffle":flags.overworldshuffle,
 					"bossshuffle":flags.bossshuffle,
 					"enemyshuffle":flags.enemyshuffle,
+					"pseudoboots":flags.pseudoboots,
 					"unknown":flags.unknown,
 					"glitches":flags.glitches,
 					"wildmaps":flags.wildmaps,
@@ -600,6 +602,7 @@
 						flags.overworldshuffle = megapack.overworldshuffle;
 						flags.bossshuffle = megapack.bossshuffle;
 						flags.enemyshuffle = megapack.enemyshuffle;
+						flags.pseudoboots = megapack.pseudoboots;
 						flags.unknown = megapack.unknown;
 						flags.glitches = megapack.glitches;
 						flags.wildmaps = megapack.wildmaps;
@@ -1008,6 +1011,11 @@
 		if(label === 'mirror' && flags.doorshuffle != 'N') {
 			document.getElementById('mirrorscroll').style.display = items.mirror ?'block' :'none';
 		}
+
+		if (label === 'boots' && flags.pseudoboots === 'Y') {
+			document.getElementById('pseudoboots').style.display = items.boots ? 'block' : 'none';
+		}
+
 
 		if (label.substring(0,5) === 'chest') {
             var value = items.dec(label);
@@ -3370,6 +3378,8 @@
 		document.getElementById('bombfloor').style.visibility = flags.doorshuffle != 'C' ? 'hidden' : 'visible';
 		
 		document.getElementById('mirrorscroll').style.visibility = flags.doorshuffle === 'N' ? 'hidden' : 'visible';
+
+		document.getElementById('pseudoboots').style.visibility = flags.pseudoboots === 'N' ? 'hidden' : 'visible';
 		
 		document.getElementById('showpathsdiv').style.visibility = flags.doorshuffle === 'N' && flags.overworldshuffle === 'N' ? 'hidden' : 'visible';
 
@@ -3894,6 +3904,9 @@
 			}
 			if (window.flags.startingitems.charAt(22) === '1') {
 				toggle('boots');
+				if (window.flags.pseudoboots === 'Y') {
+					toggle('boots');
+				}
 			}
 			if (window.flags.startingitems.charAt(23) != '0') {
 				toggle('glove');
