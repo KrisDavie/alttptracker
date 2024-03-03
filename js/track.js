@@ -2903,32 +2903,10 @@
 
 			flags.doorshuffle = document.getElementById('doorselect').value;
 
-			rightClickChest('chest0');
-			toggle('chest0');
-			rightClickChest('chest1');
-			toggle('chest1');
-			rightClickChest('chest2');
-			toggle('chest2');
-			rightClickChest('chest3');
-			toggle('chest3');
-			rightClickChest('chest4');
-			toggle('chest4');
-			rightClickChest('chest5');
-			toggle('chest5');
-			rightClickChest('chest6');
-			toggle('chest6');
-			rightClickChest('chest7');
-			toggle('chest7');
-			rightClickChest('chest8');
-			toggle('chest8');
-			rightClickChest('chest9');
-			toggle('chest9');
-			rightClickChest('chest10');
-			toggle('chest10');
-			rightClickChest('chest11');
-			toggle('chest11');
-			rightClickChest('chest12');
-			toggle('chest12');
+			for (var k = 0; k < 13; k++) {
+				rightClickChest('chest' + k);
+				toggle('chest' + k);
+			};
 			
 			if (!document.getElementById('shuffledmaps').checked) {
 				for (var k = 0; k < 10; k++) {
