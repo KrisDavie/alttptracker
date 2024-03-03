@@ -439,7 +439,7 @@
                 value -= dungeonInfo.bigkey ? 1 : 0;
                 value -= isPots && dungeonInfo.bigkeydrop ? 1 : 0;
             }
-            if (!flags.wildkeys && !flags.gametype === 'R') {
+            if (!flags.wildkeys && !(flags.gametype === 'R')) {
                 value -= dungeonInfo.keys;
                 value -= isPots ? dungeonInfo.keypot : 0;
             }
