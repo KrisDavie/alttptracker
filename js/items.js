@@ -343,7 +343,7 @@
         },
         "sp": {
             "dungeonarrayname": "chest4",
-            "default": 8,
+            "default": 10,
             "keys": 1,
             "keypot": 5,
             "keydrop": 0,
