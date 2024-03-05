@@ -445,6 +445,9 @@
             }
             items[dungeonInfo.dungeonarrayname] = value;
             items['max' + dungeonInfo.dungeonarrayname] = value;
+            range[dungeonInfo.dungeonarrayname] = { min: 0, max: value };
+            items.dec = limit(-1, range);
+            items.inc = limit(1, range);
         }
     };
 

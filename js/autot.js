@@ -329,8 +329,8 @@ function autotrackDoTracking(data) {
         return (data[item[0]] & item[1]) !== 0;
     }
     
-    // Decrement dungeon count unless a non-wild dungeon item count is found 
-    if (flags.doorshuffle === 'N') {
+    // Decrement dungeon count unless a non-wild dungeon item is found 
+    if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') {
         Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
             if (items[dungeondata["dungeonarrayname"]] > 0) {
                 let newCheckedLocationCount = dungeondata.locations.filter(location => checkItem(data, location)).length;
@@ -354,8 +354,8 @@ function autotrackDoTracking(data) {
                 }
 
                 newCheckedLocationCount -= newDungeonItemCount;
-                if (newCheckedLocationCount > dungeonautotrackCounts[dungeon]) {
-                    dungeonautotrackCounts[dungeon] = newCheckedLocationCount;
+                while (newCheckedLocationCount > dungeonautotrackCounts[dungeon]) {
+                    dungeonautotrackCounts[dungeon] ++;
                     toggle(dungeondata["dungeonarrayname"]);
                 }
             }
