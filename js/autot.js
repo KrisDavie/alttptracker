@@ -14,12 +14,13 @@ var WRAM_START = 0xF50000;
 var WRAM_SIZE = 0x20000;
 var SAVEDATA_START = WRAM_START + 0xF000;
 var SAVEDATA_SIZE = 0x500;
+var KEYPOTDROP_START = SAVEDATA_START + 0x7018;
 
 const dungeondatamem = {
     "hc": {
         "dungeonarrayname": "chest11",
         "locations": [[0xe4, 0x10], [0xe2, 0x10], [0x100, 0x10], [0x64, 0x10], [0x22, 0x10], [0x22, 0x20], [0x22, 0x40], [0x24, 0x10]],
-        "keydrops": [[0xe5, 0x40], [0xe3, 0x2], [0xe3, 0x20], [0x101, 0x2], [0x101, 0x10], [0x43, 0x2], [0x43, 0x40]],
+        "keydrops": [[0xe5, 0x80], [0xe3, 0x40], [0x101, 0x20], [0x43, 0x80]],
         "keypots": [],
         "compass": [0x365, 0x40],
         "bigkey": [0x367, 0x40],
@@ -29,7 +30,7 @@ const dungeondatamem = {
     "ep": {
         "dungeonarrayname": "chest0",
         "locations": [[0x172, 0x10], [0x154, 0x10], [0x150, 0x10], [0x152, 0x10], [0x170, 0x10], [0x191, 0x08]],
-        "keydrops": [[0x133, 0x8]],
+        "keydrops": [[0x133, 0x10]],
         "keypots": [[0x175, 0x4]],
         "compass": [0x365, 0x20],
         "bigkey": [0x367, 0x20],
@@ -59,7 +60,7 @@ const dungeondatamem = {
     "at": {
         "dungeonarrayname": "chest12",
         "locations": [[0x1c0, 0x10], [0x1a0, 0x10]],
-        "keydrops": [[0x181, 0x8], [0x160, 0x20]],
+        "keydrops": [[0x181, 0x10], [0x160, 0x20]],
         "keypots": [],
         "compass": [0x365, 0x08],
         "bigkey": [0x367, 0x08],
@@ -89,8 +90,8 @@ const dungeondatamem = {
     "sw": {
         "dungeonarrayname": "chest5",
         "locations": [[0xce, 0x10], [0xd0, 0x10], [0xae, 0x10], [0xae, 0x20], [0xb0, 0x10], [0xb0, 0x20], [0xb2, 0x10], [0x53, 0x08]],
-        "keydrops": [[0x73, 0x20]],
-        "keypots": [[0x73, 0x20]],
+        "keydrops": [[0x73, 0x40]],
+        "keypots": [[0xac, 0x4]],
         "compass": [0x364, 0x80],
         "bigkey": [0x366, 0x80],
         "map": [0x368, 0x80],
@@ -109,7 +110,7 @@ const dungeondatamem = {
     "ip": {
         "dungeonarrayname": "chest7",
         "locations": [[0x5c, 0x10], [0x7e, 0x10], [0x3e, 0x10], [0xbe, 0x10], [0xfc, 0x10], [0x15c, 0x10], [0x13c, 0x10], [0x1bd, 0x08]],
-        "keydrops": [[0x1d, 0x8], [0x7c, 0x80]],
+        "keydrops": [[0x1d, 0x10], [0x7c, 0x80]],
         "keypots": [[0x7f, 0x1], [0x13f, 0x4]],
         "compass": [0x364, 0x40],
         "bigkey": [0x366, 0x40],
@@ -120,7 +121,7 @@ const dungeondatamem = {
         "dungeonarrayname": "chest8",
         "locations": [[0x144, 0x10], [0x166, 0x10], [0x184, 0x10], [0x182, 0x10], [0x1a2, 0x10], [0x186, 0x10], [0x186, 0x20], [0x121, 0x08]],
         "keydrops": [[0x182, 0x40]],
-        "keypots":[[0x167, 0x40], [0x143, 0x40]],
+        "keypots": [[0x167, 0x40], [0x143, 0x40]],
         "compass": [0x365, 0x01],
         "bigkey": [0x367, 0x01],
         "map": [0x369, 0x01],
@@ -129,7 +130,7 @@ const dungeondatamem = {
     "tr": {
         "dungeonarrayname": "chest9",
         "locations": [[0x1ac, 0x10], [0x16e, 0x10], [0x16e, 0x20], [0x16c, 0x10], [0x28, 0x10], [0x48, 0x10], [0x8, 0x10], [0x1aa, 0x10], [0x1aa, 0x20], [0x1aa, 0x40], [0x1aa, 0x80], [0x149, 0x08]],
-        "keydrops": [[0x16d, 0x2], [0x27, 0x1]],
+        "keydrops": [[0x16d, 0x4], [0x27, 0x2]],
         "keypots": [],
         "compass": [0x364, 0x08],
         "bigkey": [0x366, 0x08],
@@ -139,7 +140,7 @@ const dungeondatamem = {
     "gt": {
         "dungeonarrayname": "chest10",
         "locations": [[0x119, 0x04], [0xf6, 0x10], [0xf6, 0x20], [0xf6, 0x40], [0xf6, 0x80], [0x116, 0x10], [0xfa, 0x10], [0xf8, 0x10], [0xf8, 0x20], [0xf8, 0x40], [0xf8, 0x80], [0x118, 0x10], [0x118, 0x20], [0x118, 0x40], [0x118, 0x80], [0x38, 0x10], [0x38, 0x20], [0x38, 0x40], [0x11a, 0x10], [0x13a, 0x10], [0x13a, 0x20], [0x13a, 0x40], [0x13a, 0x80], [0x7a, 0x10], [0x7a, 0x20], [0x7a, 0x40], [0x9a, 0x10]],
-        "keydrops": [[0x7b, 0x10]],
+        "keydrops": [[0x7b, 0x20]],
         "keypots": [[0x117, 0x20], [0x137, 0x20], [0xf7, 0x4]],
         "compass": [0x364, 0x04],
         "bigkey": [0x366, 0x04],
@@ -286,10 +287,14 @@ function autotrackReadMem() {
         }
         snesread(SAVEDATA_START, 0x280, function (event2) {
             snesread(SAVEDATA_START + 0x280, 0x280, function (event3) {
-                var data = new Uint8Array([...new Uint8Array(event2.data), ...new Uint8Array(event3.data)]);
-                autotrackDoTracking(data);
-                autotrackPrevData = data;
-                autotrackStartTimer();
+                snesread(KEYPOTDROP_START, 0x250, function (event4) {
+                    snesread(KEYPOTDROP_START + 0x250, 0x250, function (event5) {
+                        var data = new Uint8Array([...new Uint8Array(event2.data), ...new Uint8Array(event3.data), ...new Uint8Array(event4.data), ...new Uint8Array(event5.data)]);
+                        autotrackDoTracking(data);
+                        autotrackPrevData = data;
+                        autotrackStartTimer();
+                    });
+                });
             });
         });
     });
@@ -328,6 +333,15 @@ function autotrackDoTracking(data) {
     function checkItem(data, item) {
         return (data[item[0]] & item[1]) !== 0;
     }
+
+    function checkPotItem(data, item) {
+        var loc = item[0] + 0x500;
+        return (data[loc] & item[1]) !== 0;
+    }
+    function checkDropItem(data, item) {
+        var loc = item[0] + 0x500 + 0x250;
+        return (data[loc] & item[1]) !== 0;
+    }
     
     // Decrement dungeon count unless a non-wild dungeon item is found 
     if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') {
@@ -335,8 +349,8 @@ function autotrackDoTracking(data) {
             if (items[dungeondata["dungeonarrayname"]] > 0) {
                 let newCheckedLocationCount = dungeondata.locations.filter(location => checkItem(data, location)).length;
                 if (flags.doorshuffle === 'P') {
-                    newCheckedLocationCount += dungeondata.keydrops.filter(location => checkItem(data, location)).length;
-                    newCheckedLocationCount += dungeondata.keypots.filter(location => checkItem(data, location)).length;
+                    newCheckedLocationCount += dungeondata.keydrops.filter(location => checkDropItem(data, location)).length;
+                    newCheckedLocationCount += dungeondata.keypots.filter(location => checkPotItem(data, location)).length;
                 }
                 let newDungeonItemCount = 0;
 
