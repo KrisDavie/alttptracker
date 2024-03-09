@@ -10,23 +10,24 @@
         overworldshuffle: query.f.charAt(3),        
         bossshuffle: query.f.charAt(4),
         enemyshuffle: query.f.charAt(5),
-        unknown: query.f.charAt(6),
-        glitches: query.f.charAt(7),
-        wildmaps: (query.f.charAt(8) === '1' ? true : false),
-        wildcompasses: (query.f.charAt(9) === '1' ? true : false),
-        wildkeys: (query.f.charAt(10) === '1' ? true : false),
-        wildbigkeys: (query.f.charAt(11) === '1' ? true : false),
-        shopsanity: query.f.charAt(12),
-        ambrosia: query.f.charAt(13),
-        nonprogressivebows: (query.f.charAt(14) === 'Y' ? true : false),
-        activatedflute: (query.f.charAt(15) === 'Y' ? true : false),
-        bonkshuffle: (query.f.charAt(16)),
-        goals: query.f.charAt(17),
-        opentower: query.f.charAt(18),
-        opentowercount: query.f.charAt(19),
-        ganonvuln: query.f.charAt(20),
-        ganonvulncount: query.f.charAt(21),
-        swordmode: query.f.charAt(22),
+        pseudoboots: query.f.charAt(6),
+        unknown: query.f.charAt(7),
+        glitches: query.f.charAt(8),
+        wildmaps: (query.f.charAt(9) === '1' ? true : false),
+        wildcompasses: (query.f.charAt(10) === '1' ? true : false),
+        wildkeys: (query.f.charAt(11) === '1' ? true : false),
+        wildbigkeys: (query.f.charAt(12) === '1' ? true : false),
+        shopsanity: query.f.charAt(13),
+        ambrosia: query.f.charAt(14),
+        nonprogressivebows: (query.f.charAt(15) === 'Y' ? true : false),
+        activatedflute: (query.f.charAt(16) === 'Y' ? true : false),
+        bonkshuffle: (query.f.charAt(17)),
+        goals: query.f.charAt(18),
+        opentower: query.f.charAt(19),
+        opentowercount: query.f.charAt(20),
+        ganonvuln: query.f.charAt(21),
+        ganonvulncount: query.f.charAt(22),
+        swordmode: query.f.charAt(23),
         mapmode: query.d.charAt(0),
         spoilermode: query.d.charAt(1),
         spheresmode: query.d.charAt(2),
@@ -272,7 +273,184 @@
         inc: limit(1, range),
         dec: limit(-1, range)
     };
-	
+
+    const dungeonTotalLocations = {
+        "hc": {
+            "dungeonarrayname": "chest11",
+            "default": 8,
+            "keys": 1,
+            "keypot": 0,
+            "keydrop": 3,
+            "bigkeydrop": true,
+            "bigkey": false,
+            "map": true,
+            "compass": false
+        },
+        "ep": {
+            "dungeonarrayname": "chest0",
+            "default": 6,
+            "keys": 0,
+            "keypot": 1,
+            "keydrop": 1,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "dp": {
+            "dungeonarrayname": "chest1",
+            "default": 6,
+            "keys": 1,
+            "keypot": 3,
+            "keydrop": 0,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "toh": {
+            "dungeonarrayname": "chest2",
+            "default": 6,
+            "keys": 1,
+            "keypot": 0,
+            "keydrop": 0,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "at": {
+            "dungeonarrayname": "chest12",
+            "default": 2,
+            "keys": 2,
+            "keypot": 0,
+            "keydrop": 2,
+            "bigkeydrop": false,
+            "bigkey": false,
+            "map": false,
+            "compass": false
+        },
+        "pod": {
+            "dungeonarrayname": "chest3",
+            "default": 14,
+            "keys": 6,
+            "keypot": 0,
+            "keydrop": 0,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "sp": {
+            "dungeonarrayname": "chest4",
+            "default": 10,
+            "keys": 1,
+            "keypot": 5,
+            "keydrop": 0,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "sw": {
+            "dungeonarrayname": "chest5",
+            "default": 8,
+            "keys": 3,
+            "keypot": 1,
+            "keydrop": 1,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "tt": {
+            "dungeonarrayname": "chest6",
+            "default": 8,
+            "keys": 1,
+            "keypot": 2,
+            "keydrop": 0,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "ip": {
+            "dungeonarrayname": "chest7",
+            "default": 8,
+            "keys": 2,
+            "keypot": 2,
+            "keydrop": 2,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "mm": {
+            "dungeonarrayname": "chest8",
+            "default": 8,
+            "keys": 3,
+            "keypot": 2,
+            "keydrop": 1,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "tr": {
+            "dungeonarrayname": "chest9",
+            "default": 12,
+            "keys": 4,
+            "keypot": 0,
+            "keydrop": 2,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        },
+        "gt": {
+            "dungeonarrayname": "chest10",
+            "default": 27,
+            "keys": 4,
+            "keypot": 3,
+            "keydrop": 1,
+            "bigkeydrop": false,
+            "bigkey": true,
+            "map": true,
+            "compass": true
+        }
+    };
+
+    if (flags.doorshuffle !== 'C') {
+        let isPots = flags.doorshuffle === 'P';
+        for (const [dungeon, dungeonInfo] of Object.entries(dungeonTotalLocations)) {
+            var value = dungeonInfo.default;
+            if (isPots) {
+                value += dungeonInfo.keypot;
+                value += dungeonInfo.keydrop;
+                value += dungeonInfo.bigkeydrop ? 1 : 0;
+            }
+            if (!flags.wildmaps && dungeonInfo.map) {
+                value --;
+            }
+            if (!flags.wildcompasses && dungeonInfo.compass) {
+                value --;
+            }
+            if (!flags.wildbigkeys) {
+                value -= dungeonInfo.bigkey ? 1 : 0;
+                value -= isPots && dungeonInfo.bigkeydrop ? 1 : 0;
+            }
+            if (!flags.wildkeys && !(flags.gametype === 'R')) {
+                value -= dungeonInfo.keys;
+                value -= isPots ? dungeonInfo.keypot : 0;
+            }
+            items[dungeonInfo.dungeonarrayname] = value;
+            items['max' + dungeonInfo.dungeonarrayname] = value;
+            range[dungeonInfo.dungeonarrayname] = { min: 0, max: value };
+            items.dec = limit(-1, range);
+            items.inc = limit(1, range);
+        }
+    };
+
 	function getdelay() {
 		s = '';
 		;
