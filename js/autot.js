@@ -16,6 +16,9 @@ var SAVEDATA_START = WRAM_START + 0xF000;
 var SAVEDATA_SIZE = 0x500;
 var POTDATA_START = SAVEDATA_START + 0x7018;
 var SPRITEDATA_START = SAVEDATA_START + 0x7268;
+var PSEUDOBOOTS_LOC = 0x18008E;
+var RANDOVERSION_LOC = 0x138000; // Actually DR
+var MYSTERY_LOC = 0x138004; // Actually DRFlags
 
 
 const dungeondatamem = {
@@ -273,6 +276,17 @@ function autotrackReadMem() {
         autotrackSocket.onmessage = callback;
     };
 
+    function snesreadsave(address, size, data_loc, nextCallback, merge=false) {
+        snesread(address, size, function(event) {
+            if (merge) {
+                data[data_loc] = new Uint8Array([...data[data_loc], ...new Uint8Array(event.data)]);
+            } else {
+                data[data_loc] = new Uint8Array(event.data);
+            }
+            nextCallback();
+        })
+    }
+
     if (autotrackReconnectTimer !== null)
         clearTimeout(autotrackReconnectTimer);
     autotrackReconnectTimer = setTimeout(function () {
@@ -281,41 +295,52 @@ function autotrackReadMem() {
         autotrackConnect(autotrackHost);
     }, autotrackTimeoutDelay);
     
-    snesread(WRAM_START + 0x10, 1, addMainAutoTrackData1);
-    var data = new Uint8Array(0);
+    snesreadsave(WRAM_START + 0x10, 1, 'gamemode', addMainAutoTrackData1);
+    var data = {};
 
-    function addMainAutoTrackData1(event) {
-        var gamemode = new Uint8Array(event.data)[0];
+    function addMainAutoTrackData1() {
+        var gamemode = data["gamemode"][0];
         if (![0x07, 0x09, 0x0b].includes(gamemode)) {
             autotrackStartTimer();
             return;
         }
-        snesread(SAVEDATA_START, 0x280, addMainAutoTrackData2);
+        snesreadsave(SAVEDATA_START, 0x280, 'rooms_inv', addMainAutoTrackData2);
     }
 
-    function addMainAutoTrackData2(event) {
-        data = new Uint8Array([...data, ...new Uint8Array(event.data)]);
-        snesread(SAVEDATA_START + 0x280, 0x280, 
-            flags.autotracking === 'Y' ? addPotData : handleAutoTrackData);
+    function addMainAutoTrackData2() {
+        snesreadsave(SAVEDATA_START + 0x280, 0x280, 
+            'rooms_inv',
+            flags.autotracking === 'Y' ? addPotData : handleAutoTrackData,
+            merge=true);
     }
 
-    function addPotData(event) {
-        data = new Uint8Array([...data, ...new Uint8Array(event.data)]);
-        snesread(POTDATA_START, 0x250, addSpriteDropData);
+    function addPotData() {
+        snesreadsave(POTDATA_START, 0x250, 'potdata', addSpriteDropData);
     }
 
-    function addSpriteDropData(event) {
-        data = new Uint8Array([...data, ...new Uint8Array(event.data)]);
-        snesread(SPRITEDATA_START, 0x250, addPseudobootsFlag);
+    function addSpriteDropData() {
+        snesreadsave(SPRITEDATA_START, 0x250, 'spritedata', addRandoVersion);
     }
 
-    function addPseudobootsFlag(event) {
-        data = new Uint8Array([...data, ...new Uint8Array(event.data)]);
-        snesread(0x18008E, 0x1, handleAutoTrackData);
+    function addRandoVersion() {
+        snesreadsave(RANDOVERSION_LOC, 0x2, 'version', addMysteryFlag);
     }
 
-    function handleAutoTrackData(event) {
-        data = new Uint8Array([...data, ...new Uint8Array(event.data)]);
+    function addMysteryFlag() {
+        snesreadsave(MYSTERY_LOC, 0x2, 'mystery', addPseudobootsFlag);
+    }
+
+    function addPseudobootsFlag() {
+        // Check if we're playing DR and that the mystery flag is not set
+        if ((data['version'][0] === 68 && data['version'][1] === 82) && (data['mystery'][1] & 0x1) === 0) {
+            snesreadsave(PSEUDOBOOTS_LOC, 0x1, 'pseudoboots', handleAutoTrackData);
+        } else {
+            handleAutoTrackData();
+        }
+    }
+
+    function handleAutoTrackData() {
+        // If autotracking is set to "Old", we get the second half of rooms_inv data, else we're getting the pseudoboots flag
         autotrackDoTracking(data);
         autotrackPrevData = data;
         autotrackStartTimer();
@@ -324,48 +349,39 @@ function autotrackReadMem() {
 
 
 function autotrackDoTracking(data) {
-    function changed(offset) {
-        return autotrackPrevData === null || autotrackPrevData[offset] !== data[offset];
+    function changed(offset, data_loc = 'rooms_inv') {
+        return autotrackPrevData === null || autotrackPrevData[data_loc][offset] !== data[data_loc][offset];
     };
-    function disabledbit(offset, mask) {
-        return (data[offset] & mask) === 0 && (autotrackPrevData === null || ((autotrackPrevData[offset] & mask) !== 0));
+    function disabledbit(offset, mask, data_loc = 'rooms_inv') {
+        return (data[data_loc][offset] & mask) === 0 && (autotrackPrevData === null || ((autotrackPrevData[data_loc][offset] & mask) !== 0));
     };
-    function newbit(offset, mask) {
-        return (data[offset] & mask) !== 0 && (autotrackPrevData === null || ((autotrackPrevData[offset] & mask) !== (data[offset] & mask)));
+    function newbit(offset, mask, data_loc = 'rooms_inv') {
+        return (data[data_loc][offset] & mask) !== 0 && (autotrackPrevData === null || ((autotrackPrevData[data_loc][offset] & mask) !== (data[data_loc][offset] & mask)));
     };
-    function newbit_group(locations) {
+    function newbit_group(locations, data_loc = 'rooms_inv') {
         var activated = false;
         for (const location of locations) {
-            if ((data[location[0]] & location[1]) === 0)
+            if ((data[data_loc][location[0]] & location[1]) === 0)
                 return false;
-            if (autotrackPrevData === null || ((autotrackPrevData[location[0]] & location[1]) === 0))
+            if (autotrackPrevData === null || ((autotrackPrevData[data_loc][location[0]] & location[1]) === 0))
                 activated = true;
         }
         return activated
     };
 
-    function updatechest(chest, offset, mask) {
-        if (newbit(offset, mask) && !chests[chest].is_opened)
+    function updatechest(chest, offset, mask, data_loc = 'rooms_inv') {
+        if (newbit(offset, mask, data_loc) && !chests[chest].is_opened)
             toggle_chest(chest);
     };
-    function updatechest_group(chest, locations) {
-        if (newbit_group(locations) && !chests[chest].is_opened)
+    function updatechest_group(chest, locations, data_loc = 'rooms_inv') {
+        if (newbit_group(locations, data_loc) && !chests[chest].is_opened)
             toggle_chest(chest);
     };
 
-    function checkItem(data, item) {
-        return (data[item[0]] & item[1]) !== 0;
+    function checkItem(data, item, data_loc = 'rooms_inv') {
+        return (data[data_loc][item[0]] & item[1]) !== 0;
     }
 
-    function checkPotItem(data, item) {
-        var loc = item[0] + 0x500;
-        return (data[loc] & item[1]) !== 0;
-    }
-
-    function checkDropItem(data, item) {
-        var loc = item[0] + 0x500 + 0x250;
-        return (data[loc] & item[1]) !== 0;
-    }
     
     // Decrement dungeon count unless a non-wild dungeon item is found 
     if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && flags.autotracking === 'Y') {
@@ -373,8 +389,8 @@ function autotrackDoTracking(data) {
             if (items[dungeondata["dungeonarrayname"]] > 0) {
                 let newCheckedLocationCount = dungeondata.locations.filter(location => checkItem(data, location)).length;
                 if (flags.doorshuffle === 'P') {
-                    newCheckedLocationCount += dungeondata.keydrops.filter(location => checkDropItem(data, location)).length;
-                    newCheckedLocationCount += dungeondata.keypots.filter(location => checkPotItem(data, location)).length;
+                    newCheckedLocationCount += dungeondata.keypots.filter(location => checkItem(data, location, 'potdata')).length;
+                    newCheckedLocationCount += dungeondata.keydrops.filter(location => checkItem(data, location, 'spritedata')).length;
                 }
                 let newDungeonItemCount = 0;
 
@@ -388,7 +404,7 @@ function autotrackDoTracking(data) {
                     newDungeonItemCount++;
                 }
                 if (!flags.wildkeys) {
-                    newDungeonItemCount += data[dungeondata.smallkeys];
+                    newDungeonItemCount += data['rooms_inv'][dungeondata.smallkeys];
                 }
 
                 newCheckedLocationCount -= newDungeonItemCount;
@@ -579,7 +595,7 @@ function autotrackDoTracking(data) {
         updatechest(62, 0x2F4, 0x10); // Hype Cave Area
     };
 
-   if (flags.pseudoboots === 'N' && data[0x500+0x250+0x250] === 0x01) {
+   if ('pseudoboots' in data && flags.pseudoboots === 'N' && data['pseudoboots'][0] === 0x01) {
        flags.pseudoboots = 'Y';
        document.getElementById('pseudoboots').style.display = 'block';
        document.getElementById('pseudoboots').style.visibility = 'visible';
@@ -606,7 +622,7 @@ function autotrackDoTracking(data) {
     function updatesmallkeys(dungeon, offset) {
         if (changed(offset)) {
             var label = "smallkey" + dungeon;
-            var newkeys = autotrackPrevData === null ? data[offset] : (data[offset] - autotrackPrevData[offset] + items[label]);
+            var newkeys = autotrackPrevData === null ? data['rooms_inv'][offset] : (data['rooms_inv'][offset] - autotrackPrevData['rooms_inv'][offset] + items[label]);
             if (newkeys > items[label]) {
                 document.getElementById(label).style.color = (newkeys === items.range[label].max) ? "green" : "white";
                 document.getElementById(label).innerHTML = newkeys;
@@ -670,18 +686,18 @@ function autotrackDoTracking(data) {
     };
 
 	if (changed(0x343)) // Bombs
-        setitem("bomb", data[0x343] > 0);
+        setitem("bomb", data['rooms_inv'][0x343] > 0);
 
-    if (changed(0x3C5) && data[0x3C5] >= 3) // Agahnim Killed
+    if (changed(0x3C5) && data['rooms_inv'][0x3C5] >= 3) // Agahnim Killed
         setitem("agahnim", true);
 
 	if (newbit(0x38E, 0xC0)) {
-        var bits = data[0x38E] & 0xC0;
+        var bits = data['rooms_inv'][0x38E] & 0xC0;
         setitem("bow", bits == 0x40 && flags.nonprogressivebows ? 1 : (bits == 0x80 ? 2 : 3));
     }
 	
     if (newbit(0x38C, 0xC0)) {
-        var bits = data[0x38C] & 0xC0;
+        var bits = data['rooms_inv'][0x38C] & 0xC0;
         setitem("boomerang", bits == 0x80 ? 1 : (bits == 0x40 ? 2 : 3));
     }
 
@@ -749,19 +765,19 @@ function autotrackDoTracking(data) {
         setitem("moonpearl", true);
 
     if (changed(0x354))
-        setitem("glove", data[0x354]);
+        setitem("glove", data['rooms_inv'][0x354]);
 
     if (changed(0x359))
-        setitem("sword", (flags['swordmode'] === 'S' || data[0x359] == 0xFF) ? 0 : data[0x359]);
+        setitem("sword", (flags['swordmode'] === 'S' || data['rooms_inv'][0x359] == 0xFF) ? 0 : data['rooms_inv'][0x359]);
 
     if (changed(0x35A))
-        setitem("shield", data[0x35A]);
+        setitem("shield", data['rooms_inv'][0x35A]);
 
     if (changed(0x35B))
-        setitem("tunic", data[0x35B] + 1);
+        setitem("tunic", data['rooms_inv'][0x35B] + 1);
 
     if (changed(0x37B))
-        setitem("magic", data[0x37B] > 0);
+        setitem("magic", data['rooms_inv'][0x37B] > 0);
 	
 	if (flags.wildmaps) {
 		if (newbit(0x369, 0x20) && prizes[0] === 0)
@@ -837,8 +853,8 @@ function autotrackDoTracking(data) {
 	
     var prevbottles = -1;
     if (autotrackPrevData !== null)
-        prevbottles = (autotrackPrevData[0x35C] == 0 ? 0 : 1) + (autotrackPrevData[0x35D] == 0 ? 0 : 1) + (autotrackPrevData[0x35E] == 0 ? 0 : 1) + (autotrackPrevData[0x35F] == 0 ? 0 : 1);
-    var bottles = (data[0x35C] == 0 ? 0 : 1) + (data[0x35D] == 0 ? 0 : 1) + (data[0x35E] == 0 ? 0 : 1) + (data[0x35F] == 0 ? 0 : 1);
+        prevbottles = (autotrackPrevData['rooms_inv'][0x35C] == 0 ? 0 : 1) + (autotrackPrevData['rooms_inv'][0x35D] == 0 ? 0 : 1) + (autotrackPrevData['rooms_inv'][0x35E] == 0 ? 0 : 1) + (autotrackPrevData['rooms_inv'][0x35F] == 0 ? 0 : 1);
+    var bottles = (data['rooms_inv'][0x35C] == 0 ? 0 : 1) + (data['rooms_inv'][0x35D] == 0 ? 0 : 1) + (data['rooms_inv'][0x35E] == 0 ? 0 : 1) + (data['rooms_inv'][0x35F] == 0 ? 0 : 1);
     if (bottles != prevbottles)
         setitem("bottle", bottles);
 }
