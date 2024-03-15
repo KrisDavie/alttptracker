@@ -48,6 +48,7 @@ body {
 
 #tracker .item,
 #tracker .boss { opacity: .25; }
+#tracker .prize { opacity: .50; }
 #tracker .item[class*="active"],
 #tracker .boss.defeated { opacity: 1; }
 #tracker .bigkey { opacity: .25; }
@@ -172,7 +173,7 @@ body {
 .chest.highlight,
 .castle.highlight,
 .location.highlight,
-.dungeon.highlight { background-image: url(../images/overlay/highlighted.png); }
+.dungeon.highlight { border-color:rgb(255, 238, 0) !important; }
 .chest.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge.png); }
 .chest-0.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge0.png); }
 .location.rightclick,

@@ -24,10 +24,13 @@ function load_cookie() {
 		}
 		if (c.indexOf('p-') > -1) {
 			var sprite = c.substr(c.indexOf('p-') + 2);
-			if (sprite.indexOf(';') > -1) {
-				sprite = sprite.substr(0, sprite.indexOf(';'));
+			if (sprite.indexOf('|') > -1) {
+				sprite = sprite.substr(0, sprite.indexOf('|'));
 			}
 			document.getElementById("spriteselect").value = sprite;
+		}
+		if (c.indexOf('ms-O') > -1) {
+			document.getElementById("oldmapstyles").checked = true;
 		}
 	}
 }
@@ -123,6 +126,7 @@ function launch_tracker() {
 	var restreamdelay = document.getElementById('restreamingdelay').value;
 	var spritesel = document.getElementById("spriteselect");
 	var sprite = spritesel.options[spritesel.selectedIndex].value;
+	var mapStyle = document.querySelector('input[name="oldmapstyles"]:checked') === null ? "N" : "O";
 	
 	if (restreamingcode != "") {
 		if (restreamingcode.length != 6) {
@@ -143,7 +147,7 @@ function launch_tracker() {
 	var height = sphere === "Y" ? map === "C" ? 988 : 744 : map === "C" ? 692 : 448;
 	
 	if (document.getElementById("remembersettings").checked == true) {
-		var settings = "m-" + map + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite;
+		var settings = "m-" + map + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle;
 		document.cookie = "settings=" + settings + "; expires=Sat, 3 Jan 2026 12:00:00 UTC";
 	} else {
 		document.cookie = "settings=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
@@ -154,7 +158,7 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}{mapstyle}&s={startingitemstring}&p={sprite}&r={epoch}'
 			.replace('{world}', world)
 			.replace('{entrance}', entrance)
 			.replace('{door}', door)
@@ -187,6 +191,7 @@ function launch_tracker() {
 			.replace('{restreamingcode}', restreamingcode)
 			.replace('{restreamer}', restreamer)
 			.replace('{restreamdelay}', restreamdelay)
+			.replace('{mapstyle}', mapStyle)
 			.replace('{startingitemstring}', startingitemstring)
 			.replace('{sprite}', sprite)
 			.replace('{epoch}', Date.now()),

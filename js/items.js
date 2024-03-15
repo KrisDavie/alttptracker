@@ -36,6 +36,7 @@
         restreamingcode: query.d.charAt(8) + query.d.charAt(9) + query.d.charAt(10) + query.d.charAt(11) + query.d.charAt(12) + query.d.charAt(13),
         restreamer: query.d.charAt(14),
         restreamdelay: query.d.substr(15),
+        mapstyle: query.d.charAt(16),
         startingitems: query.s,
         sprite: query.p.replace('#','').replace('!',''),
     };

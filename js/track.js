@@ -908,7 +908,7 @@
 		var isboss = label.startsWith('boss');
 
 		for (var i = 0; i < 10; i++) {
-			document.getElementById('dungeonPrize'+i).className = 'prize-' + prizes[i];
+			document.getElementById('dungeonPrize'+i).classList = ['prize-' + prizes[i]];
 		}
 		
 		for (var i = 0; i < 2; i++) {
@@ -1393,24 +1393,32 @@
     // event of clicking on a boss's pendant/crystal subsquare
     window.toggle_dungeon = function(n) {
 		var maxdungeon = (flags.wildmaps ? 6 : 5);
+		document.getElementById('dungeonPrize'+n).classList.remove('prize-' + prizes[n]);
         prizes[n] += 1;
         if (prizes[n] === maxdungeon) prizes[n] = 0;
-
-        document.getElementById('dungeonPrize'+n).className = 'prize-' + prizes[n];
+        document.getElementById('dungeonPrize'+n).classList.add('prize-' + prizes[n]);
 
 		updateMapTracker();
     };
 	
     window.rightClickPrize = function(n) {
 		var mindungeon = (flags.wildmaps ? 5 : 4);
+		document.getElementById('dungeonPrize'+n).classList.remove('prize-' + prizes[n]);
         prizes[n] -= 1;
         if (prizes[n] === -1) prizes[n] = mindungeon;
 
-        document.getElementById('dungeonPrize'+n).className = 'prize-' + prizes[n];
-
+        document.getElementById('dungeonPrize'+n).classList.add('prize-' + prizes[n]);
 		updateMapTracker();
     };	
 	
+	window.toggle_prize = function(n) {
+		if (document.getElementById('dungeonPrize'+n).classList.contains('collected')) {
+			document.getElementById('dungeonPrize'+n).classList.remove('collected');
+		} else {
+			document.getElementById('dungeonPrize'+n).classList.add('collected');
+		}
+		updateMapTracker();
+	};
 	
     // event of right clicking on a boss's enemizer portrait
     window.rightClickEnemy = function(n) {
@@ -2912,7 +2920,7 @@
 				for (var k = 0; k < 10; k++) {
 					if (prizes[k] == 5) {
 						prizes[k] = 0;
-						document.getElementById('dungeonPrize'+k).className = 'prize-0';
+						document.getElementById('dungeonPrize'+k).classList = ['prize-0'];
 					}
 				}
 			}
@@ -3758,6 +3766,7 @@
 			document.getElementById('smallkeyhalf0').innerHTML = items.smallkeyhalf0;
 			document.getElementById('smallkeyhalf1').innerHTML = items.smallkeyhalf1;
 		}
+
 		
 		if (flags.spheresmode == 'N') {
 			document.getElementById('spheres').style.visibility = 'hidden';
@@ -3779,6 +3788,40 @@
 		
 		for (var i = 0; i < 10; i++) {
 			document.getElementById('bossMap' + i).classList.add('bossprize-0');
+		}
+
+		if (flags.mapstyle === 'O') {
+			document.getElementById('map').style.backgroundImage = "url(images/overlay/map_old.png)";
+			var locations = document.getElementsByClassName('location');
+			for (var i = 0; i < locations.length; i++) {
+				locations[i].style.width = flags.entrancemode === 'N' ? '20px' : '16px';
+				locations[i].style.height = flags.entrancemode === 'N' ? '20px' : '16px';
+				locations[i].style.border = flags.entrancemode === 'N' ? '3px solid' : '2px solid';
+				locations[i].style.marginLeft = flags.entrancemode === 'N' ? '-10px' : '-8px';
+				locations[i].style.marginTop = flags.entrancemode === 'N' ? '-10px' : '-8px';
+			}
+			
+			for (var i = 0; i < dungeons.length; i++) {
+				let dungeon = document.getElementById('dungeon'+i);
+				dungeon.style.width = '40px';
+				dungeon.style.height = '40px';
+				dungeon.style.border = '4px solid';
+				dungeon.style.marginLeft = '-20px';
+				dungeon.style.marginTop = '-20px';
+				if ([2, 8].includes(i)) {
+					dungeon.style.marginLeft = '-15px';
+					let boss = document.getElementById('bossMap'+i);
+					boss.style.marginLeft = '-5px';
+				}
+			}
+
+			let castle = document.getElementById('castle');
+			castle.style.width = '40px';
+			castle.style.height = '40px';
+			castle.style.border = '4px solid';
+			castle.style.marginLeft = '-20px';
+			castle.style.marginTop = '-20px';
+
 		}
 		
 		//Set starting items

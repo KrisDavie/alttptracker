@@ -19,6 +19,8 @@ var SPRITEDATA_START = SAVEDATA_START + 0x7268;
 var PSEUDOBOOTS_LOC = 0x18008E;
 var RANDOVERSION_LOC = 0x138000; // Actually DR
 var MYSTERY_LOC = 0x138004; // Actually DRFlags
+var PRIZES_LOC = 0x1209B; // Pendant/Crystal number data
+var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
 
 
 const dungeondatamem = {
@@ -40,7 +42,9 @@ const dungeondatamem = {
         "compass": [0x365, 0x20],
         "bigkey": [0x367, 0x20],
         "map": [0x369, 0x20],
-        "smallkeys": 0x4E2
+        "smallkeys": 0x4E2,
+        "prize": 0x2,
+        "dungeonprize": 0
     },
     "dp": {
         "dungeonarrayname": "chest1",
@@ -50,7 +54,9 @@ const dungeondatamem = {
         "compass": [0x365, 0x10],
         "bigkey": [0x367, 0x10],
         "map": [0x369, 0x10],
-        "smallkeys": 0x4E3
+        "smallkeys": 0x4E3,
+        "prize": 0x3,
+        "dungeonprize": 1
     },
     "toh": {
         "dungeonarrayname": "chest2",
@@ -60,7 +66,9 @@ const dungeondatamem = {
         "compass": [0x364, 0x20],
         "bigkey": [0x366, 0x20],
         "map": [0x368, 0x20],
-        "smallkeys": 0x4EA
+        "smallkeys": 0x4EA,
+        "prize": 0xA,
+        "dungeonprize": 2
     },
     "at": {
         "dungeonarrayname": "chest12",
@@ -80,7 +88,9 @@ const dungeondatamem = {
         "compass": [0x365, 0x02],
         "bigkey": [0x367, 0x02],
         "map": [0x369, 0x02],
-        "smallkeys": 0x4E6
+        "smallkeys": 0x4E6,
+        "prize": 0x6,
+        "dungeonprize": 3
     },
     "sp": {
         "dungeonarrayname": "chest4",
@@ -90,7 +100,9 @@ const dungeondatamem = {
         "compass": [0x365, 0x04],
         "bigkey": [0x367, 0x04],
         "map": [0x369, 0x04],
-        "smallkeys": 0x4E5
+        "smallkeys": 0x4E5,
+        "prize": 0x5,
+        "dungeonprize": 4
     },
     "sw": {
         "dungeonarrayname": "chest5",
@@ -100,7 +112,9 @@ const dungeondatamem = {
         "compass": [0x364, 0x80],
         "bigkey": [0x366, 0x80],
         "map": [0x368, 0x80],
-        "smallkeys": 0x4E8
+        "smallkeys": 0x4E8,
+        "prize": 0x8,
+        "dungeonprize": 5
     },
     "tt": {
         "dungeonarrayname": "chest6",
@@ -110,7 +124,9 @@ const dungeondatamem = {
         "compass": [0x364, 0x10],
         "bigkey": [0x366, 0x10],
         "map": [0x368, 0x10],
-        "smallkeys": 0x4EB
+        "smallkeys": 0x4EB,
+        "prize": 0xB,
+        "dungeonprize": 6
     },
     "ip": {
         "dungeonarrayname": "chest7",
@@ -120,7 +136,9 @@ const dungeondatamem = {
         "compass": [0x364, 0x40],
         "bigkey": [0x366, 0x40],
         "map": [0x368, 0x40],
-        "smallkeys": 0x4E9
+        "smallkeys": 0x4E9,
+        "prize": 0x9,
+        "dungeonprize": 7
     },
     "mm": {
         "dungeonarrayname": "chest8",
@@ -130,7 +148,9 @@ const dungeondatamem = {
         "compass": [0x365, 0x01],
         "bigkey": [0x367, 0x01],
         "map": [0x369, 0x01],
-        "smallkeys": 0x4E7
+        "smallkeys": 0x4E7,
+        "prize": 0x7,
+        "dungeonprize": 8
     },
     "tr": {
         "dungeonarrayname": "chest9",
@@ -140,7 +160,9 @@ const dungeondatamem = {
         "compass": [0x364, 0x08],
         "bigkey": [0x366, 0x08],
         "map": [0x368, 0x08],
-        "smallkeys": 0x4EC
+        "smallkeys": 0x4EC,
+        "prize": 0xC,
+        "dungeonprize": 9
     },
     "gt": {
         "dungeonarrayname": "chest10",
@@ -153,6 +175,24 @@ const dungeondatamem = {
         "smallkeys": 0x4ED
     }
 };
+
+const prizemap = {
+    'crystal': {
+        0x2: '1',
+        0x10: '2',
+        0x40: '3',
+        0x20: '4',
+        0x4: '5',
+        0x1: '6',
+        0x8: '7',
+        0x80: '8'
+    },
+    'pendant': {
+        0x4: 'g',
+        0x2: 'b',
+        0x1: 'r'
+    }
+}
 
 let dungeonautotrackCounts = {
     "hc": 0,
@@ -319,7 +359,15 @@ function autotrackReadMem() {
     }
 
     function addSpriteDropData() {
-        snesreadsave(SPRITEDATA_START, 0x250, 'spritedata', addRandoVersion);
+        snesreadsave(SPRITEDATA_START, 0x250, 'spritedata', addPrizeData);
+    }
+
+    function addPrizeData() {
+        snesreadsave(PRIZES_LOC, 0xD, 'prizes', addPrize2Data);
+    }
+
+    function addPrize2Data() {
+        snesreadsave(PRIZES2_LOC, 0xD, 'prizes', addRandoVersion, merge=true);
     }
 
     function addRandoVersion() {
@@ -382,7 +430,7 @@ function autotrackDoTracking(data) {
         return (data[data_loc][item[0]] & item[1]) !== 0;
     }
 
-    
+
     // Decrement dungeon count unless a non-wild dungeon item is found 
     if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && flags.autotracking === 'Y') {
         Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
@@ -413,6 +461,24 @@ function autotrackDoTracking(data) {
                     toggle(dungeondata["dungeonarrayname"]);
                 }
             }
+        });
+    }
+
+    dungeonPrizes = {}
+    if (flags.autotracking === 'Y') {
+        Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
+            if ('prize' in dungeondata && dungeondata.prize > 0) {
+                const prizeType = data['prizes'][dungeondata.prize + 0xD] == 0x40 ? 'crystal' : 'pendant';
+                const prize = prizemap[prizeType][data['prizes'][dungeondata.prize]];
+                dungeonPrizes[`${prizeType}${prize}`] = dungeondata.dungeonprize;
+            }
+        })
+        Object.entries(prizemap).forEach(([prizeType, prizes]) => {
+            Object.entries(prizes).forEach(([mask, prize]) => {
+                if (newbit(prizeType === 'pendant' ? 0x374 : 0x37A, mask, 'rooms_inv')) {
+                    toggle_prize(dungeonPrizes[`${prizeType}${prize}`]);
+                }
+            });
         });
     }
 

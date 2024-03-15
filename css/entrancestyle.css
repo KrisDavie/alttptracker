@@ -178,7 +178,7 @@ body {
 .castle.highlight,
 .location.highlight,
 .entrance.highlight,
-.dungeon.highlight { border-color:rgb(255, 238, 0); }
+.dungeon.highlight { border-color:rgb(255, 238, 0) !important; }
 .chest.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge.png); }
 .chest-0.large { width: 64px !important; height: 64px !important; background-size: 100%; font-size: 34px !important; padding-top: 8px !important; background-image: url(../images/dungeons/keychestlarge0.png); }
 .location.rightclick,

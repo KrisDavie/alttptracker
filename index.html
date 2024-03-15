@@ -1,15 +1,15 @@
 <html>
    <head>
       <title>ALTTP Randomizer Community Tracker - Launcher</title>
-      <script type="text/javascript" src="js/index.js?v=20032.1"></script>
-      <script type="text/javascript" src="js/jquery-3.3.1.js?v=20032.1"></script>
-      <script type="text/javascript" src="js/jquery.powertip.js?v=20032.1"></script>
-      <script type="text/javascript" src="js/bootstrap.min.js?v=20032.1"></script>
-      <link href="css/jquery.powertip.css?v=20032.1" rel="stylesheet" />
-      <link href="css/launcher.css?v=20032.1" rel="stylesheet">
-      <link href="css/fonts.css?v=20032.1" rel="stylesheet">
-      <link href="css/sprites.css?v=20032.1" rel="stylesheet">
-      <link href="css/toast.css?v=20032.1" rel="stylesheet">
+      <script type="text/javascript" src="js/index.js?v=20032.3"></script>
+      <script type="text/javascript" src="js/jquery-3.3.1.js?v=20032.3"></script>
+      <script type="text/javascript" src="js/jquery.powertip.js?v=20032.3"></script>
+      <script type="text/javascript" src="js/bootstrap.min.js?v=20032.3"></script>
+      <link href="css/jquery.powertip.css?v=20032.3" rel="stylesheet" />
+      <link href="css/launcher.css?v=20032.3" rel="stylesheet">
+      <link href="css/fonts.css?v=20032.3" rel="stylesheet">
+      <link href="css/sprites.css?v=20032.3" rel="stylesheet">
+      <link href="css/toast.css?v=20032.3" rel="stylesheet">
       <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
       <meta http-equiv="Pragma" content="no-cache" />
       <meta http-equiv="Expires" content="0" />
@@ -1155,7 +1155,7 @@
                   </div>
                   <div>
                      <span class="preset-span-double">
-                     Autotracking: <span class="south tooltop-character" title="This will enable the autotracking listener, default on port 8080. Choose 'Old' to disable autotracking of dungeon locations.">[?]</span>
+                     Autotracking: <span class="south tooltop-character" title="This will enable the autotracking listener, default on port 8080. Choose 'Ladder' to disable autotracking of dungeon locations.">[?]</span>
                      </span>
                      <span class="preset-span">
                      <input id="autotrackingno" value="N" type="radio" name="autotrackinggroup" checked />
@@ -1163,11 +1163,11 @@
                      </span>
                      <span class="preset-span">
                      <input id="autotrackingyes" value="Y" type="radio" name="autotrackinggroup" />
-                     <label for="autotrackingyes">Yes</label>
+                     <label for="autotrackingyes">TARC</label>
                      </span>
                      <span class="preset-span">
                      <input id="autotrackingold" value="O" type="radio" name="autotrackinggroup" />
-                     <label for="autotrackingold">Old</label>
+                     <label for="autotrackingold">Ladder</label>
                      </span>
                      <span class="preset-span">
                      <label for="autotrackingport">Port:</label>
@@ -1176,10 +1176,15 @@
                   </div>
                   <div>
                      <span class="preset-span-double">
-                     Use Custom Colors: <span class="south tooltop-character" title="Customize your colors. A color-blind friendly preset is available here">[?]</span>
+                     Styling: <span class="south tooltop-character" title="Customize your colors and/or map and icon settings. A color-blind friendly preset is available here">[?]</span>
                      </span>
                      <span class="preset-span">
                      <a href="./colors.html">Color Settings</a> 
+                     </span>
+                     <span class="preset-span">
+                      <input id="oldmapstyles" type="checkbox" name="oldmapstyles" />
+                      <label for="oldmapstyles">Old Map Styles</label>
+                      </span>
                   </div>
                   <div>
                      <span class="preset-span" style="min-width: 100%">
