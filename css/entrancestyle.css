@@ -48,6 +48,7 @@ body {
 
 #tracker .item,
 #tracker .boss { opacity: .25; }
+#tracker .prize { opacity: .50; }
 #tracker .item[class*="active"],
 #tracker .boss.defeated { opacity: 1; }
 #tracker .bigkey { opacity: .25; }
