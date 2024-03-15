@@ -26,6 +26,8 @@ function load_cookie() {
 			var sprite = c.substr(c.indexOf('p-') + 2);
 			if (sprite.indexOf('|') > -1) {
 				sprite = sprite.substr(0, sprite.indexOf('|'));
+			} else if (sprite.indexOf(';') > -1) {
+				sprite = sprite.substr(0, sprite.indexOf(';'));
 			}
 			document.getElementById("spriteselect").value = sprite;
 		}
