@@ -14,9 +14,16 @@ function load_cookie() {
 		if (c.indexOf('s-Y') > -1) {
 			document.getElementById("sphereyes").checked = true;
 		}
-		if (c.indexOf('a-Y') > -1) {
-			document.getElementById("autotrackingyes").checked = true;
-			var p = c.substr(c.indexOf('a-Y') + 3);
+		if (c.indexOf('a-') > -1) {
+			var at = c.substr(c.indexOf('a-') + 2, 1);
+			if (at === "Y") {
+				document.getElementById("autotrackingyes").checked = true;
+			} else if (at === "O") {
+				document.getElementById("autotrackingold").checked = true;
+			} else {
+				document.getElementById("autotrackingno").checked = true;
+			}
+			var p = c.substr(c.indexOf(`a-${at}`) + 3);
 			if (p.indexOf('|') > 0) {
 				p = p.substr(0, p.indexOf('|'));
 				document.getElementById("autotrackingport").value = p;
