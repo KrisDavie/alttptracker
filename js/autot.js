@@ -584,10 +584,10 @@ function autotrackDoTracking(data) {
 		updatechest_group(102, [[0x22C, 0x10], [0x22C, 0x20]]); // Pyramid Fairy Left + Right
 		updatechest(103, 0x300, 0x40); // Pedestal
 		updatechest_group(105, [[0x228, 0x10], [0x228, 0x20]]); // Waterfall Fairy Left + Right
+        updatechest_group(97, [[0x3C6, 0x01], [0x0AA, 0x10]]); // Uncle + Passage
 
         if (flags.autotracking === 'Y' ) {
             updatechest_group(96, [[0x022, 0x10], [0x022, 0x20], [0x022, 0x40]]); // Sewers Left + Middle + Right
-            updatechest_group(97, [[0x3C6, 0x01], [0x0AA, 0x10]]); // Uncle + Passage
             updatechest_group(98, [[0x0E4, 0x10], [0x0E2, 0x10], [0x100, 0x10]]); // Hyrule Castle Map + Boomerang + Zelda
             updatechest(99, 0x024, 0x10); // Sanctuary
             updatechest(104, 0x064, 0x10); // Hyrule Castle - Dark Cross
