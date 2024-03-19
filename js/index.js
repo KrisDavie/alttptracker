@@ -1,46 +1,64 @@
 var startingitemstring = "00000000000000000000000000";
 
 function load_cookie() {
-	var c = document.cookie;
+		var allCookies = document.cookie;
 	
-	if (c.indexOf('settings') > -1) {
+	if (allCookies.indexOf('settings') > -1) {
 		document.getElementById("remembersettings").checked = true;
-		if (c.indexOf('m-M') > -1) {
-			document.getElementById("mapyes").checked = true;
-		}
-		if (c.indexOf('m-C') > -1) {
-			document.getElementById("mapsmall").checked = true;
-		}
-		if (c.indexOf('s-Y') > -1) {
-			document.getElementById("sphereyes").checked = true;
-		}
-		if (c.indexOf('a-') > -1) {
-			var at = c.substr(c.indexOf('a-') + 2, 1);
-			if (at === "Y") {
-				document.getElementById("autotrackingyes").checked = true;
-			} else if (at === "O") {
-				document.getElementById("autotrackingold").checked = true;
-			} else {
-				document.getElementById("autotrackingno").checked = true;
+		let settingsCookie = allCookies.substring(allCookies.indexOf('settings'));
+		settingsCookie = settingsCookie.indexOf(';') > -1 ? settingsCookie.substring(0, settingsCookie.indexOf(';')) : settingsCookie;
+		let settings = settingsCookie.split('=')[1].split('|').map(x => x.split('-'));
+
+
+		settings.forEach(setting => {
+			switch (setting[0]) {
+				case 'm':
+					switch (setting[1]) {
+						case 'M':
+							document.getElementById("mapyes").checked = true;
+							break;
+						case 'C':
+							document.getElementById("mapsmall").checked = true;
+							break;
+						case 'N':
+							document.getElementById("mapno").checked = true;
+							break;
+					}
+					break;
+				case 's':
+					if (setting[1] === 'Y') {
+						document.getElementById("sphereyes").checked = true;
+					}
+					break;
+				case 'a':
+					const autotrackingSetting = setting[1][0];
+					const autotrackingPort = setting[1].substring(1);
+					switch (autotrackingSetting) {
+						case 'Y':
+							document.getElementById("autotrackingyes").checked = true;
+							break;
+						case 'O':
+							document.getElementById("autotrackingold").checked = true;
+							break;
+						case 'N':
+							document.getElementById("autotrackingno").checked = true;
+							break;
+					}
+					if (autotrackingPort) {
+						document.getElementById("autotrackingport").value = autotrackingPort;
+					}
+					break;
+				case 'p':
+					document.getElementById("spriteselect").value = setting[1];
+					break;
+				case 'ms':
+					if (setting[1] === 'O') {
+						document.getElementById("oldmapstyles").checked = true;
+					}
+					break;
 			}
-			var p = c.substr(c.indexOf(`a-${at}`) + 3);
-			if (p.indexOf('|') > 0) {
-				p = p.substr(0, p.indexOf('|'));
-				document.getElementById("autotrackingport").value = p;
-			}
-		}
-		if (c.indexOf('p-') > -1) {
-			var sprite = c.substr(c.indexOf('p-') + 2);
-			if (sprite.indexOf('|') > -1) {
-				sprite = sprite.substr(0, sprite.indexOf('|'));
-			} else if (sprite.indexOf(';') > -1) {
-				sprite = sprite.substr(0, sprite.indexOf(';'));
-			}
-			document.getElementById("spriteselect").value = sprite;
-		}
-		if (c.indexOf('ms-O') > -1) {
-			document.getElementById("oldmapstyles").checked = true;
-		}
+		})
+
 	}
 }
 
@@ -196,7 +214,7 @@ function launch_tracker() {
 			.replace('{spoiler}', spoiler)
 			.replace('{sphere}', sphere)
 			.replace('{autotracking}', autotracking)
-			.replace('{trackingport}', trackingport)
+			.replace('{trackingport}', trackingport.padStart(5, '0'))
 			.replace('{restreamingcode}', restreamingcode)
 			.replace('{restreamer}', restreamer)
 			.replace('{restreamdelay}', restreamdelay)

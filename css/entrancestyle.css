@@ -48,7 +48,12 @@ body {
 
 #tracker .item,
 #tracker .boss { opacity: .25; }
-#tracker .prize { opacity: .50; }
+#tracker .prize { opacity: .66; 
+  border: 2px solid darkred;
+  border-radius: 100%;
+  background-color: #000;
+  background-position: right -2px bottom -2px;  
+}
 #tracker .item[class*="active"],
 #tracker .boss.defeated { opacity: 1; }
 #tracker .bigkey { opacity: .25; }
@@ -59,6 +64,16 @@ body {
 #tracker .sphere { height: 37px; width: 37px; background-size:100%; }
 #bigkeyhalf0 { top: 11px; }
 #bigkeyhalf1 { top: 59px; }
+
+#tracker .prize-1 { background-size: 90%; background-repeat: no-repeat; background-position: center;}
+#tracker .prize-2 { background-size: 90%; background-repeat: no-repeat; background-position: center;}
+#tracker .prize-5 { background-size: 90%; background-repeat: no-repeat; background-position: center left 1;}
+
+#tracker .prize.collected {
+  border: 2px solid green;
+  border-radius: 100%;
+}
+
 
 [class*="prize-"] {
   width: 32px;

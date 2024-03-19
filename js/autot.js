@@ -215,7 +215,7 @@ function autotrackStartTimer() {
 }
 
 function autotrackSetStatus(text) {
-    document.getElementById("autotrackingstatus").textContent = "Autotracking Status: " + text;
+    document.getElementById("autotrackingstatus").textContent = "Autotracking Status: " + (flags.autotracking === 'Y' ? "TARC Mode: " : "Ladder Mode: ") + text;
 }
 
 function autotrackConnect(host="ws://localhost:" + flags.trackingport) {
