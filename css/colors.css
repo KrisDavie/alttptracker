@@ -1,4 +1,6 @@
 :root {
+  --prize-uncollected-color: #8b0000;
+  --prize-collected-color: #008000;
   --available-color: #00ff00;
   --unavailable-color: #ff0000;
   --possible-color: #ffff00;
