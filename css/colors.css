@@ -27,6 +27,14 @@
   --ganon-color: #00eaff;
 }
 
+#tracker .prize.collected {
+  border-color: var(--prize-collected-color) !important;
+}
+
+#tracker .prize {
+  border-color: var(--prize-uncollected-color) !important;
+}
+
 .unavailable {
   background-color: var(--unavailable-color);
 }
@@ -182,3 +190,4 @@
     rgba(0, 0, 0, 0) calc(50% + 1px)
   );
 }
+

@@ -49,7 +49,7 @@ body {
 #tracker .item,
 #tracker .boss { opacity: .25; }
 #tracker .prize { opacity: .66; 
-  border: 2px solid darkred;
+  border: 2px solid;
   border-radius: 100%;
   background-color: #000;
   background-position: right -2px bottom -2px;  
@@ -70,7 +70,7 @@ body {
 #tracker .prize-5 { background-size: 90%; background-repeat: no-repeat; background-position: center left 1;}
 
 #tracker .prize.collected {
-  border: 2px solid green;
+  border: 2px solid;
   border-radius: 100%;
 }
 

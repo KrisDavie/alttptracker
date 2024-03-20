@@ -2,6 +2,8 @@ const colorPickers = document.querySelectorAll("input.input-color-picker");
 const opacitySliders = document.querySelectorAll("input.input-color-opacity-slider");
 
 const mikeColors = {
+  "prize-uncollected-color": "#8b0000",
+  "prize-collected-color": "#008000",
   "available-color": "#00ff00",
   "unavailable-color": "#ff0000",
   "possible-color": "#ffff00",
@@ -31,6 +33,8 @@ const mikeColors = {
 };
 
 const dunkaColors = {
+  "prize-uncollected-color": "#00000",
+  "prize-collected-color": "#000000",
   "available-color": "#00ff00",
   "unavailable-color": "#ff0000",
   "possible-color": "#ffff00",
@@ -60,6 +64,8 @@ const dunkaColors = {
 };
 
 const altColors = {
+  "prize-uncollected-color": "#c46902",
+  "prize-collected-color": "#055fe6",
   "available-color": "#055fe6",
   "unavailable-color": "#c46902",
   "possible-color": "#faf600",
