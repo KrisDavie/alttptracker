@@ -592,6 +592,50 @@
 		createSpecialLocation(0x45,"Island","HSC Bottom Back","hscbottomback");
 		createItemLocation(0x45,"Top Main",22,-1,"hsctop");
 		createSpecialLocation(0x45,"Island","HSC Top Back","hsctopback");
+
+		// trees
+		createItemLocation(0x00,"Southeast",23,23,"bootsquake");
+		createItemLocation(0x05,"Top Main",24,24,"bootsquake");
+		createItemLocation(0x0A,"Main",25,25,"bootsquake");
+		createItemLocation(0x0A,"Main",26,26,"bootsquake");
+		createItemLocation(0x10,"West",27,27,"bootsquake");
+		createItemLocation(0x10,"North",28,28,"bootsquake");
+		createItemLocation(0x11,"Main",29,29,"bootsquake");
+		createItemLocation(0x12,"Main",30,30,"agaandbootsquake");
+		createItemLocation(0x13,"Rocks",31,31,"agaandbootsquake");
+		createItemLocation(0x13,"Main",32,32,"bootsquake");
+		createItemLocation(0x15,"West",33,33,"agaandbootsquake");
+		createItemLocation(0x15,"East",34,34,"bootsquake");
+		createItemLocation(0x18,"Main",35,35,"bootsquake");
+		createItemLocation(0x18,"Main",36,36,"bootsquake");
+		createItemLocation(0x1A,"Main",37,37,"bootsquake");
+		createItemLocation(0x1A,"Main",38,38,"bootsquake");
+		createItemLocation(0x1B,"Courtyard",39,39,"bootsquake");
+		createItemLocation(0x1D,"West",40,40,"bootsquake");
+		createItemLocation(0x1E,"Main",41,41,"agaandbootsquake");
+		createItemLocation(0x2A,"Main",42,42,"agaandbootsquake");
+		createItemLocation(0x2A,"Main",43,43,"agaandbootsquake");
+		createItemLocation(0x2B,"Main",44,44,"bootsquake");
+		createItemLocation(0x2E,"Main",45,45,"agaandbootsquake");
+		createItemLocation(0x2E,"Main",46,46,"agaandbootsquake");
+		createItemLocation(0x32,"Main",47,47,"bootsquake");
+		createItemLocation(0x32,"Main",48,48,"bootsquake");
+		createItemLocation(0x02,"Main",49,49,"bootsquake");
+		createItemLocation(0x11,"Main",50,50,"bootsquake");
+		createItemLocation(0x14,"Main",51,51,"bootsquake");
+		createItemLocation(0x14,"Main",52,52,"bootsquake");
+		createItemLocation(0x14,"King Tomb",53,53,"bootsquake");
+		createItemLocation(0x15,"West",54,54,"bootsquake");
+		createItemLocation(0x15,"East",55,55,"bootsquake");
+		createItemLocation(0x16,"West",56,56,"bootsquake");
+		createItemLocation(0x1B,"Main",57,57,"bootsquake");
+		createItemLocation(0x1E,"Main",58,58,"bootsquake");
+		createItemLocation(0x2E,"Main",59,59,"bootsquake");
+		createItemLocation(0x2E,"Main",60,60,"bootsquake");
+		createItemLocation(0x2E,"Main",61,61,"bootsquake");
+		createItemLocation(0x34,"Main",62,62,"bootsquake");
+		createItemLocation(0x37,"Main",63,-1,"bootsquake");
+
 		createItemLocation(0x58,"Main",64,-1,"bushes");
 		createItemLocation(0x18,"Main",65,2,null);
 		createItemLocation(0x1E,"Main",66,-1,"greenpendant");
@@ -1766,8 +1810,12 @@
 				return (items.moonpearl || (darkWorld === (worldState === 'I'))) && items.lantern;
 			case "glovesandbomb":
 				return (items.moonpearl || (darkWorld === (worldState === 'I'))) && items.gloves && items.bomb;
+			case "bootsquake":
+				return (items.moonpearl || (darkWorld === (worldState === 'I'))) && (items.boots || (items.quake && items.sword > 1));
 			case "agaandboots":
 				return (items.moonpearl || (darkWorld === (worldState === 'I'))) && items.agahnim && items.boots;
+			case "agaandbootsquake":
+				return (items.moonpearl || (darkWorld === (worldState === 'I'))) && items.agahnim && (items.boots || (items.quake && items.sword > 1));
 			case "hscbottom":
 				return (items.moonpearl || (darkWorld === (worldState === 'I'))) && items.gloves && (items.boots || items.hookshot);
 			case "hscbottomback":
@@ -2011,7 +2059,7 @@
 			towerSwap = ganonSwap = worldState === 'I';
 		if(towerSwap === true)
 		{
-			data.items[65] = data.items[66] = data.special["Inverted Castle Tower Access"] || "unavailable";
+			data.items[106] = data.items[107] = data.special["Inverted Castle Tower Access"] || "unavailable";
 			data.dungeons[80] = data.entrances[10] = data.special["Inverted Ganon's Tower"] || "unavailable";
 			data.dungeons[96] = data.entrances[127] = data.special["Inverted Castle Tower"] || "unavailable";
 			orSpecial(data.dungeons,80,data.special["Inverted Maybe GT"],"possible");
@@ -2030,7 +2078,7 @@
 		}
 		if(towerSwap === "unknown")
 		{
-			data.items[65] = data.items[66] = twoOptions(data.items[65],data.special["Inverted Castle Tower Access"] || "unavailable");
+			data.items[106] = data.items[107] = twoOptions(data.items[106],data.special["Inverted Castle Tower Access"] || "unavailable");
 			data.dungeons[80] = twoOptions(orSpecial2(data.dungeons[80],data.special["Maybe GT"],"possible"),orSpecial2(data.special["Inverted Ganon's Tower"] || "unavailable",data.special["Inverted Maybe GT"],"possible"));
 			data.entrances[10] = twoOptions(data.entrances[10],orSpecial2(data.special["Inverted Ganon's Tower"] || "unavailable",data.special["Inverted Maybe GT"],"possible"));
 			data.dungeons[96] = twoOptions(data.dungeons[96],data.special["Inverted Castle Tower"] || "unavailable");
@@ -2052,80 +2100,80 @@
 		{
 			if(entranceEnabled)
 			{
-				if(data.items[34] !== "unavailable")
+				if(data.items[75] !== "unavailable")
 				{
-					andSpecial(data.items,34,data.special["Inverted Old Man"]);
-					andSpecial(data.items,34,data.special["Old Man Hera"]);
-					if(data.items[34] === "unavailable")
-						data.items[34] = "possible";
+					andSpecial(data.items,75,data.special["Inverted Old Man"]);
+					andSpecial(data.items,75,data.special["Old Man Hera"]);
+					if(data.items[75] === "unavailable")
+						data.items[75] = "possible";
 				}
 			}
 		}
 		else
-			if(entranceEnabled && data.items[34] !== "unavailable")
+			if(entranceEnabled && data.items[75] !== "unavailable")
 			{
-				andSpecial(data.items,34,data.special["Old Man Hera"]);
-				if(data.items[34] === "unavailable")
-					data.items[34] = "possible";
+				andSpecial(data.items,75,data.special["Old Man Hera"]);
+				if(data.items[75] === "unavailable")
+					data.items[75] = "possible";
 			}
 		orSpecial(data.items,21,data.special["HSC Bottom Back"],"available");
 		orSpecial(data.items,22,data.special["HSC Top Back"],"available");
-		orSpecial(data.items,56,data.special["Uncle Drop"],"available");
+		orSpecial(data.items,97,data.special["Uncle Drop"],"available");
 		orSpecial(data.items,14,data.special["Bombless Well"],"partialavailable");
 		orSpecial(data.items,15,data.special["Bombless Thieve's Hut"],"partialavailable");
 		orSpecial(data.items,17,data.special["Bombless Paradox"],"partialavailable");
-		orSpecial(data.items,57,data.special["Castle First Chest"],"partialavailable");
-		orSpecial(data.items,30,data.special["Read Ether"],"information");
-		orSpecial(data.items,31,data.special["Read Bombos"],"information");
-		orSpecial(data.items,36,data.special["Check Hideout"],"information");
-		orSpecial(data.items,37,data.special["Check Lumberjack"],"information");
-		orSpecial(data.items,39,data.special["Check 45"],"information");
-		orSpecial(data.items,43,data.special["Check Library"],"information");
-		orSpecial(data.items,44,data.special["Check Mushroom 1"],"information");
-		orSpecial(data.items,44,data.special["Check Mushroom 2"],"information");
-		orSpecial(data.items,45,data.special["Check Spectacle"],"information");
-		orSpecial(data.items,46,data.special["Check Floating"],"information");
-		orSpecial(data.items,47,data.special["Check Race"],"information");
-		orSpecial(data.items,48,data.special["Check Desert"],"information");
-		orSpecial(data.items,49,data.special["Check Lake 1"],"information");
-		orSpecial(data.items,49,data.special["Check Lake 2"],"information");
-		orSpecial(data.items,50,data.special["Check Bumper"],"information");
-		orSpecial(data.items,53,data.special["Check Zora"],"information");
-		orSpecial(data.items,62,data.special["Read Pedestal"],"information");
+		orSpecial(data.items,98,data.special["Castle First Chest"],"partialavailable");
+		orSpecial(data.items,71,data.special["Read Ether"],"information");
+		orSpecial(data.items,72,data.special["Read Bombos"],"information");
+		orSpecial(data.items,77,data.special["Check Hideout"],"information");
+		orSpecial(data.items,78,data.special["Check Lumberjack"],"information");
+		orSpecial(data.items,80,data.special["Check 45"],"information");
+		orSpecial(data.items,84,data.special["Check Library"],"information");
+		orSpecial(data.items,85,data.special["Check Mushroom 1"],"information");
+		orSpecial(data.items,85,data.special["Check Mushroom 2"],"information");
+		orSpecial(data.items,86,data.special["Check Spectacle"],"information");
+		orSpecial(data.items,87,data.special["Check Floating"],"information");
+		orSpecial(data.items,88,data.special["Check Race"],"information");
+		orSpecial(data.items,89,data.special["Check Desert"],"information");
+		orSpecial(data.items,90,data.special["Check Lake 1"],"information");
+		orSpecial(data.items,90,data.special["Check Lake 2"],"information");
+		orSpecial(data.items,91,data.special["Check Bumper"],"information");
+		orSpecial(data.items,94,data.special["Check Zora"],"information");
+		orSpecial(data.items,103,data.special["Read Pedestal"],"information");
 		orSpecial(data.dungeons,64,data.special["Maybe MM"],"possible");
 		orSpecial(data.dungeons,72,data.special["Maybe TR"],"possible");
 		orSpecial(data.entrances,123,data.special["Maybe MM"],"possible");
 		orSpecial(data.entrances,136,data.special["Maybe TR"],"possible");
-		andSpecial(data.items,28,data.special["Thief"]);
-		andSpecial(data.items,60,data.special["Smith"]);
-		andSpecial(data.items,61,data.special["Red Bomb"]);
-		for(let k = 0; k < 23; k++)
+		andSpecial(data.items,69,data.special["Thief"]);
+		andSpecial(data.items,101,data.special["Smith"]);
+		andSpecial(data.items,102,data.special["Red Bomb"]);
+		for(let k = 0; k < 64; k++)
 			data.entranceitems[k] = data.items[entranceItemToItem[k]];
 		//Red bomb
-		if(data.items[61] !== "unavailable")
+		if(data.items[102] !== "unavailable")
 		{
 			let mirrorStart = canPlaceMirrorPortal(overworldScreens.get(0x6C).regions.get("Main"),regions,extraRegions,maybeLightRegions,maybeDarkRegions);
 			let mirrorTarget = canPlaceMirrorPortal(overworldScreens.get(0x1B).regions.get("Main"),regions,extraRegions,maybeLightRegions,maybeDarkRegions);
-			data.items[61] = canReachFrom(overworldScreens.get(0x6C).regions.get("Main"),overworldScreens.get(0x5B).regions.get("Main"),items,"redbomb",data.items[61],mirrorStart,mirrorTarget);
+			data.items[102] = canReachFrom(overworldScreens.get(0x6C).regions.get("Main"),overworldScreens.get(0x5B).regions.get("Main"),items,"redbomb",data.items[102],mirrorStart,mirrorTarget);
 		}
 		//Smith
-		if(data.items[60] !== "unavailable")
+		if(data.items[101] !== "unavailable")
 		{
 			let mirrorStart = canPlaceMirrorPortal(overworldScreens.get(0x69).regions.get("Frog"),regions,extraRegions,maybeLightRegions,maybeDarkRegions);
 			let mirrorTarget = canPlaceMirrorPortal(overworldScreens.get(0x62).regions.get("Main"),regions,extraRegions,maybeLightRegions,maybeDarkRegions);
-			data.items[60] = canReachFrom(overworldScreens.get(0x69).regions.get("Frog"),overworldScreens.get(0x22).regions.get("Main"),items,"smithfrog",data.items[60],mirrorStart,mirrorTarget);
-			if(data.items[60] === "available" && canReachFrom(overworldScreens.get(0x69).regions.get("Frog"),overworldScreens.get(0x22).regions.get("Main"),items,"smithfrognosq",data.items[60],mirrorStart,mirrorTarget) !== "available")
-				data.items[60] === "possible";
+			data.items[101] = canReachFrom(overworldScreens.get(0x69).regions.get("Frog"),overworldScreens.get(0x22).regions.get("Main"),items,"smithfrog",data.items[101],mirrorStart,mirrorTarget);
+			if(data.items[101] === "available" && canReachFrom(overworldScreens.get(0x69).regions.get("Frog"),overworldScreens.get(0x22).regions.get("Main"),items,"smithfrognosq",data.items[101],mirrorStart,mirrorTarget) !== "available")
+				data.items[101] === "possible";
 		}
 		//Purple chest
-		andSpecial(data.items,28,entranceEnabled ?data.special["Frog"] :data.items[60]);
-		if(data.items[28] !== "unavailable")
+		andSpecial(data.items,69,entranceEnabled ?data.special["Frog"] :data.items[101]);
+		if(data.items[69] !== "unavailable")
 		{
 			let mirrorStart = canPlaceMirrorPortal(overworldScreens.get(0x62).regions.get("Main"),regions,extraRegions,maybeLightRegions,maybeDarkRegions);
 			let mirrorTarget = canPlaceMirrorPortal(overworldScreens.get(0x7A).regions.get("Main"),regions,extraRegions,maybeLightRegions,maybeDarkRegions);
-			data.items[28] = canReachFrom(overworldScreens.get(0x62).regions.get("Main"),overworldScreens.get(0x3A).regions.get("Main"),items,"purplechest",data.items[28],mirrorStart,mirrorTarget);
+			data.items[69] = canReachFrom(overworldScreens.get(0x62).regions.get("Main"),overworldScreens.get(0x3A).regions.get("Main"),items,"purplechest",data.items[69],mirrorStart,mirrorTarget);
 		}
-		data.entranceitems[4] = data.items[28] === "available" ?"possible" :data.items[28];
+		data.entranceitems[4] = data.items[69] === "available" ?"possible" :data.items[69];
 		//For now, unknown if followers can be delivered in Entrance
 		if(data.entranceitems[0] === "available")
 			data.entranceitems[0] = "possible";
@@ -2134,49 +2182,49 @@
 		//Manually refine access to certain items that involve dungeons
 		if(!entranceEnabled)
 		{
-			let front = data.items[63],back = data.items[55],towerAccess = data.items[65] === "available" && data.items[66] === "available",towerMaybe = (data.items[65] === "available" || data.items[65] === "possible") && (data.items[66] === "available" || data.items[66] === "possible");
+			let front = data.items[104],back = data.items[96],towerAccess = data.items[106] === "available" && data.items[107] === "available",towerMaybe = (data.items[106] === "available" || data.items[106] === "possible") && (data.items[107] === "available" || data.items[107] === "possible");
 			let retro = items.flags && items.flags.gametype ?items.flags.gametype === 'R' :worldState === 'R';
 			//Back of Escape
 			if(back !== "unavailable")
-				data.items[55] = items.bomb || items.boots ?back :"unavailable";
+				data.items[96] = items.bomb || items.boots ?back :"unavailable";
 			else
 				if(front !== "unavailable" && items.lantern && (items.bomb || items.boots) && (items.bomb || items.sword || items.bow > 1 || items.hammer || items.firerod || items.somaria || items.byrna))
 				{
 					if(retro || (items.flags && items.flags.wildkeys))
-						data.items[55] = retro || items.smallkeyhalf0 ?front :"unavailable";
+						data.items[96] = retro || items.smallkeyhalf0 ?front :"unavailable";
 					else
-						data.items[55] = "possible";
+						data.items[96] = "possible";
 				}
 			//Sewers
 			if(front !== "available" && back !== "unavailable" && items.lantern && (items.bomb || items.sword || items.bow > 1 || items.hammer || items.firerod || items.somaria || items.byrna))
 			{
 				if(retro || (items.flags && items.flags.wildkeys))
-					data.items[63] = retro || items.smallkeyhalf0 ?back :"unavailable";
+					data.items[104] = retro || items.smallkeyhalf0 ?back :"unavailable";
 				else
-					data.items[63] = "possible";
+					data.items[104] = "possible";
 			}
 			//Castle Tower
 			if(towerMaybe && (items.sword || items.bow > 1 || items.hammer || items.firerod || items.somaria || items.byrna))
 			{
-				data.items[65] = towerAccess ?"available" :"possible";
-				data.items[66] = items.lantern && (retro || items.smallkeyhalf1 || !items.flags || !items.flags.wildkeys) ?(towerAccess ?"available" :"possible") :"unavailable";
+				data.items[106] = towerAccess ?"available" :"possible";
+				data.items[107] = items.lantern && (retro || items.smallkeyhalf1 || !items.flags || !items.flags.wildkeys) ?(towerAccess ?"available" :"possible") :"unavailable";
 			}
 			else
-				data.items[65] = data.items[66] = "unavailable";
+				data.items[106] = data.items[107] = "unavailable";
 			//Desert Ledge
-			if(data.items[48] === "information")
+			if(data.items[89] === "information")
 				if(door)
 				{
 					if(items.book)
 					{
-						data.items[48] = "possible";
+						data.items[89] = "possible";
 						if(data.special["Desert Access"] && (!mixedow || overworldScreens.get(0x30).mixedState !== "unknown") && (mixedow && overworldScreens.get(0x30).mixedState === "swapped") !== (worldState === 'I'))
 							data.helpDesert = true;
 					}
 				}
 				else
 					if(data.special["Desert Access"])
-						data.items[48] = data.special["Desert Access"];
+						data.items[89] = data.special["Desert Access"];
 			//Mimic Cave
 			if(items.mirror && items.hammer && items.moonpearl && data.items[4] === "unavailable" && data.entrances[136] !== "unavailable" && (!mixedow || overworldScreens.get(0x1B).mixedState !== "unknown") && (mixedow && overworldScreens.get(0x05).mixedState === "swapped") === (worldState === 'I'))
 				if(door)
