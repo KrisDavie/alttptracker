@@ -27,6 +27,26 @@
   --tr-color: #d44a00;
   --gt-color: #00eaff;
   --ganon-color: #00eaff;
+  --link-color: #00ddff;
+  --sanc-color: #00ddff;
+  --mount-color: #00ddff;
+  --item-color: #51ff3a;
+	--magic-color: #ff7b00;
+	--kid-color: #ff7b00;
+	--smith-color: #ff7b00;
+	--bat-color: #ff7b00;
+	--lib-color: #ff7b00;
+	--saha-color: #ff7b00;
+	--mimc-color: #ff7b00;
+	--rupee-color: #51ff3a;
+	--shop-color: #51ff3a;
+	--dark-color: #2433ff;
+	--bomb-color: #ff7b00;
+	--bump-color: #ff7b00;
+	--spike-color: #ff7b00;
+	--hook-color: #ff7b00;
+	--dam-color: #ff7b00;
+
 }
 
 #tracker .prize.collected {
@@ -175,6 +195,83 @@
   background-color: var(--ganon-color);
   border-radius: 0% !important
 }
+
+.availablelink {
+  background-color: var(--link-color);
+}
+
+.availablesanc {
+  background-color: var(--sanc-color);
+}
+
+.availablemount {
+  background-color: var(--mount-color);
+}
+
+.availableitem {
+  background-color: var(--item-color);
+}
+
+.availablemagic {
+  background-color: var(--magic-color);
+}
+
+.availablekid {
+  background-color: var(--kid-color);
+}
+
+.availablesmith {
+  background-color: var(--smith-color);
+}
+
+.availablebat {
+  background-color: var(--bat-color);
+}
+
+.availablelib {
+  background-color: var(--lib-color);
+} 
+
+.availablesaha {
+  background-color: var(--saha-color);
+}
+
+.availablemimc {
+  background-color: var(--mimc-color);
+} 
+
+.availablerupee {
+  background-color: var(--rupee-color);
+}
+
+.availableshop {
+  background-color: var(--shop-color);
+}
+
+.availabledark {
+  background-color: var(--dark-color);
+}
+
+.availablebomb {
+  background-color: var(--bomb-color);
+}
+
+.availablebump {
+  background-color: var(--bump-color);
+}
+
+.availablespike {
+  background-color: var(--spike-color);
+}
+
+.availablehook {
+  background-color: var(--hook-color);
+}
+
+.availabledam {
+  background-color: var(--dam-color);
+}
+
 
 .crossedright {
   background: linear-gradient(

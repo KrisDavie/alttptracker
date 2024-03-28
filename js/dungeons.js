@@ -746,22 +746,22 @@
 				var c = dungeonChests(dungeonID,entranceAvail,entranceBunny);
 				if (c === 'available') {
 					document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--available-color');
-					document.getElementById('chest'+dungeonID).style.color = 'black';
+					document.getElementById('chest'+dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--available-color'));
 				} else if (c === 'darkavailable') {
 					document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkavailable-color');
-					document.getElementById('chest'+dungeonID).style.color = 'white';
+					document.getElementById('chest'+dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkavailable-color'));
 				} else if (c === 'possible') {
 					document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--possible-color');
-					document.getElementById('chest'+dungeonID).style.color = 'black';
+					document.getElementById('chest'+dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--possible-color'));
 				} else if (c === 'darkpossible') {
 					document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkpossible-color');
-					document.getElementById('chest'+dungeonID).style.color = 'white';
+					document.getElementById('chest'+dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkpossible-color'));
 				} else if (c === 'unavailable') {
 					document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--unavailable-color');
-					document.getElementById('chest'+dungeonID).style.color = 'white';
+					document.getElementById('chest'+dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--unavailable-color'));
 				} else if (c === 'information') {
 					document.getElementById('chest'+dungeonID).style.backgroundColor = curStyle.getPropertyValue('--information-color');
-					document.getElementById('chest'+dungeonID).style.color = 'black';
+					document.getElementById('chest'+dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--information-color'));
 				}
 				if (dungeonID < 10) {
 					document.getElementById('entranceBoss'+dungeonID).style.visibility = (!dungeons[dungeonID].is_beaten && flags.overworldshuffle === 'N' ? 'visible' : 'hidden');

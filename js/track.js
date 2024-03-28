@@ -37,6 +37,22 @@
 	window.doorWindow = null;
 	window.dungeonData = null;
 	
+	window.rgbToLightness = function(rgb) {
+		if (rgb.substring(0, 1) === "#") {
+			rgb = rgb.substring(1);
+		}
+		var r = parseInt(rgb.substring(0, 2), 16) / 255;
+		var g = parseInt(rgb.substring(2, 4), 16) / 255;
+		var b = parseInt(rgb.substring(4, 6), 16) / 255;
+		var max = Math.max(r, g, b);
+		var min = Math.min(r, g, b);
+		return (max + min) / 2;
+	}
+
+	window.rgbToTextColour = function(rgb) {
+		return rgbToLightness(rgb) >= 0.5 ? "#000000" : "#FFFFFF";
+	}
+
 	window.resetTrackerTimer = function() {
 		clearTimeout(trackingTimer);
 		trackingTimer = setTimeout(sendTrackerCommand, 2000);
@@ -1182,13 +1198,13 @@
 							} else if (isTurtleConnector(known_location) === true) {
 								entrancetype = 'turtleconnector';
 							} else if (isSpawn(known_location) === true) {
-								entrancetype = 'spawn';
+								entrancetype = known_location;
 							} else if (isDungeon(known_location) === true) {
 								entrancetype = known_location;
 							} else if (isDark(known_location) === true) {
-								entrancetype = 'dark';
+								entrancetype = known_location;
 							} else if (requireItem(known_location) === true) {
-								entrancetype = 'itemlocked';
+								entrancetype = known_location;
 							} else if (isUnknownConnector(known_location) === true) {
 								entrancetype = 'unknownconnector';
 							}
@@ -1647,53 +1663,59 @@
 		
 		document.getElementById('entranceModalNote').focus();
 		const curStyle = window.getComputedStyle(document.documentElement);
-		document.getElementById('hc_m').style.backgroundColor = curStyle.getPropertyValue('--hc-color');
-		document.getElementById('hc_w').style.backgroundColor = curStyle.getPropertyValue('--hc-color');
-		document.getElementById('hc_e').style.backgroundColor = curStyle.getPropertyValue('--hc-color');
-		document.getElementById('ct').style.backgroundColor = curStyle.getPropertyValue('--ct-color');
-		document.getElementById('ep').style.backgroundColor = curStyle.getPropertyValue('--ep-color');
-		document.getElementById('dp_m').style.backgroundColor = curStyle.getPropertyValue('--dp-color');
-		document.getElementById('dp_w').style.backgroundColor = curStyle.getPropertyValue('--dp-color');
-		document.getElementById('dp_e').style.backgroundColor = curStyle.getPropertyValue('--dp-color');
-		document.getElementById('dp_n').style.backgroundColor = curStyle.getPropertyValue('--dp_n-color');
-		document.getElementById('toh').style.backgroundColor = curStyle.getPropertyValue('--toh-color');
-		document.getElementById('pod').style.backgroundColor = curStyle.getPropertyValue('--pod-color');
-		document.getElementById('sp').style.backgroundColor = curStyle.getPropertyValue('--sp-color');
-		document.getElementById('sw').style.backgroundColor = curStyle.getPropertyValue('--sw-color');
-		document.getElementById('tt').style.backgroundColor = curStyle.getPropertyValue('--tt-color');
-		document.getElementById('ip').style.backgroundColor = curStyle.getPropertyValue('--ip-color');
-		document.getElementById('mm').style.backgroundColor = curStyle.getPropertyValue('--mm-color');
-		document.getElementById('tr_m').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
-		document.getElementById('tr_w').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
-		document.getElementById('tr_e').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
-		document.getElementById('tr_b').style.backgroundColor = curStyle.getPropertyValue('--tr-color');
-		document.getElementById('link').style.backgroundColor = '#00ddff';
-		document.getElementById('sanc').style.backgroundColor = '#00ddff';
-		document.getElementById('mount').style.backgroundColor = '#00ddff';
-		document.getElementById('item').style.backgroundColor = '#51ff3a';
-		document.getElementById('gt').style.backgroundColor = curStyle.getPropertyValue('--gt-color');
-		document.getElementById('ganon').style.backgroundColor = curStyle.getPropertyValue('--ganon-color');
-		document.getElementById('magic').style.backgroundColor = '#ff7b00';
-		document.getElementById('kid').style.backgroundColor = '#ff7b00';
-		document.getElementById('smith').style.backgroundColor = '#ff7b00';
-		document.getElementById('bat').style.backgroundColor = '#ff7b00';
-		document.getElementById('lib').style.backgroundColor = '#ff7b00';
-		document.getElementById('saha').style.backgroundColor = '#ff7b00';
-		document.getElementById('mimc').style.backgroundColor = '#ff7b00';
-		document.getElementById('rupee').style.backgroundColor = '#51ff3a';
-		document.getElementById('shop').style.backgroundColor = '#51ff3a';
-		document.getElementById('dark').style.backgroundColor = '#2433ff';
-		document.getElementById('connector').style.backgroundColor = curStyle.getPropertyValue('--connector-color');
-		// document.getElementById('connector1').style.backgroundColor = '#ff50f9';
-		// document.getElementById('connector3').style.backgroundColor = '#bf00ff';
-		document.getElementById('bomb').style.backgroundColor = '#ff7b00';
-		document.getElementById('bump').style.backgroundColor = '#ff7b00';
-		document.getElementById('spike').style.backgroundColor = '#ff7b00';
-		document.getElementById('hook').style.backgroundColor = '#ff7b00';
-		document.getElementById('dam').style.backgroundColor = '#ff7b00';
+
+		const customColours = {
+			'--hc-color': ['hc_m', 'hc_w', 'hc_e'],
+			'--ct-color': ['ct'],
+			'--ep-color': ['ep'],
+			'--dp-color': ['dp_m', 'dp_w', 'dp_e'],
+			'--dp_n-color': ['dp_n'],
+			'--toh-color': ['toh'],
+			'--pod-color': ['pod'],
+			'--sp-color': ['sp'],
+			'--sw-color': ['sw'],
+			'--tt-color': ['tt'],
+			'--ip-color': ['ip'],
+			'--mm-color': ['mm'],
+			'--tr-color': ['tr_m', 'tr_w', 'tr_e', 'tr_b'],
+			'--gt-color': ['gt'],
+			'--ganon-color': ['ganon'],
+			'--connector-color': ['connector'],
+			'--link-color': ['link'],
+			'--sanc-color': ['sanc'],
+			'--mount-color': ['mount'],
+			'--ganon-color': ['ganon'],
+			'--link-color': ['link'],
+			'--sanc-color': ['sanc'],
+			'--mount-color': ['mount'],
+			'--item-color': ['item'],
+			'--magic-color': ['magic'],
+			'--kid-color': ['kid'],
+			'--smith-color': ['smith'],
+			'--bat-color': ['bat'],
+			'--lib-color': ['lib'],
+			'--saha-color': ['saha'],
+			'--mimc-color': ['mimc'],
+			'--rupee-color': ['rupee'],
+			'--shop-color': ['shop'],
+			'--dark-color': ['dark'],
+			'--bomb-color': ['bomb'],
+			'--bump-color': ['bump'],
+			'--spike-color': ['spike'],
+			'--hook-color': ['hook'],
+			'--dam-color': ['dam'],
+		}
+
+		for (const [key, value] of Object.entries(customColours)) {
+			for (const v of value) {
+				document.getElementById(v).style.backgroundColor = curStyle.getPropertyValue(key);
+				document.getElementById(v).style.color = rgbToTextColour(curStyle.getPropertyValue(key));
+			}
+		}
+		
 		
 		if (entrances[n].known_location != '') {
-			document.getElementById(entrances[n].known_location).style.backgroundColor = '#00F';
+			document.getElementById(entrances[n].known_location).style.borderColor = curStyle.getPropertyValue('--available-color');
 		}
 	}
 	
@@ -1900,6 +1922,8 @@
 	}
 	
 	window.tagEntrance = function(n, t) {
+		const curStyle = window.getComputedStyle(document.documentElement);
+
 		document.getElementById('hc_m').style.backgroundColor = '#000';
 		document.getElementById('hc_w').style.backgroundColor = '#000';
 		document.getElementById('hc_e').style.backgroundColor = '#000';
@@ -1945,6 +1969,7 @@
 		
 		if (entrances[document.getElementById('entranceID').value].known_location === n) {
 			entrances[document.getElementById('entranceID').value].known_location = '';
+			document.getElementById(n).style.borderColor = curStyle.getPropertyValue('#ffffff');
 			entrances[document.getElementById('entranceID').value].type = 0;
 			var information = document.getElementById('informationdiv'+document.getElementById('entranceID').value);
 			if (information != null) {
@@ -1953,7 +1978,7 @@
 		} else {
 			entrances[document.getElementById('entranceID').value].known_location = n;
 			entrances[document.getElementById('entranceID').value].type = (t === true ? 2 : 3);
-			document.getElementById(n).style.backgroundColor = '#00F';
+			document.getElementById(n).style.borderColor = curStyle.getPropertyValue('--available-color');
 			
 			if (document.getElementById('informationdiv'+document.getElementById('entranceID').value) != null) {
 				document.getElementById('informationdiv'+document.getElementById('entranceID').value).innerHTML = n.replace('_','-').toUpperCase();

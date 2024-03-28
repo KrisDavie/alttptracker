@@ -676,7 +676,8 @@ body {
     height: 30px;
 	font-family: teko_light, Arial, Helvetica, sans-serif; 
 	font-variant: small-caps;	
-	background-image: url(../images/interface/entrancelocation.png);
+  border: 2px solid white;
+
 	cursor: pointer;
     padding: 1px 0px 0px 3px;
     font-size: 22px;
