@@ -190,6 +190,10 @@ body {
   background-size: 100% 100%;
 }
 
+.chest.scouted,
+.castle.scouted,
+.location.scouted,
+.dungeon.scouted,
 .chest.highlight,
 .castle.highlight,
 .location.highlight,

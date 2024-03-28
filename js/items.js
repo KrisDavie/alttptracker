@@ -2,6 +2,8 @@
     'use strict';
 
     var query = uri_query();
+
+    window.mushroomfound = false; 
     
     window.flags = {
         gametype: query.f.charAt(0),

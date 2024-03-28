@@ -1003,6 +1003,7 @@
 					else
 						chests[rightClickedLocation].content += ", "+name;
 					document.getElementById('caption').innerHTML = caption_to_html(name+' placed at '+chests[rightClickedLocation].caption);
+					document.getElementById('locationMap'+rightClickedLocation).classList.add('scouted')
 				}
 				document.getElementById('locationMap'+rightClickedLocation).classList.remove('rightclick');
 			}
@@ -1013,6 +1014,7 @@
 					else
 						dungeons[rightClickedLocation].content += ", "+name;
 					document.getElementById('caption').innerHTML = caption_to_html(name+' placed in '+dungeons[rightClickedLocation].caption);
+					document.getElementById('dungeon'+rightClickedLocation).classList.add('scouted')
 				}
 				document.getElementById('dungeon'+rightClickedLocation).classList.remove('rightclick');
 			}
@@ -1057,7 +1059,8 @@
 				if (flags.entrancemode === 'N') {
 					var x = label.substring(5);
 					document.getElementById('dungeon'+x).className = 'dungeon ' +
-						(value ? dungeons[x].can_get_chest() : 'opened');
+						(value ? dungeons[x].can_get_chest() : 'opened') + 
+						(value && dungeons[x].content ? ' scouted' : '');
 					if (label == "chest11") {
 						document.getElementById('bossMap11').className = 'bossprize-' + prizes[11] + ' boss ' + dungeons[11].is_beatable();
 					}
@@ -1119,11 +1122,19 @@
 			is_boss = nodes[0].classList.contains('boss');
 			if ((typeof items[label]) === 'boolean') {
 				items[label] = !items[label];
-				
+
 				if (items[label] == true) {
 					lastItem = label;
 				} else {
 					lastItem = null;
+				}
+				if (label === 'mushroom') {
+					if (!window.mushroomfound) {
+						window.mushroomfound = true;
+					}
+					if (window.mushroomfound) {
+						items[label] = true;
+					}
 				}
 				nodes.forEach(node=>node.classList[items[label] ? 'add' : 'remove'](is_boss ? 'defeated' : 'active'));
 			} else if (label != 'sword' || flags.swordmode != 'S') {
@@ -1226,7 +1237,7 @@
 				for (var k = 0; k < dungeons.length; k++) {
 					document.getElementById('bossMap'+k).className = 'bossprize-' + prizes[k] + ' boss ' + (dungeons[k].is_beaten ? 'opened' : dungeons[k].is_beatable());
 					if (items['chest'+k])
-						document.getElementById('dungeon'+k).className = 'dungeon ' + dungeons[k].can_get_chest();
+						document.getElementById('dungeon'+k).className = 'dungeon ' + dungeons[k].can_get_chest() + (dungeons[k].can_get_chest() != 'opened' && dungeons[k].content ? ' scouted' : '');
 				}
 			}
 			toggle_agahnim();
@@ -1491,7 +1502,7 @@
 		if (flags.mapmode != 'N') {
 			var x = label.substring(5);
 			if (document.getElementById('dungeon'+x) != null) 
-				document.getElementById('dungeon'+x).className = 'dungeon ' + (value ? dungeons[x].can_get_chest() : 'opened');
+				document.getElementById('dungeon'+x).className = 'dungeon ' + (value ? dungeons[x].can_get_chest() : 'opened') + (value && dungeons[x].content ? ' scouted' : '');
 		}
 		updateMapTracker();
 	};
@@ -2062,7 +2073,7 @@
             dungeons[8+n].is_beaten = !dungeons[8+n].is_beaten;
             toggle_boss(8+n);
             if (items['chest'+(8+n)] > 0)
-                document.getElementById('dungeon'+(8+n)).className = 'dungeon ' + dungeons[8+n].can_get_chest();
+                document.getElementById('dungeon'+(8+n)).className = 'dungeon ' + dungeons[8+n].can_get_chest() + (dungeons[8+n].can_get_chest() != 'opened' && dungeons[8+n].content ? ' scouted' : '');
             // TRock medallion affects Mimic Cave
             if (n === 1) {
                 chests[4].is_opened = !chests[4].is_opened;
@@ -2084,9 +2095,11 @@
             chests[x].is_opened = !chests[x].is_opened;
             var highlight = document.getElementById('locationMap'+x).classList.contains('highlight');
 			var checkedType = (x >= 23 && x <= 63) ? 'bonked' : 'opened';
+			var scouted = chests[x].content
             document.getElementById('locationMap'+x).className = 'location ' +
                 (chests[x].is_opened ? checkedType : chests[x].is_available()) +
-                (highlight ? ' highlight' : '');
+                (highlight ? ' highlight' : '') +
+				(scouted && !chests[x].is_opened ? ' scouted' : '');
 				
 			if (flags.restreamer === "T" && loadPrimer === true) {
 				resetTrackerTimer();
