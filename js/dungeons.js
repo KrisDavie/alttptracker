@@ -96,7 +96,7 @@
 	
 	function canReachOutcastEntrance() {
 		if (items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim && items.hookshot && (items.hammer || items.glove || items.flippers))) return true;
-		if (hasFoundEntrance(90) || hasFoundEntrance(91) || (flags.doorshuffle === 'N' && hasFoundEntrance(96)) || hasFoundEntrance(99) || hasFoundEntrance(102) || hasFoundEntrance(104) || hasFoundEntrance(105) || hasFoundEntrance(106) || hasFoundEntrance(107) || hasFoundEntrance(108) || hasFoundEntrance(109) || (hasFoundEntrance(110) && items.moonpearl && items.hammer) || hasFoundEntrance(111) || (hasFoundEntrance(112) && items.moonpearl && items.glove === 2) || hasFoundEntrance(129)) return true;
+		if (hasFoundEntrance(90) || hasFoundEntrance(91) || ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && hasFoundEntrance(96)) || hasFoundEntrance(99) || hasFoundEntrance(102) || hasFoundEntrance(104) || hasFoundEntrance(105) || hasFoundEntrance(106) || hasFoundEntrance(107) || hasFoundEntrance(108) || hasFoundEntrance(109) || (hasFoundEntrance(110) && items.moonpearl && items.hammer) || hasFoundEntrance(111) || (hasFoundEntrance(112) && items.moonpearl && items.glove === 2) || hasFoundEntrance(129)) return true;
 		if ((hasFoundEntrance(86) || hasFoundEntrance(87) || hasFoundEntrance(88) || hasFoundEntrance(89) || hasFoundEntrance(113) || hasFoundEntrance(119)) && items.moonpearl && (items.glove === 2 || (items.flippers && items.hookshot) || (items.glove > 0 && items.hammer && items.hookshot))) return true;
 		if (canReachDarkWorldEast() && items.moonpearl && ((items.flippers || items.hammer || items.glove > 0) && items.hookshot)) return true;
 		if (hasFoundEntrance(92) && items.moonpearl && items.hookshot) return true;
@@ -106,7 +106,7 @@
 	function canReachDarkWorldEast() {
 		if (canReachDarkWorld() && (items.hammer || items.flippers)) return true;
 		if (items.agahnim || hasFoundEntrance(94) || hasFoundEntrance(95) || hasFoundEntrance(114) || hasFoundEntrance(115) || hasFoundEntrance(116) || hasFoundEntrance(117) || ((hasFoundEntrance(86) || hasFoundEntrance(87) || hasFoundEntrance(88) || hasFoundEntrance(89) || hasFoundEntrance(113) || hasFoundEntrance(119)) && (items.hammer || items.flippers) && items.moonpearl) || (hasFoundEntrance(92) && items.moonpearl && (items.glove > 0 || items.hammer))) return true;
-		if ((hasFoundEntrance(90) || hasFoundEntrance(91) || (flags.doorshuffle === 'N' && hasFoundEntrance(96)) || hasFoundEntrance(99) || hasFoundEntrance(102) || hasFoundEntrance(104) || hasFoundEntrance(105) || hasFoundEntrance(106) || hasFoundEntrance(107) || hasFoundEntrance(108) || hasFoundEntrance(109) || (hasFoundEntrance(110) && items.hammer) || hasFoundEntrance(111) || hasFoundEntrance(129)) && items.moonpearl && (items.flippers || items.hammer)) return true;
+		if ((hasFoundEntrance(90) || hasFoundEntrance(91) || ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && hasFoundEntrance(96)) || hasFoundEntrance(99) || hasFoundEntrance(102) || hasFoundEntrance(104) || hasFoundEntrance(105) || hasFoundEntrance(106) || hasFoundEntrance(107) || hasFoundEntrance(108) || hasFoundEntrance(109) || (hasFoundEntrance(110) && items.hammer) || hasFoundEntrance(111) || hasFoundEntrance(129)) && items.moonpearl && (items.flippers || items.hammer)) return true;
 		if (canReachAndLeaveShoppingMall()) return true;
 		return false;
 	}
@@ -317,8 +317,8 @@
 	}
 
 	window.doorCheck = function(dungeon,onlyDarkPossible,darkRoom,torchDarkRoom,posRequired,goal,onlyBunny = false) {
-		if(flags.doorshuffle === 'N')
-			return null;
+		if(flags.doorshuffle === 'N' || flags.doorshuffle === 'P')
+			return 'available';
 		var doorcheck = 'available',bosscheck = onlyBunny ? 'unavailable' : door_enemizer_check(dungeon),wildsmallkeys = flags.wildkeys || flags.gametype === 'R';
 		if(goal === 'boss')
 			doorcheck = bosscheck;
@@ -482,7 +482,7 @@
 		var state = "unavailable",bunny = true,allAccessible = true;
 		for(var k = 0; k < dungeonEntranceCounts[dungeonID]; k++)
 		{
-			if(flags.doorshuffle === 'N' && dungeonEntrancesBunny[k])
+			if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && dungeonEntrancesBunny[k])
 				dungeonEntrances[k] = "unavailable";
 			if(dungeonEntrances[k] !== "unavailable")
 			{
@@ -505,10 +505,10 @@
 		switch(dungeonID)
 		{
 			case 0:
-				state = flags.doorshuffle === 'N' ?EPBoss() :doorCheck(0,false,true,true,['hookshot','bow'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?EPBoss() :doorCheck(0,false,true,true,['hookshot','bow'],'boss');
 				break;
 			case 1:
-				if(flags.doorshuffle === 'N')
+				if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
 				{
 					var front = bestAvailability(dungeonEntrances[0],dungeonEntrances[1],dungeonEntrances[2]),back = dungeonEntrances[3]
 					state = DPBoss(front,back);
@@ -517,16 +517,16 @@
 					state = doorCheck(1,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','firesource','killbomb'],'boss');
 				break;
 			case 2:
-				state = flags.doorshuffle === 'N' ?HeraBoss() :doorCheck(2,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '','kill'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?HeraBoss() :doorCheck(2,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '','kill'],'boss');
 				break;
 			case 3:
-				state = flags.doorshuffle === 'N' ?PoDBoss() :doorCheck(3,false,true,true,['boots','hammer','bow','bomb'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?PoDBoss() :doorCheck(3,false,true,true,['boots','hammer','bow','bomb'],'boss');
 				break;
 			case 4:
-				state = flags.doorshuffle === 'N' ?SPBoss() :doorCheck(4,false,false,false,['flippers',flags.entrancemode === 'N' ?'mirror' :'','hookshot','hammer','bomb'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?SPBoss() :doorCheck(4,false,false,false,['flippers',flags.entrancemode === 'N' ?'mirror' :'','hookshot','hammer','bomb'],'boss');
 				break;
 			case 5:
-				if(flags.doorshuffle === 'N')
+				if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
 				{
 					var front = bestAvailability(dungeonEntrances[0],dungeonEntrances[1],dungeonEntrances[2]),back = dungeonEntrances[3];
 					state = SWBoss(front,back);
@@ -535,19 +535,19 @@
 					state = doorCheck(5,false,false,false,['firerod','swordorswordless','bomb'],'boss');
 				break;
 			case 6:
-				state = flags.doorshuffle === 'N' ?TTBoss() :doorCheck(6,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '','glove','bomb'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?TTBoss() :doorCheck(6,false,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '','glove','bomb'],'boss');
 				break;
 			case 7:
-				state = flags.doorshuffle === 'N' ?IPBoss() :doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?IPBoss() :doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'boss');
 				break;
 			case 8:
-				state = flags.doorshuffle === 'N' ?MMBoss("available") :doorCheck(8,false,true,false,['hookshot','firesource','somaria','bomb'],'boss');
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?MMBoss("available") :doorCheck(8,false,true,false,['hookshot','firesource','somaria','bomb'],'boss');
 				break;
 			case 9:
 				if(trFrontLogic)
-					state = flags.doorshuffle === 'N' ?TRFrontBoss("available") :doorCheck(9,false,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?TRFrontBoss("available") :doorCheck(9,false,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
 				else
-					state = flags.doorshuffle === 'N' ?TRBoss(...dungeonEntrances) :doorCheck(9,false,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?TRBoss(...dungeonEntrances) :doorCheck(9,false,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''],'boss');
 				break;
 			case 10:
 				if((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck())))
@@ -557,7 +557,7 @@
 				if(flags.goals === 'F' && (items.sword > 1 || (flags.swordmode === 'S' && items.hammer)) && (items.lantern || items.firerod))
 					state = "available";
 				else
-					state = flags.doorshuffle === 'N' ?GTBoss() :doorCheck(10,false,false,false,['hammer','firerod','hookshot','boomerang','somaria',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','bow',flags.bossshuffle === 'N' ? '' : 'icerod','bomb'],'boss');
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?GTBoss() :doorCheck(10,false,false,false,['hammer','firerod','hookshot','boomerang','somaria',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','bow',flags.bossshuffle === 'N' ? '' : 'icerod','bomb'],'boss');
 				break;
 			case 12:
 				if(!items.sword && !items.hammer && !items.net)
@@ -580,9 +580,9 @@
 			return "possible";
 		if(flags.doorshuffle !== 'N' && state === "darkavailable" && (best === "possible" || !allAccessible))
 			return "darkpossible";
-		if(flags.doorshuffle === 'N' && state === "available" && best === "possible")
+		if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "available" && best === "possible")
 			return "possible";
-		if(flags.doorshuffle === 'N' && state === "darkavailable" && best === "possible")
+		if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "darkavailable" && best === "possible")
 			return "darkpossible";
 		return state;
 	};
@@ -593,7 +593,7 @@
 		var state = "unavailable",bunny = true,allAccessible = true;
 		for(var k = 0; k < dungeonEntranceCounts[dungeonID]; k++)
 		{
-			if(flags.doorshuffle === 'N' && dungeonEntrancesBunny[k])
+			if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && dungeonEntrancesBunny[k])
 				dungeonEntrances[k] = "unavailable";
 			if(dungeonEntrances[k] !== "unavailable")
 			{
@@ -612,7 +612,7 @@
 		}
 		if(state === "unavailable")
 			return "unavailable";
-		if(bunny && flags.doorshuffle === 'N')
+		if(bunny && (flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
 			return "unavailable";
 		if(bunny && flags.doorshuffle === 'B' && dungeon !== 2)
 			return "unavailable";
@@ -620,10 +620,10 @@
 		switch(dungeonID)
 		{
 			case 0:
-				state = flags.doorshuffle === 'N' ?EPChests() :doorCheck(0,false,true,true,['hookshot','bow'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?EPChests() :doorCheck(0,false,true,true,['hookshot','bow'],'item',bunny);
 				break;
 			case 1:
-				if(flags.doorshuffle === 'N')
+				if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
 				{
 					var front = bestAvailability(dungeonEntrances[0],dungeonEntrances[1],dungeonEntrances[2]),back = dungeonEntrances[3];
 					state = DPChests(front,back);
@@ -632,16 +632,16 @@
 					state = doorCheck(1,false,false,false,['boots','firesource','killbomb'],'item',bunny);
 				break;
 			case 2:
-				state = flags.doorshuffle === 'N' ?HeraChests() :doorCheck(2,false,false,false,['firesource','kill'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?HeraChests() :doorCheck(2,false,false,false,['firesource','kill'],'item',bunny);
 				break;
 			case 3:
-				state = flags.doorshuffle === 'N' ?PoDChests() :doorCheck(3,false,true,true,['boots','hammer','bow','bomb'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?PoDChests() :doorCheck(3,false,true,true,['boots','hammer','bow','bomb'],'item',bunny);
 				break;
 			case 4:
-				state = flags.doorshuffle === 'N' ?SPChests() :doorCheck(4,false,false,false,['flippers',flags.entrancemode === 'N' ?'mirror' :'','hookshot','hammer','bomb'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?SPChests() :doorCheck(4,false,false,false,['flippers',flags.entrancemode === 'N' ?'mirror' :'','hookshot','hammer','bomb'],'item',bunny);
 				break;
 			case 5:
-				if(flags.doorshuffle === 'N')
+				if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
 				{
 					var front = bestAvailability(dungeonEntrances[0],dungeonEntrances[1],dungeonEntrances[2]),back = dungeonEntrances[3];
 					state = SWChests(front,back);
@@ -650,25 +650,25 @@
 					state = doorCheck(5,false,false,false,['firerod','swordorswordless','bomb'],'item',bunny);
 				break;
 			case 6:
-				state = flags.doorshuffle === 'N' ?TTChests() :doorCheck(6,false,false,false,['hammer','glove','bomb'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?TTChests() :doorCheck(6,false,false,false,['hammer','glove','bomb'],'item',bunny);
 				break;
 			case 7:
-				state = flags.doorshuffle === 'N' ?IPChests() :doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?IPChests() :doorCheck(7,false,false,false,['freezor','hammer','glove','hookshot','somaria','bomb'],'item',bunny);
 				break;
 			case 8:
-				state = flags.doorshuffle === 'N' ?MMChests("available") :doorCheck(8,false,true,false,['hookshot','firesource','somaria','bomb'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?MMChests("available") :doorCheck(8,false,true,false,['hookshot','firesource','somaria','bomb'],'item',bunny);
 				break;
 			case 9:
 				if(trFrontLogic)
-					state = flags.doorshuffle === 'N' ?TRFrontChests("available") :doorCheck(9,false,true,false,['somaria','firerod','laserbridge'],'item',bunny);
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?TRFrontChests("available") :doorCheck(9,false,true,false,['somaria','firerod','laserbridge'],'item',bunny);
 				else
-					state = flags.doorshuffle === 'N' ?TRChests(...dungeonEntrances) :doorCheck(9,false,true,false,['somaria','firerod','laserbridge'],'item',bunny);
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?TRChests(...dungeonEntrances) :doorCheck(9,false,true,false,['somaria','firerod','laserbridge'],'item',bunny);
 				break;
 			case 10:
-				state = flags.doorshuffle === 'N' ?GTChests() :doorCheck(10,false,false,false,['hammer','firerod','hookshot','boomerang','somaria','boots','bow',flags.bossshuffle === 'N' ? '' : 'icerod','bomb'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?GTChests() :doorCheck(10,false,false,false,['hammer','firerod','hookshot','boomerang','somaria','boots','bow',flags.bossshuffle === 'N' ? '' : 'icerod','bomb'],'item',bunny);
 				break;
 			case 11:
-				if(flags.doorshuffle === 'N')
+				if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') || flags.doorshuffle === 'P')
 				{
 					var front = bestAvailability(dungeonEntrances[0],dungeonEntrances[1],dungeonEntrances[2]),back = dungeonEntrances[4],sanc = dungeonEntrances[3];
 					state = HCChests(front,back,sanc);
@@ -677,7 +677,7 @@
 					state = doorCheck(11,false,false,flags.gametype != 'S',['killbomb','bombdash'],'item',bunny);
 				break;
 			case 12:
-				state = flags.doorshuffle === 'N' ?CTChests() :doorCheck(12,false,true,true,['kill','swordorswordless'],'item',bunny);
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ?CTChests() :doorCheck(12,false,true,true,['kill','swordorswordless'],'item',bunny);
 		}
 		if(best === "darkavailable")
 			{
@@ -695,9 +695,9 @@
 			return "possible";
 		if(flags.doorshuffle !== 'N' && state === "darkavailable" && (best === "possible" || !allAccessible))
 			return "darkpossible";
-		if(flags.doorshuffle === 'N' && state === "available" && best === "possible")
+		if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "available" && best === "possible")
 			return "possible";
-		if(flags.doorshuffle === 'N' && state === "darkavailable" && best === "possible")
+		if((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "darkavailable" && best === "possible")
 			return "darkpossible";
 		return state;
 	};
@@ -834,7 +834,7 @@
 	};
 
     window.canDoTorchDarkRooms = function() {
-		return items.lantern || (items.firerod && flags.entrancemode === 'N' && flags.doorshuffle === 'N' && !owGraphLogic && flags.shopsanity === 'N');
+		return items.lantern || (items.firerod && flags.entrancemode === 'N' && (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && !owGraphLogic && flags.shopsanity === 'N');
 	};
 
     window.EPBoss = function() {
