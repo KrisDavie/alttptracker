@@ -3622,7 +3622,7 @@
 		
 		document.getElementById('bombfloor').style.visibility = flags.doorshuffle != 'C' ? 'hidden' : 'visible';
 		
-		document.getElementById('mirrorscroll').style.visibility = flags.doorshuffle === 'N' ? 'hidden' : 'visible';
+		document.getElementById('mirrorscroll').style.visibility = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? 'hidden' : 'visible';
 
 		document.getElementById('pseudoboots').style.visibility = flags.pseudoboots === 'N' ? 'hidden' : 'visible';
 		
