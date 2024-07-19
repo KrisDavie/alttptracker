@@ -2864,10 +2864,7 @@
 					if (!items.mirror && !(items.hookshot && items.hammer)) return 'unavailable';
 					if (items.flute === 0 && !items.glove) return 'unavailable';
 					var doorcheck = window.doorCheck(2,items.flute === 0 && !items.lantern,false,false,[(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '','kill'],'boss');
-					if(doorcheck)
-					{
-					//	if(!items.flute && !items.lantern && (doorcheck === 'available' || doorcheck === 'possible'))
-					//		return 'dark'+doorcheck;
+					if(doorcheck) {
 						return doorcheck;
 					}
 					if (!canHitSwitch()) return 'unavailable';
@@ -2877,10 +2874,7 @@
 					if (items.flute === 0 && !items.glove) return 'unavailable';
 					if (!items.mirror && !(items.hookshot && items.hammer)) return 'unavailable';
 					var doorcheck = window.doorCheck(2,items.flute === 0 && !items.lantern,false,false,['firesource','kill'],'item');
-					if(doorcheck)
-					{
-					//	if(!items.flute && !items.lantern && (doorcheck === 'available' || doorcheck === 'possible'))
-					//		return 'dark'+doorcheck;
+					if(doorcheck) {
 						return doorcheck;
 					}
 					if (!canHitSwitch()) return 'unavailable';
@@ -2981,15 +2975,9 @@
 				caption: 'Misery Mire {medallion0} [{boots}/{hookshot}]',
 				is_beaten: false,
 				is_beatable: function() {
-					//if (!items.moonpearl || !items.flute || items.glove !== 2 || !items.somaria || !canReachDarkWorld()) return 'unavailable';
-					//if (!items.boots && !items.hookshot) return 'unavailable';
-					//if (!items.bigkey8 || medallionCheck(0) === 'unavailable') return 'unavailable';
 					if (!items.moonpearl || items.flute === 0 || items.glove !== 2 || !canReachDarkWorld() || medallionCheck(0) === 'unavailable') return 'unavailable';
-					//var state = medallionCheck(0);
-					//if (state) return state;
 					var doorcheck = window.doorCheck(8,false,true,false,['hookshot','firesource','somaria','bomb'],'boss');
-					if(doorcheck)
-					{
+					if(doorcheck) {
 						if(doorcheck === 'unavailable')
 							return 'unavailable';
 						if(medallionCheck(0) === 'possible' && doorcheck === 'available')
@@ -3003,11 +2991,8 @@
 				},
 				can_get_chest: function() {
 					if (!items.moonpearl || items.flute === 0 || items.glove !== 2 || !canReachDarkWorld() || medallionCheck(0) === 'unavailable') return 'unavailable';
-					//var state = medallionCheck(0);
-					//if (state) return state;
 					var doorcheck = window.doorCheck(8,false,true,false,['hookshot','firesource','somaria','bomb'],'item');
-					if(doorcheck)
-					{
+					if(doorcheck) {
 						if(doorcheck === 'unavailable')
 							return 'unavailable';
 						if(medallionCheck(0) === 'possible' && doorcheck === 'available')
@@ -3048,8 +3033,7 @@
 					//var state = medallionCheck(1);
 					//if (state) return state;				
 					var doorcheck = window.doorCheck(9,items.flute === 0 && !items.lantern,true,false,['somaria','firerod','laserbridge','bomb'],'item');
-					if(doorcheck)
-					{
+					if(doorcheck) {
 						if(doorcheck === 'unavailable')
 							return 'unavailable';
 						if(medallionCheck(1) === 'possible' && doorcheck === 'available')
@@ -3091,7 +3075,10 @@
 					return items.chest11 ?window.dungeons[11].can_get_chest() :'opened';
 				},
 				can_get_chest: function() {
-					return window.doorCheck(11,false,false,flags.gametype != 'S',['glove','killbomb','bombdash'],'item');
+					if (flags.doorshuffle != 'P') {
+						return window.doorCheck(11,false,false,flags.gametype != 'S',['glove','killbomb','bombdash'],'item');
+					}
+					return window.HCChests();
 				}
 			}, { // [12]
 				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
@@ -3102,9 +3089,12 @@
 				can_get_chest: function() {
 					if(items.sword < 2 && (flags.swordmode != 'S' || !items.hammer) && !items.cape && !items.agahnim)
 						return 'unavailable';
-					if(items.mirror && (items.agahnim || (items.glove && items.hammer && items.moonpearl) || (items.glove === 2 && items.moonpearl && items.flippers)))
-						return window.doorCheck(12,false,true,true,['kill','swordorswordless'],'item');
-					return 'possible';
+					if (flags.doorshuffle != 'P') {
+						if(items.mirror && (items.agahnim || (items.glove && items.hammer && items.moonpearl) || (items.glove === 2 && items.moonpearl && items.flippers)))
+							return window.doorCheck(12,false,true,true,['kill','swordorswordless'],'item');
+						return 'possible';
+					}
+					return window.CTChests();
 				}
 			}];
 
@@ -3117,27 +3107,18 @@
 						return 'unavailable';
 					if(!items.bomb && !melee_bow() && !cane() && !items.firerod)
 						return 'unavailable';
-					if(flags.doorshuffle === 'B')
-					{
+					if(flags.doorshuffle === 'B') {
 						if(!melee_bow() && !cane() && !items.firerod)
 							return 'unavailable';
 						if(items.mirror && (items.agahnim || (items.glove && items.hammer && items.moonpearl) || (items.glove === 2 && items.moonpearl && items.flippers)))
 							return (items.sword || (flags.swordmode === 'S' && (items.hammer || items.net)/* && agatowerweapon()*/)) && (items.smallkeyhalf1 >= 2 || flags.gametype === 'R') ? (items.lantern ? 'available' : 'darkavailable') : 'unavailable';
 						return (items.sword || (flags.swordmode === 'S' && (items.hammer || items.net)/* && agatowerweapon()*/)) && (items.smallkeyhalf1 >= 2 || flags.gametype === 'R') ? (items.lantern ? 'possible' : 'darkpossible') : 'unavailable';
 					}
-					if(flags.doorshuffle === 'C')
-					{
+					if(flags.doorshuffle === 'C') {
 						if(items.mirror && (items.agahnim || (items.glove && items.hammer && items.moonpearl) || (items.glove === 2 && items.moonpearl && items.flippers)))
 							return window.doorCheck(12,false,true,true,[],'boss');
 						return 'possible';
 					}
-					//var doorcheck = window.doorCheck(11,false,false,flags.gametype != 'S',['glove'],'connector');
-					//if(doorcheck)
-					//{
-					//	if(flags.doorshuffle === 'C')
-					//		return doorcheck;
-					//	return (items.sword || (flags.swordmode === 'S' && (items.hammer || items.net)/* && agatowerweapon()*/)) && (items.smallkeyhalf1 === 2 || flags.gametype === 'R') ? (items.lantern ? doorcheck : 'dark'+doorcheck) : 'unavailable';
-					//}
 					if (flags.wildkeys) {
 						return (items.sword >= 2 || (items.cape && items.sword) || (flags.swordmode === 'S' && (items.hammer || (items.cape && items.net)))) && (items.smallkeyhalf1 >= 2 || flags.gametype == 'R') && agatowerweapon() ? items.lantern ? 'available' : 'darkavailable' : 'unavailable';
 					} else {
