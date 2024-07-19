@@ -1035,6 +1035,94 @@
 					"somaria"
 				]
 			}
+		},
+		"Palace of Darkness": {
+			"Palace of Darkness - Big Chest": {
+				"allOf": [
+					"bigkey",
+					"keys|6",
+					"canDarkRoomNavigate",
+					"canUseBombs"
+				]
+			},
+			"Palace of Darkness - Big Key Chest": {
+				"allOf": [
+					"keys|6",
+					"canUseBombs"
+				]
+			},
+			"Palace of Darkness - Boss": {
+				"allOf": [
+					"bigkey",
+					"keys|6",
+					"canKillBoss",
+					"canDarkRoomNavigate",
+					"bow",
+					"hammer"
+				]
+			},
+			"Palace of Darkness - Compass Chest": {
+				"allOf": [
+					"keys|4"
+				]
+			},
+			"Palace of Darkness - Dark Basement - Left": {
+				"allOf": [
+					"keys|4",
+					"canDarkRoomNavigate"
+				]
+			},
+			"Palace of Darkness - Dark Basement - Right": {
+				"allOf": [
+					"keys|4",
+					"canDarkRoomNavigate"
+				]
+			},
+			"Palace of Darkness - Dark Maze - Bottom": {
+				"allOf": [
+					"keys|6",
+					"canDarkRoomNavigate"
+				]
+			},
+			"Palace of Darkness - Dark Maze - Top": {
+				"allOf": [
+					"keys|6",
+					"canDarkRoomNavigate"
+				]
+			},
+			"Palace of Darkness - Harmless Hellway": {
+				"allOf": [
+					"keys|6"
+				]
+			},
+			"Palace of Darkness - Map Chest": {
+				"allOf": [
+					"bow"
+				],
+				"anyOf": [
+					"canUseBombs",
+					"boots"
+				]
+			},
+			"Palace of Darkness - Shooter Room": {},
+			"Palace of Darkness - Stalfos Basement": {
+				"anyOf": [
+					"keys|1",
+					"zeroKeyPodders"
+				]
+			},
+			"Palace of Darkness - The Arena - Bridge": {
+				"anyOf": [
+					"keys|1",
+					"zeroKeyPodders"
+				]
+			},
+			"Palace of Darkness - The Arena - Ledge": {
+				"allOf": [
+					"bow",
+					"canUseBombs"
+				]
+			}
 		}
 	}
 
@@ -1102,6 +1190,7 @@
 			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
 			case 'canCrossMireGap': return items.boots || items.hookshot;
 			case 'canBurnThings': return items.firerod || (items.bombos && items.sword > 0);
+			case 'zeroKeyPodders': return items.bow && items.hammer && (items.bomb || items.boots);
 		}
 	};
 
@@ -1109,19 +1198,23 @@
 		//            if ( window.autotrack === undefined) {
 		//                return 'possible';
 		//            }
-		var checks = items['chest' + dungeonId] - items["maxchest" + dungeonId];
+		const collected = items["maxchest" + dungeonId] - items['chest' + dungeonId];
+		var checks = 0;
 		for (const [location, requirements] of Object.entries(logic[dungeonName])) {
 			if (inLogic(dungeonId, requirements) === true) {
 				console.log(location)
 				checks++;
 			};
 		};
-		console.log(checks)
-		if (checks > 0) {
+
+		console.log(checks - collected)
+		if ((checks - collected) > 0) {
 			return 'available';
-		} else {
-			return 'unavailable';
 		}
+		if (checks > 0) {
+			return 'possible';
+		}
+		return 'unavailable';
 	};
 
 	function medallion_check(i) {
@@ -2388,6 +2481,9 @@
 	};
 
 	window.PoDChests = function () {
+		if (flags.doorshuffle === 'P') {
+			return dungeonAvailability(3, 'Palace of Darkness')
+		};
 		var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
 
 		//Because of the complexity of PoD and key logic, there are going to be five modes here to consider:

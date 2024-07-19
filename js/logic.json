@@ -1032,5 +1032,93 @@
                 "somaria"
             ]
         }
+    },
+    "Palace of Darkness": {
+        "Palace of Darkness - Big Chest": {
+            "allOf": [
+                "bigkey",
+                "keys|6",
+                "canDarkRoomNavigate",
+                "canUseBombs"
+            ]
+        },
+        "Palace of Darkness - Big Key Chest": {
+            "allOf": [
+                "keys|6",
+                "canUseBombs"
+            ]
+        },
+        "Palace of Darkness - Boss": {
+            "allOf": [
+                "bigkey",
+                "keys|6",
+                "canKillBoss",
+                "canDarkRoomNavigate",
+                "bow",
+                "hammer"
+            ]
+        },
+        "Palace of Darkness - Compass Chest": {
+            "allOf": [
+                "keys|4"
+            ]
+        },
+        "Palace of Darkness - Dark Basement - Left": {
+            "allOf": [
+                "keys|4",
+                "canDarkRoomNavigate"
+            ]
+        },
+        "Palace of Darkness - Dark Basement - Right": {
+            "allOf": [
+                "keys|4",
+                "canDarkRoomNavigate"
+            ]
+        },
+        "Palace of Darkness - Dark Maze - Bottom": {
+            "allOf": [
+                "keys|6",
+                "canDarkRoomNavigate"
+            ]
+        },
+        "Palace of Darkness - Dark Maze - Top": {
+            "allOf": [
+                "keys|6",
+                "canDarkRoomNavigate"
+            ]
+        },
+        "Palace of Darkness - Harmless Hellway": {
+            "allOf": [
+                "keys|6"
+            ]
+        },
+        "Palace of Darkness - Map Chest": {
+            "allOf": [
+                "bow"
+            ],
+            "anyOf": [
+                "canUseBombs",
+                "boots"
+            ]
+        },
+        "Palace of Darkness - Shooter Room": {},
+        "Palace of Darkness - Stalfos Basement": {
+            "anyOf": [
+                "keys|1",
+                "zeroKeyPodders"
+            ]
+        },
+        "Palace of Darkness - The Arena - Bridge": {
+            "anyOf": [
+                "keys|1",
+                "zeroKeyPodders"
+            ]
+        },
+        "Palace of Darkness - The Arena - Ledge": {
+            "allOf": [
+                "bow",
+                "canUseBombs"
+            ]
+        }
     }
 }
