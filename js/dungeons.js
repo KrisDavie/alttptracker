@@ -99,6 +99,18 @@
 					"canKillMostEnemies",
 					"canUseBombs"
 				]
+			},
+			"Castle Tower - Boss": {
+				"allOf": [
+					"keys|4",
+					"canDarkRoomNavigate",
+					"canKillMostEnemies"
+				],
+				"anyOf": [
+					"sword",
+					"hammer",
+					"bugnet"
+				]
 			}
 		},
 		"Eastern Palace": {
@@ -367,7 +379,18 @@
 					"hookshot",
 					"canUseBombs"
 				]            
-			}
+			},
+			"Ganons Tower - Boss": {
+				"allOf": [
+					"bow",
+					"keys|8",
+					"bigkey",
+					"canLightFires",
+					"melee",
+					"hookshot",
+					"canUseBombs"
+				]
+			}        
 		},
 		"Hyrule Castle": {
 			"Hyrule Castle - Big Key Drop": {
@@ -517,7 +540,6 @@
 			},
 			"Swamp Palace - Boss": {
 				"allOf": [
-					"bigkey",
 					"keys|6",
 					"hammer",
 					"flippers",
@@ -617,7 +639,7 @@
 				]
 			}
 		},
-		"Thieves Town": {
+		"Thieves' Town": {
 			"Thieves' Town - Ambush Chest": {},
 			"Thieves' Town - Attic": {
 				"allOf": [
@@ -1168,7 +1190,7 @@
 			case 'canLightFires': return items.lantern || items.firerod;
 			case 'boots': return items.boots;
 			case 'canDarkRoomNavigate': return items.lantern;
-			case 'canAccessDesertNorth': return (items.book && items.glove) || (items.glove > 1 && items.flute && items.mirror);
+			case 'canAccessDesertNorth': return (items.book && items.glove > 0) || (items.glove > 1 && items.flute && items.mirror);
 			case 'bow': return items.bow > 1;
 			case 'hammer': return items.hammer;
 			case 'hookshot': return items.hookshot;
@@ -1182,7 +1204,7 @@
 			case 'gtleft': return items.hammer && items.hookshot;
 			case 'gtright': return items.somaria && items.firerod;
 			case 'canKillArmos': return enemizer_check(0) === 'available';
-			case 'canReachDankSank': return (items.glove > 0 || (items.lantern && items.smallkeyhalf0 > 3));
+			case 'canReachDankSanc': return (items.glove > 0 || (items.lantern && items.smallkeyhalf0 > 3));
 			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
 			case 'mirrorshield': return items.shield > 2;
 			case 'byrna': return items.byrna;
@@ -1191,6 +1213,7 @@
 			case 'canCrossMireGap': return items.boots || items.hookshot;
 			case 'canBurnThings': return items.firerod || (items.bombos && items.sword > 0);
 			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
+			case 'bugnet': return items.bugnet;
 		}
 	};
 
@@ -1212,6 +1235,12 @@
 		if (checks > 0) {
 			return 'possible';
 		}
+		return 'unavailable';
+	};
+
+	function bossAvailability(dungeonId, dungeonName) {
+		const requirements = logic[dungeonName][dungeonName + ' - Boss'];
+		if (inLogic(dungeonId, requirements)) return 'available';
 		return 'unavailable';
 	};
 
@@ -2001,6 +2030,10 @@
 	};
 
 	window.EPBoss = function () {
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(0, 'Eastern Palace');
+		};
+
 		var dungeoncheck = enemizer_check(0);
 		//Standard check
 		if (!items.bigkey0 || dungeoncheck === 'unavailable') return 'unavailable';
@@ -2020,6 +2053,9 @@
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
 	window.DPBoss = function (front = 'available', back = 'unavailable') {
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(1, 'Desert Palace');
+		};
 		if (front != back && flags.entrancemode === 'N' && (items.glove || flags.glitches != 'N')) {
 			front = back = bestAvailability(front, back);
 		}
@@ -2051,7 +2087,10 @@
 			// chests, which we can't determine based on items alone.
 			return 'possible';
 		} else {
-
+			if (flags.doorshuffle === 'P') {
+				return bossAvailability(2, 'Tower of Hera');
+			};
+	
 			if (!items.bigkey2) return 'unavailable';
 
 			if (flags.wildbigkeys) {
@@ -2067,6 +2106,9 @@
 	};
 
 	window.PoDBoss = function () {
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(3, 'Palace of Darkness');
+		};
 		var dungeoncheck = enemizer_check(3);
 		if (!items.bigkey3 || !items.hammer || items.bow < 2 || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildbigkeys || flags.wildkeys) {
@@ -2090,6 +2132,9 @@
 				if (!hasFoundLocation('dam')) return 'unavailable';
 			}
 			if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
+			if (flags.doorshuffle === 'P') {
+				return bossAvailability(4, 'Swamp Palace');
+			};
 			var dungeoncheck = enemizer_check(4);
 			if (!items.hammer || !items.hookshot || (items.smallkey4 === 0 && flags.gametype != 'R')) return 'unavailable';
 			return dungeoncheck;
@@ -2102,6 +2147,9 @@
 		if (front != back && flags.entrancemode === 'N' && (items.firerod || front === 'unavailable')) {
 			front = back = bestAvailability(front, back);
 		}
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(5, 'Skull Woods');
+		};
 		var dungeoncheck = enemizer_check(5);
 		var keycheck = front === 'available' || front === 'darkavailable' || flags.gametype === 'R' || (flags.wildkeys && items.smallkey5) ? 'available' : front === 'possible' || front === 'darkpossible' || (!flags.wildkeys && back != 'unavailable') ? 'possible' : 'unavailable';
 		if (back === 'unavailable' || dungeoncheck === 'unavailable' || keycheck === 'unavailable' || (items.sword === 0 && flags.swordmode != 'S')) return 'unavailable';
@@ -2112,6 +2160,9 @@
 	};
 
 	window.TTBoss = function () {
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(6, 'Thieves\' Town');
+		};
 		var dungeoncheck = enemizer_check(6);
 		if (!items.bomb && (flags.bossshuffle === 'N' || enemizer[6] === 7)) return 'unavailable';
 		if (!items.bomb && dungeoncheck === 'available' && flags.bossshuffle != 'N' && enemizer[6] % 11 === 0) dungeoncheck = 'possible';
@@ -2120,6 +2171,9 @@
 
 	window.IPBoss = function () {
 		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(7, 'Ice Palace');
+		};
 		var dungeoncheck = enemizer_check(7);
 		if (!items.hammer || items.glove === 0 || dungeoncheck === 'unavailable') return 'unavailable';
 		if (!items.bomb) return items.somaria ? 'possible' : 'unavailable';
@@ -2140,6 +2194,12 @@
 	window.MMBoss = function (medcheck) {
 		if (!items.boots && !items.hookshot) return 'unavailable';
 		if (medcheck === 'unavailable') return 'unavailable';
+		if (flags.doorshuffle === 'P') {
+			if (bossAvailability(8, 'Misery Mire') === 'available') {
+				return medcheck === 'available' ? 'available' : 'possible';
+			}
+			return 'unavailable';
+		};
 		var dungeoncheck = enemizer_check(8);
 		if (!items.bigkey8 || !items.somaria || !items.bomb || dungeoncheck === 'unavailable') return 'unavailable';
 		if (dungeoncheck === 'possible' || medcheck === 'possible') {
@@ -2189,6 +2249,12 @@
 
 	window.TRFrontBoss = function (medcheck) {
 		if (medcheck === 'unavailable') return 'unavailable';
+		if (flags.doorshuffle === 'P') {
+			if (bossAvailability(9, 'Turtle Rock') === 'available') {
+				return medcheck === 'available' ? 'available' : 'possible';
+			}
+			return 'unavailable';
+		};
 		var dungeoncheck = enemizer_check(9);
 		if (!items.bigkey9 || !items.somaria || (!items.bomb && !items.boots) || dungeoncheck === 'unavailable') return 'unavailable';
 		if (flags.wildkeys) {
@@ -2224,6 +2290,9 @@
 	};
 
 	window.GTBoss = function () {
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(10, 'Ganons Tower');
+		};
 		var dungeoncheck = enemizer_check(10);
 		if (!items.bigkey10 || (items.bow < 2 && flags.enemyshuffle === 'N') || (!items.lantern && !items.firerod) || !items.hookshot || ((items.sword < 2 && flags.swordmode != 'S') || (flags.swordmode === 'S' && !items.hammer)) || !items.bomb || dungeoncheck === 'unavailable') return 'unavailable';
 		if (!items.sword && !items.hammer && !items.net) return 'unavailable';
@@ -2236,6 +2305,9 @@
 	};
 
 	window.CTBoss = function () {
+		if (flags.doorshuffle === 'P') {
+			return bossAvailability(12, 'Castle Tower');
+		};
 		if ((!items.bomb || flags.doorshuffle != 'N') && !melee_bow() && !cane() && !items.firerod) return 'unavailable';
 		if (items.sword == 0 && flags.swordmode != 'S') return 'unavailable';
 		if (items.sword == 0 && !items.hammer && !items.net) return 'unavailable';
@@ -2932,7 +3004,7 @@
 
 	window.TTChests = function () {
 		if (flags.doorshuffle === 'P') {
-			return dungeonAvailability(6, 'Thieves Town')
+			return dungeonAvailability(6, 'Thieves\' Town')
 		};
 		var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
 
@@ -3042,7 +3114,8 @@
 
 	window.MMChests = function (medcheck) {
 		if (flags.doorshuffle === 'P') {
-			return dungeonAvailability(8, 'Misery Mire')
+			if (medcheck === 'available') return dungeonAvailability(8, 'Misery Mire');
+			return medcheck;
 		};
 		if (!items.boots && !items.hookshot) return 'unavailable';
 		if (!melee_bow() && !rod() && !cane()) return 'unavailable';
@@ -3135,7 +3208,8 @@
 
 	window.TRFrontChests = function (medcheck) {
 		if (flags.doorshuffle === 'P') {
-			return dungeonAvailability(9, 'Turtle Rock')
+			if (medcheck === 'available') return dungeonAvailability(9, 'Turtle Rock');
+			return medcheck;
 		};
 		if (!items.somaria) return 'unavailable';
 		if (medcheck === 'unavailable') return 'unavailable';

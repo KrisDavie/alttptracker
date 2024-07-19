@@ -3119,6 +3119,9 @@
 							return window.doorCheck(12,false,true,true,[],'boss');
 						return 'possible';
 					}
+					if (flags.doorshuffle === 'P') {
+						return CTBoss();
+					};
 					if (flags.wildkeys) {
 						return (items.sword >= 2 || (items.cape && items.sword) || (flags.swordmode === 'S' && (items.hammer || (items.cape && items.net)))) && (items.smallkeyhalf1 >= 2 || flags.gametype == 'R') && agatowerweapon() ? items.lantern ? 'available' : 'darkavailable' : 'unavailable';
 					} else {
@@ -3709,7 +3712,7 @@
 						return 'available';
 					if(!items.book)
 						return 'information';
-					if(flags.doorshuffle != 'N')
+					if(flags.doorshuffle != 'N' && flags.doorshuffle != 'P')
 						return 'possible';
 					//var doorcheck = window.doorCheck(1,false,false,false,['boots','firesource'],'connector');
 					//if(doorcheck)

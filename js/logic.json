@@ -96,6 +96,18 @@
                 "canKillMostEnemies",
                 "canUseBombs"
             ]
+        },
+        "Castle Tower - Boss": {
+            "allOf": [
+                "keys|4",
+                "canDarkRoomNavigate",
+                "canKillMostEnemies"
+            ],
+            "anyOf": [
+                "sword",
+                "hammer",
+                "bugnet"
+            ]
         }
     },
     "Eastern Palace": {
@@ -364,7 +376,18 @@
                 "hookshot",
                 "canUseBombs"
             ]            
-        }
+        },
+        "Ganons Tower - Boss": {
+            "allOf": [
+                "bow",
+                "keys|8",
+                "bigkey",
+                "canLightFires",
+                "melee",
+                "hookshot",
+                "canUseBombs"
+            ]
+        }        
     },
     "Hyrule Castle": {
         "Hyrule Castle - Big Key Drop": {
@@ -514,7 +537,6 @@
         },
         "Swamp Palace - Boss": {
             "allOf": [
-                "bigkey",
                 "keys|6",
                 "hammer",
                 "flippers",
@@ -614,7 +636,7 @@
             ]
         }
     },
-    "Thieves Town": {
+    "Thieves' Town": {
         "Thieves' Town - Ambush Chest": {},
         "Thieves' Town - Attic": {
             "allOf": [
