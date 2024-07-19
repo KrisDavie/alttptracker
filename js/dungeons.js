@@ -1202,12 +1202,10 @@
 		var checks = 0;
 		for (const [location, requirements] of Object.entries(logic[dungeonName])) {
 			if (inLogic(dungeonId, requirements) === true) {
-				console.log(location)
 				checks++;
 			};
 		};
 
-		console.log(checks - collected)
 		if ((checks - collected) > 0) {
 			return 'available';
 		}
