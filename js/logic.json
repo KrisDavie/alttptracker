@@ -1,0 +1,101 @@
+{
+    "Desert Palace": {
+        "Desert Palace - Beamos Hall Pot Key": {
+            "allOf": [
+                "keys|2",
+                "canAccessDesertNorth"
+            ],
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        }, 
+        "Desert Palace - Big Chest": {
+            "allOf": [
+                "bigkey"
+            ]
+        }, 
+        "Desert Palace - Big Key Chest": {
+            "allOf": [
+                "keys|4"
+            ],
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        }, 
+        "Desert Palace - Boss": {
+            "allOf": [
+                "bigkey",
+                "keys|4",
+                "canLightFires",
+                "canKillBoss",
+                "canAccessDesertNorth"
+            ]
+        }, 
+        "Desert Palace - Compass Chest": {
+            "allOf": [
+                "keys|4"
+            ]
+        }, 
+        "Desert Palace - Desert Tiles 1 Pot Key": {
+            "allOf": ["canAccessDesertNorth"]
+        }, 
+        "Desert Palace - Desert Tiles 2 Pot Key": {
+            "allOf": [
+                "keys|3",
+                "canAccessDesertNorth"
+            ],
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        }, 
+        "Desert Palace - Map Chest": {
+            "allOf": []
+        }, 
+        "Desert Palace - Torch": {
+            "allOf": [
+                "boots"
+            ]
+        }
+    },
+    "Castle Tower": {
+        "Castle Tower - Circle of Pots Key Drop": {
+            "allOf": [
+                "keys|3",
+                "canDarkRoomNavigate"
+            ],
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        },
+        "Castle Tower - Dark Archer Key Drop": {
+            "allOf": [
+                "keys|2",
+                "canDarkRoomNavigate"
+            ],
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        },
+        "Castle Tower - Dark Maze": {
+            "allOf": [
+                "keys|1",
+                "canDarkRoomNavigate"
+            ],
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        },
+        "Castle Tower - Room 03": {
+            "anyOf": [
+                "canKillMostEnemies",
+                "canUseBombs"
+            ]
+        }
+    }
+}
