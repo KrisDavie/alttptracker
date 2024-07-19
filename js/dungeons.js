@@ -1190,7 +1190,7 @@
 			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
 			case 'canCrossMireGap': return items.boots || items.hookshot;
 			case 'canBurnThings': return items.firerod || (items.bombos && items.sword > 0);
-			case 'zeroKeyPodders': return items.bow && items.hammer && (items.bomb || items.boots);
+			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
 		}
 	};
 
