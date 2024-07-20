@@ -1829,8 +1829,7 @@
 				is_beaten: false,
 				is_beatable: function() {
 					if (!(items.glove || activeFlute())) return 'unavailable';
-					if(flags.doorshuffle != 'N')
-					{
+					if(flags.doorshuffle != 'N' || flags.doorshuffle != 'P') {
 						if(medallionCheck(1) === 'unavailable' && (!items.mirror || ((!items.hookshot || !items.moonpearl) && items.glove < 2))) return 'unavailable';
 						var doorcheck = window.doorCheck(9,items.flute === 0 && !items.lantern,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : '','bombdash'],'boss');
 						if(doorcheck === 'unavailable')
@@ -1862,8 +1861,7 @@
 				},
 				can_get_chest: function() {
 					if (!(items.glove || activeFlute())) return 'unavailable';
-					if(flags.doorshuffle != 'N')
-					{
+					if(flags.doorshuffle != 'N' && flags.doorshuffle != 'P') {
 						if(medallionCheck(1) === 'unavailable' && (!items.mirror || ((!items.hookshot || !items.moonpearl) && items.glove < 2))) return 'unavailable';
 						var doorcheck = window.doorCheck(9,items.flute === 0 && !items.lantern,true,false,['somaria','firerod','laserbridge','bombdash'],'item');
 						if(doorcheck === 'unavailable')
@@ -1894,20 +1892,18 @@
 					}
 				}
 			}, { // [10]
-				caption: 'Ganon\'s Castle (Crystals)',
+				caption: 'Ganon\'s Tower (Crystals)',
 				is_beaten: false,
 				is_beatable: function() {
 					if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || !canReachLightWorld() || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck()))) return 'unavailable';
 					if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!items.lantern && !items.firerod)) return 'unavailable';
 					if (flags.goals === 'F' && (items.sword > 1 || (flags.swordmode === 'S' && items.hammer)) && (items.lantern || items.firerod)) return 'available';
-					if(flags.doorshuffle != 'N')
-					{
+					if(flags.doorshuffle != 'N' || flags.doorshuffle != 'P') {
 						var doorcheck = window.doorCheck(10,false,false,false,['hammer','firerod','hookshot','boomerang','somaria',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '','bow',flags.bossshuffle === 'N' ? '' : 'icerod','bomb'],'boss');
 						if(doorcheck)
 							return doorcheck;
 					}
-					if(flags.doorshuffle != 'N')
-					{
+					if(flags.doorshuffle != 'N' || flags.doorshuffle != 'P') {
 						var doorcheck = items.agahnim && items.mirror ? 'available' : window.doorCheck(11,false,false,true,['glove','killbomb','bombdash'],'connector');
 						if(doorcheck === 'possible' || doorcheck === 'unavailable')
 							return doorcheck;
@@ -1926,8 +1922,7 @@
 					if (!canReachLightWorld()) return 'unavailable';
 					if (flags.opentowercount == 8) return 'possible';
 					if (crystalCheck() < 7 && crystalCheck() < flags.opentowercount) return 'unavailable';
-					if(flags.doorshuffle != 'N')
-					{
+					if(flags.doorshuffle != 'N' || flags.doorshuffle != 'P') {
 						var doorcheck = items.agahnim && items.mirror ? 'available' : window.doorCheck(11,false,false,true,['glove','killbomb','bombdash'],'connector');
 						if(doorcheck === 'possible' || doorcheck === 'unavailable')
 							return doorcheck;
@@ -1951,7 +1946,10 @@
 				can_get_chest: function() {
 					if(!canReachLightWorld())
 						return 'unavailable';
-					return window.doorCheck(11,false,false,true,['glove','killbomb','bombdash'],'item');
+					var doorcheck = window.doorCheck(11,false,false,true,['glove','killbomb','bombdash'],'item');
+					if(doorcheck)
+						return doorcheck;
+					return window.HCChests();
 				}
 			}, { // [12]
 				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
@@ -1962,7 +1960,10 @@
 				can_get_chest: function() {
 					if(!items.glove && !activeFlute())
 						return 'unavailable';
-					return window.doorCheck(12,!items.lantern && !activeFlute(),true,true,['kill','swordorswordless'],'item');
+					var doorcheck = window.doorCheck(12,!items.lantern && !activeFlute(),true,true,['kill','swordorswordless'],'item');
+					if (doorcheck)
+						return doorcheck;
+					return window.CTChests();
 				}
 			}];
 
@@ -1985,6 +1986,9 @@
 							return 'unavailable';
 						return window.doorCheck(12,!items.lantern && !activeFlute(),true,true,[],'boss');
 					}
+					if (flags.doorshuffle === 'P') {
+						return CTBoss();
+					};
 					if (flags.wildkeys) {
 						return (items.sword || items.hammer || (items.net && (items.somaria || items.byrna || items.firerod || items.bow > 1))) && (items.sword || (flags.swordmode === 'S' && (items.hammer || items.net))) && (activeFlute() || items.glove) && (items.smallkeyhalf1 >= 2 || flags.gametype == 'R') ? items.lantern ? 'available' : 'darkavailable' : 'unavailable';
 					} else {
@@ -3045,7 +3049,7 @@
 					return window.TRFrontChests(medallion_check(1));
 				}
 			}, { // [10]
-				caption: 'Ganon\'s Castle (Crystals)',
+				caption: 'Ganon\'s Tower (Crystals)',
 				is_beaten: false,
 				is_beatable: function() {
 					if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || !canReachDarkWorld() || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck()))) return 'unavailable';
