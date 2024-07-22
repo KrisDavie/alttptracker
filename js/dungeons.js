@@ -3033,8 +3033,11 @@
 			};
 		};
 
-		if ((checksInLogic - collected) > 0) {
+		if (checksInLogic === items["maxchest" + dungeonId]) {
 			return 'available';
+		}
+		if ((checksInLogic - collected) > 0) {
+			return 'partialavailable';
 		}
 		if ((checksPossible - collected) > 0) {
 			return 'possible';

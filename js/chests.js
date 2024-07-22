@@ -3171,9 +3171,13 @@
 					if(doorcheck)
 						return doorcheck;
 
+					if (flags.doorshuffle === 'P') {
+						return (items.smallkey9 < 3) ? 'unavailable' : (items.lantern || items.flute >= 1 ? 'available' : 'darkavailable');
+					};
+
 					if (flags.wildkeys) {
 						return (items.smallkey9 <= 1 && flags.gametype != 'R') ? 'unavailable' : (items.lantern || items.flute >= 1 ? 'available' : 'darkavailable');
-					}
+					};
 
 					return items.firerod ? (items.lantern || items.flute >= 1 ? 'available' : 'darkavailable') : (items.lantern || items.flute >= 1 ? 'possible' : 'darkpossible');
 				}
