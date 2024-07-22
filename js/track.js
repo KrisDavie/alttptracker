@@ -1030,8 +1030,8 @@
 			return;
 		}
 
-		if(label === 'mirror' && flags.doorshuffle != 'N') {
-			document.getElementById('mirrorscroll').style.display = items.mirror ?'block' :'none';
+		if (label === 'mirror' && (flags.doorshuffle != 'N' && flags.doorshuffle != 'P')) {
+			document.getElementById('mirrorscroll').style.display = items.mirror ? 'block' : 'none';
 		}
 
 		if (label === 'boots' && flags.pseudoboots === 'Y') {
@@ -4221,9 +4221,6 @@
 			}
 			if (window.flags.startingitems.charAt(22) === '1') {
 				toggle('boots');
-				if (window.flags.pseudoboots === 'Y') {
-					toggle('boots');
-				}
 			}
 			if (window.flags.startingitems.charAt(23) != '0') {
 				toggle('glove');

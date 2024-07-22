@@ -117,12 +117,12 @@
 			  }
 		   },
 		   "Desert Palace - Map Chest": {
-			  "required": {
+			  "logical": {
 				 "allOf": []
 			  }
 		   },
 		   "Desert Palace - Torch": {
-			  "required": {
+			  "logical": {
 				 "allOf": [
 					"boots"
 				 ]
@@ -2959,49 +2959,49 @@
 		if (requirement.startsWith('keys')) {
 			const count = requirement.split('|')[1];
 			switch (dungeonId) {
-				case 12: var keyname = 'smallkeyhalf1'; break;
-				case 11: var keyname = 'smallkeyhalf0'; break;
+				case 11: var keyname = 'smallkeyhalf0'; break; // HC
+				case 12: var keyname = 'smallkeyhalf1'; break; // CT
 				default: var keyname = 'smallkey' + dungeonId;
-			}
+			};
 			return items[keyname] >= count;
-		}
-		if (dungeonId === 11 && requirement === 'bigkey') {
-			return items.bigkeyhalf0;
-		}
+		};
+
+		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkeyhalf0; // HC
+		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkeyhalf1; // CT
+
 		switch (requirement) {
 			case 'bigkey': return items['bigkey' + dungeonId];
-			case 'canUseBombs': return items.bomb;
-			case 'canKillMostEnemies': return melee_bow() || cane() || items.firerod;
-			case 'canKillBoss': return enemizer_check(dungeonId) === 'available';
-			case 'canLightFires': return items.lantern || items.firerod;
+
 			case 'boots': return items.boots;
-			case 'canDarkRoomNavigate': return items.lantern;
-			case 'canAccessDesertNorth': return (items.book && items.glove > 0) || (items.glove > 1 && items.flute && items.mirror);
 			case 'bow': return items.bow > 1;
-			case 'hammer': return items.hammer;
-			case 'hookshot': return items.hookshot;
-			case 'somaria': return items.somaria;
-			case 'flippers': return items.flippers;
-			case 'firerod': return items.firerod;
-			case 'icerod': return items.icerod;
-			case 'melee_bow': return melee_bow();
-			case 'melee': return melee();
-			case 'glove': return items.glove > 0;
-			case 'gtleft': return items.hammer && items.hookshot;
-			case 'gtright': return items.somaria && items.firerod;
-			case 'canKillArmos': return enemizer_check(0) === 'available';
-			case 'canReachDankSanc': return (items.glove > 0 || (items.lantern && items.smallkeyhalf0 > 3));
-			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
-			case 'mirrorshield': return items.shield > 2;
+			case 'bugnet': return items.bugnet;
 			case 'byrna': return items.byrna;
 			case 'cape': return items.cape;
+			case 'flippers': return items.flippers;
+			case 'firerod': return items.firerod;
+			case 'glove': return items.glove > 0;
+			case 'hammer': return items.hammer;
+			case 'hookshot': return items.hookshot;
+			case 'icerod': return items.icerod;
+			case 'lantern': return items.lantern;
+			case 'melee_bow': return items.sword > 0 || items.hammer || items.bow > 1;
+			case 'melee': return items.sword > 0 || items.hammer;
+			case 'mirrorshield': return items.shield > 2;
+			case 'somaria': return items.somaria;
+
+			case 'canKillBoss': return enemizer_check(dungeonId) === 'available';
+			case 'canKillArmos': return enemizer_check(0) === 'available';
+			case 'canUseBombs': return items.bomb;
+			case 'canKillMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod;
+			case 'canLightFires': return items.lantern || items.firerod;
+			case 'canDarkRoomNavigate': return items.lantern;
+			case 'canAccessDesertNorth': return (items.book && items.glove > 0) || (items.glove > 1 && items.flute && items.mirror);
+			case 'canReachDankSanc': return (items.glove > 0 || (items.lantern && items.smallkeyhalf0 > 3));
+			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
 			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
 			case 'canCrossMireGap': return items.boots || items.hookshot;
 			case 'canBurnThings': return items.firerod || (items.bombos && items.sword > 0);
-			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
-			case 'bugnet': return items.bugnet;
 			case 'canIceBreak': return items.somaria;
-			case 'lantern': return items.lantern;
 			case 'canBombJump': return items.bomb;
 			case 'canHover': return items.boots;
 			case 'canSpeckyClip': return items.bomb && items.hookshot;
@@ -3012,7 +3012,11 @@
 			case 'canMimicClip': return true;
 			case 'canPotionCameraUnlock': return items.bottle > 0;
 			case 'canMoldormBounce': return items.bomb && items.sword > 0;
-		}
+
+			case 'gtleft': return items.hammer && items.hookshot;
+			case 'gtright': return items.somaria && items.firerod;
+			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
+		};
 	};
 
 	function dungeonAvailability(dungeonId, dungeonName) {
@@ -3033,24 +3037,16 @@
 			};
 		};
 
-		if (checksInLogic === items["maxchest" + dungeonId]) {
-			return 'available';
-		}
-		if ((checksInLogic - collected) > 0) {
-			return 'partialavailable';
-		}
-		if ((checksPossible - collected) > 0) {
-			return 'possible';
-		}
+		if (checksInLogic === items["maxchest" + dungeonId]) return 'available';
+		if ((checksInLogic - collected) > 0) return 'partialavailable';
+		if ((checksPossible - collected) > 0) return 'possible';
 		return 'unavailable';
 	};
 
 	function bossAvailability(dungeonId, dungeonName) {
 		const requirements = logic[dungeonName][dungeonName + ' - Boss'];
 		if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) return 'available';
-		if ("required" in requirements) {
-			if (inLogic(dungeonId, requirements["required"])) return 'possible';
-		};
+		if ("required" in requirements && (inLogic(dungeonId, requirements["required"]))) return 'possible';
 		return 'unavailable';
 	};
 
@@ -3085,52 +3081,21 @@
 
 	//Check which boss is at the end of the dungeon
 	function enemizer_check(i) {
-		//All possible required items to kill a boss
-		if (melee() && items.hookshot && items.icerod && items.firerod) return 'available';
-		if (!melee_bow() && !rod() && !cane() && items.boomerang === 0) return 'unavailable';
-		if (i === 10) {
-			if (flags.bossshuffle != 'N') return 'possible';//Don't know which bosses are in GT
-			return melee() ? 'available' : 'unavailable';
-		}
 		switch (enemizer[i]) {
-			case 0:
-			case 11:
-				return (flags.bossshuffle != 'N' ? 'possible' : 'available');
-				break;
-			case 1:
-				if (items.sword > 0 || items.hammer || items.bow > 1 || items.boomerang > 0 || items.byrna || items.somaria || items.icerod || items.firerod) return 'available';
-				break;
-			case 2:
-				if (melee_bow() || cane() || rod() || items.hammer) return 'available';
-				break;
-			case 3:
-				if (items.sword > 0 || items.hammer) return 'available';
-				break;
-			case 4:
-				if (items.sword > 0 || items.hammer || items.bow > 1) return 'available';
-				break;
-			case 5:
-				if (items.hookshot && ((items.sword > 0 || items.hammer || (items.bow > 1 && (items.firerod || items.icerod))) || ((items.firerod || items.icerod) && items.bottle > 1 || (items.bottle > 0 && items.magic)))) return 'available';
-				break;
-			case 6:
-				if (items.sword > 0 || items.hammer || items.firerod || items.byrna || items.somaria) return 'available';
-				break;
-			case 7:
-				if (items.sword > 0 || items.hammer || items.somaria || items.byrna) return 'available';
-				break;
-			case 8:
-				if (items.firerod || (items.bombos && (items.sword > 0 || (flags.swordmode === 'S' && items.hammer)))) return 'available';
-				break;
-			case 9:
-				if (melee_bow() || items.hammer) return 'available';
-				break;
-			case 10:
-				if (items.firerod && items.icerod && (items.hammer || items.sword > 0)) return 'available';
-				break;
-
-		}
-		return 'unavailable';
-	}
+			case 1: if (melee_bow() || items.boomerang > 0 || cane() || rod()) return 'available';
+			case 2: if (melee_bow() || cane() || rod() || items.hammer) return 'available';
+			case 3: if (melee()) return 'available';
+			case 4: if (melee_bow()) return 'available';
+			case 5: if (items.hookshot && ((melee() || (items.bow > 1 && rod())) || (items.bomb && rod() && (items.bottle > 1 || (items.bottle > 0 && items.magic))))) return 'available';
+			case 6: if (melee() || items.firerod || cane()) return 'available';
+			case 7: if (melee() || cane()) return 'available';
+			case 8: if (items.firerod || (items.bombos && (items.sword > 0 || (flags.swordmode === 'S' && items.hammer)))) return 'available';
+			case 9: if (melee_bow()) return 'available';
+			case 10: if (items.firerod && items.icerod && (items.hammer || items.sword > 1)) return 'available';
+			case 11: if (flags.bossshuffle != 'N') { return 'possible' } else if (melee()) return 'available';
+			default: return 'unavailable';
+		};
+	};
 
 	window.MinimalBoss = function (num) { return enemizer_check(num) }
 
@@ -3357,7 +3322,7 @@
 
 	window.doorCheck = function (dungeon, onlyDarkPossible, darkRoom, torchDarkRoom, posRequired, goal, onlyBunny = false) {
 		if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P')
-			return null;
+			return null; // non-doors uses the normal logic
 		var doorcheck = 'available', bosscheck = onlyBunny ? 'unavailable' : door_enemizer_check(dungeon), wildsmallkeys = flags.wildkeys || flags.gametype === 'R';
 		if (goal === 'boss')
 			doorcheck = bosscheck;
@@ -4189,7 +4154,6 @@
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
 	window.DPChests = function (front = 'available', back = 'unavailable') {
-		// Keydropshuffle
 		if (flags.doorshuffle === 'P') {
 			return dungeonAvailability(1, 'Desert Palace')
 		}
@@ -4648,16 +4612,15 @@
 	window.SPChests = function () {
 		if (!items.flippers) return 'unavailable';
 
-		function accessToChest(status) {
-			if (status === 'unavailable') return 'U';
-			else if (status === 'darkpossible') return 'DP';
-			else if (status === 'possible') return 'P';
-			else if (status === 'darkavailable') return 'DA';
-			else return 'A'
-		}
-
 		if (flags.glitches === 'M' || flags.glitches === 'H') {
-			var entry = canEnterSwampGlitched();
+			function accessToChest(status) {
+				if (status === 'unavailable') return 'U';
+				else if (status === 'darkpossible') return 'DP';
+				else if (status === 'possible') return 'P';
+				else if (status === 'darkavailable') return 'DA';
+				else return 'A'
+			}
+				var entry = canEnterSwampGlitched();
 			var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
 			chests[0] = (canReachSwampGlitchedAsLink() && items.flippers && items.mirror) ? 'A' : accessToChest(entry);
 			chests[1] = accessToChest(entry);
@@ -4672,65 +4635,59 @@
 			}
 			chests[9] = ConvertBossToChest(SPBoss());
 			return available_chests(4, chests, items.maxchest4, items.chest4);
+		};
+
+		if (flags.entrancemode != 'N' && !hasFoundLocation('dam')) return 'unavailable';
+		if (flags.entrancemode === 'N' && !items.mirror) return 'unavailable';
+		if (flags.doorshuffle === 'P') return dungeonAvailability(4, 'Swamp Palace');
+
+		var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
+
+		//Entrance
+		if (flags.wildkeys || flags.gametype === 'R') {
+			chests[0] = 'A';
 		} else {
+			chests[0] = 'K';
+		}
 
-			if (flags.entrancemode != 'N') {
-				if (!hasFoundLocation('dam')) return 'unavailable';
-			}
-			if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
-			if (flags.doorshuffle === 'P') {
-				return dungeonAvailability(4, 'Swamp Palace')
-			};
+		if (!flags.wildkeys || items.smallkey4 > 0 || flags.gametype == 'R') {
+			//Map Chest
+			chests[1] = (items.bomb ? 'A' : 'U');
 
-			var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
+			//Without hammer, cannot go any further
+			if (items.hammer) {
+				//Compass Chest
+				chests[2] = 'A';
 
-			//Entrance
-			if (flags.wildkeys || flags.gametype === 'R') {
-				chests[0] = 'A';
-			} else {
-				chests[0] = 'K';
-			}
+				//Big Chest
+				if (flags.wildbigkeys) {
+					chests[3] = (items.bigkey4 ? 'A' : 'U');
+				} else {
+					chests[3] = (items.hookshot ? 'K' : 'U');
+				}
 
-			if (!flags.wildkeys || items.smallkey4 > 0 || flags.gametype == 'R') {
-				//Map Chest
-				chests[1] = (items.bomb ? 'A' : 'U');
+				//West Chest
+				chests[4] = 'A';
 
-				//Without hammer, cannot go any further
-				if (items.hammer) {
-					//Compass Chest
-					chests[2] = 'A';
+				//Big Key Chest
+				chests[5] = 'A';
 
-					//Big Chest
-					if (flags.wildbigkeys) {
-						chests[3] = (items.bigkey4 ? 'A' : 'U');
-					} else {
-						chests[3] = (items.hookshot ? 'K' : 'U');
-					}
+				//Without hookshot, cannot go any further
+				if (items.hookshot) {
 
-					//West Chest
-					chests[4] = 'A';
+					//Flooded Room - Left
+					chests[6] = 'A';
 
-					//Big Key Chest
-					chests[5] = 'A';
+					//Flooded Room - Right
+					chests[7] = 'A';
 
-					//Without hookshot, cannot go any further
-					if (items.hookshot) {
+					//Waterfall Room
+					chests[8] = 'A';
 
-						//Flooded Room - Left
-						chests[6] = 'A';
-
-						//Flooded Room - Right
-						chests[7] = 'A';
-
-						//Waterfall Room
-						chests[8] = 'A';
-
-						//Boss
-						chests[9] = ConvertBossToChest(SPBoss());
-					}
+					//Boss
+					chests[9] = ConvertBossToChest(SPBoss());
 				}
 			}
-
 		}
 		return available_chests(4, chests, items.maxchest4, items.chest4);
 	}
@@ -4863,7 +4820,7 @@
 	};
 
 	window.IPChests = function () {
-		if (flags.doorshuffle === 'P') {
+		if (flags.doorshuffle === 'P' && !(flags.glitches === 'M' || flags.glitches === 'H')) {
 			return dungeonAvailability(7, 'Ice Palace')
 		};
 		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S')) && !(flags.glitches === 'M' || flags.glitches === 'H')) return 'unavailable';
@@ -4924,8 +4881,8 @@
 
 	window.MMChests = function (medcheck) {
 		if (flags.doorshuffle === 'P') {
-			if (medcheck === 'available') return dungeonAvailability(8, 'Misery Mire');
-			return medcheck;
+			if (medcheck != 'unavailable') return dungeonAvailability(8, 'Misery Mire');
+			return 'unavailable';
 		};
 		if (!items.boots && !items.hookshot) return 'unavailable';
 		if (!melee_bow() && !rod() && !cane()) return 'unavailable';
@@ -5018,8 +4975,8 @@
 
 	window.TRFrontChests = function (medcheck) {
 		if (flags.doorshuffle === 'P') {
-			if (medcheck === 'available') return dungeonAvailability(9, 'Turtle Rock');
-			return medcheck;
+			if (medcheck != 'unavailable') return dungeonAvailability(9, 'Turtle Rock');
+			return 'unavailable';
 		};
 		if (!items.somaria) return 'unavailable';
 		if (medcheck === 'unavailable') return 'unavailable';
