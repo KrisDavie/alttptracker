@@ -113,11 +113,7 @@
             ]
          }
       },
-      "Desert Palace - Map Chest": {
-         "required": {
-            "allOf": []
-         }
-      },
+      "Desert Palace - Map Chest": {},
       "Desert Palace - Torch": {
          "logical": {
             "allOf": [

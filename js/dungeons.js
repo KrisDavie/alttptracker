@@ -116,11 +116,7 @@
 				 ]
 			  }
 		   },
-		   "Desert Palace - Map Chest": {
-			  "required": {
-				 "allOf": []
-			  }
-		   },
+		   "Desert Palace - Map Chest": {},
 		   "Desert Palace - Torch": {
 			  "logical": {
 				 "allOf": [
@@ -2983,9 +2979,9 @@
 					"canUseBombs"
 				 ]
 			  }
-		   	}
+		   }
 		}
-	}
+	 }
 
 	function melee() { return items.sword > 0 || items.hammer; }
 	function melee_bow() { return melee() || items.bow > 1; }
