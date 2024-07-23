@@ -2,15 +2,17 @@
     'use strict';
 	
     function medallionCheck(i) {
-        if ((items.sword === 0 && flags.swordmode != 'S') || !items.bombos && !items.ether && !items.quake) return 'unavailable';
+        if ((items.sword === 0 && flags.swordmode != 'S') || (!items.bombos && !items.ether && !items.quake)) return 'unavailable';
         if (medallions[i] === 1 && !items.bombos ||
             medallions[i] === 2 && !items.ether ||
             medallions[i] === 3 && !items.quake) return 'unavailable';
+		if (items.bombos && items.ether && items.quake) return 'available';
         if (medallions[i] === 0 && !(items.bombos && items.ether && items.quake)) return 'possible';
+		return 'available';
     }
 
     function medallion_check(i) {
-        if ((items.sword === 0 && flags.swordmode != 'S') || !items.bombos && !items.ether && !items.quake) return 'unavailable';
+        if ((items.sword === 0 && flags.swordmode != 'S') || (!items.bombos && !items.ether && !items.quake)) return 'unavailable';
         if (medallions[i] === 1 && !items.bombos ||
             medallions[i] === 2 && !items.ether ||
             medallions[i] === 3 && !items.quake) return 'unavailable';
