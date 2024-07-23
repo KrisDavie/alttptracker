@@ -3167,15 +3167,26 @@
 				is_available: function() {
 					if (!items.moonpearl || !items.hammer || items.glove !== 2 || (!items.somaria && flags.doorshuffle === 'N') || !items.mirror || (!items.bomb && flags.doorshuffle === 'N') || (flags.wildkeys && flags.doorshuffle === 'N' && items.smallkey9 <= 1 && flags.gametype != 'R')) return 'unavailable';
 					var state = medallionCheck(1);	
+
+					if (flags.doorshuffle === 'P') {
+						var medallion = medallionCheck(1);
+						if (medallion === 'unavailable') return 'unavailable';
+						if (items.smallkey9 < 3 || !items.bomb) return 'unavailable';
+						if (items.somaria) {
+							if (medallion === 'possible') return 'possible';
+							return (items.lantern || items.flute >= 1 ? 'available' : 'darkavailable');
+						};
+						if (items.boots) return 'possible';
+						return 'unavailable';
+					};
+
 					if (state) return state === 'possible' && items.flute === 0 && !items.lantern ? 'darkpossible' : state;
 
 					var doorcheck = window.doorCheck(9,items.flute === 0 && !items.lantern,true,false,['somaria','firerod',(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : '','bomb'],'connector');
 					if(doorcheck)
 						return doorcheck;
 
-					if (flags.doorshuffle === 'P') {
-						return (items.smallkey9 < 3) ? 'unavailable' : (items.lantern || items.flute >= 1 ? 'available' : 'darkavailable');
-					};
+
 
 					if (flags.wildkeys) {
 						return (items.smallkey9 <= 1 && flags.gametype != 'R') ? 'unavailable' : (items.lantern || items.flute >= 1 ? 'available' : 'darkavailable');

@@ -1199,7 +1199,6 @@
          }
       },
       "Sewers - Dark Cross": {
-         "required": {},
          "logical": {
             "allOf": [
                "canDarkRoomNavigate"
@@ -1207,22 +1206,79 @@
          }
       },
       "Sewers - Secret Room - Left": {
-         "allOf": [
-            "canReachDankSanc",
-            "canOpenBonkWalls"
-         ]
+         "required": {
+            "allOf": [
+               "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "glove",
+               "keys|2"
+            ]
+         },
+         "logical": {
+            "allOf": [
+               "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "glove",
+               {
+                  "allOf": [
+                     "canDarkRoomNavigate",
+                     "keys|4"
+                  ]
+               }
+            ]
+         }
       },
       "Sewers - Secret Room - Middle": {
-         "allOf": [
-            "canReachDankSanc",
-            "canOpenBonkWalls"
-         ]
+         "required": {
+            "allOf": [
+               "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "glove",
+               "keys|2"
+            ]
+         },
+         "logical": {
+            "allOf": [
+               "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "glove",
+               {
+                  "allOf": [
+                     "canDarkRoomNavigate",
+                     "keys|4"
+                  ]
+               }
+            ]
+         }
       },
       "Sewers - Secret Room - Right": {
-         "allOf": [
-            "canReachDankSanc",
-            "canOpenBonkWalls"
-         ]
+         "required": {
+            "allOf": [
+               "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "glove",
+               "keys|2"
+            ]
+         },
+         "logical": {
+            "allOf": [
+               "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "glove",
+               {
+                  "allOf": [
+                     "canDarkRoomNavigate",
+                     "keys|4"
+                  ]
+               }
+            ]
+         }
       },
       "Sanctuary": {}
    },

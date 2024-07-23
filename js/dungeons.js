@@ -117,7 +117,7 @@
 			  }
 		   },
 		   "Desert Palace - Map Chest": {
-			  "logical": {
+			  "required": {
 				 "allOf": []
 			  }
 		   },
@@ -1202,7 +1202,6 @@
 			  }
 		   },
 		   "Sewers - Dark Cross": {
-			  "required": {},
 			  "logical": {
 				 "allOf": [
 					"canDarkRoomNavigate"
@@ -1210,22 +1209,79 @@
 			  }
 		   },
 		   "Sewers - Secret Room - Left": {
-			  "allOf": [
-				 "canReachDankSanc",
-				 "canOpenBonkWalls"
-			  ]
+			  "required": {
+				 "allOf": [
+					"canOpenBonkWalls"
+				 ],
+				 "anyOf": [
+					"glove",
+					"keys|2"
+				 ]
+			  },
+			  "logical": {
+				 "allOf": [
+					"canOpenBonkWalls"
+				 ],
+				 "anyOf": [
+					"glove",
+					{
+					   "allOf": [
+						  "canDarkRoomNavigate",
+						  "keys|4"
+					   ]
+					}
+				 ]
+			  }
 		   },
 		   "Sewers - Secret Room - Middle": {
-			  "allOf": [
-				 "canReachDankSanc",
-				 "canOpenBonkWalls"
-			  ]
+			  "required": {
+				 "allOf": [
+					"canOpenBonkWalls"
+				 ],
+				 "anyOf": [
+					"glove",
+					"keys|2"
+				 ]
+			  },
+			  "logical": {
+				 "allOf": [
+					"canOpenBonkWalls"
+				 ],
+				 "anyOf": [
+					"glove",
+					{
+					   "allOf": [
+						  "canDarkRoomNavigate",
+						  "keys|4"
+					   ]
+					}
+				 ]
+			  }
 		   },
 		   "Sewers - Secret Room - Right": {
-			  "allOf": [
-				 "canReachDankSanc",
-				 "canOpenBonkWalls"
-			  ]
+			  "required": {
+				 "allOf": [
+					"canOpenBonkWalls"
+				 ],
+				 "anyOf": [
+					"glove",
+					"keys|2"
+				 ]
+			  },
+			  "logical": {
+				 "allOf": [
+					"canOpenBonkWalls"
+				 ],
+				 "anyOf": [
+					"glove",
+					{
+					   "allOf": [
+						  "canDarkRoomNavigate",
+						  "keys|4"
+					   ]
+					}
+				 ]
+			  }
 		   },
 		   "Sanctuary": {}
 		},
@@ -2927,9 +2983,9 @@
 					"canUseBombs"
 				 ]
 			  }
-		   }
+		   	}
 		}
-	 }
+	}
 
 	function melee() { return items.sword > 0 || items.hammer; }
 	function melee_bow() { return melee() || items.bow > 1; }
@@ -2996,7 +3052,6 @@
 			case 'canLightFires': return items.lantern || items.firerod;
 			case 'canDarkRoomNavigate': return items.lantern;
 			case 'canAccessDesertNorth': return (items.book && items.glove > 0) || (items.glove > 1 && items.flute && items.mirror);
-			case 'canReachDankSanc': return (items.glove > 0 || (items.lantern && items.smallkeyhalf0 > 3));
 			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
 			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
 			case 'canCrossMireGap': return items.boots || items.hookshot;
