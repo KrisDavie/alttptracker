@@ -1988,7 +1988,7 @@
 							return 'unavailable';
 						return window.doorCheck(12,!items.lantern && !activeFlute(),true,true,[],'boss');
 					}
-					if (flags.doorshuffle === 'P') {
+					if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 						return CTBoss();
 					};
 					if (flags.wildkeys) {
@@ -3095,7 +3095,7 @@
 				can_get_chest: function() {
 					if(items.sword < 2 && (flags.swordmode != 'S' || !items.hammer) && !items.cape && !items.agahnim)
 						return 'unavailable';
-					if (flags.doorshuffle != 'P') {
+					if (flags.doorshuffle !== 'P' && !(flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 						if(items.mirror && (items.agahnim || (items.glove && items.hammer && items.moonpearl) || (items.glove === 2 && items.moonpearl && items.flippers)))
 							return window.doorCheck(12,false,true,true,['kill','swordorswordless'],'item');
 						return 'possible';
@@ -3125,7 +3125,7 @@
 							return window.doorCheck(12,false,true,true,[],'boss');
 						return 'possible';
 					}
-					if (flags.doorshuffle === 'P') {
+					if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 						return CTBoss();
 					};
 					if (flags.wildkeys) {

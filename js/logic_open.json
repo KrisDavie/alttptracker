@@ -106,7 +106,7 @@
                {
                   "anyOf": [
                      "sword",
-                     "bugnet",
+                     "net",
                      "hammer"
                   ]
                }
@@ -124,7 +124,7 @@
             ],
             "anyOf": [
                "sword",
-               "bugnet",
+               "net",
                "hammer"
             ]
          }

@@ -2,3046 +2,118 @@
 	'use strict';
 
 	const logic_open_keydrop = {
-			"Desert Palace": {
-			   "Desert Palace - Beamos Hall Pot Key": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canAccessDesertNorth"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canAccessDesertNorth"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Big Chest": {
-				  "logical": {
-					 "allOf": [
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Boss": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|3",
-						"canKillBoss",
-						"canLightFires",
-						"canAccessDesertNorth"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|4",
-						"canLightFires",
-						"canKillBoss",
-						"canAccessDesertNorth"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Compass Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Desert Tiles 1 Pot Key": {
-				  "logical": {
-					 "allOf": [
-						"canAccessDesertNorth"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Desert Tiles 2 Pot Key": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canAccessDesertNorth"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"canAccessDesertNorth"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Desert Palace - Map Chest": {},
-			   "Desert Palace - Torch": {
-				  "logical": {
-					 "allOf": [
-						"boots"
-					 ]
-				  }
-			   }
-			},
-			"Castle Tower": {
-			   "Castle Tower - Circle of Pots Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|3"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"canDarkRoomNavigate"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies"
-					 ]
-				  }
-			   },
-			   "Castle Tower - Dark Archer Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canDarkRoomNavigate",
-						"canKillMostEnemies"
-					 ]
-				  }
-			   },
-			   "Castle Tower - Dark Maze": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"canDarkRoomNavigate",
-						"canKillMostEnemies"
-					 ]
-				  }
-			   },
-			   "Castle Tower - Room 03": {
-				  "required": {
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canKillMostEnemies"
-					 ]
-				  }
-			   },
-			   "Castle Tower - Boss": {
-				  "required": {
-					 "allOf": [
-						"keys|4",
-						"canDefeatCurtains",
-						{
-						   "anyOf": [
-							  "sword",
-							  "bugnet",
-							  "hammer"
-						   ]
-						}
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4",
-						"canDarkRoomNavigate",
-						"canDefeatCurtains"
-					 ],
-					 "anyOf": [
-						"sword",
-						"bugnet",
-						"hammer"
-					 ]
-				  }
-			   }
-			},
-			"Eastern Palace": {
-			   "Eastern Palace - Big Chest": {
-				  "logical": {
-					 "allOf": [
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Eastern Palace - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canDarkRoomNavigate"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Eastern Palace - Boss": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|1",
-						"canKillBoss",
-						"bow"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|2",
-						"canKillBoss",
-						"canDarkRoomNavigate",
-						"bow"
-					 ]
-				  }
-			   },
-			   "Eastern Palace - Cannonball Chest": {},
-			   "Eastern Palace - Compass Chest": {},
-			   "Eastern Palace - Dark Eyegore Key Drop": {
-				  "required": {
-					 "allOf": [
-						"bigkey"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canDarkRoomNavigate"
-					 ]
-				  }
-			   },
-			   "Eastern Palace - Dark Square Pot Key": {
-				  "required": {},
-				  "logical": {
-					 "allOf": [
-						"canDarkRoomNavigate"
-					 ]
-				  }
-			   },
-			   "Eastern Palace - Map Chest": {}
-			},
-			"Ganons Tower": {
-			   "Ganons Tower - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"bigkey"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "hammer",
-							  {
-								 "anyOf": [
-									"canHover",
-									"hookshot",
-									"canBombJump"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "somaria",
-							  "canLightFires",
-							  {
-								 "anyOf": [
-									"firerod",
-									{
-									   "anyOf": [
-										  "canHover",
-										  "canBombJump"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"gtleft",
-						"gtright"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canUseBombs",
-						"canKillArmos"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "hammer",
-							  {
-								 "anyOf": [
-									"canHover",
-									"hookshot",
-									"canBombJump"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "somaria",
-							  "canLightFires",
-							  {
-								 "anyOf": [
-									"firerod",
-									{
-									   "anyOf": [
-										  "canHover",
-										  "canBombJump"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"canKillArmos",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"gtleft",
-						"gtright"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Big Key Room - Left": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canUseBombs",
-						"canKillArmos"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "hammer",
-							  {
-								 "anyOf": [
-									"canHover",
-									"hookshot",
-									"canBombJump"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "somaria",
-							  "canLightFires",
-							  {
-								 "anyOf": [
-									"firerod",
-									{
-									   "anyOf": [
-										  "canHover",
-										  "canBombJump"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"canKillArmos",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"gtleft",
-						"gtright"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Big Key Room - Right": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canUseBombs",
-						"canKillArmos"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "hammer",
-							  {
-								 "anyOf": [
-									"canHover",
-									"hookshot",
-									"canBombJump"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "somaria",
-							  "canLightFires",
-							  {
-								 "anyOf": [
-									"firerod",
-									{
-									   "anyOf": [
-										  "canHover",
-										  "canBombJump"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"canKillArmos",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"gtleft",
-						"gtright"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Bob's Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "hammer",
-							  {
-								 "anyOf": [
-									"canHover",
-									"hookshot",
-									"canBombJump"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "somaria",
-							  "canLightFires",
-							  {
-								 "anyOf": [
-									"firerod",
-									{
-									   "anyOf": [
-										  "canHover",
-										  "canBombJump"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7"
-					 ],
-					 "anyOf": [
-						"gtleft",
-						"gtright"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Bob's Torch": {
-				  "logical": {
-					 "allOf": [
-						"boots"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Compass Room - Bottom Left": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"somaria",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"firerod",
-						{
-						   "anyOf": [
-							  "canHover",
-							  "canBombJump"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Compass Room - Bottom Right": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"somaria",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"firerod",
-						{
-						   "anyOf": [
-							  "canHover",
-							  "canBombJump"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Compass Room - Top Left": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"somaria",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"firerod",
-						{
-						   "anyOf": [
-							  "canHover",
-							  "canBombJump"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Compass Room - Top Right": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"somaria",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"firerod",
-						{
-						   "anyOf": [
-							  "canHover",
-							  "canBombJump"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Conveyor Cross Pot Key": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"somaria",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"firerod",
-						{
-						   "anyOf": [
-							  "canHover",
-							  "canBombJump"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Conveyor Star Pits Pot Key": {},
-			   "Ganons Tower - DMs Room - Bottom Left": {
-				  "required": {
-					 "allOf": [
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - DMs Room - Bottom Right": {
-				  "required": {
-					 "allOf": [
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - DMs Room - Top Left": {
-				  "required": {
-					 "allOf": [
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - DMs Room - Top Right": {
-				  "required": {
-					 "allOf": [
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Double Switch Pot Key": {
-				  "required": {
-					 "allOf": [
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"boots",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"boots"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Firesnake Room": {
-				  "required": {
-					 "allOf": [
-						"hammer",
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot",
-						"keys|7"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Hope Room - Left": {},
-			   "Ganons Tower - Hope Room - Right": {},
-			   "Ganons Tower - Map Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"hammer"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"boots",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|8"
-					 ],
-					 "anyOf": [
-						"boots",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Mini Helmasaur Key Drop": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"bow",
-						{
-						   "allOf": [
-							  "canMimicClip",
-							  "canKillMostEnemies"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires",
-						"bow"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Mini Helmasaur Room - Left": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"bow",
-						{
-						   "allOf": [
-							  "canMimicClip",
-							  "canKillMostEnemies"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires",
-						"bow"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Mini Helmasaur Room - Right": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires"
-					 ],
-					 "anyOf": [
-						"bow",
-						{
-						   "allOf": [
-							  "canMimicClip",
-							  "canKillMostEnemies"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires",
-						"bow"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Pre-Moldorm Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"canLightFires",
-						"keys|1",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"bow",
-						{
-						   "allOf": [
-							  "canMimicClip",
-							  "canKillMostEnemies"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|7",
-						"bigkey",
-						"canLightFires",
-						"bow",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Randomizer Room - Bottom Left": {
-				  "required": {
-					 "allOf": [
-						"hammer",
-						"keys|2",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot",
-						"keys|8",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Randomizer Room - Bottom Right": {
-				  "required": {
-					 "allOf": [
-						"hammer",
-						"keys|2",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot",
-						"keys|8",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Randomizer Room - Top Left": {
-				  "required": {
-					 "allOf": [
-						"hammer",
-						"keys|2",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot",
-						"keys|8",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Randomizer Room - Top Right": {
-				  "required": {
-					 "allOf": [
-						"hammer",
-						"keys|2",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover",
-						"canBombJump"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"hammer",
-						"hookshot",
-						"keys|8",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Tile Room": {
-				  "logical": {
-					 "allOf": [
-						"somaria"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Validation Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"bigkey",
-						"canLightFires",
-						"melee",
-						"canUseBombs",
-						{
-						   "anyOf": [
-							  "bow",
-							  "canMimicClip"
-						   ]
-						}
-					 ],
-					 "anyOf": [
-						"hookshot",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bow",
-						"keys|8",
-						"bigkey",
-						"canLightFires",
-						"melee",
-						"hookshot",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ganons Tower - Boss": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"bigkey",
-						"canKillBoss",
-						"canLightFires",
-						"canUseBombs",
-						{
-						   "anyOf": [
-							  {
-								 "allOf": [
-									"melee",
-									"hookshot"
-								 ]
-							  },
-							  "canHover",
-							  "canMoldormBounce"
-						   ]
-						}
-					 ],
-					 "anyOf": [
-						"bow",
-						"canMimicClip"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bow",
-						"keys|8",
-						"bigkey",
-						"canLightFires",
-						"melee",
-						"hookshot",
-						"canUseBombs"
-					 ]
-				  }
-			   }
-			},
-			"Hyrule Castle": {
-			   "Hyrule Castle - Big Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Hyrule Castle - Boomerang Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Hyrule Castle - Boomerang Guard Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Hyrule Castle - Key Rat Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs",
-						"hookshot",
-						"icerod"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"canDarkRoomNavigate"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Hyrule Castle - Map Chest": {},
-			   "Hyrule Castle - Map Guard Key Drop": {
-				  "logical": {
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Hyrule Castle - Zelda's Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4",
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Sewers - Dark Cross": {
-				  "required": {
-					 "allOf": []
-				  },
-				  "logical": {
-					 "allOf": [
-						"canDarkRoomNavigate"
-					 ]
-				  }
-			   },
-			   "Sewers - Secret Room - Left": {
-				  "required": {
-					 "allOf": [
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"glove",
-						"keys|2"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"glove",
-						{
-						   "allOf": [
-							  "canDarkRoomNavigate",
-							  "keys|4"
-						   ]
-						}
-					 ]
-				  }
-			   },
-			   "Sewers - Secret Room - Middle": {
-				  "required": {
-					 "allOf": [
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"glove",
-						"keys|2"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"glove",
-						{
-						   "allOf": [
-							  "canDarkRoomNavigate",
-							  "keys|4"
-						   ]
-						}
-					 ]
-				  }
-			   },
-			   "Sewers - Secret Room - Right": {
-				  "required": {
-					 "allOf": [
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"glove",
-						"keys|2"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"glove",
-						{
-						   "allOf": [
-							  "canDarkRoomNavigate",
-							  "keys|4"
-						   ]
-						}
-					 ]
-				  }
-			   },
-			   "Sanctuary": {}
-			},
-			"Skull Woods": {
-			   "Skull Woods - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Skull Woods - Big Key Chest": {},
-			   "Skull Woods - Boss": {
-				  "required": {
-					 "allOf": [
-						"canDefeatCurtains",
-						"canKillBoss"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|5",
-						"canKillBoss",
-						"canDefeatCurtains",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Skull Woods - Bridge Room": {
-				  "logical": {
-					 "allOf": [
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Skull Woods - Compass Chest": {},
-			   "Skull Woods - Map Chest": {},
-			   "Skull Woods - Pinball Room": {},
-			   "Skull Woods - Pot Prison": {},
-			   "Skull Woods - Spike Corner Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canDefeatCurtains",
-						"firerod"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4",
-						"firerod",
-						"canDefeatCurtains"
-					 ]
-				  }
-			   },
-			   "Skull Woods - West Lobby Pot Key": {}
-			},
-			"Swamp Palace": {
-			   "Swamp Palace - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|2",
-						"flippers"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "hammer",
-							  "keys|3"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|3",
-						"hammer",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"flippers"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "keys|2",
-							  "canSpeckyClip",
-							  "canBombSpooky"
-						   ]
-						},
-						{
-						   "allOf": [
-							  "canSpeckyClip",
-							  "keys|3"
-						   ]
-						},
-						{
-						   "allOf": [
-							  "canBombSpooky",
-							  "keys|3",
-							  "hammer"
-						   ]
-						},
-						{
-						   "allOf": [
-							  "keys|4",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6",
-						"hammer",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - West Chest": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|3",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6",
-						"hammer",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Boss": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"hookshot",
-						"keys|4",
-						"canKillBoss"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|5",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6",
-						"hammer",
-						"flippers",
-						"hookshot",
-						"canKillBoss"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Compass Chest": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|3",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"hammer",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Entrance": {
-				  "logical": {
-					 "allOf": [
-						"flippers"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Flooded Room - Left": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|3",
-						"hookshot"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|4",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|5",
-						"hammer",
-						"flippers",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Flooded Room - Right": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|3",
-						"hookshot"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|4",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|5",
-						"hammer",
-						"flippers",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Hookshot Pot Key": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|2",
-						"hookshot"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|3",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"hammer",
-						"flippers",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Map Chest": {
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"canUseBombs",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Pot Row Pot Key": {
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Trench 1 Pot Key": {
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"flippers"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Trench 2 Pot Key": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|3",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"flippers",
-						"hammer"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Waterfall Room": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|3",
-						"hookshot"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|4",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|5",
-						"hammer",
-						"flippers",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Swamp Palace - Waterway Pot Key": {
-				  "required": {
-					 "allOf": [
-						"flippers",
-						"keys|3",
-						"hookshot"
-					 ],
-					 "anyOf": [
-						"canSpeckyClip",
-						{
-						   "allOf": [
-							  "keys|4",
-							  "hammer"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|5",
-						"hammer",
-						"flippers",
-						"hookshot"
-					 ]
-				  }
-			   }
-			},
-			"Thieves' Town": {
-			   "Thieves' Town - Ambush Chest": {},
-			   "Thieves' Town - Attic": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"bigkey"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|3",
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Thieves' Town - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|2",
-						"hammer"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|3",
-						"hammer"
-					 ]
-				  }
-			   },
-			   "Thieves' Town - Big Key Chest": {},
-			   "Thieves' Town - Blind's Cell": {
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs",
-						"glove"
-					 ]
-				  }
-			   },
-			   "Thieves' Town - Boss": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|2",
-						"canUseBombs",
-						"canKillBoss"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|3",
-						"canKillBoss",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Thieves' Town - Compass Chest": {},
-			   "Thieves' Town - Hallway Pot Key": {
-				  "logical": {
-					 "allOf": [
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Thieves' Town - Map Chest": {},
-			   "Thieves' Town - Spike Switch Pot Key": {
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"bigkey"
-					 ]
-				  }
-			   }
-			},
-			"Tower of Hera": {
-			   "Tower of Hera - Basement Cage": {},
-			   "Tower of Hera - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs",
-						"canHeraPot"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Tower of Hera - Big Key Chest": {
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"canLightFires"
-					 ]
-				  }
-			   },
-			   "Tower of Hera - Boss": {
-				  "required": {
-					 "allOf": [
-						"canKillBoss"
-					 ],
-					 "anyOf": [
-						"canHeraPot",
-						{
-						   "allOf": [
-							  "bigkey",
-							  {
-								 "anyOf": [
-									"canKillMostEnemies",
-									"canUseBombs"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canKillBoss"
-					 ]
-				  }
-			   },
-			   "Tower of Hera - Compass Chest": {
-				  "required": {
-					 "anyOf": [
-						"canHeraPot",
-						{
-						   "allOf": [
-							  "bigkey",
-							  {
-								 "anyOf": [
-									"canKillMostEnemies",
-									"canUseBombs"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Tower of Hera - Map Chest": {}
-			},
-			"Turtle Rock": {
-			   "Turtle Rock - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|3",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"bigkey",
-						"keys|3",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|4"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"keys|6"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Boss": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|5",
-						"canKillBoss",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"canHover",
-						"somaria"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"bigkey",
-						"keys|6",
-						"canDarkRoomNavigate",
-						"canKillBoss",
-						"canOpenBonkWalls"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Chain Chomps": {
-				  "required": {
-					 "allOf": [
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"keys|2"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Compass Chest": {
-				  "required": {
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Crystaroller Room": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|3",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"bigkey",
-						"keys|3",
-						"canOpenBonkWalls"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Eye Bridge - Bottom Left": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|4",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"canDarkRoomNavigate",
-						"bigkey",
-						"keys|5",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"mirrorshield",
-						"byrna",
-						"cape"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Eye Bridge - Bottom Right": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|4",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"canDarkRoomNavigate",
-						"bigkey",
-						"keys|5",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"mirrorshield",
-						"byrna",
-						"cape"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Eye Bridge - Top Left": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|4",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"canDarkRoomNavigate",
-						"bigkey",
-						"keys|5",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"mirrorshield",
-						"byrna",
-						"cape"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Eye Bridge - Top Right": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|4",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"canDarkRoomNavigate",
-						"bigkey",
-						"keys|5",
-						"canOpenBonkWalls"
-					 ],
-					 "anyOf": [
-						"mirrorshield",
-						"byrna",
-						"cape"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Pokey 1 Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canKillMostEnemies"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"keys|1"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Pokey 2 Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|3",
-						"canKillMostEnemies"
-					 ],
-					 "anyOf": [
-						"somaria",
-						"canHover"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"keys|3"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Roller Room - Left": {
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   },
-			   "Turtle Rock - Roller Room - Right": {
-				  "logical": {
-					 "allOf": [
-						"somaria",
-						"firerod"
-					 ]
-				  }
-			   }
-			},
-			"Misery Mire": {
-			   "Misery Mire - Big Chest": {
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canKillWizzrobes",
-						"canLightFires",
-						"canCrossMireGap"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6",
-						"canKillWizzrobes",
-						"canLightFires",
-						"canCrossMireGap"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Boss": {
-				  "required": {
-					 "allOf": [
-						"canCrossMireGap",
-						"bigkey",
-						"canKillBoss",
-						"somaria"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						"canFireSpooky"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canCrossMireGap",
-						"bigkey",
-						"canKillBoss",
-						"canDarkRoomNavigate",
-						"canUseBombs",
-						"somaria"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Bridge Chest": {
-				  "logical": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Compass Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canKillWizzrobes",
-						"canLightFires",
-						"canCrossMireGap"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6",
-						"canKillWizzrobes",
-						"canLightFires",
-						"canCrossMireGap"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Conveyor Crystal Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|5",
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Fishbone Pot Key": {
-				  "required": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ],
-					 "anyOf": [
-						"keys|1",
-						"bigkey"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ],
-					 "anyOf": [
-						"keys|5",
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Main Lobby": {
-				  "required": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ],
-					 "anyOf": [
-						"keys|1",
-						"bigkey"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ],
-					 "anyOf": [
-						"keys|2",
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Map Chest": {
-				  "required": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ],
-					 "anyOf": [
-						"keys|1",
-						"bigkey"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ],
-					 "anyOf": [
-						"keys|2",
-						"bigkey"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Spike Chest": {
-				  "logical": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ]
-				  }
-			   },
-			   "Misery Mire - Spikes Pot Key": {
-				  "logical": {
-					 "allOf": [
-						"canKillWizzrobes",
-						"canCrossMireGap"
-					 ]
-				  }
-			   }
-			},
-			"Ice Palace": {
-			   "Ice Palace - Jelly Key Drop": {
-				  "logical": {
-					 "allOf": [
-						"canBurnThings"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Compass Chest": {
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canKillMostEnemies",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Conveyor Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						{
-						   "allOf": [
-							  "canIceBreak",
-							  "keys|3"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Freezor Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						"canIceBreak"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"canBurnThings",
-						"keys|2"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						{
-						   "allOf": [
-							  "canIceBreak",
-							  "hookshot"
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Spike Room": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canIceBreak",
-						{
-						   "allOf": [
-							  "canUseBombs",
-							  {
-								 "anyOf": [
-									"hookshot",
-									"keys|3"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs"
-					 ],
-					 "anyOf": [
-						"keys|6",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Map Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings",
-						"glove",
-						"hammer"
-					 ],
-					 "anyOf": [
-						"canIceBreak",
-						{
-						   "allOf": [
-							  "canUseBombs",
-							  {
-								 "anyOf": [
-									"hookshot",
-									"keys|3"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs",
-						"glove",
-						"hammer"
-					 ],
-					 "anyOf": [
-						"keys|6",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Hammer Block Key Drop": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings",
-						"glove",
-						"hammer"
-					 ],
-					 "anyOf": [
-						"canIceBreak",
-						{
-						   "allOf": [
-							  "canUseBombs",
-							  {
-								 "anyOf": [
-									"hookshot",
-									"keys|3"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs",
-						"glove",
-						"hammer"
-					 ],
-					 "anyOf": [
-						"keys|6",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"keys|1",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canIceBreak",
-						{
-						   "allOf": [
-							  "hammer",
-							  "glove",
-							  "canUseBombs",
-							  {
-								 "anyOf": [
-									"hookshot",
-									"keys|3"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs",
-						"glove",
-						"hammer"
-					 ],
-					 "anyOf": [
-						"keys|6",
-						"hookshot"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Many Pots Pot Key": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						"canIceBreak"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Iced T Room": {
-				  "required": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings"
-					 ],
-					 "anyOf": [
-						"canUseBombs",
-						"canIceBreak"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|2",
-						"canBurnThings",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Ice Palace - Boss": {
-				  "required": {
-					 "allOf": [
-						"canBurnThings",
-						"keys|2",
-						"glove",
-						"hammer",
-						"canKillBoss"
-					 ],
-					 "anyOf": [
-						"canIceBreak",
-						{
-						   "allOf": [
-							  "canUseBombs",
-							  {
-								 "anyOf": [
-									"canBombJump",
-									{
-									   "allOf": [
-										  "bigkey",
-										  "keys|3"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"canBurnThings",
-						"canUseBombs",
-						"glove",
-						"hammer",
-						"keys|5",
-						"canKillBoss"
-					 ],
-					 "anyOf": [
-						"keys|6",
-						"somaria"
-					 ]
-				  }
-			   }
-			},
-			"Palace of Darkness": {
-			   "Palace of Darkness - Big Chest": {
-				  "required": {
-					 "allOf": [
-						"bigkey"
-					 ],
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "keys|3",
-							  "canUseBombs"
-						   ]
-						},
-						{
-						   "allOf": [
-							  "keys|2",
-							  {
-								 "anyOf": [
-									"canBombJump",
-									"canHover"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "hammer",
-							  "canOpenBonkWalls",
-							  "keys|1",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  },
-							  {
-								 "anyOf": [
-									"canBombJump",
-									"canHover",
-									{
-									   "allOf": [
-										  "keys|2",
-										  "canUseBombs"
-									   ]
-									}
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|6",
-						"canDarkRoomNavigate",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Big Key Chest": {
-				  "required": {
-					 "allOf": [
-						"canUseBombs",
-						"keys|1"
-					 ],
-					 "anyOf": [
-						"keys|2",
-						{
-						   "allOf": [
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6",
-						"canUseBombs"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Boss": {
-				  "required": {
-					 "allOf": [
-						"bigkey",
-						"keys|1",
-						"canKillBoss",
-						"bow",
-						"hammer"
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bigkey",
-						"keys|6",
-						"canKillBoss",
-						"canDarkRoomNavigate",
-						"bow",
-						"hammer"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Compass Chest": {
-				  "required": {
-					 "anyOf": [
-						"keys|2",
-						{
-						   "allOf": [
-							  "keys|1",
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Dark Basement - Left": {
-				  "required": {
-					 "anyOf": [
-						"keys|2",
-						{
-						   "allOf": [
-							  "keys|1",
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4",
-						"canDarkRoomNavigate"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Dark Basement - Right": {
-				  "required": {
-					 "anyOf": [
-						"keys|2",
-						{
-						   "allOf": [
-							  "keys|1",
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|4",
-						"canDarkRoomNavigate"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Dark Maze - Bottom": {
-				  "allOf": [
-					 "keys|6",
-					 "canDarkRoomNavigate"
-				  ]
-			   },
-			   "Palace of Darkness - Dark Maze - Top": {
-				  "allOf": [
-					 "keys|6",
-					 "canDarkRoomNavigate"
-				  ]
-			   },
-			   "Palace of Darkness - Harmless Hellway": {
-				  "required": {
-					 "anyOf": [
-						"keys|3",
-						{
-						   "allOf": [
-							  "keys|2",
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"keys|6"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Map Chest": {
-				  "required": {
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "keys|1",
-							  "canHover",
-							  "canUseBombs"
-						   ]
-						},
-						{
-						   "allOf": [
-							  "canOpenBonkWalls",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bow",
-						"canOpenBonkWalls"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - Shooter Room": {},
-			   "Palace of Darkness - Stalfos Basement": {
-				  "required": {
-					 "anyOf": [
-						"keys|1",
-						{
-						   "allOf": [
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "anyOf": [
-						"keys|1",
-						"zeroKeyPodders"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - The Arena - Bridge": {
-				  "required": {
-					 "anyOf": [
-						"keys|1",
-						{
-						   "allOf": [
-							  "canOpenBonkWalls",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "anyOf": [
-						"keys|1",
-						"zeroKeyPodders"
-					 ]
-				  }
-			   },
-			   "Palace of Darkness - The Arena - Ledge": {
-				  "required": {
-					 "anyOf": [
-						{
-						   "allOf": [
-							  "keys|1",
-							  "canHover"
-						   ]
-						},
-						{
-						   "allOf": [
-							  "canUseBombs",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						},
-						{
-						   "allOf": [
-							  "canHover",
-							  "hammer",
-							  {
-								 "anyOf": [
-									"bow",
-									"canMimicClip",
-									"canPotionCameraUnlock"
-								 ]
-							  }
-						   ]
-						}
-					 ]
-				  },
-				  "logical": {
-					 "allOf": [
-						"bow",
-						"canUseBombs"
-					 ]
-				  }
-			   }
-			}
-	};
-	const logic_open = {
 		"Desert Palace": {
+			"Desert Palace - Beamos Hall Pot Key": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"canAccessDesertNorth"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|2",
+						"canAccessDesertNorth"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
 			"Desert Palace - Big Chest": {
 				"logical": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					]
 				}
 			},
 			"Desert Palace - Big Key Chest": {
 				"required": {
+					"allOf": [
+						"keys|1"
+					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1"
+						"keys|4"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
 			"Desert Palace - Boss": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canLightFires",
-					"canKillBoss",
-					"canAccessDesertNorth"
+						"bigkey",
+						"keys|3",
+						"canKillBoss",
+						"canLightFires",
+						"canAccessDesertNorth"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"keys|1",
-					"canLightFires",
-					"canKillBoss",
-					"canAccessDesertNorth"
+						"bigkey",
+						"keys|4",
+						"canLightFires",
+						"canKillBoss",
+						"canAccessDesertNorth"
 					]
 				}
 			},
 			"Desert Palace - Compass Chest": {
 				"required": {
-					"allOf": []
+					"allOf": [
+						"keys|1"
+					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1"
+						"keys|4"
+					]
+				}
+			},
+			"Desert Palace - Desert Tiles 1 Pot Key": {
+				"logical": {
+					"allOf": [
+						"canAccessDesertNorth"
+					]
+				}
+			},
+			"Desert Palace - Desert Tiles 2 Pot Key": {
+				"required": {
+					"allOf": [
+						"keys|2",
+						"canAccessDesertNorth"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canAccessDesertNorth"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
@@ -3049,71 +121,109 @@
 			"Desert Palace - Torch": {
 				"logical": {
 					"allOf": [
-					"boots"
+						"boots"
 					]
 				}
 			}
 		},
 		"Castle Tower": {
-			"Castle Tower - Dark Maze": {
+			"Castle Tower - Circle of Pots Key Drop": {
 				"required": {
 					"allOf": [
-					"keys|1"
+						"keys|3"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"canDarkRoomNavigate",
-					"canKillMostEnemies"
+						"keys|3",
+						"canDarkRoomNavigate"
+					],
+					"anyOf": [
+						"canKillMostEnemies"
+					]
+				}
+			},
+			"Castle Tower - Dark Archer Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|2"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|2",
+						"canDarkRoomNavigate",
+						"canKillMostEnemies"
+					]
+				}
+			},
+			"Castle Tower - Dark Maze": {
+				"required": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"canDarkRoomNavigate",
+						"canKillMostEnemies"
 					]
 				}
 			},
 			"Castle Tower - Room 03": {
 				"required": {
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canKillMostEnemies"
+						"canKillMostEnemies"
 					]
 				}
 			},
 			"Castle Tower - Boss": {
 				"required": {
 					"allOf": [
-					"keys|2",
-					"canDefeatCurtains",
-					{
-						"anyOf": [
-							"sword",
-							"bugnet",
-							"hammer"
-						]
-					}
+						"keys|4",
+						"canDefeatCurtains",
+						{
+							"anyOf": [
+								"sword",
+								"net",
+								"hammer"
+							]
+						}
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|2",
-					"canDarkRoomNavigate",
-					"canDefeatCurtains"
+						"keys|4",
+						"canDarkRoomNavigate",
+						"canDefeatCurtains"
 					],
 					"anyOf": [
-					"sword",
-					"bugnet",
-					"hammer"
+						"sword",
+						"net",
+						"hammer"
 					]
 				}
 			}
@@ -3122,388 +232,450 @@
 			"Eastern Palace - Big Chest": {
 				"logical": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					]
 				}
 			},
 			"Eastern Palace - Big Key Chest": {
 				"required": {
-					"allOf": []
+					"allOf": [
+						"keys|1"
+					]
 				},
 				"logical": {
 					"allOf": [
-					"canDarkRoomNavigate"
+						"keys|2",
+						"canDarkRoomNavigate"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
 			"Eastern Palace - Boss": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canKillBoss",
-					"bow"
+						"bigkey",
+						"keys|1",
+						"canKillBoss",
+						"bow"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canKillBoss",
-					"canDarkRoomNavigate",
-					"bow"
+						"bigkey",
+						"keys|2",
+						"canKillBoss",
+						"canDarkRoomNavigate",
+						"bow"
 					]
 				}
 			},
 			"Eastern Palace - Cannonball Chest": {},
 			"Eastern Palace - Compass Chest": {},
+			"Eastern Palace - Dark Eyegore Key Drop": {
+				"required": {
+					"allOf": [
+						"bigkey"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canDarkRoomNavigate"
+					]
+				}
+			},
+			"Eastern Palace - Dark Square Pot Key": {
+				"required": {},
+				"logical": {
+					"allOf": [
+						"canDarkRoomNavigate"
+					]
+				}
+			},
 			"Eastern Palace - Map Chest": {}
 		},
 		"Ganons Tower": {
 			"Ganons Tower - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey"
+						"keys|2",
+						"bigkey"
 					],
 					"anyOf": [
-					{
-						"allOf": [
-							"hammer",
-							{
-								"anyOf": [
-								"canHover",
-								"hookshot",
-								"canBombJump"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"somaria",
-							"canLightFires",
-							{
-								"anyOf": [
-								"firerod",
+						{
+							"allOf": [
+								"hammer",
 								{
 									"anyOf": [
 										"canHover",
+										"hookshot",
 										"canBombJump"
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"bigkey"
+						"keys|7",
+						"bigkey"
 					],
 					"anyOf": [
-					"gtleft",
-					"gtright"
+						"gtleft",
+						"gtright"
 					]
 				}
 			},
 			"Ganons Tower - Big Key Chest": {
 				"required": {
 					"allOf": [
-					"canUseBombs",
-					"canKillArmos"
+						"keys|2",
+						"canUseBombs",
+						"canKillArmos"
 					],
 					"anyOf": [
-					{
-						"allOf": [
-							"hammer",
-							{
-								"anyOf": [
-								"canHover",
-								"hookshot",
-								"canBombJump"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"somaria",
-							"canLightFires",
-							{
-								"anyOf": [
-								"firerod",
+						{
+							"allOf": [
+								"hammer",
 								{
 									"anyOf": [
 										"canHover",
+										"hookshot",
 										"canBombJump"
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"canKillArmos",
-					"canUseBombs"
+						"keys|7",
+						"canKillArmos",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"gtleft",
-					"gtright"
+						"gtleft",
+						"gtright"
 					]
 				}
 			},
 			"Ganons Tower - Big Key Room - Left": {
 				"required": {
 					"allOf": [
-					"canUseBombs",
-					"canKillArmos"
+						"keys|2",
+						"canUseBombs",
+						"canKillArmos"
 					],
 					"anyOf": [
-					{
-						"allOf": [
-							"hammer",
-							{
-								"anyOf": [
-								"canHover",
-								"hookshot",
-								"canBombJump"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"somaria",
-							"canLightFires",
-							{
-								"anyOf": [
-								"firerod",
+						{
+							"allOf": [
+								"hammer",
 								{
 									"anyOf": [
 										"canHover",
+										"hookshot",
 										"canBombJump"
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"canKillArmos",
-					"canUseBombs"
+						"keys|7",
+						"canKillArmos",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"gtleft",
-					"gtright"
+						"gtleft",
+						"gtright"
 					]
 				}
 			},
 			"Ganons Tower - Big Key Room - Right": {
 				"required": {
 					"allOf": [
-					"canUseBombs",
-					"canKillArmos"
+						"keys|2",
+						"canUseBombs",
+						"canKillArmos"
 					],
 					"anyOf": [
-					{
-						"allOf": [
-							"hammer",
-							{
-								"anyOf": [
-								"canHover",
-								"hookshot",
-								"canBombJump"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"somaria",
-							"canLightFires",
-							{
-								"anyOf": [
-								"firerod",
+						{
+							"allOf": [
+								"hammer",
 								{
 									"anyOf": [
 										"canHover",
+										"hookshot",
 										"canBombJump"
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"canKillArmos",
-					"canUseBombs"
+						"keys|7",
+						"canKillArmos",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"gtleft",
-					"gtright"
+						"gtleft",
+						"gtright"
 					]
 				}
 			},
 			"Ganons Tower - Bob's Chest": {
 				"required": {
+					"allOf": [
+						"keys|2"
+					],
 					"anyOf": [
-					{
-						"allOf": [
-							"hammer",
-							{
-								"anyOf": [
-								"canHover",
-								"hookshot",
-								"canBombJump"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"somaria",
-							"canLightFires",
-							{
-								"anyOf": [
-								"firerod",
+						{
+							"allOf": [
+								"hammer",
 								{
 									"anyOf": [
 										"canHover",
+										"hookshot",
 										"canBombJump"
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3"
+						"keys|7"
 					],
 					"anyOf": [
-					"gtleft",
-					"gtright"
+						"gtleft",
+						"gtright"
 					]
 				}
 			},
 			"Ganons Tower - Bob's Torch": {
 				"logical": {
 					"allOf": [
-					"boots"
+						"boots"
 					]
 				}
 			},
 			"Ganons Tower - Compass Room - Bottom Left": {
 				"required": {
 					"allOf": [
-					"somaria",
-					"canLightFires"
+						"keys|1",
+						"somaria",
+						"canLightFires"
 					],
 					"anyOf": [
-					"firerod",
-					{
-						"anyOf": [
-							"canHover",
-							"canBombJump"
-						]
-					}
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4",
-					"somaria",
-					"firerod"
+						"keys|7",
+						"somaria",
+						"firerod"
 					]
 				}
 			},
 			"Ganons Tower - Compass Room - Bottom Right": {
 				"required": {
 					"allOf": [
-					"somaria",
-					"canLightFires"
+						"keys|1",
+						"somaria",
+						"canLightFires"
 					],
 					"anyOf": [
-					"firerod",
-					{
-						"anyOf": [
-							"canHover",
-							"canBombJump"
-						]
-					}
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4",
-					"somaria",
-					"firerod"
+						"keys|7",
+						"somaria",
+						"firerod"
 					]
 				}
 			},
 			"Ganons Tower - Compass Room - Top Left": {
 				"required": {
 					"allOf": [
-					"somaria",
-					"canLightFires"
+						"keys|1",
+						"somaria",
+						"canLightFires"
 					],
 					"anyOf": [
-					"firerod",
-					{
-						"anyOf": [
-							"canHover",
-							"canBombJump"
-						]
-					}
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4",
-					"somaria",
-					"firerod"
+						"keys|7",
+						"somaria",
+						"firerod"
 					]
 				}
 			},
 			"Ganons Tower - Compass Room - Top Right": {
 				"required": {
 					"allOf": [
-					"somaria",
-					"canLightFires"
+						"keys|1",
+						"somaria",
+						"canLightFires"
 					],
 					"anyOf": [
-					"firerod",
-					{
-						"anyOf": [
-							"canHover",
-							"canBombJump"
-						]
-					}
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4",
-					"somaria",
-					"firerod"
+						"keys|7",
+						"somaria",
+						"firerod"
+					]
+				}
+			},
+			"Ganons Tower - Conveyor Cross Pot Key": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"somaria",
+						"canLightFires"
+					],
+					"anyOf": [
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|7",
+						"somaria",
+						"firerod"
 					]
 				}
 			},
@@ -3511,92 +683,113 @@
 			"Ganons Tower - DMs Room - Bottom Left": {
 				"required": {
 					"allOf": [
-					"hammer"
+						"hammer"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot"
+						"hammer",
+						"hookshot"
 					]
 				}
 			},
 			"Ganons Tower - DMs Room - Bottom Right": {
 				"required": {
 					"allOf": [
-					"hammer"
+						"hammer"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot"
+						"hammer",
+						"hookshot"
 					]
 				}
 			},
 			"Ganons Tower - DMs Room - Top Left": {
 				"required": {
 					"allOf": [
-					"hammer"
+						"hammer"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot"
+						"hammer",
+						"hookshot"
 					]
 				}
 			},
 			"Ganons Tower - DMs Room - Top Right": {
 				"required": {
 					"allOf": [
-					"hammer"
+						"hammer"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot"
+						"hammer",
+						"hookshot"
+					]
+				}
+			},
+			"Ganons Tower - Double Switch Pot Key": {
+				"required": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"boots",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"boots"
 					]
 				}
 			},
 			"Ganons Tower - Firesnake Room": {
 				"required": {
 					"allOf": [
-					"hammer",
-					"keys|1"
+						"hammer",
+						"keys|1"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot",
-					"keys|3"
+						"hammer",
+						"hookshot",
+						"keys|7"
 					]
 				}
 			},
@@ -3605,293 +798,403 @@
 			"Ganons Tower - Map Chest": {
 				"required": {
 					"allOf": [
-					"hammer"
+						"keys|1",
+						"hammer"
 					],
 					"anyOf": [
-					"hookshot",
-					"boots",
-					"canBombJump"
+						"hookshot",
+						"boots",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4"
+						"keys|8"
 					],
 					"anyOf": [
-					"boots",
-					"hookshot"
+						"boots",
+						"hookshot"
 					]
 				}
 			},
-		
-			"Ganons Tower - Mini Helmasaur Room - Left": {
+			"Ganons Tower - Mini Helmasaur Key Drop": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canLightFires"
+						"bigkey",
+						"canLightFires"
 					],
 					"anyOf": [
-					"bow",
-					{
-						"allOf": [
-							"canMimicClip",
-							"canKillMostEnemies"
-						]
-					}
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canLightFires",
-					"bow"
+						"bigkey",
+						"canLightFires",
+						"bow"
+					]
+				}
+			},
+			"Ganons Tower - Mini Helmasaur Room - Left": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canLightFires"
+					],
+					"anyOf": [
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canLightFires",
+						"bow"
 					]
 				}
 			},
 			"Ganons Tower - Mini Helmasaur Room - Right": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canLightFires"
+						"bigkey",
+						"canLightFires"
 					],
 					"anyOf": [
-					"bow",
-					{
-						"allOf": [
-							"canMimicClip",
-							"canKillMostEnemies"
-						]
-					}
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canLightFires",
-					"bow"
+						"bigkey",
+						"canLightFires",
+						"bow"
 					]
 				}
 			},
 			"Ganons Tower - Pre-Moldorm Chest": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canLightFires",
-					"canUseBombs"
+						"bigkey",
+						"canLightFires",
+						"keys|1",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"bow",
-					{
-						"allOf": [
-							"canMimicClip",
-							"canKillMostEnemies"
-						]
-					}
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"bigkey",
-					"canLightFires",
-					"bow",
-					"canUseBombs"
+						"keys|7",
+						"bigkey",
+						"canLightFires",
+						"bow",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ganons Tower - Randomizer Room - Bottom Left": {
 				"required": {
 					"allOf": [
-					"hammer",
-					"canUseBombs"
+						"hammer",
+						"keys|2",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot",
-					"keys|4",
-					"canUseBombs"
+						"hammer",
+						"hookshot",
+						"keys|8",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ganons Tower - Randomizer Room - Bottom Right": {
 				"required": {
 					"allOf": [
-					"hammer",
-					"canUseBombs"
+						"hammer",
+						"keys|2",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot",
-					"keys|4",
-					"canUseBombs"
+						"hammer",
+						"hookshot",
+						"keys|8",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ganons Tower - Randomizer Room - Top Left": {
 				"required": {
 					"allOf": [
-					"hammer",
-					"canUseBombs"
+						"hammer",
+						"keys|2",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot",
-					"keys|4",
-					"canUseBombs"
+						"hammer",
+						"hookshot",
+						"keys|8",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ganons Tower - Randomizer Room - Top Right": {
 				"required": {
 					"allOf": [
-					"hammer",
-					"canUseBombs"
+						"hammer",
+						"keys|2",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover",
-					"canBombJump"
+						"hookshot",
+						"canHover",
+						"canBombJump"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"hammer",
-					"hookshot",
-					"keys|4",
-					"canUseBombs"
+						"hammer",
+						"hookshot",
+						"keys|8",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ganons Tower - Tile Room": {
 				"logical": {
 					"allOf": [
-					"somaria"
+						"somaria"
 					]
 				}
 			},
 			"Ganons Tower - Validation Chest": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canLightFires",
-					"melee",
-					"canUseBombs",
-					{
-						"anyOf": [
-							"bow",
-							"canMimicClip"
-						]
-					}
+						"keys|2",
+						"bigkey",
+						"canLightFires",
+						"melee",
+						"canUseBombs",
+						{
+							"anyOf": [
+								"bow",
+								"canMimicClip"
+							]
+						}
 					],
 					"anyOf": [
-					"hookshot",
-					"canHover"
+						"hookshot",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bow",
-					"keys|4",
-					"bigkey",
-					"canLightFires",
-					"melee",
-					"hookshot",
-					"canUseBombs"
+						"bow",
+						"keys|8",
+						"bigkey",
+						"canLightFires",
+						"melee",
+						"hookshot",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ganons Tower - Boss": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canKillBoss",
-					"canLightFires",
-					"canUseBombs",
-					{
-						"anyOf": [
-							{
-								"allOf": [
-								"melee",
-								"hookshot"
-								]
-							},
-							"canHover",
-							"canMoldormBounce"
-						]
-					}
+						"keys|2",
+						"bigkey",
+						"canKillBoss",
+						"canLightFires",
+						"canUseBombs",
+						{
+							"anyOf": [
+								{
+									"allOf": [
+										"melee",
+										"hookshot"
+									]
+								},
+								"canHover",
+								"canMoldormBounce"
+							]
+						}
 					],
 					"anyOf": [
-					"bow",
-					"canMimicClip"
+						"bow",
+						"canMimicClip"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bow",
-					"keys|4",
-					"bigkey",
-					"canLightFires",
-					"melee",
-					"hookshot",
-					"canUseBombs"
+						"bow",
+						"keys|8",
+						"bigkey",
+						"canLightFires",
+						"melee",
+						"hookshot",
+						"canUseBombs"
 					]
 				}
 			}
 		},
 		"Hyrule Castle": {
-			"Hyrule Castle - Boomerang Chest": {
+			"Hyrule Castle - Big Key Drop": {
 				"required": {
+					"allOf": [
+						"keys|2"
+					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1"
+						"keys|4"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Hyrule Castle - Boomerang Chest": {
+				"required": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Hyrule Castle - Boomerang Guard Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Hyrule Castle - Key Rat Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs",
+						"hookshot",
+						"icerod"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canDarkRoomNavigate"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
 			"Hyrule Castle - Map Chest": {},
+			"Hyrule Castle - Map Guard Key Drop": {
+				"logical": {
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
 			"Hyrule Castle - Zelda's Chest": {
 				"required": {
+					"allOf": [
+						"keys|2",
+						"bigkey"
+					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1"
+						"keys|4",
+						"bigkey"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
@@ -3901,70 +1204,82 @@
 				},
 				"logical": {
 					"allOf": [
-					"canDarkRoomNavigate"
+						"canDarkRoomNavigate"
 					]
 				}
 			},
 			"Sewers - Secret Room - Left": {
 				"required": {
 					"allOf": [
-					"canOpenBonkWalls"
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"glove",
+						"keys|2"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canOpenBonkWalls"
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"glove",
-					{
-						"allOf": [
-							"canDarkRoomNavigate",
-							"keys|1"
-						]
-					}
+						"glove",
+						{
+							"allOf": [
+								"canDarkRoomNavigate",
+								"keys|4"
+							]
+						}
 					]
 				}
 			},
 			"Sewers - Secret Room - Middle": {
 				"required": {
 					"allOf": [
-					"canOpenBonkWalls"
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"glove",
+						"keys|2"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canOpenBonkWalls"
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"glove",
-					{
-						"allOf": [
-							"canDarkRoomNavigate",
-							"keys|1"
-						]
-					}
+						"glove",
+						{
+							"allOf": [
+								"canDarkRoomNavigate",
+								"keys|4"
+							]
+						}
 					]
 				}
 			},
 			"Sewers - Secret Room - Right": {
 				"required": {
 					"allOf": [
-					"canOpenBonkWalls"
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"glove",
+						"keys|2"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canOpenBonkWalls"
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"glove",
-					{
-						"allOf": [
-							"canDarkRoomNavigate",
-							"keys|1"
-						]
-					}
+						"glove",
+						{
+							"allOf": [
+								"canDarkRoomNavigate",
+								"keys|4"
+							]
+						}
 					]
 				}
 			},
@@ -3974,17 +1289,17 @@
 			"Skull Woods - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					],
 					"anyOf": [
-					"canUseBombs",
-					"canHover"
+						"canUseBombs",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canUseBombs"
+						"bigkey",
+						"canUseBombs"
 					]
 				}
 			},
@@ -3992,217 +1307,384 @@
 			"Skull Woods - Boss": {
 				"required": {
 					"allOf": [
-					"canDefeatCurtains",
-					"canKillBoss"
+						"canDefeatCurtains",
+						"canKillBoss"
 					],
 					"anyOf": [
-					"canUseBombs",
-					"canHover"
+						"canUseBombs",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"canKillBoss",
-					"canDefeatCurtains",
-					"firerod"
+						"keys|5",
+						"canKillBoss",
+						"canDefeatCurtains",
+						"firerod"
 					]
 				}
 			},
 			"Skull Woods - Bridge Room": {
 				"logical": {
 					"allOf": [
-					"firerod"
+						"firerod"
 					]
 				}
 			},
 			"Skull Woods - Compass Chest": {},
 			"Skull Woods - Map Chest": {},
 			"Skull Woods - Pinball Room": {},
-			"Skull Woods - Pot Prison": {}
+			"Skull Woods - Pot Prison": {},
+			"Skull Woods - Spike Corner Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"canDefeatCurtains",
+						"firerod"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"firerod",
+						"canDefeatCurtains"
+					]
+				}
+			},
+			"Skull Woods - West Lobby Pot Key": {}
 		},
 		"Swamp Palace": {
 			"Swamp Palace - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|1",
-					"flippers"
+						"bigkey",
+						"keys|2",
+						"flippers"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"hammer",
+								"keys|3"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"keys|1",
-					"hammer",
-					"flippers"
+						"bigkey",
+						"keys|3",
+						"hammer",
+						"flippers"
 					]
 				}
 			},
 			"Swamp Palace - Big Key Chest": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"keys|1"
+						"flippers"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						{
+							"allOf": [
+								"keys|2",
+								"canSpeckyClip",
+								"canBombSpooky"
+							]
+						},
+						{
+							"allOf": [
+								"canSpeckyClip",
+								"keys|3"
+							]
+						},
+						{
+							"allOf": [
+								"canBombSpooky",
+								"keys|3",
+								"hammer"
+							]
+						},
+						{
+							"allOf": [
+								"keys|4",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers"
+						"keys|6",
+						"hammer",
+						"flippers"
 					]
 				}
 			},
 			"Swamp Palace - West Chest": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"keys|1"
+						"flippers",
+						"keys|2"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|3",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers"
+						"keys|6",
+						"hammer",
+						"flippers"
 					]
 				}
 			},
 			"Swamp Palace - Boss": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"hookshot",
-					"keys|1",
-					"canKillBoss"
+						"flippers",
+						"hookshot",
+						"keys|4",
+						"canKillBoss"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|5",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers",
-					"hookshot",
-					"canKillBoss"
+						"keys|6",
+						"hammer",
+						"flippers",
+						"hookshot",
+						"canKillBoss"
 					]
 				}
 			},
 			"Swamp Palace - Compass Chest": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"keys|1"
+						"flippers",
+						"keys|2"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|3",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers"
+						"keys|3",
+						"hammer",
+						"flippers"
 					]
 				}
 			},
 			"Swamp Palace - Entrance": {
 				"logical": {
 					"allOf": [
-					"flippers"
+						"flippers"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
 			"Swamp Palace - Flooded Room - Left": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"keys|1",
-					"hookshot"
+						"flippers",
+						"keys|3",
+						"hookshot"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|4",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers",
-					"hookshot"
+						"keys|5",
+						"hammer",
+						"flippers",
+						"hookshot"
 					]
 				}
 			},
 			"Swamp Palace - Flooded Room - Right": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"keys|1",
-					"hookshot"
+						"flippers",
+						"keys|3",
+						"hookshot"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|4",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers",
-					"hookshot"
+						"keys|5",
+						"hammer",
+						"flippers",
+						"hookshot"
+					]
+				}
+			},
+			"Swamp Palace - Hookshot Pot Key": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|2",
+						"hookshot"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|3",
+								"hammer"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"hammer",
+						"flippers",
+						"hookshot"
 					]
 				}
 			},
 			"Swamp Palace - Map Chest": {
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"canUseBombs",
-					"flippers"
+						"keys|1",
+						"canUseBombs",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Pot Row Pot Key": {
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Trench 1 Pot Key": {
+				"logical": {
+					"allOf": [
+						"keys|2",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Trench 2 Pot Key": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|2"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|3",
+								"hammer"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"flippers",
+						"hammer"
 					]
 				}
 			},
 			"Swamp Palace - Waterfall Room": {
 				"required": {
 					"allOf": [
-					"flippers",
-					"keys|1",
-					"hookshot"
+						"flippers",
+						"keys|3",
+						"hookshot"
 					],
 					"anyOf": [
-					"canSpeckyClip",
-					"hammer"
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|4",
+								"hammer"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"hammer",
-					"flippers",
-					"hookshot"
+						"keys|5",
+						"hammer",
+						"flippers",
+						"hookshot"
+					]
+				}
+			},
+			"Swamp Palace - Waterway Pot Key": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|3",
+						"hookshot"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						{
+							"allOf": [
+								"keys|4",
+								"hammer"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|5",
+						"hammer",
+						"flippers",
+						"hookshot"
 					]
 				}
 			}
@@ -4212,28 +1694,30 @@
 			"Thieves' Town - Attic": {
 				"required": {
 					"allOf": [
-					"bigkey"
+						"keys|2",
+						"bigkey"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"bigkey"
+						"keys|3",
+						"bigkey"
 					]
 				}
 			},
 			"Thieves' Town - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"hammer"
+						"bigkey",
+						"keys|2",
+						"hammer"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"keys|1",
-					"hammer"
+						"bigkey",
+						"keys|3",
+						"hammer"
 					]
 				}
 			},
@@ -4241,117 +1725,134 @@
 			"Thieves' Town - Blind's Cell": {
 				"logical": {
 					"allOf": [
-					"bigkey"
+						"keys|1",
+						"bigkey"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs",
-					"glove"
+						"canKillMostEnemies",
+						"canUseBombs",
+						"glove"
 					]
 				}
 			},
 			"Thieves' Town - Boss": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"canUseBombs",
-					"canKillBoss"
+						"bigkey",
+						"keys|2",
+						"canUseBombs",
+						"canKillBoss"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"keys|1",
-					"canKillBoss",
-					"canUseBombs"
+						"bigkey",
+						"keys|3",
+						"canKillBoss",
+						"canUseBombs"
 					]
 				}
 			},
 			"Thieves' Town - Compass Chest": {},
-			"Thieves' Town - Map Chest": {}
+			"Thieves' Town - Hallway Pot Key": {
+				"logical": {
+					"allOf": [
+						"bigkey"
+					]
+				}
+			},
+			"Thieves' Town - Map Chest": {},
+			"Thieves' Town - Spike Switch Pot Key": {
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"bigkey"
+					]
+				}
+			}
 		},
 		"Tower of Hera": {
 			"Tower of Hera - Basement Cage": {},
 			"Tower of Hera - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs",
-					"canHeraPot"
+						"canKillMostEnemies",
+						"canUseBombs",
+						"canHeraPot"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
 			"Tower of Hera - Big Key Chest": {
 				"logical": {
 					"allOf": [
-					"keys|1",
-					"canLightFires"
+						"keys|1",
+						"canLightFires"
 					]
 				}
 			},
 			"Tower of Hera - Boss": {
 				"required": {
 					"allOf": [
-					"canKillBoss"
+						"canKillBoss"
 					],
 					"anyOf": [
-					"canHeraPot",
-					{
-						"allOf": [
-							"bigkey",
-							{
-								"anyOf": [
-								"canKillMostEnemies",
-								"canUseBombs"
-								]
-							}
-						]
-					}
+						"canHeraPot",
+						{
+							"allOf": [
+								"bigkey",
+								{
+									"anyOf": [
+										"canKillMostEnemies",
+										"canUseBombs"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canKillBoss"
+						"bigkey",
+						"canKillBoss"
 					]
 				}
 			},
 			"Tower of Hera - Compass Chest": {
 				"required": {
 					"anyOf": [
-					"canHeraPot",
-					{
-						"allOf": [
-							"bigkey",
-							{
-								"anyOf": [
-								"canKillMostEnemies",
-								"canUseBombs"
-								]
-							}
-						]
-					}
+						"canHeraPot",
+						{
+							"allOf": [
+								"bigkey",
+								{
+									"anyOf": [
+										"canKillMostEnemies",
+										"canUseBombs"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
 					]
 				}
 			},
@@ -4361,237 +1862,273 @@
 			"Turtle Rock - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|2",
-					"canUseBombs"
+						"bigkey",
+						"keys|3",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"bigkey",
-					"keys|2",
-					"canUseBombs"
+						"somaria",
+						"bigkey",
+						"keys|3",
+						"canUseBombs"
 					]
 				}
 			},
 			"Turtle Rock - Big Key Chest": {
 				"required": {
 					"allOf": [
-					"keys|2"
+						"keys|4"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"keys|4"
+						"somaria",
+						"keys|6"
 					]
 				}
 			},
 			"Turtle Rock - Boss": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|3",
-					"canKillBoss",
-					"canOpenBonkWalls"
+						"bigkey",
+						"keys|5",
+						"canKillBoss",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"canHover",
-					"somaria"
+						"canHover",
+						"somaria"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"bigkey",
-					"keys|4",
-					"canDarkRoomNavigate",
-					"canKillBoss",
-					"canOpenBonkWalls"
+						"somaria",
+						"bigkey",
+						"keys|6",
+						"canDarkRoomNavigate",
+						"canKillBoss",
+						"canOpenBonkWalls"
 					]
 				}
 			},
 			"Turtle Rock - Chain Chomps": {
 				"required": {
 					"allOf": [
-					"keys|1"
+						"keys|2"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"keys|1"
+						"somaria",
+						"keys|2"
 					]
 				}
 			},
 			"Turtle Rock - Compass Chest": {
 				"required": {
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria"
+						"somaria"
 					]
 				}
 			},
 			"Turtle Rock - Crystaroller Room": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|2",
-					"canOpenBonkWalls"
+						"bigkey",
+						"keys|3",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"bigkey",
-					"keys|2",
-					"canOpenBonkWalls"
+						"somaria",
+						"bigkey",
+						"keys|3",
+						"canOpenBonkWalls"
 					]
 				}
 			},
 			"Turtle Rock - Eye Bridge - Bottom Left": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|2",
-					"canOpenBonkWalls"
+						"bigkey",
+						"keys|4",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"canDarkRoomNavigate",
-					"bigkey",
-					"keys|3",
-					"canOpenBonkWalls"
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|5",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+						"mirrorshield",
+						"byrna",
+						"cape"
 					]
 				}
 			},
 			"Turtle Rock - Eye Bridge - Bottom Right": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|2",
-					"canOpenBonkWalls"
+						"bigkey",
+						"keys|4",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"canDarkRoomNavigate",
-					"bigkey",
-					"keys|3",
-					"canOpenBonkWalls"
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|5",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+						"mirrorshield",
+						"byrna",
+						"cape"
 					]
 				}
 			},
 			"Turtle Rock - Eye Bridge - Top Left": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|2",
-					"canOpenBonkWalls"
+						"bigkey",
+						"keys|4",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"canDarkRoomNavigate",
-					"bigkey",
-					"keys|3",
-					"canOpenBonkWalls"
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|5",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+						"mirrorshield",
+						"byrna",
+						"cape"
 					]
 				}
 			},
 			"Turtle Rock - Eye Bridge - Top Right": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|2",
-					"canOpenBonkWalls"
+						"bigkey",
+						"keys|4",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"somaria",
-					"canHover"
+						"somaria",
+						"canHover"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"somaria",
-					"canDarkRoomNavigate",
-					"bigkey",
-					"keys|3",
-					"canOpenBonkWalls"
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|5",
+						"canOpenBonkWalls"
 					],
 					"anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+						"mirrorshield",
+						"byrna",
+						"cape"
+					]
+				}
+			},
+			"Turtle Rock - Pokey 1 Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"canKillMostEnemies"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"keys|1"
+					]
+				}
+			},
+			"Turtle Rock - Pokey 2 Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|3",
+						"canKillMostEnemies"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"keys|3"
 					]
 				}
 			},
 			"Turtle Rock - Roller Room - Left": {
 				"logical": {
 					"allOf": [
-					"somaria",
-					"firerod"
+						"somaria",
+						"firerod"
 					]
 				}
 			},
 			"Turtle Rock - Roller Room - Right": {
 				"logical": {
 					"allOf": [
-					"somaria",
-					"firerod"
+						"somaria",
+						"firerod"
 					]
 				}
 			}
@@ -4600,355 +2137,492 @@
 			"Misery Mire - Big Chest": {
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"bigkey",
+						"canKillWizzrobes",
+						"canCrossMireGap"
 					]
 				}
 			},
 			"Misery Mire - Big Key Chest": {
 				"required": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canLightFires",
-					"canCrossMireGap"
+						"keys|2",
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"canKillWizzrobes",
-					"canLightFires",
-					"canCrossMireGap"
+						"keys|6",
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
 					]
 				}
 			},
 			"Misery Mire - Boss": {
 				"required": {
 					"allOf": [
-					"canCrossMireGap",
-					"bigkey",
-					"canKillBoss",
-					"somaria"
+						"canCrossMireGap",
+						"bigkey",
+						"canKillBoss",
+						"somaria"
 					],
 					"anyOf": [
-					"canUseBombs",
-					"canFireSpooky"
+						"canUseBombs",
+						"canFireSpooky"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canCrossMireGap",
-					"bigkey",
-					"canKillBoss",
-					"canDarkRoomNavigate",
-					"canUseBombs",
-					"somaria"
+						"canCrossMireGap",
+						"bigkey",
+						"canKillBoss",
+						"canDarkRoomNavigate",
+						"canUseBombs",
+						"somaria"
 					]
 				}
 			},
 			"Misery Mire - Bridge Chest": {
 				"logical": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"canKillWizzrobes",
+						"canCrossMireGap"
 					]
 				}
 			},
 			"Misery Mire - Compass Chest": {
 				"required": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canLightFires",
-					"canCrossMireGap"
+						"keys|2",
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|3",
-					"canKillWizzrobes",
-					"canLightFires",
-					"canCrossMireGap"
+						"keys|6",
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Conveyor Crystal Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|5",
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Fishbone Pot Key": {
+				"required": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					],
+					"anyOf": [
+						"keys|1",
+						"bigkey"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					],
+					"anyOf": [
+						"keys|5",
+						"bigkey"
 					]
 				}
 			},
 			"Misery Mire - Main Lobby": {
 				"required": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					],
+					"anyOf": [
+						"keys|1",
+						"bigkey"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"canKillWizzrobes",
+						"canCrossMireGap"
 					],
 					"anyOf": [
-					"keys|1",
-					"bigkey"
+						"keys|2",
+						"bigkey"
 					]
 				}
 			},
 			"Misery Mire - Map Chest": {
 				"required": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					],
+					"anyOf": [
+						"keys|1",
+						"bigkey"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"canKillWizzrobes",
+						"canCrossMireGap"
 					],
 					"anyOf": [
-					"keys|1",
-					"bigkey"
+						"keys|2",
+						"bigkey"
 					]
 				}
 			},
 			"Misery Mire - Spike Chest": {
 				"logical": {
 					"allOf": [
-					"canKillWizzrobes",
-					"canCrossMireGap"
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Spikes Pot Key": {
+				"logical": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
 					]
 				}
 			}
 		},
 		"Ice Palace": {
+			"Ice Palace - Jelly Key Drop": {
+				"logical": {
+					"allOf": [
+						"canBurnThings"
+					]
+				}
+			},
 			"Ice Palace - Compass Chest": {
 				"logical": {
 					"allOf": [
-					"canBurnThings"
+						"keys|1",
+						"canBurnThings"
 					],
 					"anyOf": [
-					"canKillMostEnemies",
-					"canUseBombs"
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ice Palace - Conveyor Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canUseBombs",
+						{
+							"allOf": [
+								"canIceBreak",
+								"keys|3"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"canBurnThings",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ice Palace - Freezor Chest": {
 				"required": {
 					"allOf": [
-					"canBurnThings"
+						"keys|2",
+						"canBurnThings"
 					],
 					"anyOf": [
-					"canUseBombs",
-					{
-						"allOf": [
-							"canIceBreak",
-							{
-								"anyOf": [
-								"keys|1",
-								{
-									"allOf": [
-										"glove",
-										"hammer"
-									]
-								}
-								]
-							}
-						]
-					}
+						"canUseBombs",
+						"canIceBreak"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canBurnThings",
-					"canUseBombs"
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ice Palace - Big Chest": {
 				"required": {
 					"allOf": [
-					"canBurnThings",
-					"bigkey",
-					{
-						"anyOf": [
-							"canUseBombs",
-							"hookshot"
-						]
-					}
+						"bigkey",
+						"canBurnThings",
+						"keys|2"
 					],
 					"anyOf": [
-					"canUseBombs",
-					{
-						"allOf": [
-							"canIceBreak",
-							{
-								"anyOf": [
-								"keys|1",
-								{
-									"allOf": [
-										"glove",
-										"hammer"
-									]
-								}
-								]
-							}
-						]
-					}
+						"canUseBombs",
+						{
+							"allOf": [
+								"canIceBreak",
+								"hookshot"
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canBurnThings",
-					"canUseBombs"
+						"bigkey",
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ice Palace - Spike Room": {
 				"required": {
 					"allOf": [
-					"canBurnThings"
+						"keys|1",
+						"canBurnThings"
 					],
 					"anyOf": [
-					"canIceBreak",
-					"canUseBombs"
+						"canIceBreak",
+						{
+							"allOf": [
+								"canUseBombs",
+								{
+									"anyOf": [
+										"hookshot",
+										"keys|3"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canBurnThings",
-					"canUseBombs"
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs"
 					],
 					"anyOf": [
-					"keys|2",
-					"hookshot"
+						"keys|6",
+						"hookshot"
 					]
 				}
 			},
 			"Ice Palace - Map Chest": {
 				"required": {
 					"allOf": [
-					"canBurnThings",
-					"glove",
-					"hammer"
+						"keys|1",
+						"canBurnThings",
+						"glove",
+						"hammer"
 					],
 					"anyOf": [
-					"canIceBreak",
-					"canUseBombs"
+						"canIceBreak",
+						{
+							"allOf": [
+								"canUseBombs",
+								{
+									"anyOf": [
+										"hookshot",
+										"keys|3"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canBurnThings",
-					"canUseBombs",
-					"glove",
-					"hammer"
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer"
 					],
 					"anyOf": [
-					"keys|2",
-					"hookshot"
+						"keys|6",
+						"hookshot"
+					]
+				}
+			},
+			"Ice Palace - Hammer Block Key Drop": {
+				"required": {
+					"allOf": [
+						"keys|1",
+						"canBurnThings",
+						"glove",
+						"hammer"
+					],
+					"anyOf": [
+						"canIceBreak",
+						{
+							"allOf": [
+								"canUseBombs",
+								{
+									"anyOf": [
+										"hookshot",
+										"keys|3"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer"
+					],
+					"anyOf": [
+						"keys|6",
+						"hookshot"
 					]
 				}
 			},
 			"Ice Palace - Big Key Chest": {
 				"required": {
 					"allOf": [
-					"canBurnThings"
+						"keys|1",
+						"canBurnThings"
 					],
 					"anyOf": [
-					"canIceBreak",
-					{
-						"allOf": [
-							"hammer",
-							"glove",
-							"canUseBombs"
-						]
-					}
+						"canIceBreak",
+						{
+							"allOf": [
+								"hammer",
+								"glove",
+								"canUseBombs",
+								{
+									"anyOf": [
+										"hookshot",
+										"keys|3"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canBurnThings",
-					"canUseBombs",
-					"glove",
-					"hammer"
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer"
 					],
 					"anyOf": [
-					"keys|2",
-					"hookshot"
+						"keys|6",
+						"hookshot"
+					]
+				}
+			},
+			"Ice Palace - Many Pots Pot Key": {
+				"required": {
+					"allOf": [
+						"keys|2",
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canUseBombs",
+						"canIceBreak"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ice Palace - Iced T Room": {
 				"required": {
 					"allOf": [
-					"canBurnThings"
+						"keys|2",
+						"canBurnThings"
 					],
 					"anyOf": [
-					"canUseBombs",
-					{
-						"allOf": [
-							"canIceBreak",
-							{
-								"anyOf": [
-								"keys|1",
-								{
-									"allOf": [
-										"glove",
-										"hammer"
-									]
-								}
-								]
-							}
-						]
-					}
+						"canUseBombs",
+						"canIceBreak"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"canBurnThings",
-					"canUseBombs"
+						"keys|2",
+						"canBurnThings",
+						"canUseBombs"
 					]
 				}
 			},
 			"Ice Palace - Boss": {
 				"required": {
 					"allOf": [
-					"canBurnThings",
-					"glove",
-					"hammer",
-					"canKillBoss"
+						"canBurnThings",
+						"keys|2",
+						"glove",
+						"hammer",
+						"canKillBoss"
 					],
 					"anyOf": [
-					"canIceBreak",
-					{
-						"allOf": [
-							"canUseBombs",
-							{
-								"anyOf": [
-								"canBombJump",
+						"canIceBreak",
+						{
+							"allOf": [
+								"canUseBombs",
 								{
-									"allOf": [
-										"bigkey",
-										"somaria"
+									"anyOf": [
+										"canBombJump",
+										{
+											"allOf": [
+												"bigkey",
+												"keys|3"
+											]
+										}
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"canBurnThings",
-					"canUseBombs",
-					"glove",
-					"hammer",
-					"keys|1",
-					"canKillBoss"
+						"bigkey",
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer",
+						"keys|5",
+						"canKillBoss"
 					],
 					"anyOf": [
-					"keys|2",
-					"somaria"
+						"keys|6",
+						"somaria"
 					]
 				}
 			}
@@ -4957,191 +2631,191 @@
 			"Palace of Darkness - Big Chest": {
 				"required": {
 					"allOf": [
-					"bigkey"
+						"bigkey"
 					],
 					"anyOf": [
-					{
-						"allOf": [
-							"keys|3",
-							"canUseBombs"
-						]
-					},
-					{
-						"allOf": [
-							"keys|2",
-							{
-								"anyOf": [
-								"canBombJump",
-								"canHover"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"hammer",
-							"canOpenBonkWalls",
-							"keys|1",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							},
-							{
-								"anyOf": [
-								"canBombJump",
-								"canHover",
+						{
+							"allOf": [
+								"keys|3",
+								"canUseBombs"
+							]
+						},
+						{
+							"allOf": [
+								"keys|2",
 								{
-									"allOf": [
-										"keys|2",
-										"canUseBombs"
+									"anyOf": [
+										"canBombJump",
+										"canHover"
 									]
 								}
-								]
-							}
-						]
-					}
+							]
+						},
+						{
+							"allOf": [
+								"hammer",
+								"canOpenBonkWalls",
+								"keys|1",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								},
+								{
+									"anyOf": [
+										"canBombJump",
+										"canHover",
+										{
+											"allOf": [
+												"keys|2",
+												"canUseBombs"
+											]
+										}
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"keys|6",
-					"canDarkRoomNavigate",
-					"canUseBombs"
+						"bigkey",
+						"keys|6",
+						"canDarkRoomNavigate",
+						"canUseBombs"
 					]
 				}
 			},
 			"Palace of Darkness - Big Key Chest": {
 				"required": {
 					"allOf": [
-					"canUseBombs",
-					"keys|1"
+						"canUseBombs",
+						"keys|1"
 					],
 					"anyOf": [
-					"keys|2",
-					{
-						"allOf": [
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|2",
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|6",
-					"canUseBombs"
+						"keys|6",
+						"canUseBombs"
 					]
 				}
 			},
 			"Palace of Darkness - Boss": {
 				"required": {
 					"allOf": [
-					"bigkey",
-					"keys|1",
-					"canKillBoss",
-					"bow",
-					"hammer"
+						"bigkey",
+						"keys|1",
+						"canKillBoss",
+						"bow",
+						"hammer"
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bigkey",
-					"keys|6",
-					"canKillBoss",
-					"canDarkRoomNavigate",
-					"bow",
-					"hammer"
+						"bigkey",
+						"keys|6",
+						"canKillBoss",
+						"canDarkRoomNavigate",
+						"bow",
+						"hammer"
 					]
 				}
 			},
 			"Palace of Darkness - Compass Chest": {
 				"required": {
 					"anyOf": [
-					"keys|2",
-					{
-						"allOf": [
-							"keys|1",
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|2",
+						{
+							"allOf": [
+								"keys|1",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4"
+						"keys|4"
 					]
 				}
 			},
 			"Palace of Darkness - Dark Basement - Left": {
 				"required": {
 					"anyOf": [
-					"keys|2",
-					{
-						"allOf": [
-							"keys|1",
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|2",
+						{
+							"allOf": [
+								"keys|1",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4",
-					"canDarkRoomNavigate"
+						"keys|4",
+						"canDarkRoomNavigate"
 					]
 				}
 			},
 			"Palace of Darkness - Dark Basement - Right": {
 				"required": {
 					"anyOf": [
-					"keys|2",
-					{
-						"allOf": [
-							"keys|1",
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|2",
+						{
+							"allOf": [
+								"keys|1",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|4",
-					"canDarkRoomNavigate"
+						"keys|4",
+						"canDarkRoomNavigate"
 					]
 				}
 			},
@@ -5160,57 +2834,57 @@
 			"Palace of Darkness - Harmless Hellway": {
 				"required": {
 					"anyOf": [
-					"keys|3",
-					{
-						"allOf": [
-							"keys|2",
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|3",
+						{
+							"allOf": [
+								"keys|2",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"keys|6"
+						"keys|6"
 					]
 				}
 			},
 			"Palace of Darkness - Map Chest": {
 				"required": {
 					"anyOf": [
-					{
-						"allOf": [
-							"keys|1",
-							"canHover",
-							"canUseBombs"
-						]
-					},
-					{
-						"allOf": [
-							"canOpenBonkWalls",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						{
+							"allOf": [
+								"keys|1",
+								"canHover",
+								"canUseBombs"
+							]
+						},
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bow",
-					"canOpenBonkWalls"
+						"bow",
+						"canOpenBonkWalls"
 					]
 				}
 			},
@@ -5218,95 +2892,2421 @@
 			"Palace of Darkness - Stalfos Basement": {
 				"required": {
 					"anyOf": [
-					"keys|1",
-					{
-						"allOf": [
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|1",
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"anyOf": [
-					"keys|1",
-					"zeroKeyPodders"
+						"keys|1",
+						"zeroKeyPodders"
 					]
 				}
 			},
 			"Palace of Darkness - The Arena - Bridge": {
 				"required": {
 					"anyOf": [
-					"keys|1",
-					{
-						"allOf": [
-							"canOpenBonkWalls",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						"keys|1",
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"anyOf": [
-					"keys|1",
-					"zeroKeyPodders"
+						"keys|1",
+						"zeroKeyPodders"
 					]
 				}
 			},
 			"Palace of Darkness - The Arena - Ledge": {
 				"required": {
 					"anyOf": [
-					{
-						"allOf": [
-							"keys|1",
-							"canHover"
-						]
-					},
-					{
-						"allOf": [
-							"canUseBombs",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					},
-					{
-						"allOf": [
-							"canHover",
-							"hammer",
-							{
-								"anyOf": [
-								"bow",
-								"canMimicClip",
-								"canPotionCameraUnlock"
-								]
-							}
-						]
-					}
+						{
+							"allOf": [
+								"keys|1",
+								"canHover"
+							]
+						},
+						{
+							"allOf": [
+								"canUseBombs",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"canHover",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
 					]
 				},
 				"logical": {
 					"allOf": [
-					"bow",
-					"canUseBombs"
+						"bow",
+						"canUseBombs"
+					]
+				}
+			}
+		}
+	};
+	const logic_open = {
+		"Desert Palace": {
+			"Desert Palace - Big Chest": {
+				"logical": {
+					"allOf": [
+						"bigkey"
+					]
+				}
+			},
+			"Desert Palace - Big Key Chest": {
+				"required": {
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Desert Palace - Boss": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canLightFires",
+						"canKillBoss",
+						"canAccessDesertNorth"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"keys|1",
+						"canLightFires",
+						"canKillBoss",
+						"canAccessDesertNorth"
+					]
+				}
+			},
+			"Desert Palace - Compass Chest": {
+				"required": {
+					"allOf": []
+				},
+				"logical": {
+					"allOf": [
+						"keys|1"
+					]
+				}
+			},
+			"Desert Palace - Map Chest": {},
+			"Desert Palace - Torch": {
+				"logical": {
+					"allOf": [
+						"boots"
+					]
+				}
+			}
+		},
+		"Castle Tower": {
+			"Castle Tower - Dark Maze": {
+				"required": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"canDarkRoomNavigate",
+						"canKillMostEnemies"
+					]
+				}
+			},
+			"Castle Tower - Room 03": {
+				"required": {
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canKillMostEnemies"
+					]
+				}
+			},
+			"Castle Tower - Boss": {
+				"required": {
+					"allOf": [
+						"keys|2",
+						"canDefeatCurtains",
+						{
+							"anyOf": [
+								"sword",
+								"net",
+								"hammer"
+							]
+						}
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|2",
+						"canDarkRoomNavigate",
+						"canDefeatCurtains"
+					],
+					"anyOf": [
+						"sword",
+						"net",
+						"hammer"
+					]
+				}
+			}
+		},
+		"Eastern Palace": {
+			"Eastern Palace - Big Chest": {
+				"logical": {
+					"allOf": [
+						"bigkey"
+					]
+				}
+			},
+			"Eastern Palace - Big Key Chest": {
+				"required": {
+					"allOf": []
+				},
+				"logical": {
+					"allOf": [
+						"canDarkRoomNavigate"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Eastern Palace - Boss": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canKillBoss",
+						"bow"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canKillBoss",
+						"canDarkRoomNavigate",
+						"bow"
+					]
+				}
+			},
+			"Eastern Palace - Cannonball Chest": {},
+			"Eastern Palace - Compass Chest": {},
+			"Eastern Palace - Map Chest": {}
+		},
+		"Ganons Tower": {
+			"Ganons Tower - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						{
+							"allOf": [
+								"hammer",
+								{
+									"anyOf": [
+										"canHover",
+										"hookshot",
+										"canBombJump"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"bigkey"
+					],
+					"anyOf": [
+						"gtleft",
+						"gtright"
+					]
+				}
+			},
+			"Ganons Tower - Big Key Chest": {
+				"required": {
+					"allOf": [
+						"canUseBombs",
+						"canKillArmos"
+					],
+					"anyOf": [
+						{
+							"allOf": [
+								"hammer",
+								{
+									"anyOf": [
+										"canHover",
+										"hookshot",
+										"canBombJump"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canKillArmos",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"gtleft",
+						"gtright"
+					]
+				}
+			},
+			"Ganons Tower - Big Key Room - Left": {
+				"required": {
+					"allOf": [
+						"canUseBombs",
+						"canKillArmos"
+					],
+					"anyOf": [
+						{
+							"allOf": [
+								"hammer",
+								{
+									"anyOf": [
+										"canHover",
+										"hookshot",
+										"canBombJump"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canKillArmos",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"gtleft",
+						"gtright"
+					]
+				}
+			},
+			"Ganons Tower - Big Key Room - Right": {
+				"required": {
+					"allOf": [
+						"canUseBombs",
+						"canKillArmos"
+					],
+					"anyOf": [
+						{
+							"allOf": [
+								"hammer",
+								{
+									"anyOf": [
+										"canHover",
+										"hookshot",
+										"canBombJump"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canKillArmos",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"gtleft",
+						"gtright"
+					]
+				}
+			},
+			"Ganons Tower - Bob's Chest": {
+				"required": {
+					"anyOf": [
+						{
+							"allOf": [
+								"hammer",
+								{
+									"anyOf": [
+										"canHover",
+										"hookshot",
+										"canBombJump"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"somaria",
+								"canLightFires",
+								{
+									"anyOf": [
+										"firerod",
+										{
+											"anyOf": [
+												"canHover",
+												"canBombJump"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3"
+					],
+					"anyOf": [
+						"gtleft",
+						"gtright"
+					]
+				}
+			},
+			"Ganons Tower - Bob's Torch": {
+				"logical": {
+					"allOf": [
+						"boots"
+					]
+				}
+			},
+			"Ganons Tower - Compass Room - Bottom Left": {
+				"required": {
+					"allOf": [
+						"somaria",
+						"canLightFires"
+					],
+					"anyOf": [
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"somaria",
+						"firerod"
+					]
+				}
+			},
+			"Ganons Tower - Compass Room - Bottom Right": {
+				"required": {
+					"allOf": [
+						"somaria",
+						"canLightFires"
+					],
+					"anyOf": [
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"somaria",
+						"firerod"
+					]
+				}
+			},
+			"Ganons Tower - Compass Room - Top Left": {
+				"required": {
+					"allOf": [
+						"somaria",
+						"canLightFires"
+					],
+					"anyOf": [
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"somaria",
+						"firerod"
+					]
+				}
+			},
+			"Ganons Tower - Compass Room - Top Right": {
+				"required": {
+					"allOf": [
+						"somaria",
+						"canLightFires"
+					],
+					"anyOf": [
+						"firerod",
+						{
+							"anyOf": [
+								"canHover",
+								"canBombJump"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"somaria",
+						"firerod"
+					]
+				}
+			},
+			"Ganons Tower - Conveyor Star Pits Pot Key": {},
+			"Ganons Tower - DMs Room - Bottom Left": {
+				"required": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot"
+					]
+				}
+			},
+			"Ganons Tower - DMs Room - Bottom Right": {
+				"required": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot"
+					]
+				}
+			},
+			"Ganons Tower - DMs Room - Top Left": {
+				"required": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot"
+					]
+				}
+			},
+			"Ganons Tower - DMs Room - Top Right": {
+				"required": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot"
+					]
+				}
+			},
+			"Ganons Tower - Firesnake Room": {
+				"required": {
+					"allOf": [
+						"hammer",
+						"keys|1"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot",
+						"keys|3"
+					]
+				}
+			},
+			"Ganons Tower - Hope Room - Left": {},
+			"Ganons Tower - Hope Room - Right": {},
+			"Ganons Tower - Map Chest": {
+				"required": {
+					"allOf": [
+						"hammer"
+					],
+					"anyOf": [
+						"hookshot",
+						"boots",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4"
+					],
+					"anyOf": [
+						"boots",
+						"hookshot"
+					]
+				}
+			},
+
+			"Ganons Tower - Mini Helmasaur Room - Left": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canLightFires"
+					],
+					"anyOf": [
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canLightFires",
+						"bow"
+					]
+				}
+			},
+			"Ganons Tower - Mini Helmasaur Room - Right": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canLightFires"
+					],
+					"anyOf": [
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canLightFires",
+						"bow"
+					]
+				}
+			},
+			"Ganons Tower - Pre-Moldorm Chest": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canLightFires",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"bow",
+						{
+							"allOf": [
+								"canMimicClip",
+								"canKillMostEnemies"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"bigkey",
+						"canLightFires",
+						"bow",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ganons Tower - Randomizer Room - Bottom Left": {
+				"required": {
+					"allOf": [
+						"hammer",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot",
+						"keys|4",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ganons Tower - Randomizer Room - Bottom Right": {
+				"required": {
+					"allOf": [
+						"hammer",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot",
+						"keys|4",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ganons Tower - Randomizer Room - Top Left": {
+				"required": {
+					"allOf": [
+						"hammer",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot",
+						"keys|4",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ganons Tower - Randomizer Room - Top Right": {
+				"required": {
+					"allOf": [
+						"hammer",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover",
+						"canBombJump"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"hammer",
+						"hookshot",
+						"keys|4",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ganons Tower - Tile Room": {
+				"logical": {
+					"allOf": [
+						"somaria"
+					]
+				}
+			},
+			"Ganons Tower - Validation Chest": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canLightFires",
+						"melee",
+						"canUseBombs",
+						{
+							"anyOf": [
+								"bow",
+								"canMimicClip"
+							]
+						}
+					],
+					"anyOf": [
+						"hookshot",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bow",
+						"keys|4",
+						"bigkey",
+						"canLightFires",
+						"melee",
+						"hookshot",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ganons Tower - Boss": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canKillBoss",
+						"canLightFires",
+						"canUseBombs",
+						{
+							"anyOf": [
+								{
+									"allOf": [
+										"melee",
+										"hookshot"
+									]
+								},
+								"canHover",
+								"canMoldormBounce"
+							]
+						}
+					],
+					"anyOf": [
+						"bow",
+						"canMimicClip"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bow",
+						"keys|4",
+						"bigkey",
+						"canLightFires",
+						"melee",
+						"hookshot",
+						"canUseBombs"
+					]
+				}
+			}
+		},
+		"Hyrule Castle": {
+			"Hyrule Castle - Boomerang Chest": {
+				"required": {
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Hyrule Castle - Map Chest": {},
+			"Hyrule Castle - Zelda's Chest": {
+				"required": {
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Sewers - Dark Cross": {
+				"required": {
+					"allOf": []
+				},
+				"logical": {
+					"allOf": [
+						"canDarkRoomNavigate"
+					]
+				}
+			},
+			"Sewers - Secret Room - Left": {
+				"required": {
+					"allOf": [
+						"canOpenBonkWalls"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"glove",
+						{
+							"allOf": [
+								"canDarkRoomNavigate",
+								"keys|1"
+							]
+						}
+					]
+				}
+			},
+			"Sewers - Secret Room - Middle": {
+				"required": {
+					"allOf": [
+						"canOpenBonkWalls"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"glove",
+						{
+							"allOf": [
+								"canDarkRoomNavigate",
+								"keys|1"
+							]
+						}
+					]
+				}
+			},
+			"Sewers - Secret Room - Right": {
+				"required": {
+					"allOf": [
+						"canOpenBonkWalls"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"glove",
+						{
+							"allOf": [
+								"canDarkRoomNavigate",
+								"keys|1"
+							]
+						}
+					]
+				}
+			},
+			"Sanctuary": {}
+		},
+		"Skull Woods": {
+			"Skull Woods - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						"canUseBombs",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canUseBombs"
+					]
+				}
+			},
+			"Skull Woods - Big Key Chest": {},
+			"Skull Woods - Boss": {
+				"required": {
+					"allOf": [
+						"canDefeatCurtains",
+						"canKillBoss"
+					],
+					"anyOf": [
+						"canUseBombs",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canKillBoss",
+						"canDefeatCurtains",
+						"firerod"
+					]
+				}
+			},
+			"Skull Woods - Bridge Room": {
+				"logical": {
+					"allOf": [
+						"firerod"
+					]
+				}
+			},
+			"Skull Woods - Compass Chest": {},
+			"Skull Woods - Map Chest": {},
+			"Skull Woods - Pinball Room": {},
+			"Skull Woods - Pot Prison": {}
+		},
+		"Swamp Palace": {
+			"Swamp Palace - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|1",
+						"flippers"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"keys|1",
+						"hammer",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Big Key Chest": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|1"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - West Chest": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|1"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Boss": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"hookshot",
+						"keys|1",
+						"canKillBoss"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers",
+						"hookshot",
+						"canKillBoss"
+					]
+				}
+			},
+			"Swamp Palace - Compass Chest": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|1"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Entrance": {
+				"logical": {
+					"allOf": [
+						"flippers"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Swamp Palace - Flooded Room - Left": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|1",
+						"hookshot"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers",
+						"hookshot"
+					]
+				}
+			},
+			"Swamp Palace - Flooded Room - Right": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|1",
+						"hookshot"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers",
+						"hookshot"
+					]
+				}
+			},
+			"Swamp Palace - Map Chest": {
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"canUseBombs",
+						"flippers"
+					]
+				}
+			},
+			"Swamp Palace - Waterfall Room": {
+				"required": {
+					"allOf": [
+						"flippers",
+						"keys|1",
+						"hookshot"
+					],
+					"anyOf": [
+						"canSpeckyClip",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"hammer",
+						"flippers",
+						"hookshot"
+					]
+				}
+			}
+		},
+		"Thieves' Town": {
+			"Thieves' Town - Ambush Chest": {},
+			"Thieves' Town - Attic": {
+				"required": {
+					"allOf": [
+						"bigkey"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"bigkey"
+					]
+				}
+			},
+			"Thieves' Town - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"keys|1",
+						"hammer"
+					]
+				}
+			},
+			"Thieves' Town - Big Key Chest": {},
+			"Thieves' Town - Blind's Cell": {
+				"logical": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs",
+						"glove"
+					]
+				}
+			},
+			"Thieves' Town - Boss": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"canUseBombs",
+						"canKillBoss"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"keys|1",
+						"canKillBoss",
+						"canUseBombs"
+					]
+				}
+			},
+			"Thieves' Town - Compass Chest": {},
+			"Thieves' Town - Map Chest": {}
+		},
+		"Tower of Hera": {
+			"Tower of Hera - Basement Cage": {},
+			"Tower of Hera - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs",
+						"canHeraPot"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Tower of Hera - Big Key Chest": {
+				"logical": {
+					"allOf": [
+						"keys|1",
+						"canLightFires"
+					]
+				}
+			},
+			"Tower of Hera - Boss": {
+				"required": {
+					"allOf": [
+						"canKillBoss"
+					],
+					"anyOf": [
+						"canHeraPot",
+						{
+							"allOf": [
+								"bigkey",
+								{
+									"anyOf": [
+										"canKillMostEnemies",
+										"canUseBombs"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canKillBoss"
+					]
+				}
+			},
+			"Tower of Hera - Compass Chest": {
+				"required": {
+					"anyOf": [
+						"canHeraPot",
+						{
+							"allOf": [
+								"bigkey",
+								{
+									"anyOf": [
+										"canKillMostEnemies",
+										"canUseBombs"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Tower of Hera - Map Chest": {}
+		},
+		"Turtle Rock": {
+			"Turtle Rock - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|2",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"bigkey",
+						"keys|2",
+						"canUseBombs"
+					]
+				}
+			},
+			"Turtle Rock - Big Key Chest": {
+				"required": {
+					"allOf": [
+						"keys|2"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"keys|4"
+					]
+				}
+			},
+			"Turtle Rock - Boss": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|3",
+						"canKillBoss",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"canHover",
+						"somaria"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"bigkey",
+						"keys|4",
+						"canDarkRoomNavigate",
+						"canKillBoss",
+						"canOpenBonkWalls"
+					]
+				}
+			},
+			"Turtle Rock - Chain Chomps": {
+				"required": {
+					"allOf": [
+						"keys|1"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"keys|1"
+					]
+				}
+			},
+			"Turtle Rock - Compass Chest": {
+				"required": {
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria"
+					]
+				}
+			},
+			"Turtle Rock - Crystaroller Room": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|2",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"bigkey",
+						"keys|2",
+						"canOpenBonkWalls"
+					]
+				}
+			},
+			"Turtle Rock - Eye Bridge - Bottom Left": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|2",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|3",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"mirrorshield",
+						"byrna",
+						"cape"
+					]
+				}
+			},
+			"Turtle Rock - Eye Bridge - Bottom Right": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|2",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|3",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"mirrorshield",
+						"byrna",
+						"cape"
+					]
+				}
+			},
+			"Turtle Rock - Eye Bridge - Top Left": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|2",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|3",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"mirrorshield",
+						"byrna",
+						"cape"
+					]
+				}
+			},
+			"Turtle Rock - Eye Bridge - Top Right": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|2",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"somaria",
+						"canHover"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"somaria",
+						"canDarkRoomNavigate",
+						"bigkey",
+						"keys|3",
+						"canOpenBonkWalls"
+					],
+					"anyOf": [
+						"mirrorshield",
+						"byrna",
+						"cape"
+					]
+				}
+			},
+			"Turtle Rock - Roller Room - Left": {
+				"logical": {
+					"allOf": [
+						"somaria",
+						"firerod"
+					]
+				}
+			},
+			"Turtle Rock - Roller Room - Right": {
+				"logical": {
+					"allOf": [
+						"somaria",
+						"firerod"
+					]
+				}
+			}
+		},
+		"Misery Mire": {
+			"Misery Mire - Big Chest": {
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Big Key Chest": {
+				"required": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Boss": {
+				"required": {
+					"allOf": [
+						"canCrossMireGap",
+						"bigkey",
+						"canKillBoss",
+						"somaria"
+					],
+					"anyOf": [
+						"canUseBombs",
+						"canFireSpooky"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canCrossMireGap",
+						"bigkey",
+						"canKillBoss",
+						"canDarkRoomNavigate",
+						"canUseBombs",
+						"somaria"
+					]
+				}
+			},
+			"Misery Mire - Bridge Chest": {
+				"logical": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Compass Chest": {
+				"required": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|3",
+						"canKillWizzrobes",
+						"canLightFires",
+						"canCrossMireGap"
+					]
+				}
+			},
+			"Misery Mire - Main Lobby": {
+				"required": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					],
+					"anyOf": [
+						"keys|1",
+						"bigkey"
+					]
+				}
+			},
+			"Misery Mire - Map Chest": {
+				"required": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					],
+					"anyOf": [
+						"keys|1",
+						"bigkey"
+					]
+				}
+			},
+			"Misery Mire - Spike Chest": {
+				"logical": {
+					"allOf": [
+						"canKillWizzrobes",
+						"canCrossMireGap"
+					]
+				}
+			}
+		},
+		"Ice Palace": {
+			"Ice Palace - Compass Chest": {
+				"logical": {
+					"allOf": [
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canKillMostEnemies",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ice Palace - Freezor Chest": {
+				"required": {
+					"allOf": [
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canUseBombs",
+						{
+							"allOf": [
+								"canIceBreak",
+								{
+									"anyOf": [
+										"keys|1",
+										{
+											"allOf": [
+												"glove",
+												"hammer"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canBurnThings",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ice Palace - Big Chest": {
+				"required": {
+					"allOf": [
+						"canBurnThings",
+						"bigkey",
+						{
+							"anyOf": [
+								"canUseBombs",
+								"hookshot"
+							]
+						}
+					],
+					"anyOf": [
+						"canUseBombs",
+						{
+							"allOf": [
+								"canIceBreak",
+								{
+									"anyOf": [
+										"keys|1",
+										{
+											"allOf": [
+												"glove",
+												"hammer"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canBurnThings",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ice Palace - Spike Room": {
+				"required": {
+					"allOf": [
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canIceBreak",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canBurnThings",
+						"canUseBombs"
+					],
+					"anyOf": [
+						"keys|2",
+						"hookshot"
+					]
+				}
+			},
+			"Ice Palace - Map Chest": {
+				"required": {
+					"allOf": [
+						"canBurnThings",
+						"glove",
+						"hammer"
+					],
+					"anyOf": [
+						"canIceBreak",
+						"canUseBombs"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer"
+					],
+					"anyOf": [
+						"keys|2",
+						"hookshot"
+					]
+				}
+			},
+			"Ice Palace - Big Key Chest": {
+				"required": {
+					"allOf": [
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canIceBreak",
+						{
+							"allOf": [
+								"hammer",
+								"glove",
+								"canUseBombs"
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer"
+					],
+					"anyOf": [
+						"keys|2",
+						"hookshot"
+					]
+				}
+			},
+			"Ice Palace - Iced T Room": {
+				"required": {
+					"allOf": [
+						"canBurnThings"
+					],
+					"anyOf": [
+						"canUseBombs",
+						{
+							"allOf": [
+								"canIceBreak",
+								{
+									"anyOf": [
+										"keys|1",
+										{
+											"allOf": [
+												"glove",
+												"hammer"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"canBurnThings",
+						"canUseBombs"
+					]
+				}
+			},
+			"Ice Palace - Boss": {
+				"required": {
+					"allOf": [
+						"canBurnThings",
+						"glove",
+						"hammer",
+						"canKillBoss"
+					],
+					"anyOf": [
+						"canIceBreak",
+						{
+							"allOf": [
+								"canUseBombs",
+								{
+									"anyOf": [
+										"canBombJump",
+										{
+											"allOf": [
+												"bigkey",
+												"somaria"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"canBurnThings",
+						"canUseBombs",
+						"glove",
+						"hammer",
+						"keys|1",
+						"canKillBoss"
+					],
+					"anyOf": [
+						"keys|2",
+						"somaria"
+					]
+				}
+			}
+		},
+		"Palace of Darkness": {
+			"Palace of Darkness - Big Chest": {
+				"required": {
+					"allOf": [
+						"bigkey"
+					],
+					"anyOf": [
+						{
+							"allOf": [
+								"keys|3",
+								"canUseBombs"
+							]
+						},
+						{
+							"allOf": [
+								"keys|2",
+								{
+									"anyOf": [
+										"canBombJump",
+										"canHover"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"hammer",
+								"canOpenBonkWalls",
+								"keys|1",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								},
+								{
+									"anyOf": [
+										"canBombJump",
+										"canHover",
+										{
+											"allOf": [
+												"keys|2",
+												"canUseBombs"
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"keys|6",
+						"canDarkRoomNavigate",
+						"canUseBombs"
+					]
+				}
+			},
+			"Palace of Darkness - Big Key Chest": {
+				"required": {
+					"allOf": [
+						"canUseBombs",
+						"keys|1"
+					],
+					"anyOf": [
+						"keys|2",
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|6",
+						"canUseBombs"
+					]
+				}
+			},
+			"Palace of Darkness - Boss": {
+				"required": {
+					"allOf": [
+						"bigkey",
+						"keys|1",
+						"canKillBoss",
+						"bow",
+						"hammer"
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bigkey",
+						"keys|6",
+						"canKillBoss",
+						"canDarkRoomNavigate",
+						"bow",
+						"hammer"
+					]
+				}
+			},
+			"Palace of Darkness - Compass Chest": {
+				"required": {
+					"anyOf": [
+						"keys|2",
+						{
+							"allOf": [
+								"keys|1",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4"
+					]
+				}
+			},
+			"Palace of Darkness - Dark Basement - Left": {
+				"required": {
+					"anyOf": [
+						"keys|2",
+						{
+							"allOf": [
+								"keys|1",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"canDarkRoomNavigate"
+					]
+				}
+			},
+			"Palace of Darkness - Dark Basement - Right": {
+				"required": {
+					"anyOf": [
+						"keys|2",
+						{
+							"allOf": [
+								"keys|1",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|4",
+						"canDarkRoomNavigate"
+					]
+				}
+			},
+			"Palace of Darkness - Dark Maze - Bottom": {
+				"allOf": [
+					"keys|6",
+					"canDarkRoomNavigate"
+				]
+			},
+			"Palace of Darkness - Dark Maze - Top": {
+				"allOf": [
+					"keys|6",
+					"canDarkRoomNavigate"
+				]
+			},
+			"Palace of Darkness - Harmless Hellway": {
+				"required": {
+					"anyOf": [
+						"keys|3",
+						{
+							"allOf": [
+								"keys|2",
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"keys|6"
+					]
+				}
+			},
+			"Palace of Darkness - Map Chest": {
+				"required": {
+					"anyOf": [
+						{
+							"allOf": [
+								"keys|1",
+								"canHover",
+								"canUseBombs"
+							]
+						},
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bow",
+						"canOpenBonkWalls"
+					]
+				}
+			},
+			"Palace of Darkness - Shooter Room": {},
+			"Palace of Darkness - Stalfos Basement": {
+				"required": {
+					"anyOf": [
+						"keys|1",
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"anyOf": [
+						"keys|1",
+						"zeroKeyPodders"
+					]
+				}
+			},
+			"Palace of Darkness - The Arena - Bridge": {
+				"required": {
+					"anyOf": [
+						"keys|1",
+						{
+							"allOf": [
+								"canOpenBonkWalls",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"anyOf": [
+						"keys|1",
+						"zeroKeyPodders"
+					]
+				}
+			},
+			"Palace of Darkness - The Arena - Ledge": {
+				"required": {
+					"anyOf": [
+						{
+							"allOf": [
+								"keys|1",
+								"canHover"
+							]
+						},
+						{
+							"allOf": [
+								"canUseBombs",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						},
+						{
+							"allOf": [
+								"canHover",
+								"hammer",
+								{
+									"anyOf": [
+										"bow",
+										"canMimicClip",
+										"canPotionCameraUnlock"
+									]
+								}
+							]
+						}
+					]
+				},
+				"logical": {
+					"allOf": [
+						"bow",
+						"canUseBombs"
 					]
 				}
 			}
@@ -5356,7 +5356,7 @@
 
 			case 'boots': return items.boots;
 			case 'bow': return items.bow > 1;
-			case 'bugnet': return items.bugnet;
+			case 'net': return items.net;
 			case 'byrna': return items.byrna;
 			case 'cape': return items.cape;
 			case 'flippers': return items.flippers;
@@ -5370,6 +5370,7 @@
 			case 'melee': return items.sword > 0 || items.hammer;
 			case 'mirrorshield': return items.shield > 2;
 			case 'somaria': return items.somaria;
+			case 'sword': return items.sword > 0;
 
 			case 'canKillBoss': return enemizer_check(dungeonId) === 'available';
 			case 'canKillArmos': return enemizer_check(0) === 'available';
@@ -5405,10 +5406,16 @@
 		//                return 'possible';
 		//            }
 		const logic = flags.doorshuffle === 'P' ? logic_open_keydrop : logic_open;
-		const collected = items["maxchest" + dungeonId] - items['chest' + dungeonId];
 		var checksInLogic = 0;
 		var checksPossible = 0;
+		var hasNoBossItem = true;
 		for (const [location, requirements] of Object.entries(logic[dungeonName])) {
+			if (location.includes(' - Boss')) {
+				if (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower') {
+					continue;
+				};
+				hasNoBossItem = false;
+			};
 			if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) {
 				checksInLogic++;
 				checksPossible++;
@@ -5419,7 +5426,9 @@
 			};
 		};
 
-		if (checksInLogic >= items["maxchest" + dungeonId]) return 'available';
+		const maxChecks = Object.keys(logic[dungeonName]).length - hasNoBossItem;
+		const collected = maxChecks - items['chest' + dungeonId];
+		if (checksInLogic >= maxChecks) return 'available';
 		if ((checksInLogic - collected) > 0) return 'partialavailable';
 		if ((checksPossible - collected) > 0) return 'possible';
 		return 'unavailable';
@@ -6217,7 +6226,7 @@
 	};
 
 	window.EPBoss = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(0, 'Eastern Palace');
 		};
 
@@ -6240,7 +6249,7 @@
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
 	window.DPBoss = function (front = 'available', back = 'unavailable') {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(1, 'Desert Palace');
 		};
 		if (front != back && flags.entrancemode === 'N' && (items.glove || flags.glitches != 'N')) {
@@ -6274,7 +6283,7 @@
 			// chests, which we can't determine based on items alone.
 			return 'possible';
 		} else {
-			if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+			if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 				return bossAvailability(2, 'Tower of Hera');
 			};
 	
@@ -6293,7 +6302,7 @@
 	};
 
 	window.PoDBoss = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(3, 'Palace of Darkness');
 		};
 		var dungeoncheck = enemizer_check(3);
@@ -6319,7 +6328,7 @@
 				if (!hasFoundLocation('dam')) return 'unavailable';
 			}
 			if (!items.flippers || (!items.mirror && flags.entrancemode === 'N')) return 'unavailable';
-			if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+			if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 				return bossAvailability(4, 'Swamp Palace');
 			};
 			var dungeoncheck = enemizer_check(4);
@@ -6334,7 +6343,7 @@
 		if (front != back && flags.entrancemode === 'N' && (items.firerod || front === 'unavailable')) {
 			front = back = bestAvailability(front, back);
 		}
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(5, 'Skull Woods');
 		};
 		var dungeoncheck = enemizer_check(5);
@@ -6347,7 +6356,7 @@
 	};
 
 	window.TTBoss = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(6, 'Thieves\' Town');
 		};
 		var dungeoncheck = enemizer_check(6);
@@ -6358,7 +6367,7 @@
 
 	window.IPBoss = function () {
 		if (!items.firerod && (!items.bombos || (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(7, 'Ice Palace');
 		};
 		var dungeoncheck = enemizer_check(7);
@@ -6381,7 +6390,7 @@
 	window.MMBoss = function (medcheck) {
 		if (!items.boots && !items.hookshot) return 'unavailable';
 		if (medcheck === 'unavailable') return 'unavailable';
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			const state = bossAvailability(8, 'Misery Mire');
 			if (state === 'unavailable') return 'unavailable';
 			if (medcheck === 'possible') return 'possible';
@@ -6434,7 +6443,7 @@
 
 	window.TRFrontBoss = function (medcheck) {
 		if (medcheck === 'unavailable') return 'unavailable';
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			const state = bossAvailability(9, 'Turtle Rock');
 			if (state === 'unavailable') return 'unavailable';
 			if (medcheck === 'possible') return 'possible';
@@ -6475,7 +6484,7 @@
 	};
 
 	window.GTBoss = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(10, 'Ganons Tower');
 		};
 		var dungeoncheck = enemizer_check(10);
@@ -6490,7 +6499,7 @@
 	};
 
 	window.CTBoss = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return bossAvailability(12, 'Castle Tower');
 		};
 		if ((!items.bomb || flags.doorshuffle != 'N') && !melee_bow() && !cane() && !items.firerod) return 'unavailable';
@@ -6531,7 +6540,7 @@
 	}
 
 	window.EPChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(0, 'Eastern Palace')
 		}
 		var dungeoncheck = enemizer_check(0);
@@ -6564,7 +6573,7 @@
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
 	window.DPChests = function (front = 'available', back = 'unavailable') {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(1, 'Desert Palace')
 		}
 		if (front != back && flags.entrancemode === 'N' && (items.glove || flags.glitches != 'N')) {
@@ -6653,7 +6662,7 @@
 	};
 
 	window.HeraChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(2, 'Tower of Hera')
 		};
 		var isDark = items.flute === 0 && !items.lantern && !(flags.glitches != 'N') && flags.entrancemode === 'N' && !owGraphLogic;
@@ -6735,7 +6744,7 @@
 	};
 
 	window.PoDChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(3, 'Palace of Darkness')
 		};
 		var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
@@ -7049,7 +7058,7 @@
 
 		if (flags.entrancemode != 'N' && !hasFoundLocation('dam')) return 'unavailable';
 		if (flags.entrancemode === 'N' && !items.mirror) return 'unavailable';
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(4, 'Swamp Palace');
 		};
 
@@ -7106,7 +7115,7 @@
 
 	//front and back can be 'available', 'possible' or 'unavailable', at most one can be 'unavailable'
 	window.SWChests = function (front = 'available', back = 'unavailable') {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(5, 'Skull Woods')
 		};
 		if (front != back && flags.entrancemode === 'N' && (items.firerod || front === 'unavailable')) {
@@ -7182,7 +7191,7 @@
 	};
 
 	window.TTChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(6, 'Thieves\' Town')
 		};
 		var chests = ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'];
@@ -7232,7 +7241,7 @@
 	};
 
 	window.IPChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			if (!(flags.glitches === 'M' || flags.glitches === 'H')) {
 				return dungeonAvailability(7, 'Ice Palace')
 			};
@@ -7294,7 +7303,7 @@
 	};
 
 	window.MMChests = function (medcheck) {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			if (medcheck === 'unavailable') return 'unavailable';
 			const state = dungeonAvailability(8, 'Misery Mire');
 			if (state === 'unavailable') return 'unavailable';
@@ -7391,7 +7400,7 @@
 	};
 
 	window.TRFrontChests = function (medcheck) {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			if (medcheck === 'unavailable') return 'unavailable';
 			const state = dungeonAvailability(9, 'Turtle Rock');
 			if (state === 'unavailable') return 'unavailable';
@@ -8062,7 +8071,7 @@
 	};
 
 	window.GTChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(10, 'Ganons Tower')
 		}
 		var isDark = items.flute === 0 && !items.lantern && flags.gametype != 'I' && !(flags.glitches != 'N' && items.boots) && flags.entrancemode === 'N' && !owGraphLogic && !(flags.glitches === 'M');
@@ -8632,7 +8641,7 @@
 
 	//front, back and sanc can be 'available', 'possible' or 'unavailable', at most two can be 'unavailable'
 	window.HCChests = function (front = 'available', back = 'unavailable', sanc = 'unavailable') {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(11, 'Hyrule Castle')
 		};
 		var weapon = items.bomb || melee_bow() || items.firerod || cane();
@@ -8723,7 +8732,7 @@
 	};
 
 	window.CTChests = function () {
-		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && flags.wildkeys && flags.wildbigkeys)) {
+		if (flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps)) {
 			return dungeonAvailability(12, 'Castle Tower')
 		}
 
