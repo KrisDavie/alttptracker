@@ -5056,8 +5056,11 @@
 
 	window.TRFrontChests = function (medcheck) {
 		if (flags.doorshuffle === 'P') {
-			if (medcheck != 'unavailable') return dungeonAvailability(9, 'Turtle Rock');
-			return 'unavailable';
+			if (medcheck === 'unavailable') return 'unavailable';
+			const state = dungeonAvailability(9, 'Turtle Rock');
+			if (state === 'unavailable') return 'unavailable';
+			if (medcheck === 'possible') return 'possible';
+			return state;
 		};
 		if (!items.somaria) return 'unavailable';
 		if (medcheck === 'unavailable') return 'unavailable';
