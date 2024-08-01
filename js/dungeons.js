@@ -5378,7 +5378,6 @@
 			case 'canKillMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod;
 			case 'canLightFires': return items.lantern || items.firerod;
 			case 'canDarkRoomNavigate': return items.lantern;
-			case 'canAccessDesertNorth': return (items.book && items.glove > 0) || (items.glove > 1 && items.flute && items.mirror);
 			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
 			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
 			case 'canCrossMireGap': return items.boots || items.hookshot;
@@ -5395,6 +5394,13 @@
 			case 'canPotionCameraUnlock': return items.bottle > 0;
 			case 'canMoldormBounce': return items.bomb && items.sword > 0;
 
+			case 'canAccessDesertNorth': return (items.book && items.glove > 0) || (items.glove > 1 && items.flute && items.mirror);
+			case 'canAccessSkullBack': return flags.entrancemode != 'N' && items.firerod;
+			case 'canAccessTurtleMain': return true;
+			case 'canAccessTurtleWest': return true;
+			case 'canAccessTurtleEast': return flags.entrancemode != 'N' || (flags.gametype === 'I' && items.mirror);
+			case 'canAccessTurtleBack': return true;
+
 			case 'gtleft': return items.hammer && items.hookshot;
 			case 'gtright': return items.somaria && items.firerod;
 			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
@@ -5408,13 +5414,11 @@
 		const logic = flags.doorshuffle === 'P' ? logic_open_keydrop : logic_open;
 		var checksInLogic = 0;
 		var checksPossible = 0;
-		var hasNoBossItem = true;
 		for (const [location, requirements] of Object.entries(logic[dungeonName])) {
 			if (location.includes(' - Boss')) {
 				if (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower') {
 					continue;
 				};
-				hasNoBossItem = false;
 			};
 			if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) {
 				checksInLogic++;
@@ -5428,9 +5432,12 @@
 
 		const maxChecks = Object.keys(logic[dungeonName]).length - hasNoBossItem;
 		const collected = maxChecks - items['chest' + dungeonId];
+		const hasNoBossItem = (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower') ? true : false;
+
 		if (checksInLogic >= maxChecks) return 'available';
 		if ((checksInLogic - collected) > 0) return 'partialavailable';
 		if ((checksPossible - collected) > 0) return 'possible';
+
 		return 'unavailable';
 	};
 

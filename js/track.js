@@ -3156,7 +3156,7 @@
 				document.getElementById('bigkey8').style.visibility = 'visible';
 				document.getElementById('bigkey9').style.visibility = 'visible';
 				document.getElementById('bigkey10').style.visibility = 'visible';
-				document.getElementById('bigkeyhalf0').style.visibility = document.getElementById('doorselect').value === 'C' ? 'visible' : 'hidden';
+				document.getElementById('bigkeyhalf0').style.visibility = document.getElementById('doorselect').value != 'N' ? 'visible' : 'hidden';
 				document.getElementById('bigkeyhalf1').style.visibility = document.getElementById('doorselect').value === 'C' ? 'visible' : 'hidden';
 			}
 			
@@ -3501,7 +3501,7 @@
 		document.getElementById("mapEntranceDiv_dark").style.display = flags.entrancemode === 'N' ? "none" : "block";
 		
 		//Hide HC and CT big keys if not needed
-		document.getElementById('bigkeyhalf0').style.visibility = !flags.wildbigkeys || flags.doorshuffle != 'C' ? 'hidden' : 'visible';
+		document.getElementById('bigkeyhalf0').style.visibility = !flags.wildbigkeys || flags.doorshuffle === 'N' ? 'hidden' : 'visible';
 		document.getElementById('bigkeyhalf1').style.visibility = !flags.wildbigkeys || flags.doorshuffle != 'C' ? 'hidden' : 'visible';
 		
 		//Hide HC and CT chests if neither Entrance nor Door Shuffle is on

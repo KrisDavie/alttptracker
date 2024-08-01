@@ -1304,6 +1304,7 @@
       "Skull Woods - Boss": {
          "required": {
             "allOf": [
+               "canAccessSkullBack",
                "canDefeatCurtains",
                "canKillBoss"
             ],
@@ -1314,17 +1315,17 @@
          },
          "logical": {
             "allOf": [
+               "canAccessSkullBack",
                "keys|5",
                "canKillBoss",
-               "canDefeatCurtains",
-               "firerod"
+               "canDefeatCurtains"
             ]
          }
       },
       "Skull Woods - Bridge Room": {
          "logical": {
             "allOf": [
-               "firerod"
+               "canAccessSkullBack"
             ]
          }
       },
@@ -1335,13 +1336,26 @@
       "Skull Woods - Spike Corner Key Drop": {
          "required": {
             "allOf": [
+               "canAccessSkullBack",
                "keys|1",
                "canDefeatCurtains",
-               "firerod"
+               {
+                  "anyOf": [
+                     "canUseBombs",
+                     "canHover"
+                  ]
+               },
+               {
+                  "anyOf": [
+                     "firerod",
+                     "lantern"
+                  ]
+               }
             ]
          },
          "logical": {
             "allOf": [
+               "canAccessSkullBack",
                "keys|4",
                "firerod",
                "canDefeatCurtains"
@@ -2126,6 +2140,456 @@
             "allOf": [
                "somaria",
                "firerod"
+            ]
+         }
+      }
+   },
+   "Turtle Rock - Entrance": {
+      "Turtle Rock - Big Chest": {
+         "logical": {
+            "allOf": [
+               "bigkey",
+               "canAccessTurtleEast"
+            ],
+            "anyOf": [
+               "somaria",
+               "hookshot"
+            ]
+         }
+      },
+      "Turtle Rock - Big Key Chest": {
+         "logical": {
+            "anyOf": [
+               {
+                  "allOf": [
+                     "canAccessTurtleMain",
+                     "keys|6",
+                     "somaria"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     "keys|6",
+                     {
+                        "anyOf": [
+                           "hookshot",
+                           "somaria"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleWest",
+                     "keys|6"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "keys|6",
+                     "somaria",
+                     "lantern",
+                     "canOpenBonkWalls"
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Boss": {
+         "logical": {
+            "allOf": [
+               "somaria",
+               "bigkey",
+               "keys|6",
+               "canKillBoss"
+            ],
+            "anyOf": [
+               "canAccessTurtleBack",
+               {
+                  "allOf": [
+                     "canDarkRoomNavigate",
+                     "canOpenBonkWalls",
+                     {
+                        "anyOf": [
+                           "canAccessTurtleMain",
+                           "canAccessTurtleEast",
+                           "canAccessTurtleWest"
+                        ]
+                     }
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Chain Chomps": {
+         "logical": {
+            "anyOf": [
+               {
+                  "allOf": [
+                     "canAccessTurtleMain",
+                     "somaria",
+                     "keys|3"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "hookshot"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleWest"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "somaria",
+                     "lantern",
+                     "canOpenBonkWalls"
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Compass Chest": {
+         "logical": {
+            "allOf": [
+               "somaria"
+            ],
+            "anyOf": [
+               "canAccessTurtleMain",
+               {
+                  "allOf": [
+                     "keys|6",
+                     {
+                        "anyOf": [
+                           "canAccessTurtleEast",
+                           "canAccessTurtleWest",
+                           {
+                              "allOf": [
+                                 "canAccessTurtleBack",
+                                 "lantern",
+                                 "canOpenBonkWalls"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Crystaroller Room": {
+         "logical": {
+            "anyOf": [
+               {
+                  "allOf": [
+                     "canAccessTurtleMain",
+                     "somaria",
+                     "bigkey",
+                     "keys|3",
+                     "canOpenBonkWalls"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     "bigkey",
+                     "canOpenBonkWalls",
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "hookshot"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleWest",
+                     "bigkey",
+                     "canOpenBonkWalls"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "somaria",
+                     "bigkey",
+                     "lantern"
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Eye Bridge - Bottom Left": {
+         "logical": {
+            "allOf": [
+               {
+                  "anyOf": [
+                     "canAccessTurtleBack",
+                     {
+                        "allOf": [
+                           "somaria",
+                           "lantern",
+                           "bigkey",
+                           "canOpenBonkWalls",
+                           "keys|5",
+                           {
+                              "anyOf": [
+                                 "canAccessTurtleMain",
+                                 "canAccessTurtleEast",
+                                 "canAccessTurtleWest"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ],
+            "anyOf": [
+               "mirrorshield",
+               "byrna",
+               "cape"
+            ]
+         }
+      },
+      "Turtle Rock - Eye Bridge - Bottom Right": {
+         "logical": {
+            "allOf": [
+               {
+                  "anyOf": [
+                     "canAccessTurtleBack",
+                     {
+                        "allOf": [
+                           "somaria",
+                           "lantern",
+                           "bigkey",
+                           "canOpenBonkWalls",
+                           "keys|5",
+                           {
+                              "anyOf": [
+                                 "canAccessTurtleMain",
+                                 "canAccessTurtleEast",
+                                 "canAccessTurtleWest"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ],
+            "anyOf": [
+               "mirrorshield",
+               "byrna",
+               "cape"
+            ]
+         }
+      },
+      "Turtle Rock - Eye Bridge - Top Left": {
+         "logical": {
+            "allOf": [
+               {
+                  "anyOf": [
+                     "canAccessTurtleBack",
+                     {
+                        "allOf": [
+                           "somaria",
+                           "lantern",
+                           "bigkey",
+                           "canOpenBonkWalls",
+                           "keys|5",
+                           {
+                              "anyOf": [
+                                 "canAccessTurtleMain",
+                                 "canAccessTurtleEast",
+                                 "canAccessTurtleWest"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ],
+            "anyOf": [
+               "mirrorshield",
+               "byrna",
+               "cape"
+            ]
+         }
+      },
+      "Turtle Rock - Eye Bridge - Top Right": {
+         "logical": {
+            "allOf": [
+               {
+                  "anyOf": [
+                     "canAccessTurtleBack",
+                     {
+                        "allOf": [
+                           "somaria",
+                           "lantern",
+                           "bigkey",
+                           "canOpenBonkWalls",
+                           "keys|5",
+                           {
+                              "anyOf": [
+                                 "canAccessTurtleMain",
+                                 "canAccessTurtleEast",
+                                 "canAccessTurtleWest"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ],
+            "anyOf": [
+               "mirrorshield",
+               "byrna",
+               "cape"
+            ]
+         }
+      },
+      "Turtle Rock - Pokey 1 Key Drop": {
+         "logical": {
+            "allOf": [
+               "canKillMostEnemies",
+               "keys|5"
+            ],
+            "anyOf": [
+               {
+                  "allOf": [
+                     "canAccessTurtleMain",
+                     "somaria"
+                  ]
+               },
+               "canAccessTurtleWest",
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "hookshot"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "somaria",
+                     "lantern",
+                     "canOpenBonkWalls"
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Pokey 2 Key Drop": {
+         "logical": {
+            "allOf": [
+               "canKillMostEnemies"
+            ],
+            "anyOf": [
+               {
+                  "allOf": [
+                     "canAccessTurtleMain",
+                     "somaria",
+                     "keys|3"
+                  ]
+               },
+               "canAccessTurtleWest",
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "hookshot"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "somaria",
+                     "lantern",
+                     "canOpenBonkWalls"
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Roller Room - Left": {
+         "logical": {
+            "allOf": [
+               "somaria",
+               "firerod"
+            ],
+            "anyOf": [
+               "canAccessTurtleMain",
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     "keys|6"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleWest",
+                     "keys|6"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "lantern",
+                     "canOpenBonkWalls",
+                     "keys|6"
+                  ]
+               }
+            ]
+         }
+      },
+      "Turtle Rock - Roller Room - Right": {
+         "logical": {
+            "allOf": [
+               "somaria",
+               "firerod"
+            ],
+            "anyOf": [
+               "canAccessTurtleMain",
+               {
+                  "allOf": [
+                     "canAccessTurtleEast",
+                     "keys|6"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleWest",
+                     "keys|6"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canAccessTurtleBack",
+                     "lantern",
+                     "canOpenBonkWalls",
+                     "keys|6"
+                  ]
+               }
             ]
          }
       }
