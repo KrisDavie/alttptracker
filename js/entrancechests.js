@@ -2390,7 +2390,7 @@
 					return 'available';
 				}
 			}, { // [1]
-				caption: 'Bonk Fairy',
+				caption: 'Bonk Fairy (Light)',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2410,7 +2410,7 @@
 					return 'available';
 				}
 			}, { // [3]
-				caption: 'Haunted Grove',
+				caption: 'Cave 45',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2420,7 +2420,7 @@
 					return 'available';
 				}
 			}, { // [4]
-				caption: 'Magic Shop',
+				caption: 'Potion Shop',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2430,7 +2430,7 @@
 					return 'available';
 				}
 			}, { // [5]
-				caption: 'Well of Wishing',
+				caption: 'Waterfall of Wishing',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2440,7 +2440,7 @@
 					return 'available';
 				}
 			}, { // [6]
-				caption: 'Hype Fairy',
+				caption: 'Light Hype Fairy',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2450,7 +2450,7 @@
 					return 'available';
 				}
 			}, { // [7]
-				caption: 'Hyrule Castle - Main Entrance',
+				caption: 'Hyrule Castle Entrance (South)',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2460,7 +2460,7 @@
 					return 'available';
 				}
 			}, { // [8]
-				caption: 'Hyrule Castle - Top Entrance (West)',
+				caption: 'Hyrule Castle Entrance (West)',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2470,7 +2470,7 @@
 					return 'available';
 				}
 			}, { // [9]
-				caption: 'Hyrule Castle - Top Entrance (East)',
+				caption: 'Hyrule Castle Entrance (East)',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2480,7 +2480,7 @@
 					return 'available';
 				}
 			}, { // [10]
-				caption: 'Hyrule Castle - Agahnim\'s Tower',
+				caption: 'Agahnims Tower',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2490,7 +2490,7 @@
 					return 'available';
 				}
 			}, { // [11]
-				caption: 'Hyrule Castle - Secret Entrance Stairs',
+				caption: 'Hyrule Castle Secret Entrance Stairs',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2500,7 +2500,7 @@
 					return 'available';
 				}
 			}, { // [12]
-				caption: 'Hyrule Castle - Secret Entrance Drop',
+				caption: 'Hyrule Castle Secret Entrance Drop',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2520,7 +2520,7 @@
 					return 'available';
 				}
 			}, { // [14]
-				caption: 'Bonk Cave',
+				caption: 'Bonk Rock Cave',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2530,7 +2530,7 @@
 					return 'available';
 				}
 			}, { // [15]
-				caption: 'Grave',
+				caption: 'Sanctuary Grave',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -2550,7 +2550,7 @@
 					return 'available';
 				}
 			}, { // [17]
-				caption: 'King\'s Grave',
+				caption: 'Kings Grave',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -4298,7 +4298,7 @@
 		else
 		{
 			window.entrances = [{ // [0]
-				caption: 'Link\'s House',
+				caption: 'Links House',
 				is_opened: false,
 				note: '',
 				known_location: '',
@@ -4307,7 +4307,7 @@
 					return 'available';
 				}
 			}, { // [1]
-				caption: 'Bonk Fairy',
+				caption: 'Bonk Fairy (Light)',
 				is_opened: false,
 				note: '',
 				known_location: '',

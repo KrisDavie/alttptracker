@@ -5430,9 +5430,9 @@
 			};
 		};
 
+		const hasNoBossItem = (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower') ? true : false;
 		const maxChecks = Object.keys(logic[dungeonName]).length - hasNoBossItem;
 		const collected = maxChecks - items['chest' + dungeonId];
-		const hasNoBossItem = (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower') ? true : false;
 
 		if (checksInLogic >= maxChecks) return 'available';
 		if ((checksInLogic - collected) > 0) return 'partialavailable';
