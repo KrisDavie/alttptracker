@@ -5498,10 +5498,6 @@
 
 	window.MinimalBoss = function (num) { return enemizer_check(num) }
 
-	function can_reach_outcast() {
-		return items.moonpearl && (items.glove === 2 || items.glove && items.hammer || items.agahnim && items.hookshot && (items.hammer || items.glove || items.flippers));
-	}
-
 	function canReachSwampGlitchedAsLink() {
 		return (flags.glitches != 'N' && items.moonpearl && (flags.glitches === 'M' || items.boots))
 	}

@@ -189,7 +189,6 @@
 	function canBunnyPocket() { return items.boots && (items.mirror || items.bottle) };
 
 	// Non-entrance reach-functions
-
 	function canReachLightWorld() {
 		if (flags.gametype != 'I') {
 			return true;
@@ -332,11 +331,12 @@
 		if (flags.glitches === 'M') return true;
 		if (flags.glitches != 'N' && items.boots) return true;
 		if (flags.gametype != 'I') {
-			(canReachWDM() && (items.mirror || (items.hookshot && items.hammer)))
+			if (canReachWDM() && (items.mirror || (items.hookshot && items.hammer))) return true;
 		};
 		if (flags.gametype === 'I') {
 			if (canReachEDM() && items.moonpearl && items.hammer) return true;
 		};
+		return false;
 	};
 
 	function canReachMire() {
@@ -354,9 +354,8 @@
 
 	window.loadChestFlagsItem = function() {
 			
-		//Is OWG Mode, does not cover Inverted
 		if (flags.glitches === "O" || flags.glitches === 'H' || flags.glitches === 'M') {
-			// define dungeon chests
+
 			window.dungeons = [{ // [0]
 				caption: 'Eastern Palace',
 				is_beaten: false,
@@ -517,7 +516,6 @@
 				}
 			};
 
-			//define overworld chests
 			window.chests = [{ // [0]
 				caption: 'King\'s Tomb {boots} + {glove2}/{mirror}',
 				is_opened: false,
@@ -1263,7 +1261,6 @@
 			}];
 		}
 		
-		// Unsupported glitch mode, with minimal checks for availability aside from hard-locked locations
 		else if (flags.glitches != "N" && flags.glitches != 'O' && flags.glitches != 'H' && flags.glitches != 'M') {
 			window.dungeons = [{ // [0]
 				caption: 'Eastern Palace',
@@ -1346,7 +1343,6 @@
 				is_available: always
 			};
 
-			//define overworld chests
 			window.chests = [{ // [0]
 				caption: 'King\'s Tomb {boots} + {glove2}',
 				is_opened: false,
@@ -1858,8 +1854,7 @@
 
 			}];
 		}
-		
-		//Is Inverted Mode
+
 		else if (flags.gametype === "I") {
 			window.dungeons = [{ // [0]
 				caption: 'Eastern Palace',
@@ -2173,7 +2168,6 @@
 				}
 			};
 
-			//define overworld chests
 			window.chests = [{ // [0]
 				caption: 'King\'s Tomb {boots} + {glove2}',
 				is_opened: false,
@@ -2963,8 +2957,8 @@
 				}
 
 			}];
+
 		} else {
-			// define dungeon chests
 			window.dungeons = [{ // [0]
 				caption: 'Eastern Palace',
 				is_beaten: false,
