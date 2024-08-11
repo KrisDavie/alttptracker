@@ -1,0 +1,20 @@
+{
+    "Eastern Palace": {
+        "Open": {},
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld"
+                ]
+            }
+        },
+        "OpenGlitched": {},
+        "InvertedGlitched": {},
+        "Entrance": "ep"
+    }
+}

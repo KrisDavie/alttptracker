@@ -1225,6 +1225,8 @@
 								entrancetype = 'desertconnector';
 							} else if (isTurtleConnector(known_location) === true) {
 								entrancetype = 'turtleconnector';
+							} else if (isSkullConnector(known_location) === true) {
+								entrancetype = 'skullconnector';
 							} else if (isSpawn(known_location) === true) {
 								entrancetype = known_location;
 							} else if (isDungeon(known_location) === true) {
@@ -1725,7 +1727,7 @@
 			'--toh-color': ['toh'],
 			'--pod-color': ['pod'],
 			'--sp-color': ['sp'],
-			'--sw-color': ['sw'],
+			'--sw-color': ['sw_m', 'sw_w', 'sw_e', 'sw'],
 			'--tt-color': ['tt'],
 			'--ip-color': ['ip'],
 			'--mm-color': ['mm'],
@@ -2001,6 +2003,9 @@
 		document.getElementById('toh').style.backgroundColor = '#000';
 		document.getElementById('pod').style.backgroundColor = '#000';
 		document.getElementById('sp').style.backgroundColor = '#000';
+		document.getElementById('sw_m').style.backgroundColor = '#000';
+		document.getElementById('sw_w').style.backgroundColor = '#000';
+		document.getElementById('sw_e').style.backgroundColor = '#000';
 		document.getElementById('sw').style.backgroundColor = '#000';
 		document.getElementById('tt').style.backgroundColor = '#000';
 		document.getElementById('ip').style.backgroundColor = '#000';
@@ -2407,36 +2412,39 @@
 		defineEntranceType(9, 'lwdungeon', 'toh', 'Tower of Hera');
 		defineEntranceType(10, 'dwdungeon', 'pod', 'Palace of Darkness');
 		defineEntranceType(11, 'dwdungeon', 'sp', 'Swamp Palace');
-		defineEntranceType(12, 'dwdungeon', 'sw', 'Skull Woods (Back)');
-		defineEntranceType(13, 'dwdungeon', 'tt', 'Thieve\'s Town');
-		defineEntranceType(14, 'dwdungeon', 'ip', 'Ice Palace');
-		defineEntranceType(15, 'dwdungeon', 'mm', 'Misery Mire');
-		defineEntranceType(16, 'dwdungeon', 'tr_m', 'Turtle Rock (Main)');
-		defineEntranceType(17, 'dwdungeon', 'tr_w', 'Turtle Rock (West)');
-		defineEntranceType(18, 'dwdungeon', 'tr_e', 'Turtle Rock (East)');
-		defineEntranceType(19, 'dwdungeon', 'tr_b', 'Turtle Rock (Back)');
-		defineEntranceType(20, 'dwdungeon', 'gt', 'Ganon\'s Tower');
-		defineEntranceType(21, 'dwdungeon', 'ganon', 'Ganon');
-		defineEntranceType(22, 'start', 'link', 'Link\'s House');
-		defineEntranceType(23, 'start', 'sanc', 'Sanctuary');
-		defineEntranceType(24, 'start', 'mount', 'Death Mountain (Start)');
-		defineEntranceType(25, 'lwkey', 'magic', 'Magic Shop');
-		defineEntranceType(26, 'lwkey', 'kid', 'Lazy Kid');
-		defineEntranceType(27, 'lwkey', 'smith', 'Swordsmiths');
-		defineEntranceType(28, 'lwkey', 'bat', 'Magic Bat');
-		defineEntranceType(29, 'lwkey', 'lib', 'Library');
-		defineEntranceType(30, 'lwkey', 'saha', 'Sahasrahla\'s Hut');
-		defineEntranceType(31, 'lwkey', 'mimc', 'Mimic Cave');
-		defineEntranceType(32, 'lwkey', 'dam', 'Dam');
-		defineEntranceType(33, 'dwkey', 'bomb', 'Bomb Shop');
-		defineEntranceType(34, 'dwkey', 'bump', 'Bumper Cave');
-		defineEntranceType(35, 'dwkey', 'spike', 'Spike Cave');
-		defineEntranceType(36, 'dwkey', 'hook', 'Hookshot Cave');
-		defineEntranceType(37, 'generalkey', 'rupee', 'Rupee Cave');
-		defineEntranceType(38, 'generalkey', 'shop', 'Shop');
-		defineEntranceType(39, 'generalkey', 'dark', 'Dark Cave');
-		defineEntranceType(40, 'generalkey', 'connector', 'Unknown Connector');
-		defineEntranceType(41, 'generalkey', 'item', 'Room/Cave w/ Chest');
+		defineEntranceType(12, 'dwdungeon', 'sw_m', 'Skull Woods (Main)');
+		defineEntranceType(13, 'dwdungeon', 'sw_w', 'Skull Woods (West)');
+		defineEntranceType(14, 'dwdungeon', 'sw_e', 'Skull Woods (East)');
+		defineEntranceType(15, 'dwdungeon', 'sw', 'Skull Woods (Back)');
+		defineEntranceType(16, 'dwdungeon', 'tt', 'Thieve\'s Town');
+		defineEntranceType(17, 'dwdungeon', 'ip', 'Ice Palace');
+		defineEntranceType(18, 'dwdungeon', 'mm', 'Misery Mire');
+		defineEntranceType(19, 'dwdungeon', 'tr_m', 'Turtle Rock (Main)');
+		defineEntranceType(20, 'dwdungeon', 'tr_w', 'Turtle Rock (West)');
+		defineEntranceType(21, 'dwdungeon', 'tr_e', 'Turtle Rock (East)');
+		defineEntranceType(22, 'dwdungeon', 'tr_b', 'Turtle Rock (Back)');
+		defineEntranceType(23, 'dwdungeon', 'gt', 'Ganon\'s Tower');
+		defineEntranceType(24, 'dwdungeon', 'ganon', 'Ganon');
+		defineEntranceType(25, 'start', 'link', 'Link\'s House');
+		defineEntranceType(26, 'start', 'sanc', 'Sanctuary');
+		defineEntranceType(27, 'start', 'mount', 'Death Mountain (Start)');
+		defineEntranceType(28, 'lwkey', 'magic', 'Magic Shop');
+		defineEntranceType(29, 'lwkey', 'kid', 'Lazy Kid');
+		defineEntranceType(30, 'lwkey', 'smith', 'Swordsmiths');
+		defineEntranceType(31, 'lwkey', 'bat', 'Magic Bat');
+		defineEntranceType(32, 'lwkey', 'lib', 'Library');
+		defineEntranceType(33, 'lwkey', 'saha', 'Sahasrahla\'s Hut');
+		defineEntranceType(34, 'lwkey', 'mimc', 'Mimic Cave');
+		defineEntranceType(35, 'lwkey', 'dam', 'Dam');
+		defineEntranceType(36, 'dwkey', 'bomb', 'Bomb Shop');
+		defineEntranceType(37, 'dwkey', 'bump', 'Bumper Cave');
+		defineEntranceType(38, 'dwkey', 'spike', 'Spike Cave');
+		defineEntranceType(39, 'dwkey', 'hook', 'Hookshot Cave');
+		defineEntranceType(40, 'generalkey', 'rupee', 'Rupee Cave');
+		defineEntranceType(41, 'generalkey', 'shop', 'Shop');
+		defineEntranceType(42, 'generalkey', 'dark', 'Dark Cave');
+		defineEntranceType(43, 'generalkey', 'connector', 'Unknown Connector');
+		defineEntranceType(44, 'generalkey', 'item', 'Room/Cave w/ Chest');
 		defineEntranceType(1000, 'null', '', '???');
 	}
 
@@ -2460,6 +2468,9 @@
 	window.isDesertConnector = function(x) {
 		return (x != 'dp_n' && x.startsWith('dp'));
 	}	
+	window.isSkullConnector = function(x) {
+		return (x != 'sw' && x.startsWith('sw'));
+	}
 	window.isTurtleConnector = function(x) {
 		return (x.startsWith('tr'));
 	}	

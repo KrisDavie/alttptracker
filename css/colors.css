@@ -1,13 +1,13 @@
 :root {
   --prize-uncollected-color: #8b0000;
   --prize-collected-color: #008000;
-  --available-color: #00ff00;
-  --unavailable-color: #ff0000;
-  --possible-color: #ffff00;
-  --information-color: #ffa500;
+  --available-color: #3dfd3d;
+  --unavailable-color: #ff2828;
+  --possible-color: #ffff52;
+  --information-color: #fbb025;
   --darkavailable-color: #2433ff;
-  --darkpossible-color: #800080;
-  --partialavailable-color: #17aaee;
+  --darkpossible-color: #7c32fb;
+  --partialavailable-color: #049a04;
   --opened-color: #808080a6;
   --connector-color: #ff00f9;
   --connector1-color: #ff50f9;
@@ -20,6 +20,9 @@
   --toh-color: #00eaff;
   --pod-color: #00eaff;
   --sp-color: #00eaff;
+  --sw_n-color: #00eaff;
+  --sw_w-color: #00eaff;
+  --sw_e-color: #00eaff;
   --sw-color: #00eaff;
   --tt-color: #00eaff;
   --ip-color: #00eaff;
@@ -141,6 +144,9 @@
 .availabledesertconnector {
   background-color: var(--dp-color);
 }
+.availableskullconnector {
+  background-color: var(--sw-color);
+}
 .availableturtleconnector {
   background-color: var(--tr-color);
 }
@@ -167,6 +173,18 @@
 }
 .availablesp {
   background-color: var(--sp-color);
+  border-radius: 0% !important
+}
+.availablesw_m {
+  background-color: var(--sw-color);
+  border-radius: 0% !important
+}
+.availablesw_w {
+  background-color: var(--sw-color);
+  border-radius: 0% !important
+}
+.availablesw_e {
+  background-color: var(--sw-color);
   border-radius: 0% !important
 }
 .availablesw {

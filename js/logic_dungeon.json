@@ -3,12 +3,16 @@
       "Desert Palace - Big Chest": {
          "logical": {
             "allOf": [
+               "canReachDesertMain",
                "bigkey"
             ]
          }
       },
       "Desert Palace - Big Key Chest": {
          "required": {
+            "allOf": [
+               "canReachDesertMain"
+            ],
             "anyOf": [
                "canKillMostEnemies",
                "canUseBombs"
@@ -16,6 +20,7 @@
          },
          "logical": {
             "allOf": [
+               "canReachDesertMain",
                "keys|1"
             ],
             "anyOf": [
@@ -30,7 +35,7 @@
                "bigkey",
                "canLightFires",
                "canKillBoss",
-               "canAccessDesertNorth"
+               "canReachDesertNorth"
             ],
             "anyOf": [
                "canKillMostEnemies",
@@ -43,24 +48,34 @@
                "keys|1",
                "canLightFires",
                "canKillBoss",
-               "canAccessDesertNorth"
+               "canReachDesertNorth"
             ]
          }
       },
       "Desert Palace - Compass Chest": {
          "required": {
-            "allOf": []
+            "allOf": [
+               "canReachDesertMain"
+            ]
          },
          "logical": {
             "allOf": [
+               "canReachDesertMain",
                "keys|1"
             ]
          }
       },
-      "Desert Palace - Map Chest": {},
+      "Desert Palace - Map Chest": {
+         "logical": {
+            "allOf": [
+               "canReachDesertMain"
+            ]
+         }
+      },
       "Desert Palace - Torch": {
          "logical": {
             "allOf": [
+               "canReachDesertMain",
                "boots"
             ]
          }
@@ -875,12 +890,14 @@
       "Hyrule Castle - Boomerang Chest": {
          "required": {
             "anyOf": [
+               "canReachHyruleCastleMain",
                "canKillMostEnemies",
                "canUseBombs"
             ]
          },
          "logical": {
             "allOf": [
+               "canReachHyruleCastleMain",
                "keys|1"
             ],
             "anyOf": [
@@ -889,16 +906,24 @@
             ]
          }
       },
-      "Hyrule Castle - Map Chest": {},
+      "Hyrule Castle - Map Chest": {
+         "logical": {
+            "allOf": [
+               "canReachHyruleCastleMain"
+            ]
+         }
+      },
       "Hyrule Castle - Zelda's Chest": {
          "required": {
             "anyOf": [
+               "canReachHyruleCastleMain",
                "canKillMostEnemies",
                "canUseBombs"
             ]
          },
          "logical": {
             "allOf": [
+               "canReachHyruleCastleMain",
                "keys|1"
             ],
             "anyOf": [
@@ -909,11 +934,28 @@
       },
       "Sewers - Dark Cross": {
          "required": {
-            "allOf": []
+            "anyOf": [
+               "canReachHyruleCastleMain",
+               {
+                  "allOf": [
+                     "canReachSewersDropdown",
+                     "keys|1"
+                  ]
+               }
+            ]
          },
          "logical": {
             "allOf": [
                "canDarkRoomNavigate"
+            ],
+            "anyOf": [
+               "canReachHyruleCastleMain",
+               {
+                  "allOf": [
+                     "canReachSewersDropdown",
+                     "keys|1"
+                  ]
+               }
             ]
          }
       },
@@ -921,6 +963,15 @@
          "required": {
             "allOf": [
                "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "canReachSewersDropdown",
+               {
+                  "allOf": [
+                     "canReachHyruleCastleMain",
+                     "keys|1"
+                  ]
+               }
             ]
          },
          "logical": {
@@ -928,9 +979,10 @@
                "canOpenBonkWalls"
             ],
             "anyOf": [
-               "glove",
+               "canReachSewersDropdown",
                {
                   "allOf": [
+                     "canReachHyruleCastleMain",
                      "canDarkRoomNavigate",
                      "keys|1"
                   ]
@@ -942,6 +994,15 @@
          "required": {
             "allOf": [
                "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "canReachSewersDropdown",
+               {
+                  "allOf": [
+                     "canReachHyruleCastleMain",
+                     "keys|1"
+                  ]
+               }
             ]
          },
          "logical": {
@@ -949,9 +1010,10 @@
                "canOpenBonkWalls"
             ],
             "anyOf": [
-               "glove",
+               "canReachSewersDropdown",
                {
                   "allOf": [
+                     "canReachHyruleCastleMain",
                      "canDarkRoomNavigate",
                      "keys|1"
                   ]
@@ -963,6 +1025,15 @@
          "required": {
             "allOf": [
                "canOpenBonkWalls"
+            ],
+            "anyOf": [
+               "canReachSewersDropdown",
+               {
+                  "allOf": [
+                     "canReachHyruleCastleMain",
+                     "keys|1"
+                  ]
+               }
             ]
          },
          "logical": {
@@ -970,9 +1041,10 @@
                "canOpenBonkWalls"
             ],
             "anyOf": [
-               "glove",
+               "canReachSewersDropdown",
                {
                   "allOf": [
+                     "canReachHyruleCastleMain",
                      "canDarkRoomNavigate",
                      "keys|1"
                   ]
@@ -980,12 +1052,39 @@
             ]
          }
       },
-      "Sanctuary": {}
+      "Sanctuary": {
+         "required": {
+            "anyOf": [
+               "canReachSanc",
+               "canReachSewersDropdown",
+               {
+                  "allOf": [
+                     "canReachHyruleCastleMain",
+                     "keys|1"
+                  ]
+               }
+            ]
+         },
+         "logical": {
+            "anyOf": [
+               "canReachSanc",
+               "canReachSewersDropdown",
+               {
+                  "allOf": [
+                     "canReachHyruleCastleMain",
+                     "canDarkRoomNavigate",
+                     "keys|1"
+                  ]
+               }
+            ]
+         }
+      }
    },
    "Skull Woods": {
       "Skull Woods - Big Chest": {
          "required": {
             "allOf": [
+               "canReachSkullMain",
                "bigkey"
             ],
             "anyOf": [
@@ -995,15 +1094,23 @@
          },
          "logical": {
             "allOf": [
+               "canReachSkullMain",
                "bigkey",
                "canUseBombs"
             ]
          }
       },
-      "Skull Woods - Big Key Chest": {},
+      "Skull Woods - Big Key Chest": {
+         "logical": {
+            "allOf": [
+               "canReachSkullMiddle"
+            ]
+         }
+      },
       "Skull Woods - Boss": {
          "required": {
             "allOf": [
+               "canReachSkullBack",
                "canDefeatCurtains",
                "canKillBoss"
             ],
@@ -1014,6 +1121,7 @@
          },
          "logical": {
             "allOf": [
+               "canReachSkullBack",
                "keys|3",
                "canKillBoss",
                "canDefeatCurtains",
@@ -1024,14 +1132,38 @@
       "Skull Woods - Bridge Room": {
          "logical": {
             "allOf": [
-               "firerod"
+               "canReachSkullBack"
             ]
          }
       },
-      "Skull Woods - Compass Chest": {},
-      "Skull Woods - Map Chest": {},
-      "Skull Woods - Pinball Room": {},
-      "Skull Woods - Pot Prison": {}
+      "Skull Woods - Compass Chest": {
+         "logical": {
+            "allOf": [
+               "canReachSkullMain"
+            ]
+         }
+      },
+      "Skull Woods - Map Chest": {
+         "logical": {
+            "allOf": [
+               "canReachSkullMain"
+            ]
+         }
+      },
+      "Skull Woods - Pinball Room": {
+         "logical": {
+            "allOf": [
+               "canReachSkullMain"
+            ]
+         }
+      },
+      "Skull Woods - Pot Prison": {
+         "logical": {
+            "allOf": [
+               "canReachSkullMain"
+            ]
+         }
+      }
    },
    "Swamp Palace": {
       "Swamp Palace - Big Chest": {
