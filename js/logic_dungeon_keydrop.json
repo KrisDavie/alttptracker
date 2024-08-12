@@ -1687,7 +1687,7 @@
       "Skull Woods - Big Chest": {
          "always": {
             "allOf": [
-               "canBreachSkullMiddle",
+               "canBreachSkullMain",
                "bigkey"
             ],
             "anyOf": [
@@ -1705,7 +1705,7 @@
       "Skull Woods - Big Key Chest": {
          "always": {
             "allOf": [
-               "canBreachSkullMain"
+               "canBreachSkullMiddle"
             ]
          },
          "logical": {
@@ -3056,456 +3056,6 @@
          }
       }
    },
-   "Turtle Rock - Entrance": {
-      "Turtle Rock - Big Chest": {
-         "logical": {
-            "allOf": [
-               "bigkey",
-               "canReachTurtleEast"
-            ],
-            "anyOf": [
-               "somaria",
-               "hookshot"
-            ]
-         }
-      },
-      "Turtle Rock - Big Key Chest": {
-         "logical": {
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canReachTurtleRockMain",
-                     "keys|6",
-                     "somaria"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     "keys|6",
-                     {
-                        "anyOf": [
-                           "hookshot",
-                           "somaria"
-                        ]
-                     }
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleWest",
-                     "keys|6"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "keys|6",
-                     "somaria",
-                     "lantern",
-                     "canOpenBonkWalls"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Boss": {
-         "logical": {
-            "allOf": [
-               "somaria",
-               "bigkey",
-               "keys|6",
-               "canKillBoss"
-            ],
-            "anyOf": [
-               "canReachTurtleBack",
-               {
-                  "allOf": [
-                     "canDarkRoomNavigate",
-                     "canOpenBonkWalls",
-                     {
-                        "anyOf": [
-                           "canReachTurtleRockMain",
-                           "canReachTurtleEast",
-                           "canReachTurtleWest"
-                        ]
-                     }
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Chain Chomps": {
-         "logical": {
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canReachTurtleRockMain",
-                     "somaria",
-                     "keys|3"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     {
-                        "anyOf": [
-                           "somaria",
-                           "hookshot"
-                        ]
-                     }
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleWest"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "somaria",
-                     "lantern",
-                     "canOpenBonkWalls"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Compass Chest": {
-         "logical": {
-            "allOf": [
-               "somaria"
-            ],
-            "anyOf": [
-               "canReachTurtleRockMain",
-               {
-                  "allOf": [
-                     "keys|6",
-                     {
-                        "anyOf": [
-                           "canReachTurtleEast",
-                           "canReachTurtleWest",
-                           {
-                              "allOf": [
-                                 "canReachTurtleBack",
-                                 "lantern",
-                                 "canOpenBonkWalls"
-                              ]
-                           }
-                        ]
-                     }
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Crystaroller Room": {
-         "logical": {
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canReachTurtleRockMain",
-                     "somaria",
-                     "bigkey",
-                     "keys|3",
-                     "canOpenBonkWalls"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     "bigkey",
-                     "canOpenBonkWalls",
-                     {
-                        "anyOf": [
-                           "somaria",
-                           "hookshot"
-                        ]
-                     }
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleWest",
-                     "bigkey",
-                     "canOpenBonkWalls"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "somaria",
-                     "bigkey",
-                     "lantern"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Eye Bridge - Bottom Left": {
-         "logical": {
-            "allOf": [
-               {
-                  "anyOf": [
-                     "canReachTurtleBack",
-                     {
-                        "allOf": [
-                           "somaria",
-                           "lantern",
-                           "bigkey",
-                           "canOpenBonkWalls",
-                           "keys|5",
-                           {
-                              "anyOf": [
-                                 "canReachTurtleRockMain",
-                                 "canReachTurtleEast",
-                                 "canReachTurtleWest"
-                              ]
-                           }
-                        ]
-                     }
-                  ]
-               }
-            ],
-            "anyOf": [
-               "mirrorshield",
-               "byrna",
-               "cape"
-            ]
-         }
-      },
-      "Turtle Rock - Eye Bridge - Bottom Right": {
-         "logical": {
-            "allOf": [
-               {
-                  "anyOf": [
-                     "canReachTurtleBack",
-                     {
-                        "allOf": [
-                           "somaria",
-                           "lantern",
-                           "bigkey",
-                           "canOpenBonkWalls",
-                           "keys|5",
-                           {
-                              "anyOf": [
-                                 "canReachTurtleRockMain",
-                                 "canReachTurtleEast",
-                                 "canReachTurtleWest"
-                              ]
-                           }
-                        ]
-                     }
-                  ]
-               }
-            ],
-            "anyOf": [
-               "mirrorshield",
-               "byrna",
-               "cape"
-            ]
-         }
-      },
-      "Turtle Rock - Eye Bridge - Top Left": {
-         "logical": {
-            "allOf": [
-               {
-                  "anyOf": [
-                     "canReachTurtleBack",
-                     {
-                        "allOf": [
-                           "somaria",
-                           "lantern",
-                           "bigkey",
-                           "canOpenBonkWalls",
-                           "keys|5",
-                           {
-                              "anyOf": [
-                                 "canReachTurtleRockMain",
-                                 "canReachTurtleEast",
-                                 "canReachTurtleWest"
-                              ]
-                           }
-                        ]
-                     }
-                  ]
-               }
-            ],
-            "anyOf": [
-               "mirrorshield",
-               "byrna",
-               "cape"
-            ]
-         }
-      },
-      "Turtle Rock - Eye Bridge - Top Right": {
-         "logical": {
-            "allOf": [
-               {
-                  "anyOf": [
-                     "canReachTurtleBack",
-                     {
-                        "allOf": [
-                           "somaria",
-                           "lantern",
-                           "bigkey",
-                           "canOpenBonkWalls",
-                           "keys|5",
-                           {
-                              "anyOf": [
-                                 "canReachTurtleRockMain",
-                                 "canReachTurtleEast",
-                                 "canReachTurtleWest"
-                              ]
-                           }
-                        ]
-                     }
-                  ]
-               }
-            ],
-            "anyOf": [
-               "mirrorshield",
-               "byrna",
-               "cape"
-            ]
-         }
-      },
-      "Turtle Rock - Pokey 1 Key Drop": {
-         "logical": {
-            "allOf": [
-               "canKillMostEnemies",
-               "keys|5"
-            ],
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canReachTurtleRockMain",
-                     "somaria"
-                  ]
-               },
-               "canReachTurtleWest",
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     {
-                        "anyOf": [
-                           "somaria",
-                           "hookshot"
-                        ]
-                     }
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "somaria",
-                     "lantern",
-                     "canOpenBonkWalls"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Pokey 2 Key Drop": {
-         "logical": {
-            "allOf": [
-               "canKillMostEnemies"
-            ],
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canReachTurtleRockMain",
-                     "somaria",
-                     "keys|3"
-                  ]
-               },
-               "canReachTurtleWest",
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     {
-                        "anyOf": [
-                           "somaria",
-                           "hookshot"
-                        ]
-                     }
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "somaria",
-                     "lantern",
-                     "canOpenBonkWalls"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Roller Room - Left": {
-         "logical": {
-            "allOf": [
-               "somaria",
-               "firerod"
-            ],
-            "anyOf": [
-               "canReachTurtleRockMain",
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     "keys|6"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleWest",
-                     "keys|6"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "lantern",
-                     "canOpenBonkWalls",
-                     "keys|6"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Roller Room - Right": {
-         "logical": {
-            "allOf": [
-               "somaria",
-               "firerod"
-            ],
-            "anyOf": [
-               "canReachTurtleRockMain",
-               {
-                  "allOf": [
-                     "canReachTurtleEast",
-                     "keys|6"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleWest",
-                     "keys|6"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleBack",
-                     "lantern",
-                     "canOpenBonkWalls",
-                     "keys|6"
-                  ]
-               }
-            ]
-         }
-      }
-   },
    "Misery Mire": {
       "Misery Mire - Big Chest": {
          "always": {
@@ -4185,7 +3735,12 @@
                "keys|2",
                {
                   "allOf": [
-                     "canRushRightSidePod"
+                     "hammer"
+                  ],
+                  "anyOf": [
+                     "bow",
+                     "canMimicClip",
+                     "canPotionCameraUnlock"
                   ]
                }
             ]
@@ -4366,7 +3921,16 @@
                "canBreachPalaceOfDarkness"
             ],
             "anyOf": [
-               "canRushRightSidePod",
+               {
+                  "allOf": [
+                     "canOpenBonkWalls"
+                  ],
+                  "anyOf": [
+                     "bow",
+                     "canMimicClip",
+                     "canPotionCameraUnlock"
+                  ]
+               },
                {
                   "allOf": [
                      "keys|1",
@@ -4402,7 +3966,17 @@
             ],
             "anyOf": [
                "keys|1",
-               "canRushRightSidePod"
+               {
+                  "allOf": [
+                     "canOpenBonkWalls",
+                     "hammer"
+                  ],
+                  "anyOf": [
+                     "bow",
+                     "canMimicClip",
+                     "canPotionCameraUnlock"
+                  ]
+               }
             ]
          },
          "logical": {
@@ -4422,7 +3996,17 @@
             ],
             "anyOf": [
                "keys|1",
-               "canRushRightSidePod"
+               {
+                  "allOf": [
+                     "hammer",
+                     "canOpenBonkWalls"
+                  ],
+                  "anyOf": [
+                     "bow",
+                     "canMimicClip",
+                     "canPotionCameraUnlock"
+                  ]
+               }
             ]
          },
          "logical": {
@@ -4444,7 +4028,13 @@
                {
                   "allOf": [
                      "canUseBombs",
-                     "canRushRightSidePod"
+                     {
+                        "anyOf": [
+                           "bow",
+                           "canMimicClip",
+                           "canPotionCameraUnlock"
+                        ]
+                     }
                   ]
                },
                {
