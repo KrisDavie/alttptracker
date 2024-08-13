@@ -395,6 +395,11 @@
 				}
 			},
 			"Inverted": {
+				"required": {
+					"allOf": [
+						"canReachLightWorldBunny"
+					],
+				},
 				"logical": {
 					"allOf": [
 						"canReachLightWorld"
@@ -429,6 +434,12 @@
 				}
 			},
 			"Inverted": {
+				"required": {
+					"allOf": [
+						"canReachLightWorldBunny",
+						"mirror"
+					]
+				},
 				"logical": {
 					"allOf": [
 						"canReachLightWorld"
@@ -543,6 +554,13 @@
 				}
 			},
 			"Inverted": {
+				"required": {
+					"allOf": [
+						"canReachEDM",
+						"moonpearl",
+						"hammer"
+					]
+				},
 				"logical": {
 					"allOf": [
 						"canReachHera"
@@ -706,6 +724,11 @@
 				}
 			},
 			"Inverted": {
+				"required": {
+					"anyOf": [
+						"canQirnJump"
+					]
+				},
 				"logical": {
 					"allOf": [
 						"flippers"
@@ -764,13 +787,14 @@
 		"Turtle Rock - West": {
 			"Open": {
 				"logical": {
-					"allOf": [
-					]
+					"allOf": ["notPlayingOpen"]
 				}
 			},
 			"Inverted": {
 				"logical": {
 					"allOf": [
+						"canReachEDM",
+						"mirror"
 					]
 				}
 			},
@@ -778,14 +802,15 @@
 		},
 		"Turtle Rock - East": {
 			"Open": {
-				"logical": {
-					"allOf": [
-					]
+				"always": {
+					"allOf": ["notPlayingOpen"]
 				}
 			},
 			"Inverted": {
 				"logical": {
 					"allOf": [
+						"canReachEDM",
+						"mirror"
 					]
 				}
 			},
@@ -794,13 +819,14 @@
 		"Turtle Rock - Back": {
 			"Open": {
 				"logical": {
-					"allOf": [
-					]
+					"allOf": ["notPlayingOpen"]
 				}
 			},
 			"Inverted": {
 				"logical": {
 					"allOf": [
+						"canReachEDM",
+						"mirror"
 					]
 				}
 			},
@@ -941,6 +967,8 @@
 			case "canReachEDM": return canReachEDM();
 			case "canReachMire": return canReachMire();
 			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
+
+			case "notPlayingOpen": return flags.gametype != 'N';
 
 			default: throw new Error("Unknown requirement: " + requirement);
 		};
@@ -4166,7 +4194,7 @@
 				}
 			});
 		};
-		
+
 		//Is Inverted Mode
 		if (flags.gametype === "I") {
 			window.entrances = [{ // [0]
@@ -12662,117 +12690,382 @@
 		   "Turtle Rock - Big Chest": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"bigkey",
-					"keys|3",
-					"canUseBombs"
+					"bigkey"
 				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "keys|3",
+						  "canExitTurtleRockWestAndEnterEast",
+						  "canKillOrExplodeMostEnemies"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockEast"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHover",
+						  "canBombJump",
+						  "hookshot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					"canBreachTurtleRockEast",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "keys|3",
+						  "canExitTurtleRockWestAndEnterEast",
+						  "canKillOrExplodeMostEnemies"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
-				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockEast"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "hookshot"
+					   ]
+					}
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Big Key Chest": {
 			  "always": {
-				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"keys|4",
-					"canHitSwitch"
-				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "keys|4",
+						  "canHitSwitch"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "keys|1",
+						  "canHitSwitch"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|1",
+						  "canDarkRoomNavigateBlind",
+						  "canOpenBonkWalls",
+						  "canHitSwitch"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
 				 "allOf": [
-					"canBreachTurtleRockMain",
-					"keys|6"
+					"keys|6",
+					"canHitSwitch"
+				 ],
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
-					"keys|6"
+					"keys|6",
+					"canHitSwitch"
+				 ],
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "somaria"
+					   ]
+					},
+					"canReachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "canDarkRoomNavigate",
+						  "canOpenBonkWalls",
+						  "somaria"
+					   ]
+					}
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Boss": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
 					"bigkey",
-					"keys|5",
-					"canKillBoss",
-					"canOpenBonkWalls",
-					"canHitRangedSwitch",
-					"canDarkRoomNavigateBlind"
+					"canKillBoss"
 				 ],
 				 "anyOf": [
-					"canHoverAlot",
-					"somaria"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "keys|5",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "canHoverAlot",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "keys|2",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "canHoverAlot",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|1"
+					   ],
+					   "anyOf": [
+						  "canHoverAlot",
+						  "somaria"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain",
-					"keys|5"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "keys|5",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "canHoverAlot",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "keys|3",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "canHoverAlot",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|2"
+					   ],
+					   "anyOf": [
+						  "canHoverAlot",
+						  "somaria"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
 					"keys|6",
-					"canDarkRoomNavigate"
+					"somaria"
+				 ],
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch",
+						  "canDarkRoomNavigate"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockMiddle",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch",
+						  "canDarkRoomNavigate"
+					   ]
+					},
+					"canReachTurtleRockBack"
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Chain Chomps": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"keys|2",
 					"canHitRangedSwitch"
 				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "keys|2"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "keys|2"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
-				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "keys|4",
+						  "somaria"
+					   ]
+					},
+					"canReachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					}
 				 ]
-			  }
+		   }
 		   },
 		   "Turtle Rock - Compass Chest": {
 			  "always": {
-				 "allOf": [
-					"canBreachTurtleRockMainMaybe"
-				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]      
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "keys|4"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
@@ -12790,250 +13083,813 @@
 		   "Turtle Rock - Crystaroller Room": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"bigkey",
-					"keys|3",
-					"canOpenBonkWalls",
 					"canHitRangedSwitch"
 				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "bigkey",
+						  "keys|3",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "bigkey",
+						  "keys|3",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
-				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "bigkey",
+						  "keys|3",
+						  "canOpenBonkWalls",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockMiddle",
+						  "bigkey",
+						  "canOpenBonkWalls",
+						  "canHitRangedSwitch"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					}
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Eye Bridge - Bottom Left": {
 			  "always": {
-				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"bigkey",
-					"keys|4",
-					"canOpenBonkWalls",
-					"canDarkRoomNavigateBlind"
-				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain",
-					"keys|4"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
-					"canDarkRoomNavigate",
-					"keys|5"
+					{
+					   "anyOf": [
+						  "mirrorshield",
+						  "byrna",
+						  "cape"
+					   ]
+					}
 				 ],
 				 "anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "bigkey",
+						  "keys|5",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					"canRreachTurtleRockBack"
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Eye Bridge - Bottom Right": {
 			  "always": {
-				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"bigkey",
-					"keys|4",
-					"canOpenBonkWalls",
-					"canDarkRoomNavigateBlind"
-				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain",
-					"keys|4"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
-					"canDarkRoomNavigate",
-					"keys|5"
+					{
+					   "anyOf": [
+						  "mirrorshield",
+						  "byrna",
+						  "cape"
+					   ]
+					}
 				 ],
 				 "anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "bigkey",
+						  "keys|5",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					"canRreachTurtleRockBack"
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Eye Bridge - Top Left": {
 			  "always": {
-				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"bigkey",
-					"keys|4",
-					"canOpenBonkWalls",
-					"canDarkRoomNavigateBlind"
-				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain",
-					"keys|4"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
-					"canDarkRoomNavigate",
-					"keys|5"
+					{
+					   "anyOf": [
+						  "mirrorshield",
+						  "byrna",
+						  "cape"
+					   ]
+					}
 				 ],
 				 "anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "bigkey",
+						  "keys|5",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					"canRreachTurtleRockBack"
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Eye Bridge - Top Right": {
 			  "always": {
-				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"bigkey",
-					"keys|4",
-					"canOpenBonkWalls",
-					"canDarkRoomNavigateBlind"
-				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain",
-					"keys|4"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "bigkey",
+						  "keys|4",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigateBlind"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockBack"
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
-					"canDarkRoomNavigate",
-					"keys|5"
+					{
+					   "anyOf": [
+						  "mirrorshield",
+						  "byrna",
+						  "cape"
+					   ]
+					}
 				 ],
 				 "anyOf": [
-					"mirrorshield",
-					"byrna",
-					"cape"
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "bigkey",
+						  "keys|5",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "bigkey",
+						  "keys|1",
+						  "canOpenBonkWalls",
+						  "canDarkRoomNavigate",
+						  "somaria"
+					   ]
+					},
+					"canRreachTurtleRockBack"
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Pokey 1 Key Drop": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"keys|1",
-					"canKillMostEnemies"
+					"canKillOrExplodeMostEnemies"
 				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "keys|1"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|1"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "keys|2"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "canHitSwitch"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
 				 "allOf": [
-					"canReachTurtleRockMain",
-					"keys|1",
-					"somaria"
+					"keys|5"
+				 ],
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "somaria"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockMiddle",
+						  "canHitSwitch"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "canDarkRoomNavigate",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls",
+						  "somaria"
+					   ]
+					}
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Pokey 2 Key Drop": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
-					"keys|3",
-					"canKillMostEnemies"
+					"canHitSwitch",
+					"canKillOrExplodeMostEnemies"
 				 ],
 				 "anyOf": [
-					"somaria",
-					"canHoverAlot"
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMainMaybe",
+						  "keys|3"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMain",
+						  "keys|3"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canBreachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
-				 "allOf": [
-					"canReachTurtleRockMain",
-					"somaria",
-					"keys|3"
+				 "anyOf": [
+					{
+					   "allOf": [
+						  "canReachTurtleRockMain",
+						  "keys|4"
+					   ],
+					   "anyOf": [
+						  "somaria",
+						  "canHoverAlot"
+					   ]
+					},
+					"canReachTurtleRockMiddle",
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "canDarkRoomNavigate",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls",
+						  "somaria"
+					   ]
+					}
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Roller Room - Left": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
 					"somaria",
 					"firerod"
+				 ],
+				 "anyOf": [
+					"canBreachTurtleRockMainMaybe",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|3"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|3",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					"canBreachTurtleRockMain",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|4"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|3",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
-				 "allOf": [
-					"canReachTurtleRockMain"
+				 "anyOf": [
+					"canReachTurtleRockMai",
+					{
+					   "allOf": [
+						  "canReachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|6"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "keys|6",
+						  "canDarkRoomNavigate",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ]
+					}
 				 ]
 			  }
 		   },
 		   "Turtle Rock - Roller Room - Right": {
 			  "always": {
 				 "allOf": [
-					"canBreachTurtleRockMainMaybe",
 					"somaria",
 					"firerod"
+				 ],
+				 "anyOf": [
+					"canBreachTurtleRockMainMaybe",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|3"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|3",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ]
+					}
 				 ]
 			  },
 			  "required": {
-				 "allOf": [
-					"canBreachTurtleRockMain"
+				 "anyOf": [
+					"canBreachTurtleRockMain",
+					{
+					   "allOf": [
+						  "canBreachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|4"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canBreachTurtleRockBack",
+						  "keys|3",
+						  "canDarkRoomNavigateBlind",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ]
+					}
 				 ]
 			  },
 			  "logical": {
-				 "allOf": [
-					"canReachTurtleRockMain"
+				 "anyOf": [
+					"canReachTurtleRockMai",
+					{
+					   "allOf": [
+						  "canReachTurtleRockMiddle",
+						  "canHitSwitch",
+						  "keys|6"
+					   ]
+					},
+					{
+					   "allOf": [
+						  "canReachTurtleRockBack",
+						  "keys|6",
+						  "canDarkRoomNavigate",
+						  "canHitRangedSwitch",
+						  "canOpenBonkWalls"
+					   ]
+					}
 				 ]
 			  }
 		   }
@@ -13215,10 +14071,8 @@
 				 ]
 			  },
 			  "required": {
-				 "anyOf": [
-					"canBreachMiseryMire",
-					"keys|1",
-					"bigkey"
+				 "allOf": [
+					"canBreachMiseryMire"
 				 ]
 			  },
 			  "logical": {
@@ -13244,10 +14098,8 @@
 				 ]
 			  },
 			  "required": {
-				 "anyOf": [
-					"canBreachMiseryMire",
-					"keys|1",
-					"bigkey"
+				 "allOf": [
+					"canBreachMiseryMire"
 				 ]
 			  },
 			  "logical": {
@@ -16459,6 +17311,9 @@
 			case 'canTorchRoomNavigateBlind': return true || (items.lantern || (items.firerod && !isDoorsBranch() && !flags.entrancemode === 'N'));
 			case 'canRushRightSidePod': return (items.bomb || items.boots) && (true || items.bow > 1 || items.bottle);
 
+			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode != 'N';
+			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'N' || flags.entrancemode != 'N');
+
 			case 'canReachHyruleCastle': return canReachDungeon('Hyrule Castle - Main') === 'available';
 			case 'canReachSewersDropdown': return canReachDungeon('Hyrule Castle - Sewers Dropdown') === 'available';
 			case 'canReachSanctuary': return canReachDungeon('Sanctuary') === 'available';
@@ -16479,6 +17334,7 @@
 			case 'canReachTurtleRockMain': return canReachDungeon("Turtle Rock - Main") === 'available';
 			case 'canReachTurtleRockWest': return canReachDungeon("Turtle Rock - West") === 'available';
 			case 'canReachTurtleRockEast': return canReachDungeon("Turtle Rock - East") === 'available';
+			case 'canReachTurtleRockMiddle': return canReachDungeon("Turtle Rock - West") === 'available' || (canReachDungeon("Turtle Rock - East") === 'available' && (items.hookshot || items.somaria));
 			case 'canReachTurtleRockBack': return canReachDungeon("Turtle Rock - Back") === 'available';
 			case 'canReachGanonsTower': return canReachDungeon('Ganons Tower') === 'available';
 
@@ -16504,6 +17360,7 @@
 			case 'canBreachTurtleRockMainMaybe': return canReachDungeon("Turtle Rock - Main") != 'unavailable';
 			case 'canBreachTurtleRockWest': return canReachDungeon("Turtle Rock - West") != 'unavailable';
 			case 'canBreachTurtleRockEast': return canReachDungeon("Turtle Rock - East") != 'unavailable';
+			case 'canBreachTurtleRockMiddle': return canReachDungeon("Turtle Rock - West") != 'unavailable' || (canReachDungeon("Turtle Rock - East") != 'unavailable' && (items.hookshot || items.somaria || items.bomb || items.boots));
 			case 'canBreachTurtleRockBack': return canReachDungeon("Turtle Rock - Back") != 'unavailable';
 			case 'canBreachGanonsTower': return canReachDungeon('Ganons Tower') != 'unavailable';
 
@@ -17615,7 +18472,7 @@
 		var dungeonState = window.doorCheck(0,false,true,true,['hookshot','bow'],'item');
 		if (!dungeonState) { // Old logic
 				
-			const dungeoncheck = enemizer_check(0);
+			var dungeoncheck = enemizer_check(0);
 			var chests = ['U', 'U', 'U', 'U', 'U', 'U'];
 
 			//Cannonball Chest
