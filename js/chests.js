@@ -17388,7 +17388,7 @@
 			case 'canBreachIcePalace': return canReachDungeon('Ice Palace') != 'unavailable';
 			case 'canBreachMiseryMire': return canReachDungeon('Misery Mire') != 'unavailable' && canReachDungeon('Misery Mire') != 'possible';
 			case 'canBreachMiseryMireMaybe': return canReachDungeon('Misery Mire') != 'unavailable';
-			case 'canBreachTurtleRockMain': return canReachDungeon("Turtle Rock - Main") != 'unavailable' && canReachDungeon('Misery Mire') != 'possible';
+			case 'canBreachTurtleRockMain': return canReachDungeon("Turtle Rock - Main") != 'unavailable' && canReachDungeon('Turtle Rock - Main') != 'possible';
 			case 'canBreachTurtleRockMainMaybe': return canReachDungeon("Turtle Rock - Main") != 'unavailable';
 			case 'canBreachTurtleRockWest': return canReachDungeon("Turtle Rock - West") != 'unavailable';
 			case 'canBreachTurtleRockEast': return canReachDungeon("Turtle Rock - East") != 'unavailable';
