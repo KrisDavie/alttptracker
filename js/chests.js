@@ -999,7 +999,7 @@
 			case "canReachMire": return canReachMire();
 			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
 
-			case "notPlayingOpen": return flags.gametype != 'N';
+			case "notPlayingOpen": return flags.gametype != 'O';
 
 			default: throw new Error("Unknown requirement: " + requirement);
 		};
@@ -13835,7 +13835,7 @@
 			  },
 			  "logical": {
 				 "anyOf": [
-					"canReachTurtleRockMai",
+					"canReachTurtleRockMain",
 					{
 					   "allOf": [
 						  "canReachTurtleRockMiddle",
@@ -13904,7 +13904,7 @@
 			  },
 			  "logical": {
 				 "anyOf": [
-					"canReachTurtleRockMai",
+					"canReachTurtleRockMain",
 					{
 					   "allOf": [
 						  "canReachTurtleRockMiddle",

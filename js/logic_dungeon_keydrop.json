@@ -3794,7 +3794,7 @@
          },
          "logical": {
             "anyOf": [
-               "canReachTurtleRockMai",
+               "canReachTurtleRockMain",
                {
                   "allOf": [
                      "canReachTurtleRockMiddle",
@@ -3863,7 +3863,7 @@
          },
          "logical": {
             "anyOf": [
-               "canReachTurtleRockMai",
+               "canReachTurtleRockMain",
                {
                   "allOf": [
                      "canReachTurtleRockMiddle",
