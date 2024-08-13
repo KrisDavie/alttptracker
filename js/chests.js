@@ -2862,7 +2862,7 @@
 				caption: 'Hookshot Cave (bottom chest) {hookshot}/{boots}',
 				is_opened: false,
 				is_available: function() {
-					return (item.boots || items.hookshot) && canReachDDM() ?
+					return (items.boots || items.hookshot) && canReachDDM() ?
 						items.lantern || items.flute >= 1 ? 'available' : 'darkavailable' :
 						'unavailable';
 				}
