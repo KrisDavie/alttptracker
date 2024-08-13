@@ -833,7 +833,7 @@
 		},
 		"Turtle Rock - East": {
 			"Open": {
-				"always": {
+				"logical": {
 					"allOf": ["notPlayingOpen"]
 				}
 			},
@@ -1044,9 +1044,10 @@
 		const category = dungeonReachLogicCategory();
 		const requirements = dungeonReachLogic[dungeon][category];
 		if (!("logical" in requirements) || dungeonReachInLogic(requirements["logical"])) {
-			return medcheck === 'available' ? 'available' : 'possible';
+			if (medcheck === 'available') return 'available';
+			if (medcheck === 'possible') return 'possible';
 		} else if ("required" in requirements && dungeonReachInLogic(requirements["required"])) {
-			return medcheck === 'available' ? 'darkpossible' : 'possible';
+			return medcheck === 'possible' ? 'possible' : 'darkpossible';
 		};
 		return 'unavailable';
 	};
@@ -17343,7 +17344,7 @@
 			case 'canRushRightSidePod': return (items.bomb || items.boots) && (true || items.bow > 1 || items.bottle);
 
 			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode != 'N';
-			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'N' || flags.entrancemode != 'N');
+			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'O' || flags.entrancemode != 'N');
 
 			case 'canReachHyruleCastle': return canReachDungeon('Hyrule Castle - Main') === 'available';
 			case 'canReachSewersDropdown': return canReachDungeon('Hyrule Castle - Sewers Dropdown') === 'available';
