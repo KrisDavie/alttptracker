@@ -214,6 +214,37 @@
 	};
 	// #endregion
 
+	const regionReachLogic = {
+		"Light World": {
+			"Open": {},
+			"Inverted": {
+				"logical": {
+					"anyOf": [
+						"agahnim",
+						{
+							"allOf": [
+								"mitts",
+								"flute"
+							]
+						},
+						{
+							"allOf": [
+								"moonpearl",
+								"mitts"
+							]
+						},
+						{
+							"allOf": [
+								"moonpearl",
+								"hammer"
+							]
+						}
+					]
+				}
+			}
+		}
+	};
+
 	// #region Non-entrance
 	function canReachLightWorld() {
 		if (flags.gametype != 'I') {
@@ -13275,7 +13306,7 @@
 						  "somaria"
 					   ]
 					},
-					"canRreachTurtleRockBack"
+					"canReachTurtleRockBack"
 				 ]
 			  }
 		   },
@@ -13373,7 +13404,7 @@
 						  "somaria"
 					   ]
 					},
-					"canRreachTurtleRockBack"
+					"canReachTurtleRockBack"
 				 ]
 			  }
 		   },
@@ -13471,7 +13502,7 @@
 						  "somaria"
 					   ]
 					},
-					"canRreachTurtleRockBack"
+					"canReachTurtleRockBack"
 				 ]
 			  }
 		   },
@@ -13569,7 +13600,7 @@
 						  "somaria"
 					   ]
 					},
-					"canRreachTurtleRockBack"
+					"canReachTurtleRockBack"
 				 ]
 			  }
 		   },
