@@ -4766,6 +4766,7 @@
          },
          "logical": {
             "allOf": [
+               "canReachPalaceOfDarkness",
                "bow",
                "canOpenBonkWalls"
             ]
