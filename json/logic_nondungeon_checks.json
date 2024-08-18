@@ -756,16 +756,44 @@
                 "anyOf": [
                     "glove",
                     "hammer",
-                    "flippers"
+                    "flippers",
+                    "canZoraSplashDelete"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers"
                 ]
             }
         },
-        "Inverted": {}
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers",
+                    "canZoraSplashDelete"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers"
+                ]
+            }
+        }
     },
     "Dark Potion Shop - Middle": {
         "Open": {
@@ -777,16 +805,44 @@
                 "anyOf": [
                     "glove",
                     "hammer",
-                    "flippers"
+                    "flippers",
+                    "canZoraSplashDelete"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers"
                 ]
             }
         },
-        "Inverted": {}
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers",
+                    "canZoraSplashDelete"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers"
+                ]
+            }
+        }
     },
     "Dark Potion Shop - Right": {
         "Open": {
@@ -798,16 +854,44 @@
                 "anyOf": [
                     "glove",
                     "hammer",
-                    "flippers"
+                    "flippers",
+                    "canZoraSplashDelete"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers"
                 ]
             }
         },
-        "Inverted": {}
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers",
+                    "canZoraSplashDelete"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Dark World - East"
+                ],
+                "anyOf": [
+                    "glove",
+                    "hammer",
+                    "flippers"
+                ]
+            }
+        }
     },
     "Desert Ledge": {
         "Open": {

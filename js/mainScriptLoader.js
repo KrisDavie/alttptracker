@@ -54,10 +54,10 @@
         }
 
         const scripts = [
-            "js/chests.js?v=21007.1",
-            "js/track.js?v=21007.1",
-            "js/spoiler.js?v=21007",
-            "js/autot.js?v=21007"
+            "js/chests.js?v=21008",
+            "js/track.js?v=21008",
+            "js/spoiler.js?v=21008",
+            "js/autot.js?v=21008"
         ];
 
         for (let i = 0; i < scripts.length; i++) {
