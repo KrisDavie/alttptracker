@@ -27,21 +27,433 @@
             }
         }
     },
-    "Hyrule Castle - Main": {
+    "Dark World - East": {
         "Open": {
+            "always": {
+                "anyOf": [
+                    "agahnim",
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "mitts"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "glove",
+                            "hammer"
+                        ]
+                    }
+                ]
+            },
             "logical": {
-                "allOf": []
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "lantern"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "mitts"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "glove",
+                            "hammer"
+                        ]
+                    }
+                ]
             }
         },
         "Inverted": {
-            "required": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "mirror"
+                        ]
+                    },
+                    "hammer",
+                    "flippers",
+                    "flute",
+                    "canZoraSplashDelete",
+                    "canQirnJump"
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "mirror",
+                            "lantern"
+                        ]
+                    },
+                    "hammer",
+                    "flippers",
+                    "flute"
+                ]
+            }
+        }
+    },
+    "Dark World - West": {
+        "Open": {
+            "always": {
                 "allOf": [
-                    "canReachLightWorldBunny"
+                    "moonpearl"
+                ],
+                "anyOf": [
+                    "mitts",
+                    {
+                        "allOf": [
+                            "glove",
+                            "hammer"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "hookshot",
+                            {
+                                "anyOf": [
+                                    "hammer",
+                                    "glove",
+                                    "flippers",
+                                    "canZoraSplashDelete"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    "mitts",
+                    {
+                        "allOf": [
+                            "glove",
+                            "hammer"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "lantern",
+                            "hookshot",
+                            {
+                                "anyOf": [
+                                    "hammer",
+                                    "glove",
+                                    "flippers"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Dark World - South": {
+        "Open": {
+            "always": {
+                "anyOf": [
+                    "canBreach|Dark World - West",
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "moonpearl",
+                            "hammer"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    "canReach|Dark World - West",
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "moonpearl",
+                            "hammer"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Light World - Lower West Death Mountain": {
+        "Open": {
+            "always": {
+                "anyOf": [
+                    "flute",
+                    {
+                        "allOf": [
+                            "glove",
+                            {
+                                "anyOf": [
+                                    "canDarkRoomNavigateBlind",
+                                    "lantern"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    "flute",
+                    {
+                        "allOf": [
+                            "glove",
+                            "lantern"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - Death Mountain"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachLightWorld"
+                    "canReach|Dark World - Death Mountain"
+                ]
+            }            
+        }
+    },
+    "Light World - Upper West Death Mountain": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - Lower West Death Mountain"
+                ],
+                "anyOf": [
+                    "mirror",
+                    {
+                        "allOf": [
+                            "hammer",
+                            {
+                                "anyOf": [
+                                    "hookshot",
+                                    "canFairyReviveHover"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Light World - Lower West Death Mountain"
+                ],
+                "anyOf": [
+                    "mirror",
+                    {
+                        "allOf": [
+                            "hammer",
+                            "hookshot"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain",
+                    "moonpearl",
+                    "hammer"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain"
+                ]
+            }
+        }
+    },
+    "Light World - East Death Mountain": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - Lower West Death Mountain"
+                ],
+                "anyOf": [
+                    "hookshot",
+                    "canFairyReviveHover",
+                    {
+                        "allOf": [
+                            "mirror",
+                            "hammer"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Light World - Lower West Death Mountain"
+                ],
+                "anyOf": [
+                    "hookshot",
+                    {
+                        "allOf": [
+                            "mirror",
+                            "hammer"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - Death Mountain"
+                ],
+                "anyOf": [
+                    "mitts",
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            {
+                                "anyOf": [
+                                    "hookshot",
+                                    "canFairyReviveHover"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Dark World - Death Mountain"
+                ],
+                "anyOf": [
+                    "mitts",
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "hookshot"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "Dark World - Death Mountain": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain",
+                    "mitts"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Light World - East Death Mountain"
+                ]
+            }
+        },
+        "Inverted": {
+            "always": {
+                "anyOf": [
+                    "flute",
+                    {
+                        "allOf": [
+                            "glove",
+                            {
+                                "anyOf": [
+                                    "canDarkRoomNavigateBlind",
+                                    "lantern"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    "flute",
+                    {
+                        "allOf": [
+                            "glove",
+                            "lantern"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "Dark World - Mire": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "flute",
+                    "mitts"
+                ]
+            }
+        },
+        "Inverted": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "flute",
+                            "mitts"
+                        ]        
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Light World",
+                            "mirror"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "flute",
+                            "mitts"
+                        ]        
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Light World",
+                            "mirror"
+                        ]
+                    }
+                ]
+            }
+        }
+
+    },
+    "Hyrule Castle - Main": {
+        "Open": {},
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World",
+                    "canDungeonBunnyRevive"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Light World",
+                    "moonpearl"
                 ]
             }
         },
@@ -53,17 +465,23 @@
     },
     "Hyrule Castle - Sewers Dropdown": {
         "Open": {
-            "logical": {
+            "always": {
                 "allOf": [
                     "glove"
                 ]
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World",
+                    "moonpearl",
+                    "glove"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachLightWorld",
-                    "glove"
+                    "canReach|Light World"
                 ]
             }
         },
@@ -72,21 +490,21 @@
         ]
     },
     "Sanctuary": {
-        "Open": {
-            "logical": {
-                "allOf": []
-            }
-        },
+        "Open": {},
         "Inverted": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canReachLightWorldBunny",
-                    "mirror"
+                    "canReach|Light World"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canMirrorSuperBunny"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachLightWorld"
+                    "canReach|Light World",
+                    "moonpearl"
                 ]
             }
         },
@@ -97,14 +515,19 @@
     "Eastern Palace": {
         "Open": {},
         "Inverted": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canReachLightWorldBunny"
+                    "canBreach|Light World"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachLightWorld"
+                    "canReach|Light World",
+                    "moonpearl"
                 ]
             }
         },
@@ -114,22 +537,39 @@
     },
     "Desert Palace - Main": {
         "Open": {
+            "always": {
+                "anyOf": [
+                    "book",
+                    {
+                        "allOf": [
+                            "canBreach|Dark World - Mire",
+                            "mirror"
+                        ]
+                    }
+                ]
+            },
             "logical": {
-                "allOf": [
-                    "canReachDP"
+                "anyOf": [
+                    "book",
+                    "canReach|Dark World - Mire"
                 ]
             }
         },
         "Inverted": {
             "required": {
                 "allOf": [
-                    "canReachLightWorldBunny",
+                    "canBreach|Light World",
                     "book"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachDP"
+                    "canReach|Light World",
+                    "moonpearl"
                 ]
             }
         },
@@ -141,23 +581,55 @@
     },
     "Desert Palace - North": {
         "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "book",
+                            "glove"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Dark World - Mire",
+                            "mirror"
+                        ]
+                    }
+                ]
+            },
             "logical": {
-                "allOf": [
-                    "canReachDPNorth"
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "book",
+                            "glove"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Dark World - Mire",
+                            "mirror"
+                        ]
+                    }
                 ]
             }
         },
         "Inverted": {
             "required": {
                 "allOf": [
-                    "canReachLightWorldBunny",
+                    "canBreach|Light World",
                     "book",
                     "glove"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachDPNorth"
+                    "canReach|Light World",
+                    "moonpearl"
                 ]
             }
         },
@@ -167,59 +639,29 @@
     },
     "Tower of Hera": {
         "Open": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canHitSwitch",
-                    {
-                        "anyOf": [
-                            "glove",
-                            "flute"
-                        ]
-                    },
-                    {
-                        "anyOf": [
-                            "mirror",
-                            {
-                                "allOf": [
-                                    "hammer",
-                                    {
-                                        "anyOf": [
-                                            "hookshot",
-                                            "canFairyReviveHover"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+                    "canBreach|Light World - Upper West Death Mountain",
+                    "canHitSwitch"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canHitSwitch",
-                    "canReachHera"
-                ],
-                "anyOf": [
-                    "flute",
-                    "lantern"
+                    "canReach|Light World - Upper West Death Mountain"
                 ]
             }
         },
         "Inverted": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canReachEDM",
+                    "canBreach|Light World - Upper West Death Mountain",
                     "moonpearl",
-                    "hammer"
+                    "canHitSwitch"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachHera"
-                ],
-                "anyOf": [
-                    "flute",
-                    "lantern"
+                    "canReach|Light World - Upper West Death Mountain"
                 ]
             }
         },
@@ -229,32 +671,30 @@
     },
     "Palace of Darkness": {
         "Open": {
-            "required": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - East"
+                ],
                 "anyOf": [
-                    "canReachEDW",
-                    {
-                        "allOf": [
-                            "agahnim",
-                            "canOWFairyRevive"
-                        ]
-                    }
+                    "moonpearl",
+                    "canOWFairyRevive"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachEDW"
+                    "canReach|Dark World - East"
                 ]
             }
         },
         "Inverted": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canQirnJump"
+                    "canBreach|Dark World - East"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachEDW"
+                    "canReach|Dark World - East"
                 ]
             }
         },
@@ -264,21 +704,27 @@
     },
     "Swamp Palace": {
         "Open": {
-            "logical": {
+            "always": {
                 "allOf": [
-                    "canReachSDW"
-                ]
-            }
-        },
-        "Inverted": {
-            "required": {
-                "allOf": [
-                    "canReachLightWorldBunny"
+                    "canBreach|Dark World - South",
+                    "moonpearl"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachLightWorld"
+                    "canReach|Dark World - South"
+                ]
+            }
+        },
+        "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Light World"
                 ]
             }
         },
@@ -288,49 +734,76 @@
     },
     "Skull Woods - Main": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - West"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachWDW"
+                    "canReach|Dark World - West",
+                    "moonpearl"
                 ]
             }
         },
-        "Inverted": {
-            "logical": {
-                "allOf": []
-            }
-        },
+        "Inverted": {},
         "Entrance": [
             "sw_m"
         ]
     },
     "Skull Woods - Middle": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - West"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachWDW"
+                    "canReach|Dark World - West",
+                    "moonpearl"
                 ]
             }
         },
-        "Inverted": {
-            "logical": {
-                "allOf": []
-            }
-        },
+        "Inverted": {},
         "Entrance": [
             "sw_e, sw_w"
         ]
     },
     "Skull Woods - Back": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - West",
+                    "firerod"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    {
+                        "allOf": [
+                            "canDungeonBunnyRevive",
+                            "canBunnyPocket"
+                        ]
+                    }
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachWDW",
-                    "firerod"
+                    "canReach|Dark World - West",
+                    "moonpearl"
                 ]
             }
         },
         "Inverted": {
-            "logical": {
+            "always": {
                 "allOf": [
                     "firerod"
                 ]
@@ -342,32 +815,40 @@
     },
     "Skull Woods - Drops": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - West"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachWDW"
+                    "canReach|Dark World - West",
+                    "moonpearl"
                 ]
             }
         },
-        "Inverted": {
-            "logical": {
-                "allOf": []
-            }
-        },
+        "Inverted": {},
         "Entrance": []
     },
     "Thieves Town": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - West",
+                    "moonpearl"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachWDW"
+                    "canReach|Dark World - West"
                 ]
             }
         },
-        "Inverted": {
-            "logical": {
-                "allOf": []
-            }
-        },
+        "Inverted": {},
         "Entrance": [
             "tt"
         ]
@@ -377,7 +858,17 @@
             "required": {
                 "allOf": [
                     "mitts",
-                    "canFakeFlipper"
+                    {
+                        "anyOf": [
+                            "moonpearl",
+                            "canDungeonBunnyRevive"
+                        ]
+                    }
+                ],
+                "anyOf": [
+                    "flippers",
+                    "canFakeFlipper",
+                    "canWaterWalk"
                 ]
             },
             "logical": {
@@ -389,9 +880,11 @@
             }
         },
         "Inverted": {
-            "required": {
+            "always": {
                 "anyOf": [
-                    "canQirnJump"
+                    "canQirnJump",
+                    "canZoraSplashDelete",
+                    "flippers"
                 ]
             },
             "logical": {
@@ -406,9 +899,9 @@
     },
     "Misery Mire": {
         "Open": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canReachMire"
+                    "canBreach|Dark World - Mire"
                 ],
                 "anyOf": [
                     "moonpearl",
@@ -417,15 +910,20 @@
             },
             "logical": {
                 "allOf": [
-                    "canReachMire",
+                    "canReach|Dark World - Mire",
                     "moonpearl"
                 ]
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - Mire"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachMire"
+                    "canReach|Dark World - Mire"
                 ]
             }
         },
@@ -435,18 +933,29 @@
     },
     "Turtle Rock - Main": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain",
+                    "hammer",
+                    "mitts",
+                    "moonpearl"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachDDM",
-                    "hammer",
-                    "moonpearl"
+                    "canReach|Light World - East Death Mountain"
                 ]
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - Death Mountain"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachDDM"
+                    "canReach|Dark World - Death Mountain"
                 ]
             }
         },
@@ -456,17 +965,23 @@
     },
     "Turtle Rock - West": {
         "Open": {
-            "logical": {
+            "always": {
                 "allOf": [
-                    "notPlayingOpen"
+                    "canBreach|Dark World - Death Mountain",
+                    "canSpinSpeedClip"
                 ]
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain",
+                    "mirror"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachEDM",
-                    "mirror"
+                    "canReach|Light World - East Death Mountain"
                 ]
             }
         },
@@ -476,17 +991,23 @@
     },
     "Turtle Rock - East": {
         "Open": {
-            "logical": {
+            "always": {
                 "allOf": [
-                    "notPlayingOpen"
+                    "canBreach|Dark World - Death Mountain",
+                    "canSpinSpeedClip"
                 ]
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain",
+                    "mirror"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachEDM",
-                    "mirror"
+                    "canReach|Light World - East Death Mountain"
                 ]
             }
         },
@@ -496,17 +1017,23 @@
     },
     "Turtle Rock - Back": {
         "Open": {
-            "logical": {
+            "always": {
                 "allOf": [
-                    "notPlayingOpen"
+                    "canBreach|Light World - Lower West Death Mountain",
+                    "canMirrorWrap"
                 ]
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Light World - East Death Mountain",
+                    "mirror"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachEDM",
-                    "mirror"
+                    "canReach|Light World - East Death Mountain"
                 ]
             }
         },
@@ -516,30 +1043,37 @@
     },
     "Ganons Tower": {
         "Open": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canOpenGT",
-                    "canReachDDM"
+                    "canBreach|Dark World - Death Mountain",
+                    "canOpenGT"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canOpenGT",
-                    "canReachDDM",
+                    "canReach|Dark World - Death Mountain",
                     "moonpearl"
                 ]
             }
         },
         "Inverted": {
-            "required": {
+            "always": {
                 "allOf": [
-                    "canOpenGT",
-                    "canReachLightworldBunny"
+                    "canBreach|Light World",
+                    "canOpenGT"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canDungeonBunnyRevive"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReachLightWorld",
+                    "canReach|Light World",
                     "canOpenGT",
                     "moonpearl"
                 ]
@@ -551,6 +1085,19 @@
     },
     "Castle Tower": {
         "Open": {
+            "always": {
+                "anyOf": [
+                    "canDestroyEnergyBarrier",
+                    "cape",
+                    {
+                        "allOf": [
+                            "canBreach|Dark World - East",
+                            "canFairyBarrierRevive"
+                        ]
+                    },
+                    "canShockBlock"
+                ]
+            },
             "logical": {
                 "anyOf": [
                     "canDestroyEnergyBarrier",
@@ -559,9 +1106,14 @@
             }
         },
         "Inverted": {
+            "always": {
+                "allOf": [
+                    "canBreach|Dark World - Death Mountain"
+                ]
+            },
             "logical": {
                 "allOf": [
-                    "canReachDDM"
+                    "canReach|Dark World - Death Mountain"
                 ]
             }
         },
