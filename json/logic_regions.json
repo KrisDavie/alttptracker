@@ -35,7 +35,15 @@
                     {
                         "allOf": [
                             "moonpearl",
-                            "mitts"
+                            "mitts",
+                            {
+                                "anyOf": [
+                                    "flippers",
+                                    "canWaterWalk",
+                                    "canZoraSplashDelete",
+                                    "canQirnJump"
+                                ]
+                            }
                         ]
                     },
                     {
@@ -58,7 +66,8 @@
                     {
                         "allOf": [
                             "moonpearl",
-                            "mitts"
+                            "mitts",
+                            "flippers"
                         ]
                     },
                     {
