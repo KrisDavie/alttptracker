@@ -1,0 +1,585 @@
+{
+    "Light World": {
+        "Open": {},
+        "Inverted": {
+            "logical": {
+                "anyOf": [
+                    "agahnim",
+                    {
+                        "allOf": [
+                            "mitts",
+                            "flute"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "mitts"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "hammer"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "Hyrule Castle - Main": {
+        "Open": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld"
+                ]
+            }
+        },
+        "Entrance": [
+            "hc_m",
+            "hc_e",
+            "hc_w"
+        ]
+    },
+    "Hyrule Castle - Sewers Dropdown": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "glove"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld",
+                    "glove"
+                ]
+            }
+        },
+        "Entrance": [
+            "exception|sewers"
+        ]
+    },
+    "Sanctuary": {
+        "Open": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny",
+                    "mirror"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld"
+                ]
+            }
+        },
+        "Entrance": [
+            "sanc"
+        ]
+    },
+    "Eastern Palace": {
+        "Open": {},
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld"
+                ]
+            }
+        },
+        "Entrance": [
+            "ep"
+        ]
+    },
+    "Desert Palace - Main": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachDP"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny",
+                    "book"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachDP"
+                ]
+            }
+        },
+        "Entrance": [
+            "dp_e",
+            "dp_w",
+            "dp_m"
+        ]
+    },
+    "Desert Palace - North": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachDPNorth"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny",
+                    "book",
+                    "glove"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachDPNorth"
+                ]
+            }
+        },
+        "Entrance": [
+            "dp_n"
+        ]
+    },
+    "Tower of Hera": {
+        "Open": {
+            "required": {
+                "allOf": [
+                    "canHitSwitch",
+                    {
+                        "anyOf": [
+                            "glove",
+                            "flute"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "mirror",
+                            {
+                                "allOf": [
+                                    "hammer",
+                                    {
+                                        "anyOf": [
+                                            "hookshot",
+                                            "canFairyReviveHover"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canHitSwitch",
+                    "canReachHera"
+                ],
+                "anyOf": [
+                    "flute",
+                    "lantern"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachEDM",
+                    "moonpearl",
+                    "hammer"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachHera"
+                ],
+                "anyOf": [
+                    "flute",
+                    "lantern"
+                ]
+            }
+        },
+        "Entrance": [
+            "toh"
+        ]
+    },
+    "Palace of Darkness": {
+        "Open": {
+            "required": {
+                "anyOf": [
+                    "canReachEDW",
+                    {
+                        "allOf": [
+                            "agahnim",
+                            "canOWFairyRevive"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachEDW"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canQirnJump"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachEDW"
+                ]
+            }
+        },
+        "Entrance": [
+            "pod"
+        ]
+    },
+    "Swamp Palace": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachSDW"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canReachLightWorldBunny"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld"
+                ]
+            }
+        },
+        "Entrance": [
+            "sp"
+        ]
+    },
+    "Skull Woods - Main": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachWDW"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Entrance": [
+            "sw_m"
+        ]
+    },
+    "Skull Woods - Middle": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachWDW"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Entrance": [
+            "sw_e, sw_w"
+        ]
+    },
+    "Skull Woods - Back": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachWDW",
+                    "firerod"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "firerod"
+                ]
+            }
+        },
+        "Entrance": [
+            "sw"
+        ]
+    },
+    "Skull Woods - Drops": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachWDW"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Entrance": []
+    },
+    "Thieves Town": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachWDW"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Entrance": [
+            "tt"
+        ]
+    },
+    "Ice Palace": {
+        "Open": {
+            "required": {
+                "allOf": [
+                    "mitts",
+                    "canFakeFlipper"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "mitts",
+                    "moonpearl",
+                    "flippers"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "anyOf": [
+                    "canQirnJump"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "flippers"
+                ]
+            }
+        },
+        "Entrance": [
+            "ip"
+        ]
+    },
+    "Misery Mire": {
+        "Open": {
+            "required": {
+                "allOf": [
+                    "canReachMire"
+                ],
+                "anyOf": [
+                    "moonpearl",
+                    "canOWFairyRevive"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachMire",
+                    "moonpearl"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachMire"
+                ]
+            }
+        },
+        "Entrance": [
+            "mm"
+        ]
+    },
+    "Turtle Rock - Main": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReachDDM",
+                    "hammer",
+                    "moonpearl"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachDDM"
+                ]
+            }
+        },
+        "Entrance": [
+            "tr_m"
+        ]
+    },
+    "Turtle Rock - West": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "notPlayingOpen"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachEDM",
+                    "mirror"
+                ]
+            }
+        },
+        "Entrance": [
+            "tr_w"
+        ]
+    },
+    "Turtle Rock - East": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "notPlayingOpen"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachEDM",
+                    "mirror"
+                ]
+            }
+        },
+        "Entrance": [
+            "tr_e"
+        ]
+    },
+    "Turtle Rock - Back": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "notPlayingOpen"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachEDM",
+                    "mirror"
+                ]
+            }
+        },
+        "Entrance": [
+            "tr_b"
+        ]
+    },
+    "Ganons Tower": {
+        "Open": {
+            "required": {
+                "allOf": [
+                    "canOpenGT",
+                    "canReachDDM"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canOpenGT",
+                    "canReachDDM",
+                    "moonpearl"
+                ]
+            }
+        },
+        "Inverted": {
+            "required": {
+                "allOf": [
+                    "canOpenGT",
+                    "canReachLightworldBunny"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReachLightWorld",
+                    "canOpenGT",
+                    "moonpearl"
+                ]
+            }
+        },
+        "Entrance": [
+            "gt"
+        ]
+    },
+    "Castle Tower": {
+        "Open": {
+            "logical": {
+                "anyOf": [
+                    "canDestroyEnergyBarrier",
+                    "cape"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": [
+                    "canReachDDM"
+                ]
+            }
+        },
+        "Entrance": [
+            "ct"
+        ]
+    },
+    "Placeholder": {
+        "Open": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+        "Entrance": []
+    }
+}

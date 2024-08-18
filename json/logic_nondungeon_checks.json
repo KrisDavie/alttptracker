@@ -10,7 +10,7 @@
         "Inverted": {
             "always": {
                 "allOf": [
-                    "canReachRegion('Light World')",
+                    "canBreachRegion|Light World",
                     "canUseBombs",
                     "canLinkState"
                 ]
