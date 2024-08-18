@@ -2706,12 +2706,19 @@
         }
     },
     "Potion Shop": {
-        "Open": {},
+        "Open": {
+            "always": {
+                "allOf": [
+                    "mushroom"
+                ]
+            }
+        },
         "Inverted": {
             "always": {
                 "allOf": [
                     "canBreach|Light World",
-                    "moonpearl"
+                    "moonpearl",
+                    "mushroom"
                 ]
             },
             "logical": {

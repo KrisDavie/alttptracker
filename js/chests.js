@@ -565,8 +565,8 @@
 		};
 		if (availability === 'unavailable') return 'unavailable';
 		if (availability === 'possible') return 'possible';
-		if (availability === 'available') return medcheck === 'available' ? 'available' : 'medcheck';
-		if (availability === 'darkavailable') return medcheck === 'available' ? 'darkavailable' : 'medcheck';
+		if (availability === 'available') return medcheck === 'available' ? 'available' : medcheck;
+		if (availability === 'darkavailable') return medcheck === 'available' ? 'darkavailable' : medcheck;
 	};
 
 	function checkAvailability(locations) {
