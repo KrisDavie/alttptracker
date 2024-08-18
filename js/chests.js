@@ -7891,6 +7891,17 @@
 		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkeyhalf0; // HC
 		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkeyhalf1; // CT
 
+		if (requirement.startsWith('canReach|')) {
+			const region = requirement.split('|')[1];
+			return canReachRegion(region) === 'available';
+		};
+
+		if (requirement.startsWith('canBreach|')) {
+			const region = requirement.split('|')[1];
+			let state = canReachRegion(region);
+			return state != 'unavailable' && state != 'possible';
+		};
+
 		switch (requirement) {
 			case 'bigkey': return items['bigkey' + dungeonId];
 
@@ -7948,55 +7959,11 @@
 			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode != 'N';
 			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'O' || flags.entrancemode != 'N');
 
-			case 'canReachHyruleCastle': return canReachRegion('Hyrule Castle - Main') === 'available';
-			case 'canReachSewersDropdown': return canReachRegion('Hyrule Castle - Sewers Dropdown') === 'available';
-			case 'canReachSanctuary': return canReachRegion('Sanctuary') === 'available';
-			case 'canReachEasternPalace': return canReachRegion('Eastern Palace') === 'available';
-			case 'canReachDesertPalaceMain': return canReachRegion('Desert Palace - Main') === 'available';
-			case 'canReachDesertPalaceNorth': return canReachRegion('Desert Palace - North') === 'available';
-			case 'canReachTowerOfHera': return canReachRegion('Tower of Hera') === 'available';
-			case 'canReachCastleTower': return canReachRegion('Castle Tower') === 'available';
-			case 'canReachPalaceOfDarkness': return canReachRegion('Palace of Darkness') === 'available';
-			case 'canReachSwampPalace': return canReachRegion('Swamp Palace') === 'available';
-			case 'canReachSkullBack': return canReachRegion("Skull Woods - Back") === 'available';
-			case 'canReachSkullMain': return canReachRegion("Skull Woods - Main") === 'available';
-			case 'canReachSkullMiddle': return canReachRegion("Skull Woods - Middle") === 'available';
-			case 'canReachSkullDrops': return canReachRegion("Skull Woods - Drops") === 'available';
-			case 'canReachThievesTown': return canReachRegion('Thieves Town') === 'available';
-			case 'canReachIcePalace': return canReachRegion('Ice Palace') === 'available';
-			case 'canReachMiseryMire': return canReachRegion('Misery Mire') === 'available';
-			case 'canReachTurtleRockMain': return canReachRegion("Turtle Rock - Main") === 'available';
-			case 'canReachTurtleRockWest': return canReachRegion("Turtle Rock - West") === 'available';
-			case 'canReachTurtleRockEast': return canReachRegion("Turtle Rock - East") === 'available';
 			case 'canReachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") === 'available' || (canReachRegion("Turtle Rock - East") === 'available' && (items.hookshot || items.somaria));
-			case 'canReachTurtleRockBack': return canReachRegion("Turtle Rock - Back") === 'available';
-			case 'canReachGanonsTower': return canReachRegion('Ganons Tower') === 'available';
 
-			case 'canBreachHyruleCastle': return canReachRegion('Hyrule Castle - Main') != 'unavailable';
-			case 'canBreachSewersDropdown': return canReachRegion('Hyrule Castle - Sewers Dropdown') != 'unavailable';
-			case 'canBreachSanctuary': return canReachRegion('Sanctuary') != 'unavailable';
-			case 'canBreachEasternPalace': return canReachRegion('Eastern Palace') != 'unavailable';
-			case 'canBreachDesertPalaceMain': return canReachRegion('Desert Palace - Main') != 'unavailable';
-			case 'canBreachDesertPalaceNorth': return canReachRegion('Desert Palace - North') != 'unavailable';
-			case 'canBreachTowerOfHera': return canReachRegion('Tower of Hera') != 'unavailable';
-			case 'canBreachCastleTower': return canReachRegion('Castle Tower') != 'unavailable';
-			case 'canBreachPalaceOfDarkness': return canReachRegion('Palace of Darkness') != 'unavailable';
-			case 'canBreachSwampPalace': return canReachRegion('Swamp Palace') != 'unavailable';
-			case 'canBreachSkullBack': return canReachRegion("Skull Woods - Back") != 'unavailable';
-			case 'canBreachSkullMain': return canReachRegion("Skull Woods - Main") != 'unavailable';
-			case 'canBreachSkullMiddle': return canReachRegion("Skull Woods - Middle") != 'unavailable';
-			case 'canBreachSkullDrops': return canReachRegion("Skull Woods - Drops") != 'unavailable';
-			case 'canBreachThievesTown': return canReachRegion('Thieves Town') != 'unavailable';
-			case 'canBreachIcePalace': return canReachRegion('Ice Palace') != 'unavailable';
-			case 'canBreachMiseryMire': return canReachRegion('Misery Mire') != 'unavailable' && canReachRegion('Misery Mire') != 'possible';
 			case 'canBreachMiseryMireMaybe': return canReachRegion('Misery Mire') != 'unavailable';
-			case 'canBreachTurtleRockMain': return canReachRegion("Turtle Rock - Main") != 'unavailable' && canReachRegion('Turtle Rock - Main') != 'possible';
 			case 'canBreachTurtleRockMainMaybe': return canReachRegion("Turtle Rock - Main") != 'unavailable';
-			case 'canBreachTurtleRockWest': return canReachRegion("Turtle Rock - West") != 'unavailable';
-			case 'canBreachTurtleRockEast': return canReachRegion("Turtle Rock - East") != 'unavailable';
 			case 'canBreachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") != 'unavailable' || (canReachRegion("Turtle Rock - East") != 'unavailable' && (items.hookshot || items.somaria || items.bomb || items.boots));
-			case 'canBreachTurtleRockBack': return canReachRegion("Turtle Rock - Back") != 'unavailable';
-			case 'canBreachGanonsTower': return canReachRegion('Ganons Tower') != 'unavailable';
 
 			case 'gtleft': return items.hammer && items.hookshot && canHitRangedSwitch();
 			case 'gtright': return items.somaria && items.firerod;
