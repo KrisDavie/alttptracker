@@ -894,37 +894,37 @@
     "Skull Woods First Section Hole (East)": {
         "Open": {
             "allOf": [
-                "canReach|East Dark World"
+                "canReach|West Dark World"
             ]
         },
         "Inverted": {
             "allOf": [
-                "canReach|Inverted East Dark World"
+                "canReach|Inverted West Dark World"
             ]
         }
     },
     "Skull Woods First Section Hole (North)": {
         "Open": {
             "allOf": [
-                "canReach|East Dark World",
+                "canReach|West Dark World",
                 "moonpearl"
             ]
         },
         "Inverted": {
             "allOf": [
-                "canReach|Inverted East Dark World"
+                "canReach|Inverted West Dark World"
             ]
         }
     },
     "Skull Woods First Section Hole (West)": {
         "Open": {
             "allOf": [
-                "canReach|East Dark World"
+                "canReach|West Dark World"
             ]
         },
         "Inverted": {
             "allOf": [
-                "canReach|Inverted East Dark World"
+                "canReach|Inverted West Dark World"
             ]
         }
     },
