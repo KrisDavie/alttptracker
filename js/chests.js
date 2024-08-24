@@ -1611,27 +1611,23 @@
 
 	//Region Connectors - Non-Inverted entrance
 	function canReachUpperWestDeathMountain() {
+		if (items.flute >= 1 && items.mirror) return true;
 		if (hasFoundEntranceName("Tower of Hera") || (hasFoundEntranceName("Paradox Cave (Top)") && items.hammer)) return true;
 		if (items.mirror && hasFoundRegion([
 			"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", "Death Mountain Return Cave (East)",
 			"Old Man House (Bottom)", "Old Man House (Top)", "Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave",
 			"Superbunny Cave (Top)", "Turtle Rock", "Spike Cave", "Dark Death Mountain Fairy"
 		])) return true;
-		if (items.flute >= 1 && items.mirror) return true;
-		if (items.hookshot && (hasFoundRegion([
+		if (items.hookshot && items.mirror && (hasFoundRegion([
 			"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy",
-			"Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)"
+			"Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Superbunny Cave (Bottom)", "Dark Death Mountain Shop",
+			"Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)"
 		]))) return true;
-		if (items.hookshot && items.mirror && hasFoundRegion([
-			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)"
-		])) return true;
 
 		return false;
 	};
 
-	function canReachLowerWestDeathMountain(fromEdm=false) {
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.glitches === 'M' ) return true;
+	function canReachLowerWestDeathMountain() {
 		if (items.flute >= 1) return true;
 		if (hasFoundRegion([
 				"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", 
@@ -1663,15 +1659,14 @@
 
 	function canReachLowerEastDeathMountain() {
 		if ((items.flute >= 1 && items.hookshot)) return true; 
-		if (items.hookshot && canReachLowerWestDeathMountain()) return true;
-		if (canReachLowerWestDeathMountain() && items.hammer && items.mirror) return true;
-		if (hasFoundEntranceName("Tower of Hera") && items.hammer) return true;
 		if (hasFoundRegion([
 			"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)"
 		])) return true;
 		if (items.mirror && (hasFoundRegion([
 			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)"
 		]))) return true;
+		if (items.hookshot && canReachLowerWestDeathMountain()) return true;
+		if (canReachUpperWestDeathMountain() && items.hammer) return true;
 
 		return false;
 	};
@@ -1688,7 +1683,7 @@
 		return (hasFoundRegion(["Spike Cave", "Dark Death Mountain Fairy"]) || canReachLowerWestDeathMountain() || canReachUpperDarkDeathMountain());
 	};
 	
-	function canReachLowerEastDarkDeathMountain(fromEdm=false) {
+	function canReachLowerEastDarkDeathMountain() {
 		return (canReachUpperDarkDeathMountain() || hasFoundRegion(["Superbunny Cave (Bottom)", "Dark Death Mountain Shop"]) || (canReachLowerEastDeathMountain() && items.glove === 2));
 	};
 
@@ -1700,11 +1695,11 @@
 		return false;
 	};
 
-	function canReachSouthEastDarkWorld(fromEastDarkWorld=false) {
+	function canReachSouthEastDarkWorld(toEastDarkWorld=false) {
 		if (hasFoundRegion([
 			"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
 		])) return true;
-		if (!fromEastDarkWorld) {
+		if (!toEastDarkWorld) {
 			if (items.flippers && items.moonpearl && canReachEastDarkWorld()) return true;
 		};
 		return false;
@@ -1736,7 +1731,7 @@
 		return false;
 	};
 
-	function canReachWestDarkWorld(fromEastDarkWorld=false) {
+	function canReachWestDarkWorld(toEastDarkWorld=false) {
 		if (items.moonpearl && (items.glove === 2 || (items.glove && items.hammer))) return true;
 		if (hasFoundRegion([
 			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
@@ -1746,21 +1741,21 @@
 		if (items.moonpearl && (items.hookshot && (items.flippers || items.hammer)) && hasFoundRegion([
 			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
 		])) return true;
-		if (!fromEastDarkWorld) {
+		if (!toEastDarkWorld) {
 			if (canLeaveNorthEastDarkWorldWest() && canReachNorthEastDarkWorld()) return true;
 		};
 		return false;
 	};
 	
-	function canReachSouthDarkWorld(fromEastDarkWorld=false) {
+	function canReachSouthDarkWorld(toEastDarkWorld=false) {
 		if (items.moonpearl && (items.glove === 2 || (items.glove && items.hammer))) return true;
 		if (hasFoundRegion([
 			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
 		])) return true;
-		if (!fromEastDarkWorld) {
+		if (!toEastDarkWorld) {
 			if (items.moonpearl && items.hammer && canReachEastDarkWorld()) return true;
 		};
-		if (canReachWestDarkWorld(fromEastDarkWorld)) return true;
+		if (canReachWestDarkWorld(toEastDarkWorld)) return true;
 		return false;
 	};
 
@@ -1814,7 +1809,7 @@
 	};
 
 	function canReachInvertedLightWorldBunny() {
-		if (items.agahnim || (items.glove === 2 && activeFlute()) || hasFoundRegion([
+		if (items.agahnim || (items.glove === 2 && activeFluteInvertedEntrance()) || hasFoundRegion([
 			"Links House", "Bonk Fairy (Light)", "Dam", "Cave 45", "Light Hype Fairy", "Hyrule Castle Entrance (South)",
 			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower", "Sanctuary", "Bonk Rock Cave",
 			"North Fairy Cave", "Lost Woods Gamble", "Lost Woods Hideout Stump", "Lumberjack House", "Lumberjack Tree Cave",
@@ -1831,59 +1826,62 @@
 	};
 	
 	function canReachInvertedNorthDW() {
-		if (hasFoundRegion([
-			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
-			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
-		])) return true;
+		return true; // Always accessible
+		// Dark sanc is always in the north DW unless it changes
+		// if (hasFoundRegion([
+		// 	"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
+		// 	"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
+		// ])) return true;
 
-		if (items.glove === 2 && hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		])) return true;
+		// if (items.glove === 2 && hasFoundRegion([
+		// 	"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		// ])) return true;
 
-		if (((items.hammer && items.glove === 2) || (items.hookshot && (items.flippers || items.glove || items.hammer))) && (hasFoundRegion([
-			"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
-		]))) return true;
+		// if (((items.hammer && items.glove === 2) || (items.hookshot && (items.flippers || items.glove || items.hammer))) && (hasFoundRegion([
+		// 	"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
+		// ]))) return true;
 
-		if (hasFoundEntranceName("Dark Potion Shop") && ((items.hammer && items.glove === 2) || items.hookshot)) return true;
+		// if (hasFoundEntranceName("Dark Potion Shop") && ((items.hammer && items.glove === 2) || items.hookshot)) return true;
 
-		if (hasFoundEntranceName("Dark World Shop") && items.hammer) return true;
+		// if (hasFoundEntranceName("Dark World Shop") && items.hammer) return true;
 
-		if (items.flippers && ((items.glove === 2 && items.hammer) || items.hookshot) && hasFoundRegion([
-			"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-		])) return true;
+		// if (items.flippers && ((items.glove === 2 && items.hammer) || items.hookshot) && hasFoundRegion([
+		// 	"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
+		// ])) return true;
 
-		if (activeFluteInvertedEntrance()) return true;
+		// if (activeFluteInvertedEntrance()) return true;
 
-		if (items.mirror) {
-			if (canReachInvertedLightWorldBunny()) return true;
-			if (hasFoundRegion([
-				"Graveyard Cave", "Light World Bomb Hut", "Kings Grave"
-			])) return true;
-			if (hasFoundEntranceName("Bush Covered House") && items.hammer) return true;
-			if (hasFoundEntranceName("Potion Shop") && items.hookshot) return true;
-		};
+		// if (items.mirror) {
+		// 	if (canReachInvertedLightWorldBunny()) return true;
+		// 	if (hasFoundRegion([
+		// 		"Graveyard Cave", "Light World Bomb Hut", "Kings Grave"
+		// 	])) return true;
+		// 	if (hasFoundEntranceName("Bush Covered House") && items.hammer) return true;
+		// 	if (hasFoundEntranceName("Potion Shop") && items.hookshot) return true;
+		// };
 
-		return false;
+		// return false;
 	};
 	
 	function canReachInvertedSouthDW() {
-		if (activeFluteInvertedEntrance()) return true;
+		return true; // Always accessible
+		// if (activeFluteInvertedEntrance()) return true;
 
-		if (hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		])) return true;
+		// if (hasFoundRegion([
+		// 	"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		// ])) return true;
 
-		if (hasFoundRegion([
-			"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
-		])) return true;
+		// if (hasFoundRegion([
+		// 	"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
+		// ])) return true;
 
-		if (items.flippers && items.hammer && hasFoundRegion([
-			"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-		])) return true;
+		// if (items.flippers && items.hammer && hasFoundRegion([
+		// 	"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
+		// ])) return true;
 
-		if (canReachInvertedNorthDW()) return true;
+		// if (canReachInvertedNorthDW()) return true;
 
-		return false;
+		// return false;
 	};
 	
 	function canReachInvertedEastDW() {
@@ -1906,7 +1904,7 @@
 		return false;
 	};
 
-	function canReachInvertedNorthEastShopArea() {
+	function canReachInvertedNorthEastDW() {
 		if (activeFluteInvertedEntrance()) return true;
 		if (hasFoundEntranceName("Dark Potion Shop")) return true;
 		if (items.mirror && hasFoundEntranceName("Potion Shop")) return true;
@@ -1955,15 +1953,9 @@
 		return false;
 	};
 	
-	function canReachInvertedWestDeathMountain() {
+	function canReachInvertedLowerWestDeathMountain() {
 
 		if (canReachInvertedDarkDeathMountain()) return true;
-
-		if (hasFoundRegion([
-			"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
-			"Old Man Cave (East)", "Death Mountain Return Cave (East)", "Old Man House (Bottom)",
-			"Old Man House (Top)", "Paradox Cave (Top)"
-		])) return true;
 
 		if (hasFoundRegion([
 			"Tower of Hera", "Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
@@ -1985,8 +1977,15 @@
 		if (hasFoundEntranceName("Paradox Cave (Top)") || (hasFoundEntranceName("Tower of Hera") && items.hammer)) return true;
 		if (canReachInvertedDarkDeathMountain() && items.mitts && items.hammer && items.moonpearl) return true;
 	};
-	
-	function canReachInvertedEastDeathMountain() {
+
+	function canReachInvertedUpperWestDeathMountain() {
+		if (hasFoundEntranceName("Tower of Hera")) return true;
+		if (items.moonpearl && items.hammer && hasFoundEntranceName("Paradox Cave (Top)")) return true;
+		if (canReachInvertedDarkDeathMountain() && items.mitts && items.hammer && items.moonpearl) return true;
+		return false;
+	};
+ 	
+	function canReachInvertedLowerEastDeathMountain() {
 		if (canReachInvertedUpperEastDeathMountain()) return true;
 
 		if (hasFoundRegion([
@@ -1994,7 +1993,7 @@
 			"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
 		])) return true;
 
-		if (items.moonpearl && items.hookshot && canReachInvertedWestDeathMountain()) return true;
+		if (items.moonpearl && items.hookshot && canReachInvertedLowerWestDeathMountain()) return true;
 
 		if (items.glove === 2) {
 			if (canReachInvertedDarkDeathMountain()) return true;
@@ -2108,6 +2107,92 @@
 		}
 	]
 
+	function checkAvailabilityEntrance(location) {
+		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
+		const requirements = window.checkLogic[location][category];
+		return stateOfAllEntrance(requirements) ? 'available' : 'unavailable';
+	};
+
+	function stateOfAllEntrance(requirements) {
+		if (requirements.allOf) {
+			for (const requirement of requirements.allOf) {
+				if (!stateOfEntrance(requirement)) return false;
+			}
+		}
+		if (requirements.anyOf) {
+			for (const requirement of requirements.anyOf) {
+				if (stateOfEntrance(requirement)) return true;
+			}
+			return false;
+		}
+		return true;
+	};
+
+	function stateOfEntrance(requirement) {
+		// If requirement is not a string call inLogic recursively
+		if (typeof requirement === 'object') return stateOfAllEntrance(requirement);
+
+		if (requirement.startsWith("canReach|")) {
+			const region = requirement.split("|")[1];
+			switch (region) {
+				case "South Dark World": return canReachSouthDarkWorld();
+				case "East Dark World": return canReachEastDarkWorld();
+				case "West Dark World": return canReachWestDarkWorld();
+				case "North East Dark World": return canReachNorthEastDarkWorld();
+				case "Lower West Death Mountain": return canReachLowerWestDeathMountain();
+				case "Upper West Death Mountain": return canReachUpperWestDeathMountain();
+				case "Upper East Death Mountain": return canReachUpperEastDeathMountain();
+				case "South West Dark World": return canReachSouthWestDarkWorld();
+
+				case "Inverted South Dark World": return canReachInvertedSouthDW();
+				case "Inverted East Dark World": return canReachInvertedEastDW();
+				case "Inverted West Dark World": return canReachInvertedWestDW();
+				case "Inverted North East Dark World": return canReachInvertedNorthEastDW();
+				case "Inverted Light World": return canReachInvertedLightWorld();
+				case "Inverted Light World Bunny": return canReachInvertedLightWorldBunny();				
+				case "Inverted Upper West Death Mountain": return canReachInvertedUpperWestDeathMountain();
+				case "Inverted Upper East Death Mountain": return canReachInvertedUpperEastDeathMountain();
+
+				default: throw new Error("Unknown region: " + region);
+			};
+		};
+
+		if (requirement.startsWith("hasFoundEntrance|")) {
+			const entrance = requirement.split("|")[1];
+			return hasFoundEntranceName(entrance);
+		};
+
+		if (requirement.startsWith("hasFoundMapEntry|")) {
+			const mapTrackerName = requirement.split("|")[1];
+			return hasFoundLocation(mapTrackerName);
+		}
+
+		switch (requirement) {
+			case "moonpearl": return items.moonpearl;
+			case "agahnim": return items.agahnim;
+			case "mitts": return items.glove > 1;
+			case "mirror": return items.mirror;
+			case "glove": return items.glove;
+			case "flippers": return items.flippers;
+			case "flute": return items.flute || (flags.gametype === 'I' && activeFluteInvertedEntrance());
+			case "shovel": return items.shovel;
+
+			case "canBreakTablets": return items.book && (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer));
+			case "canGetBonkableItem": return items.boots || (items.sword && items.quake);
+			case "canPullPedestal": {
+				var pendant_count = 0;
+				for (var k = 0; k < 10; k++) {
+					if ((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k]) {
+						if (++pendant_count === 3) return 'available';
+					}
+				}
+				return 'unavailable';
+			};
+
+			default: throw new Error("Unknown requirement: " + requirement);
+		};
+	};
+
 	window.loadChestFlagsEntrance = function() {
 
 		window.dungeonChecks = [];
@@ -2126,5814 +2211,1946 @@
 			});
 		};
 
-		//Is Inverted Mode
-		if (flags.gametype === "I") {
-			window.entrances = [{ // [0]
-				caption: 'Bomb Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [1]
-				caption: 'Bonk Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(1)) return 'available';
-					return items.boots && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [2]
-				caption: 'Dam',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [3]
-				caption: 'Haunted Grove',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [4]
-				caption: 'Magic Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(4)) return 'available';
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [5]
-				caption: 'Well of Wishing',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(5)) return 'available';
-					return items.flippers && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [6]
-				caption: 'Hype Fairy {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(6)) return 'available';
-					return canReachInvertedLightWorld() && items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [7]
-				caption: 'Hyrule Castle - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [8]
-				caption: 'Hyrule Castle - Top Entrance (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(8) || hasFoundEntrance(9) || hasFoundEntrance(10)) return 'available';
-					return (items.agahnim && items.mirror) ? 'available' : 'unavailable';
-				}
-			}, { // [9]
-				caption: 'Hyrule Castle - Top Entrance (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(8) || hasFoundEntrance(9) || hasFoundEntrance(10)) return 'available';
-					return (items.agahnim && items.mirror) ? 'available' : 'unavailable';
-				}
-			}, { // [10]
-				caption: 'Hyrule Castle - Ganon\'s Tower',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(10)) return 'available';
-					if (crystalCheck() < flags.opentowercount && flags.opentowercount != 8) return 'unavailable';
-					if (hasFoundEntrance(8) || hasFoundEntrance(9) || (items.agahnim && items.mirror)) {
-						if (flags.opentowercount == 8) {
-							return 'possible';
-						}
-						if (crystalCheck() >= flags.opentowercount) return 'available';
-					}
-					return 'unavailable';
-				}
-			}, { // [11]
-				caption: 'Hyrule Castle - Secret Entrance Stairs',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(11)) return 'available';
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [12]
-				caption: 'Hyrule Castle - Secret Entrance Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [13]
-				caption: 'Sanctuary',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [14]
-				caption: 'Bonk Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(14)) return 'available';
-					return items.boots && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [15]
-				caption: 'Grave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return items.glove && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [16]
-				caption: 'Graveyard Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(16)) return 'available';
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [17]
-				caption: 'King\'s Grave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(17)) return 'available';
-					return items.glove === 2 && items.boots && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [18]
-				caption: 'North Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [19]
-				caption: 'North Fairy Cave Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [20]
-				caption: 'Woods Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [21]
-				caption: 'Thief\'s Hideout',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [22]
-				caption: 'Hideout Stump',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [23]
-				caption: 'Lumberjack Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [24]
-				caption: 'Lumberjack Tree Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [25]
-				caption: 'Lumberjack Tree',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return items.agahnim && items.boots && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [26]
-				caption: 'Bumper Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(26)) return 'available';
-					return items.glove && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [27]
-				caption: 'Kakariko Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [28]
-				caption: 'Well Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [29]
-				caption: 'Well Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [30]
-				caption: 'Thief\'s Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [31]
-				caption: 'Elder\'s House (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [32]
-				caption: 'Elder\'s House (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [33]
-				caption: 'Snitch Lady (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [34]
-				caption: 'Snitch Lady (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [35]
-				caption: 'Chicken House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [36]
-				caption: 'Lazy Kid\'s House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [37]
-				caption: 'Bush Covered House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(37)) return 'available';
-					return canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [38]
-				caption: 'Kakariko Bomb Hut {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(38)) return 'available';
-					return canReachInvertedLightWorld() && items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [39]
-				caption: 'Shop (Kak)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [40]
-				caption: 'Tavern (Back)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(40)) return 'available';
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [41]
-				caption: 'Tavern (Front)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [42]
-				caption: 'Swordsmiths',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [43]
-				caption: 'Bat Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [44]
-				caption: 'Bat Cave Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return items.hammer && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [45]
-				caption: 'Library',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [46]
-				caption: 'Two Brothers (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(46)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [47]
-				caption: 'Two Brothers (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [48]
-				caption: 'Kakariko Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [49]
-				caption: 'Eastern Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [50]
-				caption: 'Sahasrahla\'s Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [51]
-				caption: 'Eastern Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [52]
-				caption: 'Eastern Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [53]
-				caption: 'Desert Palace - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(53)) return 'available';
-					return items.book && canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [54]
-				caption: 'Desert Palace - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(54)) return 'available';
-					if (items.moonpearl && items.glove && hasFoundEntrance(56)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [55]
-				caption: 'Desert Palace - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(55)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [56]
-				caption: 'Desert Palace - North Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(56)) return 'available';
-					if (items.moonpearl && items.glove && hasFoundEntrance(54)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [57]
-				caption: 'Checkerboard Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(57)) return 'available';
-					return items.glove && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [58]
-				caption: 'Aginah\'s Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [59]
-				caption: 'Desert Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [60]
-				caption: '50 Rupee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(60)) return 'available';
-					return items.glove && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [61]
-				caption: 'Shop (Lake)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [62]
-				caption: 'Lake Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [63]
-				caption: 'Mini Moldorm Cave {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(63)) return 'available';
-					return canReachInvertedLightWorld() && items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [64]
-				caption: 'Pond of Happiness',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(64)) return 'available';
-					if (items.glove === 2 && hasFoundEntrance(118)) return 'available';
-					if (items.glove === 2 && items.flippers && (canReachInvertedSouthDW() || canReachInvertedEastDW())) return 'available';
-					return items.flippers && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [65]
-				caption: 'Ice Rod Cave {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(65)) return 'available';
-					return canReachInvertedLightWorld() && items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [66]
-				caption: 'Good Bee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [67]
-				caption: '20 Rupee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(67)) return 'available';
-					return canReachInvertedLightWorld() && items.glove ? 'available' : 'unavailable';
-				}
-			}, { // [68]
-				caption: 'Tower of Hera',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(68)) return 'available';
-					if (items.moonpearl && items.hammer && hasFoundEntranceName("Paradox Cave (Top)")) return 'available';
-					if (items.moonpearl && items.hammer && items.glove === 2 && canReachInvertedDarkDeathMountain()) return 'available';
-					if (canReachInvertedEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [69]
-				caption: 'Spectacle Rock Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [70]
-				caption: 'Spectacle Rock Cave Peak',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [71]
-				caption: 'Spectacle Rock Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [72]
-				caption: 'Ascension Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [73]
-				caption: 'Return Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [74]
-				caption: 'Bumper Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(74)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [75]
-				caption: 'Old Man Cave (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [76]
-				caption: 'Old Man Cave (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [77]
-				caption: 'Paradox Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [78]
-				caption: 'Paradox Cave (Middle)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [79]
-				caption: 'Paradox Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [80]
-				caption: 'Spiral Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(77) || hasFoundEntrance(80)) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [81]
-				caption: 'Spiral Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [82]
-				caption: 'Hookshot Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [83]
-				caption: 'Fairy Ascension Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(77) || hasFoundEntrance(83)) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [84]
-				caption: 'Fairy Ascension Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(77) || hasFoundEntrance(83) || hasFoundEntrance(84)) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					if (items.moonpearl && items.glove === 2 && canReachInvertedEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [85]
-				caption: 'Mimic Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(77) || hasFoundEntrance(85)) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [86]
-				caption: 'Link\'s House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [87]
-				caption: 'Dark Bonk Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(87)) return 'available';
-					return canReachInvertedSouthDW() && items.boots ? 'available' : 'unavailable';
-				}
-			}, { // [88]
-				caption: 'Hype Cave {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() && items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [89]
-				caption: 'Swamp Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [90]
-				caption: 'Dark Sanctuary',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [91]
-				caption: 'Forest Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [92]
-				caption: 'Dark North East Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthEastShopArea() ? 'available' : 'unavailable';
-				}
-			}, { // [93]
-				caption: 'Hyrule Castle Hole',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (!items.agahnim2) return 'unavailable';
-					if (canReachInvertedHyruleCastleBalcony()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [94]
-				caption: 'Pyramid Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(94)) return 'available';
-					var crystal_count = 0;
-					for(var k = 0; k < 10; k++)
-						if(prizes[k] === 4 && items['boss'+k])
-							crystal_count += 1;
-					if (crystal_count >= 2 && canReachInvertedEastDW()) {
-						return hasFoundLocation('bomb') ? 'available' : 'possible';
-					}
-					return 'unavailable';
-				}
-			}, { // [95]
-				caption: 'Hyrule Castle Hole Exit',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [96]
-				caption: 'Skull Woods - Back Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(96)) return 'available';
-					if (!items.firerod) return 'unavailable';
-					if (hasFoundEntranceName("Skull Woods Second Section Door (West)")) return 'available';
-					if (items.mirror) {
-						if (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld()) return 'available';
-					};
-					return 'unavailable';
-				}
-			}, { // [97]
-				caption: 'Skull Woods - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(96) || hasFoundEntrance(97)) return 'available';
-					if (items.mirror) {
-						if (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld()) return 'available';
-					};
-					return 'unavailable';
-				}
-			}, { // [98]
-				caption: 'Skull Woods - North Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(96) || hasFoundEntrance(97) || hasFoundEntrance(98)) return 'available';
-					if (items.mirror) {
-						if (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld()) return 'available';
-					};
-					return 'unavailable';
-				}
-			}, { // [99]
-				caption: 'Skull Woods - Central Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [100]
-				caption: 'Skull Woods - South Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [101]
-				caption: 'Skull Woods - NE Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [102]
-				caption: 'Skull Woods - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [103]
-				caption: 'Skull Woods - SE Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [104]
-				caption: 'Lumberjack Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [105]
-				caption: 'Ascension Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(105)) return 'available';
-					if (items.mirror && hasFoundEntranceName("Old Man Cave (West)")) return 'available';
-					return (items.glove && canReachInvertedNorthDW()) ? 'available' : 'unavailable';
-				}
-			}, { // [106]
-				caption: 'VoO Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [107]
-				caption: 'VoO Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [108]
-				caption: 'Thieves\' Town',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [109]
-				caption: 'C-Shaped House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [110]
-				caption: 'VoO Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(110)) return 'available';
-					if (hasFoundEntranceName("Bush Covered House") && items.mirror) return 'available';
-					if (items.mirror && canReachInvertedLightWorld()) return 'available';
-					if (items.hammer && canReachInvertedNorthDW()) return 'available'
-					return 'unavailable';
-				}
-			}, { // [111]
-				caption: 'VoO Bombable Hut {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(111)) return 'available';
-					return canReachInvertedNorthDW() && items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [112]
-				caption: 'Hammer Peg Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(112)) return 'available';
-					if (items.mirror && items.hammer && canReachInvertedLightWorldBunny()) return 'available';
-					return (items.glove === 2 && items.hammer && canReachInvertedNorthDW())  ? 'available' : 'unavailable';
-				}
-			}, { // [113]
-				caption: 'Arrow Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [114]
-				caption: 'Palace of Darkness',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [115]
-				caption: 'PoD North Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [116]
-				caption: 'PoD Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [117]
-				caption: 'PoD South Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [118]
-				caption: 'Ice Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(118)) return 'available';
-					if (items.mirror && hasFoundEntranceName("Capacity Upgrade")) return 'available';
-					return (items.flippers && (canReachInvertedEastDW() || canReachInvertedSouthDW() || hasFoundEntrance(120) || hasFoundEntrance(121) || hasFoundEntrance(122))) ? 'available' : 'unavailable';
-				}
-			}, { // [119]
-				caption: 'Dark Lake Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [120]
-				caption: 'Ledge Fairy {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(120)) return 'available';
-					if (items.bomb) {
-						if (hasFoundRegion([
-							"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-						])) return 'available';
-						if (activeFluteInvertedEntrance()) return 'available';
-						if (items.mirror && (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld())) return 'available';
-						if (items.flippers && (canReachInvertedEastDW() || canReachInvertedSouthDW())) return 'available';
-					}
-					return 'unavailable';
-				}
-			}, { // [121]
-				caption: 'Ledge Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundRegion([
-						"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-					])) return 'available';
-					if (activeFluteInvertedEntrance()) return 'available';
-					if (items.mirror && (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld())) return 'available';
-					if (items.flippers && (canReachInvertedEastDW() || canReachInvertedSouthDW())) return 'available';
-					return 'unavailable';
-				}
-			}, { // [122]
-				caption: 'Ledge Spike Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(122)) return 'available';
-					if (!items.glove) return 'unavailable';
-					if (hasFoundRegion([
-						"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-					])) return 'available';
-					if (activeFluteInvertedEntrance()) return 'available';
-					if (items.mirror && (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld())) return 'available';
-					if (items.flippers && (canReachInvertedEastDW() || canReachInvertedSouthDW())) return 'available';
-					return 'unavailable';
-				}
-			}, { // [123]
-				caption: 'Misery Mire',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(123)) return 'available';
-					if (!canReachInvertedMireArea()) return 'unavailable';
-					return medallionCheck(0);
-				}
-			}, { // [124]
-				caption: 'Mire Shed',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedMireArea() ? 'available' : 'unavailable';
-				}
-			}, { // [125]
-				caption: 'Mire Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedMireArea() ? 'available' : 'unavailable';
-				}
-			}, { // [126]
-				caption: 'Mire Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedMireArea() ? 'available' : 'unavailable';
-				}
-			}, { // [127]
-				caption: 'Agahnim\'s Tower',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(127)) return 'available';
-					return canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [128]
-				caption: 'Spike Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [129]
-				caption: 'Return Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(129)) return 'available';
-					if (items.mirror && hasFoundEntranceName("Death Mountain Return Cave (West)")) return 'available';
-					return 'unavailable';
-				}
-			}, { // [130]
-				caption: 'Dark Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [131]
-				caption: 'Hookshot Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(131)) return 'available';
-					if (items.mirror && canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [132]
-				caption: 'Hookshot Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(132)) return 'available';
-					return items.glove && canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [133]
-				caption: 'Superbunny Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [134]
-				caption: 'Superbunny Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(134) || hasFoundEntrance(135)) return 'available';
-					if (items.mirror && canReachInvertedEastDeathMountain()) return 'available';
-					return canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [135]
-				caption: 'DDM Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(134) || hasFoundEntrance(135)) return 'available';
-					if (items.mirror && canReachInvertedEastDeathMountain()) return 'available';
-					return canReachInvertedDarkDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [136]
-				caption: 'Turtle Rock - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(136)) return 'available';
-					if (!canReachInvertedDarkDeathMountain()) return 'unavailable';
-					return medallionCheck(1);
-				}
-			}, { // [137]
-				caption: 'Turtle Rock - Back Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(137)) return 'available';				
-					if (!items.mirror) return 'unavailable';				
-					if (hasFoundEntranceName("Fairy Ascension Cave (Top)")) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [138]
-				caption: 'Turtle Rock Ledge - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(138) || hasFoundEntrance(139)) return 'available';
-					if (!items.mirror) return 'unavailable';				
-					if (hasFoundEntranceName("Spiral Cave") || hasFoundEntranceName("Mimic Cave")) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [139]
-				caption: 'Turtle Rock Ledge - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(138) || hasFoundEntrance(139)) return 'available';
-					if (!items.mirror) return 'unavailable';				
-					if (hasFoundEntranceName("Spiral Cave") || hasFoundEntranceName("Mimic Cave")) return 'available';
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}];
-				
-			window.dungeons = [{ // [0]
-				caption: 'Eastern Palace',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachLightWorld()) return 'unavailable';
-					return window.EPBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachLightWorld()) return 'unavailable';
-					return window.EPChests();
-				}
-			}, { // [1]
-				caption: 'Desert Palace {book}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachLightWorldBunny() || !items.book) return 'unavailable';
-					return window.DPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.book || !canReachLightWorldBunny()) return 'unavailable';
-					return window.DPChests();
-				}
-			}, { // [2]
-				caption: 'Tower of Hera {hammer} [{hookshot}/{glove2}]',
-				is_beaten: false,
-				is_beatable: function() {
-					if(!(items.glove || activeFluteInvertedEntrance()) || !items.moonpearl || !items.hammer || !(items.hookshot || items.glove === 2)) return 'unavailable';
-					return window.HeraBoss();
-				},
-				can_get_chest: function() {
-					if(!(items.glove || activeFluteInvertedEntrance()) || !items.moonpearl || !items.hammer || !(items.hookshot || items.glove === 2)) return 'unavailable';
-					return window.HeraChests();
-				}
-			}, { // [3]
-				caption: 'Palace of Darkness',
-				is_beaten: false,
-				is_beatable: function() {
-					if(!canReachEDW()) return 'unavailable';
-					return window.PoDBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachEDW()) return 'unavailable';
-					return window.PoDChests();
-				}
-			}, { // [4]
-				caption: 'Swamp Palace {mirror} {flippers}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.moonpearl || !canReachLightWorldBunny() || !items.mirror || !items.flippers) return 'unavailable';
-					return window.SPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.moonpearl || !canReachLightWorldBunny() || !items.mirror || !items.flippers) return 'unavailable';
-					return window.SPChests();
-				}
-			}, { // [5]
-				caption: 'Skull Woods',
-				is_beaten: false,
-				is_beatable: function() {
-					return window.SWBoss();
-				},
-				can_get_chest: function() {
-					return window.SWChests();
-				}
-			}, { // [6]
-				caption: 'Thieves\' Town',
-				is_beaten: false,
-				is_beatable: function() {
-					return window.TTBoss();
-				},
-				can_get_chest: function() {
-					return window.TTChests();
-				}
-			}, { // [7]
-				caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return window.IPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return window.IPChests();
-				}
-			}, { // [8]
-				caption: 'Misery Mire {medallion0} [{boots}/{hookshot}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!(activeFluteInvertedEntrance() || (items.mirror && canReachLightWorldBunny()))) return 'unavailable';
-					if (!items.boots && !items.hookshot) return 'unavailable';
-					if (!items.bigkey8) return 'unavailable';
-					var state = medallionCheck(0);
-					if (state) return state;
-					return window.MMBoss();
-				},
-				can_get_chest: function() {
-					if (!(activeFluteInvertedEntrance() || (items.mirror && canReachLightWorldBunny()))) return 'unavailable';
-					if (!items.boots && !items.hookshot) return 'unavailable';
-					var state = medallionCheck(0);
-					if (state) return state;
-					return window.MMChests();
-				}
-			}, { // [9]
-				caption: 'Turtle Rock {medallion0}/{mirror}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!(items.glove || activeFluteInvertedEntrance()) || !items.somaria) return 'unavailable';
-					//First, check for back door access through mirror, it has logic priority
-					if (items.mirror && ((items.hookshot && items.moonpearl) || (items.glove === 2))) {
-						return window.TRBackBoss();
-					//If not, go through normal front door access
-					} else {
-						if (!items.bigkey9) return 'unavailable';
-						var state = medallionCheck(1);
-						if (state) return state;
-						return window.TRFrontBoss();
-					}
-				},
-				can_get_chest: function() {
-					if (!(items.glove || activeFluteInvertedEntrance())) return 'unavailable';
-					//First, check for back door access through mirror, it has logic priority
-					if (items.mirror && ((items.hookshot && items.moonpearl) || (items.glove === 2))) {
-						return window.TRBackChests();
-					//If not, go through normal front door access
-					} else {
-						if (!items.somaria) return 'unavailable';
-						var state = medallionCheck(1);
-						if (state) return state;
-						return window.TRFrontChests();
-					}
-				}
-			}, { // [10]
-				caption: 'Ganon\'s Castle (Crystals)',
-				is_beaten: false,
-				is_beatable: function() {
-					if (crystalCheck() < flags.ganonvulncount || !canReachLightWorld()) return 'unavailable';
-					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (items.lantern || items.firerod)) return 'available';
-					return window.GTBoss();			
-				},
-				can_get_chest: function() {
-					if (crystalCheck() < flags.opentowercount) return 'unavailable';
-					return window.GTChests();
-				}
-			}, { // [11]
-				caption: 'Hyrule Castle',//Only used with Entrance or Door Shuffle
-				is_beaten: false,
-				is_beatable: function() {
-					return items.chest11 ?window.dungeons[11].can_get_chest() :'opened';
-				},
-				can_get_chest: function() {
-					return window.HCChests();
-				}
-			}, { // [12]
-				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
-				is_beaten: false,
-				is_beatable: function() {
-					return window.agahnim.is_available();
-				},
-				can_get_chest: function() {
-					return window.CTChests();
-				}
-			}];
+		window.dungeons = [{ // [0]
+			caption: 'Eastern Palace',
+			is_beaten: false,
+			is_beatable: function() {
+				return dungeonBoss(0,[hasFoundLocation('ep') ? 'available' : 'unavailable'],[false]);
+			},
+			can_get_chest: function() {
+				return dungeonChests(0,[hasFoundLocation('ep') ? 'available' : 'unavailable'],[false]);
+			}
+		}, { // [1]
+			caption: 'Desert Palace',
+			is_beaten: false,
+			is_beatable: function() {
+				return dungeonBoss(1,[hasFoundLocation('dp_m') ? 'available' : 'unavailable',hasFoundLocation('dp_w') ? 'available' : 'unavailable',hasFoundLocation('dp_e') ? 'available' : 'unavailable',hasFoundLocation('dp_n') ? 'available' : 'unavailable'],[false,false,false,false]);
+			},
+			can_get_chest: function() {
+				return dungeonChests(1,[hasFoundLocation('dp_m') ? 'available' : 'unavailable',hasFoundLocation('dp_w') ? 'available' : 'unavailable',hasFoundLocation('dp_e') ? 'available' : 'unavailable',hasFoundLocation('dp_n') ? 'available' : 'unavailable'],[false,false,false,false]);
+			}
+		}, { // [2]
+			caption: 'Tower of Hera',
+			is_beaten: false,
+			is_beatable: function() {
+				return dungeonBoss(2,[hasFoundLocation('toh') ? 'available' : 'unavailable'],[false]);
+			},
+			can_get_chest: function() {
+				return dungeonChests(2,[hasFoundLocation('toh') ? 'available' : 'unavailable'],[false]);
+			}
+		}, { // [3]
+			caption: 'Palace of Darkness',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!canReachEDW()) return 'unavailable';
+				if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers)) return 'unavailable';
+				return window.PoDBoss();
+			},
+			can_get_chest: function() {
+				if (!canReachEDW()) return 'unavailable';
+				if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers)) return 'unavailable';
+				return window.PoDChests();
+			}
+		}, { // [4]
+			caption: 'Swamp Palace {mirror} {flippers}',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!canReachSDW() || !items.mirror || !items.flippers) return 'unavailable';
+				if (!items.glove && !items.agahnim) return 'unavailable';
+				return window.SPBoss();
+			},
+			can_get_chest: function() {
+				if (!canReachSDW() || !items.mirror || !items.flippers) return 'unavailable';
+				if (!items.glove && !items.agahnim) return 'unavailable';
+				return window.SPChests();
+			}
+		}, { // [5]
+			caption: 'Skull Woods',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
+				return window.SWBoss();
+			},
+			can_get_chest: function() {
+				if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
+				return window.SWChests();
+			}
+		}, { // [6]
+			caption: 'Thieves\' Town',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
+				return window.TTBoss();
+			},
+			can_get_chest: function() {
+				if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
+				return window.TTChests();
+			}
+		}, { // [7]
+			caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!items.moonpearl || !items.flippers || items.glove !== 2) return 'unavailable';
+				if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				return window.IPBoss();
+			},
+			can_get_chest: function() {
+				if (!items.moonpearl || !items.flippers || items.glove !== 2) return 'unavailable';
+				if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
+				return window.IPChests();
+			}
+		}, { // [8]
+			caption: 'Misery Mire {medallion0} [{boots}/{hookshot}]',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!items.moonpearl || items.flute === 0 || items.glove !== 2) return 'unavailable';
+				if (!items.boots && !items.hookshot) return 'unavailable';
+				if (!items.bigkey8) return 'unavailable';
+				var state = medallionCheck(0);
+				if (state) return state;
+				return window.MMBoss();
+			},
+			can_get_chest: function() {
+				if (!items.moonpearl || items.flute === 0 || items.glove !== 2) return 'unavailable';
+				if (!items.boots && !items.hookshot) return 'unavailable';
+				var state = medallionCheck(0);
+				if (state) return state;
+				return window.MMChests();
+			}
+		}, { // [9]
+			caption: 'Turtle Rock {medallion0} {hammer} {somaria}',
+			is_beaten: false,
+			is_beatable: function() {
+				if (!items.moonpearl || !items.hammer || items.glove !== 2 || !items.somaria || !canReachDDM()) return 'unavailable';
+				if (!items.hookshot && !items.mirror) return 'unavailable';
+				if (!items.bigkey9) return 'unavailable';
+				var state = medallionCheck(1);
+				if (state) return state;
+				return window.TRFrontBoss();
+			},
+			can_get_chest: function() {
+				if (!items.moonpearl || !items.hammer || items.glove !== 2 || !items.somaria || !canReachDDM()) return 'unavailable';
+				if (!items.hookshot && !items.mirror) return 'unavailable';
+				if (!items.somaria) return 'unavailable';
+				var state = medallionCheck(1);
+				if (state) return state;				
+				return window.TRFrontChests();
+			}
+		}, { // [10]
+			caption: 'Ganon\'s Castle (Crystals)',
+			is_beaten: false,
+			is_beatable: function() {
+				if (crystalCheck() < flags.ganonvulncount || !canReachDDM()) return 'unavailable';
+				//Fast Ganon
+				if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (items.lantern || items.firerod)) return 'available';
+				return window.GTBoss();
+			},
+			can_get_chest: function() {
+				if (crystalCheck() < flags.opentowercount || items.glove < 2 || !items.hammer || !canReachDDM()) return 'unavailable';
+				return window.GTChests();
+			}
+		}, { // [11]
+			caption: 'Hyrule Castle',//Only used with Entrance or Door Shuffle
+			is_beaten: false,
+			is_beatable: function() {
+				return items.chest11 ?window.dungeons[11].can_get_chest() :'opened';
+			},
+			can_get_chest: function() {
+				return window.HCChests();
+			}
+		}, { // [12]
+			caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
+			is_beaten: false,
+			is_beatable: function() {
+				return window.agahnim.is_available();
+			},
+			can_get_chest: function() {
+				return window.CTChests();
+			}
+		}];
 
-			window.agahnim = {
-				caption: 'Agahnim',
-				is_available: function() {
-					return window.CTBoss();
-				}
-			};
+		window.agahnim = {
+			caption: 'Agahnim {sword2}/ ({cape}{sword1}){lantern}',
+			is_available: function() {
+				return window.CTBoss();
+			}
+		};
 
-			//define overworld chests
-			window.chests = [{ // [0]
-				caption: 'Light World Swamp',
-				is_opened: false,
-				is_available: function() {
-					if (!hasFoundLocation('dam') ) return 'unavailable';
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [1]
-				caption: 'Stoops Lonk\'s Hoose',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [2]
-				caption: 'Bottle Vendor: Pay 100 rupees',
-				is_opened: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [3]
-				caption: 'Ol\' Stumpy',
-				is_opened: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [4]
-				caption: 'Gary\'s Lunchbox (save the frog first)',
-				is_opened: false,
-				is_available: function() {
-					return (items.mirror || (items.glove === 2 && canReachInvertedNorthDW())) && canReachInvertedLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [5]
-				caption: 'Fugitive under the bridge {flippers}',
-				is_opened: false,
-				is_available: function() {
-					return items.flippers && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [6]
-				caption: 'Ether Tablet {sword2}{book}',
-				is_opened: false,
-				is_available: function() {
-					if (!items.book) return 'unavailable';
-					if (hasFoundEntranceName("Tower of Hera") || (canReachInvertedUpperEastDeathMountain() && items.moonpearl && items.hammer)) {
-						if (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer)) return 'available'
-						return 'information';
-					};
-					return 'unavailable';
-				}
-			}, { // [7]
-				caption: 'Bombos Tablet {sword2}{book}',
-				is_opened: false,
-				is_available: function() {
-					if (!items.book) return 'unavailable';
-					return canReachInvertedLightWorldBunny() ?
-						((items.sword >= 2 || (flags.swordmode === 'S' && items.hammer)) ? 'available' : 'information') :
-						'unavailable';
-				}
-			}, { // [8]
-				caption: 'Catfish',
-				is_opened: false,
-				is_available: function() {
-					if (items.glove && canReachInvertedEastDW()) return 'available';
-					if (canReachInvertedLightWorld() && items.flippers && items.mirror) return 'available';
-					return 'unavailable';
-				}
-			}, { // [9]
-				caption: 'King Zora: Pay 500 rupees',
-				is_opened: false,
-				is_available: function() {
-					return canReachInvertedLightWorld() ? (items.flippers || items.glove ? 'available' : 'unavailable') : 'unavailable';
-				}
-			}, { // [10]
-				caption: 'Lost Old Man {lantern}',
-				is_opened: false,
-				is_available: function() {
-					if (canReachInvertedUpperEastDeathMountain() || hasFoundEntranceName("Tower of Hera")) return items.lantern ? 'available' : 'darkavailable';
-					if (canReachInvertedWestDeathMountain()) return items.lantern ? 'possible' : 'darkpossible';
-					return 'unavailable';
-				}
-			}, { // [11]
-				caption: 'Mushroom',
-				is_opened: false,
-				is_available: function() {
-					return canReachInvertedLightWorldBunny() ? (items.moonpearl ? 'available' : 'information') : 'unavailable';
-				}
-			}, { // [12]
-				caption: 'Spectacle Rock',
-				is_opened: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Tower of Hera")) return 'available';
-					if (canReachInvertedUpperEastDeathMountain() && items.hammer && items.moonpearl) return 'available';
-					return canReachInvertedWestDeathMountain() ? 'information' : 'unavailable';
-				}
-			}, { // [13]
-				caption: 'Floating Island',
-				is_opened: false,
-				is_available: function() {
-					if (canReachInvertedUpperEastDeathMountain()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [14]
-				caption: 'Race Minigame',
-				is_opened: false,
-				is_available: function() {
-					if (items.moonpearl && hasFoundEntrance(46)) return 'available';
-					return canReachInvertedLightWorldBunny() ? 'information' : 'unavailable';
-				}
-			}, { // [15]
-				caption: 'Desert West Ledge',
-				is_opened: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Desert Palace Entrance (West)")) return 'available';
-					if (items.moonpearl && items.glove && hasFoundEntranceName("Desert Palace Entrance (North)")) return 'available';
-					return canReachInvertedLightWorldBunny() ? 'information' : 'unavailable';
-				}
-			}, { // [16]
-				caption: 'Lake Hylia Island {flippers}',
-				is_opened: false,
-				is_available: function() {
-					if (canReachInvertedLightWorld() && items.flippers) return 'available';
-					if (canReachInvertedLightWorldBunny() || canReachInvertedLightWorld()) return 'information';
-					return 'unavailable';
-				}
-			}, { // [17]
-				caption: 'Bumper Cave',
-				is_opened: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Bumper Cave (Top)")) return 'available';
-					if (hasFoundEntranceName("Death Mountain Return Cave (West)") && items.mirror) return 'available';
-					return canReachInvertedNorthDW() ? 'information' : 'unavailable';
-				}
-			}, { // [18]
-				caption: 'Pyramid',
-				is_opened: false,
-				is_available: function() {
-					if (canReachInvertedEastDW()) return 'available';
-					return 'unavailable';
-				}
-			}, { // [19]
-				caption: 'Alec Baldwin\'s Dig-a-Thon: Pay 80 rupees',
-				is_opened: false,
-				is_available: function() {
-					return canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [20]
-				caption: 'Zora River Ledge {flippers}',
-				is_opened: false,
-				is_available: function() {
-					if (!canReachInvertedLightWorld())
-						return 'unavailable';
-					if (items.flippers)
-						return 'available';
-					if (items.glove)
-						return 'information';
-					return 'unavailable';
-				}
-			}, { // [21]
-				caption: 'Buried Item {shovel}',
-				is_opened: false,
-				is_available: function() {
-					return items.shovel && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [22]
-				caption: 'Master Sword Pedestal {pendant0}{pendant1}{pendant2} (can check with {book})',
-				is_opened: false,
-				is_available: function() {
-					if(!canReachInvertedLightWorldBunny() || !canReachInvertedLightWorld())
-						return 'unavailable';
-					var pendant_count = 0;
-					for(var k = 0; k < 10; k++)
-						if((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k])
-							if(++pendant_count === 3)
-								return 'available';
-					return items.book ? 'information' : 'unavailable';
-				}
-			}, { // [23]
-				caption: 'Lost Woods Hideout Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [24]
-				caption: 'Death Mountain Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachInvertedEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [25]
-				caption: 'Mountain Entry Pull Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [26]
-				caption: 'Mountain Entry Southeast Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [27]
-				caption: 'Lost Woods Pass West Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [28]
-				caption: 'Kakariko Portal Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [29]
-				caption: 'Fortune Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [30]
-				caption: 'Kakariko Pond Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [31]
-				caption: 'Bonk Rocks Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [32]
-				caption: 'Sanctuary Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [33]
-				caption: 'River Bend West Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [34]
-				caption: 'River Bend East Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [35]
-				caption: 'Blinds Hideout Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [36]
-				caption: 'Kakariko Welcome Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [37]
-				caption: 'Forgotten Forest Southwest Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [38]
-				caption: 'Forgotten Forest Central Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [39]
-				caption: 'Hyrule Castle Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [40]
-				caption: 'Wooden Bridge Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [41]
-				caption: 'Eastern Palace Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [42]
-				caption: 'Flute Boy South Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [43]
-				caption: 'Flute Boy East Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [44]
-				caption: 'Central Bonk Rocks Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachLightWorld()? 'available' : 'unavailable';
-				}
-			}, { // [45]
-				caption: 'Tree Line Tree 2',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [46]
-				caption: 'Tree Line Tree 4',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [47]
-				caption: 'Flute Boy Approach South Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [48]
-				caption: 'Flute Boy Approach North Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedLightWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [49]
-				caption: 'Dark Lumberjack Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [50]
-				caption: 'Dark Fortune Bonk Rocks (2)',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [51]
-				caption: 'Dark Graveyard West Bonk Rock',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [52]
-				caption: 'Dark Graveyard North Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [53]
-				caption: 'Dark Graveyard Tomb Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [54]
-				caption: 'Qirn Jump West Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthDW() ? 'available' : 'unavailable';
-				}
-			}, { // [55]
-				caption: 'Qirn Jump East Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthEastShopArea() ? 'available' : (items.sword && items.quake && canReachInvertedNorthDW() ? 'bonkinfo' : 'unavailable');
-				}
-			}, { // [56]
-				caption: 'Dark Witch Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedNorthEastShopArea() ? 'available' : 'unavailable';
-				}
-			}, { // [57]
-				caption: 'Pyramid Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [58]
-				caption: 'Palace of Darkness Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [59]
-				caption: 'Dark Tree Line Tree 2',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [60]
-				caption: 'Dark Tree Line Tree 3',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [61]
-				caption: 'Dark Tree Line Tree 4',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedEastDW() ? 'available' : 'unavailable';
-				}
-			}, { // [62]
-				caption: 'Hype Cave Statue',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachInvertedSouthDW() ? 'available' : 'unavailable';
-				}
+		window.entrances = [{ // [0]
+			caption: 'Link\'s House',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [1]
+			caption: 'Bonk Fairy (Light)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [2]
+			caption: 'Dam',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [3]
+			caption: 'Cave 45',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [4]
+			caption: 'Potion Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [5]
+			caption: 'Waterfall of Wishing',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [6]
+			caption: 'Light Hype Fairy',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [7]
+			caption: 'Hyrule Castle Entrance (South)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [8]
+			caption: 'Hyrule Castle Entrance (West)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [9]
+			caption: 'Hyrule Castle Entrance (East)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [10]
+			caption: 'Agahnims Tower',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [11]
+			caption: 'Hyrule Castle Secret Entrance Stairs',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [12]
+			caption: 'Hyrule Castle Secret Entrance Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [13]
+			caption: 'Sanctuary',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [14]
+			caption: 'Bonk Rock Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [15]
+			caption: 'Sanctuary Grave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [16]
+			caption: 'Graveyard Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [17]
+			caption: 'Kings Grave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [18]
+			caption: 'North Fairy Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [19]
+			caption: 'North Fairy Cave Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [20]
+			caption: 'Woods Chest Game',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [21]
+			caption: 'Thief\'s Hideout',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [22]
+			caption: 'Hideout Stump',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [23]
+			caption: 'Lumberjack Hut',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [24]
+			caption: 'Lumberjack Tree Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [25]
+			caption: 'Lumberjack Tree',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [26]
+			caption: 'Ascension Cave (Entrance)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [27]
+			caption: 'Kakariko Fortune Teller',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [28]
+			caption: 'Well Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [29]
+			caption: 'Well Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [30]
+			caption: 'Thief\'s Hut',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [31]
+			caption: 'Elder\'s House (West)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [32]
+			caption: 'Elder\'s House (East)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [33]
+			caption: 'Snitch Lady (West)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [34]
+			caption: 'Snitch Lady (East)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [35]
+			caption: 'Chicken House',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [36]
+			caption: 'Lazy Kid\'s House',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [37]
+			caption: 'Bush Covered House',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [38]
+			caption: 'Kakariko Bomb Hut',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [39]
+			caption: 'Shop (Kak)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [40]
+			caption: 'Tavern (Back)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [41]
+			caption: 'Tavern (Front)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [42]
+			caption: 'Swordsmiths',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [43]
+			caption: 'Bat Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [44]
+			caption: 'Bat Cave Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [45]
+			caption: 'Library',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [46]
+			caption: 'Two Brothers (West)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [47]
+			caption: 'Two Brothers (East)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [48]
+			caption: 'Kakariko Chest Game',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [49]
+			caption: 'Eastern Palace',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [50]
+			caption: 'Sahasrahla\'s Hut',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [51]
+			caption: 'Eastern Fairy Spring',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [52]
+			caption: 'Eastern Fairy Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [53]
+			caption: 'Desert Palace - Main Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [54]
+			caption: 'Desert Palace - West Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [55]
+			caption: 'Desert Palace - East Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [56]
+			caption: 'Desert Palace - North Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [57]
+			caption: 'Checkerboard Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [58]
+			caption: 'Aginah\'s Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [59]
+			caption: 'Desert Fairy',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [60]
+			caption: '50 Rupee Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [61]
+			caption: 'Shop (Lake)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [62]
+			caption: 'Lake Fortune Teller',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [63]
+			caption: 'Mini Moldorm Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [64]
+			caption: 'Pond of Happiness',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [65]
+			caption: 'Ice Rod Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [66]
+			caption: 'Good Bee Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [67]
+			caption: '20 Rupee Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [68]
+			caption: 'Tower of Hera',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [69]
+			caption: 'Spectacle Rock Cave (Top)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [70]
+			caption: 'Spectacle Rock Cave Peak',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [71]
+			caption: 'Spectacle Rock Cave (Bottom)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [72]
+			caption: 'Ascension Cave (Exit)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [73]
+			caption: 'Return Cave (Entrance)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [74]
+			caption: 'Return Cave (Exit)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [75]
+			caption: 'Old Man Cave (West)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [76]
+			caption: 'Old Man Cave (East)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [77]
+			caption: 'Paradox Cave (Top)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [78]
+			caption: 'Paradox Cave (Middle)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [79]
+			caption: 'Paradox Cave (Bottom)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [80]
+			caption: 'Spiral Cave (Entrance)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [81]
+			caption: 'Spiral Cave (Bottom)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [82]
+			caption: 'Hookshot Fairy Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [83]
+			caption: 'Fairy Ascension Cave (Exit)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [84]
+			caption: 'Fairy Ascension Cave (Entrance)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [85]
+			caption: 'Mimic Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [86]
+			caption: 'Bomb Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [87]
+			caption: 'Dark Bonk Fairy',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [88]
+			caption: 'Hype Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [89]
+			caption: 'Swamp Palace',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [90]
+			caption: 'Dark Sanctuary',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [91]
+			caption: 'Forest Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [92]
+			caption: 'Dark North East Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [93]
+			caption: 'Pyramid Hole',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [94]
+			caption: 'Pyramid Fairy',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [95]
+			caption: 'Pyramid Exit',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [96]
+			caption: 'Skull Woods - Back Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [97]
+			caption: 'Skull Woods - West Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [98]
+			caption: 'Skull Woods - North Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [99]
+			caption: 'Skull Woods - Central Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [100]
+			caption: 'Skull Woods - South Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [101]
+			caption: 'Skull Woods - NE Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [102]
+			caption: 'Skull Woods - East Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [103]
+			caption: 'Skull Woods - SE Drop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [104]
+			caption: 'Lumberjack Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [105]
+			caption: 'Bumper Cave (Bottom)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [106]
+			caption: 'VoO Fortune Teller',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [107]
+			caption: 'VoO Chest Game',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [108]
+			caption: 'Thieves\' Town',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [109]
+			caption: 'C-Shaped House',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [110]
+			caption: 'VoO Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [111]
+			caption: 'VoO Bombable Hut',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [112]
+			caption: 'Hammer Peg Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [113]
+			caption: 'Arrow Game',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [114]
+			caption: 'Palace of Darkness',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [115]
+			caption: 'PoD North Hint',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [116]
+			caption: 'PoD Fairy Spring',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [117]
+			caption: 'PoD South Hint',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [118]
+			caption: 'Ice Palace',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [119]
+			caption: 'Dark Lake Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [120]
+			caption: 'Ledge Fairy',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [121]
+			caption: 'Ledge Hint',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [122]
+			caption: 'Ledge Spike Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [123]
+			caption: 'Misery Mire',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [124]
+			caption: 'Mire Shed',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [125]
+			caption: 'Mire Fairy',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [126]
+			caption: 'Mire Hint',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [127]
+			caption: 'Ganon\'s Tower',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [128]
+			caption: 'Spike Cave',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [129]
+			caption: 'Bumper Cave (Top)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [130]
+			caption: 'Dark Fairy Spring',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [131]
+			caption: 'Hookshot Cave (Exit)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [132]
+			caption: 'Hookshot Cave (Entrance)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [133]
+			caption: 'Superbunny Cave (Top)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [134]
+			caption: 'Superbunny Cave (Bottom)',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [135]
+			caption: 'DDM Shop',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [136]
+			caption: 'Turtle Rock - Main Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [137]
+			caption: 'Turtle Rock - Back Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [138]
+			caption: 'Turtle Rock Ledge - West Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}, { // [139]
+			caption: 'Turtle Rock Ledge - East Entrance',
+			is_opened: false,
+			note: '',
+			known_location: '',
+			is_connector: false,
+			is_available: function() {
+				//Logic
+				return 'available';
+			}
+		}];		
 
-			}];
-		}
-		else if (flags.glitches != "N") {
-			window.entrances = [{ // [0]
-				caption: 'Link\'s House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [1]
-				caption: 'Bonk Fairy (Light)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [2]
-				caption: 'Dam',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [3]
-				caption: 'Cave 45',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [4]
-				caption: 'Potion Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [5]
-				caption: 'Waterfall of Wishing',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [6]
-				caption: 'Light Hype Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [7]
-				caption: 'Hyrule Castle Entrance (South)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [8]
-				caption: 'Hyrule Castle Entrance (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [9]
-				caption: 'Hyrule Castle Entrance (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [10]
-				caption: 'Agahnims Tower',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [11]
-				caption: 'Hyrule Castle Secret Entrance Stairs',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [12]
-				caption: 'Hyrule Castle Secret Entrance Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [13]
-				caption: 'Sanctuary',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [14]
-				caption: 'Bonk Rock Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [15]
-				caption: 'Sanctuary Grave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [16]
-				caption: 'Graveyard Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [17]
-				caption: 'Kings Grave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [18]
-				caption: 'North Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [19]
-				caption: 'North Fairy Cave Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [20]
-				caption: 'Woods Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [21]
-				caption: 'Thief\'s Hideout',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [22]
-				caption: 'Hideout Stump',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [23]
-				caption: 'Lumberjack Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [24]
-				caption: 'Lumberjack Tree Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [25]
-				caption: 'Lumberjack Tree',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [26]
-				caption: 'Ascension Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [27]
-				caption: 'Kakariko Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [28]
-				caption: 'Well Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [29]
-				caption: 'Well Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [30]
-				caption: 'Thief\'s Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [31]
-				caption: 'Elder\'s House (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [32]
-				caption: 'Elder\'s House (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [33]
-				caption: 'Snitch Lady (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [34]
-				caption: 'Snitch Lady (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [35]
-				caption: 'Chicken House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [36]
-				caption: 'Lazy Kid\'s House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [37]
-				caption: 'Bush Covered House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [38]
-				caption: 'Kakariko Bomb Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [39]
-				caption: 'Shop (Kak)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [40]
-				caption: 'Tavern (Back)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [41]
-				caption: 'Tavern (Front)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [42]
-				caption: 'Swordsmiths',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [43]
-				caption: 'Bat Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [44]
-				caption: 'Bat Cave Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [45]
-				caption: 'Library',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [46]
-				caption: 'Two Brothers (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [47]
-				caption: 'Two Brothers (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [48]
-				caption: 'Kakariko Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [49]
-				caption: 'Eastern Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [50]
-				caption: 'Sahasrahla\'s Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [51]
-				caption: 'Eastern Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [52]
-				caption: 'Eastern Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [53]
-				caption: 'Desert Palace - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [54]
-				caption: 'Desert Palace - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [55]
-				caption: 'Desert Palace - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [56]
-				caption: 'Desert Palace - North Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [57]
-				caption: 'Checkerboard Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [58]
-				caption: 'Aginah\'s Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [59]
-				caption: 'Desert Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [60]
-				caption: '50 Rupee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [61]
-				caption: 'Shop (Lake)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [62]
-				caption: 'Lake Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [63]
-				caption: 'Mini Moldorm Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [64]
-				caption: 'Pond of Happiness',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [65]
-				caption: 'Ice Rod Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [66]
-				caption: 'Good Bee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [67]
-				caption: '20 Rupee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [68]
-				caption: 'Tower of Hera',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [69]
-				caption: 'Spectacle Rock Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [70]
-				caption: 'Spectacle Rock Cave Peak',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [71]
-				caption: 'Spectacle Rock Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [72]
-				caption: 'Ascension Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [73]
-				caption: 'Return Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [74]
-				caption: 'Return Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [75]
-				caption: 'Old Man Cave (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [76]
-				caption: 'Old Man Cave (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [77]
-				caption: 'Paradox Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [78]
-				caption: 'Paradox Cave (Middle)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [79]
-				caption: 'Paradox Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [80]
-				caption: 'Spiral Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [81]
-				caption: 'Spiral Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [82]
-				caption: 'Hookshot Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [83]
-				caption: 'Fairy Ascension Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [84]
-				caption: 'Fairy Ascension Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [85]
-				caption: 'Mimic Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [86]
-				caption: 'Bomb Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [87]
-				caption: 'Dark Bonk Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [88]
-				caption: 'Hype Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [89]
-				caption: 'Swamp Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [90]
-				caption: 'Dark Sanctuary',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [91]
-				caption: 'Forest Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [92]
-				caption: 'Dark North East Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [93]
-				caption: 'Pyramid Hole',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [94]
-				caption: 'Pyramid Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [95]
-				caption: 'Pyramid Exit',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [96]
-				caption: 'Skull Woods - Back Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [97]
-				caption: 'Skull Woods - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [98]
-				caption: 'Skull Woods - North Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [99]
-				caption: 'Skull Woods - Central Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [100]
-				caption: 'Skull Woods - South Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [101]
-				caption: 'Skull Woods - NE Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [102]
-				caption: 'Skull Woods - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [103]
-				caption: 'Skull Woods - SE Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [104]
-				caption: 'Lumberjack Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [105]
-				caption: 'Bumper Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [106]
-				caption: 'VoO Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [107]
-				caption: 'VoO Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [108]
-				caption: 'Thieves\' Town',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [109]
-				caption: 'C-Shaped House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [110]
-				caption: 'VoO Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [111]
-				caption: 'VoO Bombable Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [112]
-				caption: 'Hammer Peg Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [113]
-				caption: 'Arrow Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [114]
-				caption: 'Palace of Darkness',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [115]
-				caption: 'PoD North Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [116]
-				caption: 'PoD Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [117]
-				caption: 'PoD South Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [118]
-				caption: 'Ice Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [119]
-				caption: 'Dark Lake Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [120]
-				caption: 'Ledge Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [121]
-				caption: 'Ledge Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [122]
-				caption: 'Ledge Spike Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [123]
-				caption: 'Misery Mire',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [124]
-				caption: 'Mire Shed',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [125]
-				caption: 'Mire Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [126]
-				caption: 'Mire Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [127]
-				caption: 'Ganon\'s Tower',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [128]
-				caption: 'Spike Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [129]
-				caption: 'Bumper Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [130]
-				caption: 'Dark Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [131]
-				caption: 'Hookshot Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [132]
-				caption: 'Hookshot Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [133]
-				caption: 'Superbunny Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [134]
-				caption: 'Superbunny Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [135]
-				caption: 'DDM Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [136]
-				caption: 'Turtle Rock - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [137]
-				caption: 'Turtle Rock - Back Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [138]
-				caption: 'Turtle Rock Ledge - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}, { // [139]
-				caption: 'Turtle Rock Ledge - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					//Logic
-					return 'available';
-				}
-			}];
-				
-			window.dungeons = [{ // [0]
-				caption: 'Eastern Palace',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachLightWorld()) return 'unavailable';
-					return window.EPBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachLightWorld()) return 'unavailable';
-					return window.EPChests();
-				}
-			}, { // [1]
-				caption: 'Desert Palace {book}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachLightWorldBunny() || !items.book) return 'unavailable';
-					return window.DPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.book || !canReachLightWorldBunny()) return 'unavailable';
-					return window.DPChests();
-				}
-			}, { // [2]
-				caption: 'Tower of Hera {hammer} [{hookshot}/{glove2}]',
-				is_beaten: false,
-				is_beatable: function() {
-					if(!(items.glove || activeFlute()) || !items.moonpearl || !items.hammer || !(items.hookshot || items.glove === 2)) return 'unavailable';
-					return window.HeraBoss();
-				},
-				can_get_chest: function() {
-					if(!(items.glove || activeFlute()) || !items.moonpearl || !items.hammer || !(items.hookshot || items.glove === 2)) return 'unavailable';
-					return window.HeraChests();
-				}
-			}, { // [3]
-				caption: 'Palace of Darkness',
-				is_beaten: false,
-				is_beatable: function() {
-					if(!canReachEastDarkWorld()) return 'unavailable';
-					return window.PoDBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachEastDarkWorld()) return 'unavailable';
-					return window.PoDChests();
-				}
-			}, { // [4]
-				caption: 'Swamp Palace {mirror} {flippers}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.moonpearl || !canReachLightWorldBunny() || !items.mirror || !items.flippers) return 'unavailable';
-					return window.SPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.moonpearl || !canReachLightWorldBunny() || !items.mirror || !items.flippers) return 'unavailable';
-					return window.SPChests();
-				}
-			}, { // [5]
-				caption: 'Skull Woods',
-				is_beaten: false,
-				is_beatable: function() {
-					return window.SWBoss();
-				},
-				can_get_chest: function() {
-					return window.SWChests();
-				}
-			}, { // [6]
-				caption: 'Thieves\' Town',
-				is_beaten: false,
-				is_beatable: function() {
-					return window.TTBoss();
-				},
-				can_get_chest: function() {
-					return window.TTChests();
-				}
-			}, { // [7]
-				caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return window.IPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.flippers || (!items.firerod && !items.bombos) || (!items.firerod && items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return window.IPChests();
-				}
-			}, { // [8]
-				caption: 'Misery Mire {medallion0} [{boots}/{hookshot}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!(activeFlute() || (items.mirror && canReachLightWorldBunny()))) return 'unavailable';
-					if (!items.boots && !items.hookshot) return 'unavailable';
-					if (!items.bigkey8) return 'unavailable';
-					var state = medallionCheck(0);
-					if (state) return state;
-					return window.MMBoss();
-				},
-				can_get_chest: function() {
-					if (!(activeFlute() || (items.mirror && canReachLightWorldBunny()))) return 'unavailable';
-					if (!items.boots && !items.hookshot) return 'unavailable';
-					var state = medallionCheck(0);
-					if (state) return state;
-					return window.MMChests();
-				}
-			}, { // [9]
-				caption: 'Turtle Rock {medallion0}/{mirror}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!(items.glove || activeFlute()) || !items.somaria) return 'unavailable';
-					//First, check for back door access through mirror, it has logic priority
-					if (items.mirror && ((items.hookshot && items.moonpearl) || (items.glove === 2))) {
-						return window.TRBackBoss();
-					//If not, go through normal front door access
-					} else {
-						if (!items.bigkey9) return 'unavailable';
-						var state = medallionCheck(1);
-						if (state) return state;
-						return window.TRFrontBoss();
-					}
-				},
-				can_get_chest: function() {
-					if (!(items.glove || activeFlute())) return 'unavailable';
-					//First, check for back door access through mirror, it has logic priority
-					if (items.mirror && ((items.hookshot && items.moonpearl) || (items.glove === 2))) {
-						return window.TRBackChests();
-					//If not, go through normal front door access
-					} else {
-						if (!items.somaria) return 'unavailable';
-						var state = medallionCheck(1);
-						if (state) return state;
-						return window.TRFrontChests();
-					}
-				}
-			}, { // [10]
-				caption: 'Ganon\'s Castle (Crystals)',
-				is_beaten: false,
-				is_beatable: function() {
-					if (crystalCheck() < flags.ganonvulncount || !canReachLightWorld()) return 'unavailable';
-					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && items.hammer) && (items.lantern || items.firerod)) return 'available';
-					return window.GTBoss();			
-				},
-				can_get_chest: function() {
-					if (crystalCheck() < flags.opentowercount) return 'unavailable';
-					return window.GTChests();
-				}
-			}, { // [11]
-				caption: 'Hyrule Castle',//Only used with Entrance or Door Shuffle
-				is_beaten: false,
-				is_beatable: function() {
-					return items.chest11 ?window.dungeons[11].can_get_chest() :'opened';
-				},
-				can_get_chest: function() {
-					return window.HCChests();
-				}
-			}, { // [12]
-				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
-				is_beaten: false,
-				is_beatable: function() {
-					return window.agahnim.is_available();
-				},
-				can_get_chest: function() {
-					return window.CTChests();
-				}
-			}];
-
-			window.agahnim = {
-				caption: 'Agahnim',
-				is_available: function() {
-					return window.CTBoss();
-				}
-			};
-
-			//define overworld chests
-			window.chests = [{ // [0]
-				caption: 'Light World Swamp',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-					//return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : 'unavailable') : 'unavailable';
-				}
-			}, { // [1]
-				caption: 'Stoops Lonk\'s Hoose',
-				is_opened: false,
-				is_available: always
-			}, { // [2]
-				caption: 'Bottle Vendor: Pay 100 rupees',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-					//return canReachLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [3]
-				caption: 'Ol\' Stumpy',
-				is_opened: false,
-				is_available: always
-			}, { // [4]
-				caption: 'Gary\'s Lunchbox (save the frog first)',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-					//return (items.mirror || items.glove === 2) && canReachLightWorldBunny() ? 'available' : 'unavailable';
-				}
-			}, { // [5]
-				caption: 'Fugitive under the bridge {flippers}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-					//return canReachLightWorld() ? (items.flippers ? 'available' : 'unavailable') : 'unavailable';
-				}
-			}, { // [6]
-				caption: 'Ether Tablet {sword2}{book}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [7]
-				caption: 'Bombos Tablet {sword2}{book}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [8]
-				caption: 'Catfish',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [9]
-				caption: 'King Zora: Pay 500 rupees',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [10]
-				caption: 'Lost Old Man {lantern}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [11]
-				caption: 'Mushroom',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [12]
-				caption: 'Spectacle Rock',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [13]
-				caption: 'Floating Island',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [14]
-				caption: 'Race Minigame {bomb}/{boots}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-					//return canReachLightWorldBunny() ? (items.moonpearl ? 'available' : 'possible') : 'unavailable';
-				}
-			}, { // [15]
-				caption: 'Desert West Ledge {book}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-					//return canReachLightWorldBunny() ? (items.book ? (items.moonpearl ? 'available' : 'information') : 'information') : 'unavailable';
-				}
-			}, { // [16]
-				caption: 'Lake Hylia Island {flippers}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [17]
-				caption: 'Bumper Cave {cape}{mirror}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [18]
-				caption: 'Pyramid',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [19]
-				caption: 'Alec Baldwin\'s Dig-a-Thon: Pay 80 rupees',
-				is_opened: false,
-				is_available: always
-			}, { // [20]
-				caption: 'Zora River Ledge {flippers}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [21]
-				caption: 'Buried Item {shovel}',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [22]
-				caption: 'Master Sword Pedestal {pendant0}{pendant1}{pendant2} (can check with {book})',
-				is_opened: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [23]
-				caption: 'Lost Woods Hideout Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [24]
-				caption: 'Death Mountain Bonk Rocks',
-				is_opened: false,
-				is_available: always
-			}, { // [25]
-				caption: 'Mountain Entry Pull Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [26]
-				caption: 'Mountain Entry Southeast Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [27]
-				caption: 'Lost Woods Pass West Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [28]
-				caption: 'Kakariko Portal Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [29]
-				caption: 'Fortune Bonk Rocks',
-				is_opened: false,
-				is_available: always
-			}, { // [30]
-				caption: 'Kakariko Pond Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [31]
-				caption: 'Bonk Rocks Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [32]
-				caption: 'Sanctuary Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [33]
-				caption: 'River Bend West Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [34]
-				caption: 'River Bend East Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [35]
-				caption: 'Blinds Hideout Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [36]
-				caption: 'Kakariko Welcome Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [37]
-				caption: 'Forgotten Forest Southwest Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [38]
-				caption: 'Forgotten Forest Central Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [39]
-				caption: 'Hyrule Castle Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [40]
-				caption: 'Wooden Bridge Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [41]
-				caption: 'Eastern Palace Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [42]
-				caption: 'Flute Boy South Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [43]
-				caption: 'Flute Boy East Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [44]
-				caption: 'Central Bonk Rocks Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [45]
-				caption: 'Tree Line Tree 2',
-				is_opened: false,
-				is_available: always
-			}, { // [46]
-				caption: 'Tree Line Tree 4',
-				is_opened: false,
-				is_available: always
-			}, { // [47]
-				caption: 'Flute Boy Approach South Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [48]
-				caption: 'Flute Boy Approach North Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [49]
-				caption: 'Dark Lumberjack Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [50]
-				caption: 'Dark Fortune Bonk Rocks (2)',
-				is_opened: false,
-				is_available: always
-			}, { // [51]
-				caption: 'Dark Graveyard West Bonk Rock',
-				is_opened: false,
-				is_available: always
-			}, { // [52]
-				caption: 'Dark Graveyard North Bonk Rocks',
-				is_opened: false,
-				is_available: always
-			}, { // [53]
-				caption: 'Dark Graveyard Tomb Bonk Rocks',
-				is_opened: false,
-				is_available: always
-			}, { // [54]
-				caption: 'Qirn Jump West Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [55]
-				caption: 'Qirn Jump East Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [56]
-				caption: 'Dark Witch Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [57]
-				caption: 'Pyramid Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [58]
-				caption: 'Palace of Darkness Tree',
-				is_opened: false,
-				is_available: always
-			}, { // [59]
-				caption: 'Dark Tree Line Tree 2',
-				is_opened: false,
-				is_available: always
-			}, { // [60]
-				caption: 'Dark Tree Line Tree 3',
-				is_opened: false,
-				is_available: always
-			}, { // [61]
-				caption: 'Dark Tree Line Tree 4',
-				is_opened: false,
-				is_available: always
-			}, { // [62]
-				caption: 'Hype Cave Statue',
-				is_opened: false,
-				is_available: always
-			}];
-		} else {
-			window.entrances = [{ // [0]
-				caption: 'Links House',
-				world: 'light',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [1]
-				caption: 'Bonk Fairy (Light)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Bonk Fairy (Light)")) return 'available';
-					return (items.boots ? 'available' : 'unavailable');
-				}
-			}, { // [2]
-				caption: 'Dam',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [3]
-				caption: 'Haunted Grove',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Cave 45")) return 'available';
-					return (items.mirror && canReachSouthDarkWorld() ? 'available' : 'unavailable');
-				}
-			}, { // [4]
-				caption: 'Magic Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [5]
-				caption: 'Well of Wishing',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Waterfall of Wishing")) return 'available';
-					return (items.flippers ? 'available' : 'unavailable');
-				}
-			}, { // [6]
-				caption: 'Hype Fairy {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [7]
-				caption: 'Hyrule Castle - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [8]
-				caption: 'Hyrule Castle - Top Entrance (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Hyrule Castle Entrance (West)")) return 'available';
-					return canReachHyruleCastleBalcony() ? 'available' : 'unavailable';
-				}
-			}, { // [9]
-				caption: 'Hyrule Castle - Top Entrance (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntranceName("Hyrule Castle Entrance (East)")) return 'available';
-					return canReachHyruleCastleBalcony() ? 'available' : 'unavailable';
-				}
-			}, { // [10]
-				caption: 'Hyrule Castle - Agahnim\'s Tower',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(10)) return 'available';
-					return canReachHyruleCastleBalcony() && (items.sword > 1 || items.cape || items.agahnim || (flags.swordmode === 'S' && items.hammer)) ? 'available' : 'unavailable';
-				}
-			}, { // [11]
-				caption: 'Hyrule Castle - Secret Entrance Stairs',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [12]
-				caption: 'Hyrule Castle - Secret Entrance Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [13]
-				caption: 'Sanctuary',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [14]
-				caption: 'Bonk Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(14)) return 'available';
-					return (items.boots ? 'available' : 'unavailable');
-				}
-			}, { // [15]
-				caption: 'Grave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return (items.glove > 0 ? 'available' : 'unavailable');
-				}
-			}, { // [16]
-				caption: 'Graveyard Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(16)) return 'available';
-					return (items.mirror && items.moonpearl && canReachWestDarkWorld() ? 'available' : 'unavailable');
-				}
-			}, { // [17]
-				caption: 'King\'s Grave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(17)) return 'available';
-					if (!items.boots) return 'unavailable';
-					if ((canReachWestDarkWorld() && items.mirror && items.moonpearl) || items.glove === 2) return 'available';
-					return 'unavailable';
-				}
-			}, { // [18]
-				caption: 'North Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [19]
-				caption: 'North Fairy Cave Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [20]
-				caption: 'Woods Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [21]
-				caption: 'Thief\'s Hideout',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [22]
-				caption: 'Hideout Stump',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [23]
-				caption: 'Lumberjack Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [24]
-				caption: 'Lumberjack Tree Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [25]
-				caption: 'Lumberjack Tree',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(25)) return 'available';
-					return items.agahnim && items.boots ? 'available' : 'unavailable';
-				}
-			}, { // [26]
-				caption: 'Ascension Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(26)) return 'available';
-					return (items.glove > 0 || (hasFoundEntrance(105) && items.mirror)) ? 'available' : 'unavailable';
-				}
-			}, { // [27]
-				caption: 'Kakariko Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [28]
-				caption: 'Well Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [29]
-				caption: 'Well Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [30]
-				caption: 'Thief\'s Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [31]
-				caption: 'Elder\'s House (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [32]
-				caption: 'Elder\'s House (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [33]
-				caption: 'Snitch Lady (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [34]
-				caption: 'Snitch Lady (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [35]
-				caption: 'Chicken House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [36]
-				caption: 'Lazy Kid\'s House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [37]
-				caption: 'Bush Covered House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [38]
-				caption: 'Kakariko Bomb Hut {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(38)) return 'available';
-					return items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [39]
-				caption: 'Shop (Kak)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [40]
-				caption: 'Tavern (Back)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [41]
-				caption: 'Tavern (Front)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [42]
-				caption: 'Swordsmiths',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [43]
-				caption: 'Bat Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [44]
-				caption: 'Bat Cave Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return ((hasFoundEntrance(112) && items.mirror) || (items.hammer || items.glove === 2 && items.mirror && items.moonpearl)) ? 'available' : 'unavailable';
-				}
-			}, { // [45]
-				caption: 'Library',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [46]
-				caption: 'Two Brothers (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(46)) return 'available';				
-					return ((canReachSouthDarkWorld() && items.mirror) ? 'available' : 'unavailable');
-				}
-			}, { // [47]
-				caption: 'Two Brothers (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [48]
-				caption: 'Kakariko Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [49]
-				caption: 'Eastern Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [50]
-				caption: 'Sahasrahla\'s Hut',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [51]
-				caption: 'Eastern Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [52]
-				caption: 'Eastern Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [53]
-				caption: 'Desert Palace - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(53)) return 'available';				
-					if (items.book || (items.flute >= 1 && items.glove === 2 && items.mirror) || (items.mirror && canReachSouthWestDarkWorld()) || ((hasFoundEntrance(123)) && items.mirror)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [54]
-				caption: 'Desert Palace - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(54)) return 'available';
-					return ((items.flute >= 1 && items.glove === 2 && items.mirror) || (items.mirror && canReachSouthWestDarkWorld()) || (hasFoundEntrance(56) && items.glove > 0)) ? 'available' : 'unavailable';
-				}
-			}, { // [55]
-				caption: 'Desert Palace - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return hasFoundEntrance(55) ? 'available' : 'unavailable';
-				}
-			}, { // [56]
-				caption: 'Desert Palace - North Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(56)) return 'available';
-					return ((hasFoundEntrance(54) && items.glove > 0) || (items.mirror && canReachSouthWestDarkWorld()) || (items.flute >= 1 && items.glove === 2 && items.mirror)) ? 'available' : 'unavailable';
-				}
-			}, { // [57]
-				caption: 'Checkerboard Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(57)) return 'available';
-					return (canReachSouthWestDarkWorld() && items.mirror && items.glove > 0) ? 'available' : 'unavailable';
-				}
-			}, { // [58]
-				caption: 'Aginah\'s Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [59]
-				caption: 'Desert Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [60]
-				caption: '50 Rupee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(60)) return 'available';
-					return (items.glove > 0) ? 'available' : 'unavailable';
-				}
-			}, { // [61]
-				caption: 'Shop (Lake)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [62]
-				caption: 'Lake Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [63]
-				caption: 'Mini Moldorm Cave {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(63)) return 'available';
-					return items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [64]
-				caption: 'Pond of Happiness',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(64)) return 'available';
-					if (hasFoundEntrance(118) && items.mirror) return 'available';
-					return (items.flippers) ? 'available' : 'unavailable';
-				}
-			}, { // [65]
-				caption: 'Ice Rod Cave {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(65)) return 'available';
-					return items.bomb ? 'available' : 'unavailable';
-				}
-			}, { // [66]
-				caption: 'Good Bee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return 'available';
-				}
-			}, { // [67]
-				caption: '20 Rupee Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(67)) return 'available';
-					return (items.glove > 0) ? 'available' : 'unavailable';
-				}
-			}, { // [68]
-				caption: 'Tower of Hera',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(68)) return 'available';
-					if ((canReachLowerWestDarkDeathMountain() || canReachLowerWestDeathMountain()) && items.mirror) return 'available';
-					return (canReachUpperWestDeathMountain()) ? 'available' : 'unavailable';
-				}
-			}, { // [69]
-				caption: 'Spectacle Rock Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(69)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [70]
-				caption: 'Spectacle Rock Cave Peak',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(70)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [71]
-				caption: 'Spectacle Rock Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(71)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [72]
-				caption: 'Ascension Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(72)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [73]
-				caption: 'Return Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(73)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [74]
-				caption: 'Return Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(74)) return 'available';
-					if (hasFoundEntrance(129) && items.mirror) return 'available';
-					return 'unavailable';
-				}
-			}, { // [75]
-				caption: 'Old Man Cave (West)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(75)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [76]
-				caption: 'Old Man Cave (East)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(76)) return 'available';
-					return canReachLowerWestDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [77]
-				caption: 'Paradox Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(77)) return 'available';
-					return canReachUpperEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [78]
-				caption: 'Paradox Cave (Middle)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(78)) return 'available';
-					return canReachLowerEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [79]
-				caption: 'Paradox Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(79)) return 'available';
-					return canReachLowerEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [80]
-				caption: 'Spiral Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(80)) return 'available';
-					return (canReachUpperEastDeathMountain() || hasFoundEntrance(80) || ((hasFoundEntrance(138) || hasFoundEntrance(139)) && items.mirror)) ? 'available' : 'unavailable';
-				}
-			}, { // [81]
-				caption: 'Spiral Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(81)) return 'available';
-					return canReachLowerEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [82]
-				caption: 'Hookshot Fairy Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(82)) return 'available';
-					return canReachLowerEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [83]
-				caption: 'Fairy Ascension Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(83)) return 'available';
-					return (canReachUpperEastDeathMountain() || (hasFoundEntrance(137) && items.mirror)) ? 'available' : 'unavailable';
-				}
-			}, { // [84]
-				caption: 'Fairy Ascension Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(84)) return 'available';
-					if (items.moonpearl && items.mirror && canReachLowerEastDarkDeathMountain()) return 'available';
-					return (hasFoundEntrance(83) || canReachUpperEastDeathMountain() || (canReachLowerEastDeathMountain() && items.glove === 2) || (hasFoundEntrance(137) && items.mirror)) ? 'available' : 'unavailable';
-				}
-			}, { // [85]
-				caption: 'Mimic Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(85)) return 'available';
-					return ((items.mirror && (hasFoundEntrance(138) || hasFoundEntrance(139)))) ? 'available' : 'unavailable';
-				}
-			}, { // [86]
-				caption: 'Bomb Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachSouthDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [87]
-				caption: 'Dark Bonk Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(87)) return 'available';
-					return (canReachSouthDarkWorld() && items.boots && items.moonpearl) ? 'available' : 'unavailable';
-				}
-			}, { // [88]
-				caption: 'Hype Cave {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(88)) return 'available';
-					return (canReachSouthDarkWorld() && items.moonpearl && items.bomb) ? 'available' : 'unavailable';
-				}
-			}, { // [89]
-				caption: 'Swamp Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachSouthDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [90]
-				caption: 'Dark Sanctuary',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [91]
-				caption: 'Forest Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [92]
-				caption: 'Dark North East Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return canReachNorthEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [93]
-				caption: 'Pyramid Hole',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(93)) return 'available';
-					if (!items.agahnim2) return 'unavailable';
-					return canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [94]
-				caption: 'Pyramid Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(94)) return 'available';
-					var crystal_count = 0;
-					for(var k = 0; k < 10; k++)
-						if(prizes[k] === 4 && items['boss'+k])
-							crystal_count += 1;
-					if (crystal_count >= 2 && canReachEastDarkWorld()) {
-						return hasFoundLocation('bomb') ? 'available' : 'possible';
-					}
-					return 'unavailable';
-				}
-			}, { // [95]
-				caption: 'Pyramid Exit',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(95)) return 'available';
-					if (!items.agahnim2 || !items.moonpearl) return 'unavailable';
-					return canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [96]
-				caption: 'Skull Woods - Back Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(96)) return 'available';
-					if (hasFoundEntrance(97) && items.moonpearl && items.firerod) return 'available';
-					return 'unavailable';
-				}
-			}, { // [97]
-				caption: 'Skull Woods - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(97) || hasFoundEntrance(96)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [98]
-				caption: 'Skull Woods - North Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(98)) return 'available';
-					if ((hasFoundEntrance(96) || hasFoundEntrance(97)) && items.moonpearl) return 'available';
-					return 'unavailable';
-				}
-			}, { // [99]
-				caption: 'Skull Woods - Central Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(99)) return 'available';
-					return canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [100]
-				caption: 'Skull Woods - South Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(100)) return 'available';
-					return canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [101]
-				caption: 'Skull Woods - NE Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(101)) return 'available';
-					return (canReachWestDarkWorld() && items.moonpearl) ? 'available' : 'unavailable';
-				}
-			}, { // [102]
-				caption: 'Skull Woods - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(102)) return 'available';
-					return canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [103]
-				caption: 'Skull Woods - SE Drop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(103)) return 'available';
-					return canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [104]
-				caption: 'Lumberjack Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return (canReachWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [105]
-				caption: 'Bumper Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(105)) return 'available';
-					return (canReachWestDarkWorld() && items.glove > 0 && items.moonpearl) ? 'available' : 'unavailable';
-				}
-			}, { // [106]
-				caption: 'VoO Fortune Teller',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return (canReachWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [107]
-				caption: 'VoO Chest Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return (canReachWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [108]
-				caption: 'Thieves\' Town',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(108)) return 'available';
-					return (canReachWestDarkWorld() && items.moonpearl) ? 'available' : 'unavailable';
-				}
-			}, { // [109]
-				caption: 'C-Shaped House',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					return (canReachWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [110]
-				caption: 'VoO Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(110)) return 'available';
-					return (canReachWestDarkWorld() && items.moonpearl && items.hammer) ? 'available' : 'unavailable';
-				}
-			}, { // [111]
-				caption: 'VoO Bombable Hut {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(111)) return 'available';
-					return (canReachWestDarkWorld() && items.moonpearl && items.bomb) ? 'available' : 'unavailable';
-				}
-			}, { // [112]
-				caption: 'Hammer Peg Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(112)) return 'available';
-					return (canReachWestDarkWorld() && items.moonpearl && items.hammer && items.glove === 2) ? 'available' : 'unavailable';
-				}
-			}, { // [113]
-				caption: 'Arrow Game',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(113)) return 'available';
-					return (canReachWestDarkWorld() || canReachSouthDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [114]
-				caption: 'Palace of Darkness',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(114)) return 'available';
-					return (items.moonpearl && canReachEastDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [115]
-				caption: 'PoD North Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(115)) return 'available';
-					return canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [116]
-				caption: 'PoD Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(116)) return 'available';
-					return canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [117]
-				caption: 'PoD South Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(117)) return 'available';
-					return canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [118]
-				caption: 'Ice Palace',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(118)) return 'available';
-					if (hasFoundEntrance(64) && items.glove === 2) return 'available';
-					if (!items.flippers || items.glove < 2) return 'unavailable';
-					return 'available';
-				}
-			}, { // [119]
-				caption: 'Dark Lake Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(119)) return 'available';
-					return (canReachSouthDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [120]
-				caption: 'Ledge Fairy {bomb}',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(120)) return 'available';
-					return (canReachSouthEastDarkWorld() && items.moonpearl && items.bomb) ? 'available' : 'unavailable';
-				}
-			}, { // [121]
-				caption: 'Ledge Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(121)) return 'available';
-					return (canReachSouthEastDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [122]
-				caption: 'Ledge Spike Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(122)) return 'available';
-					return (canReachSouthEastDarkWorld() && items.moonpearl && items.glove > 0) ? 'available' : 'unavailable';
-				}
-			}, { // [123]
-				caption: 'Misery Mire',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(123)) return 'available';
-					if (!canReachSouthWestDarkWorld() || !items.moonpearl || medallionCheck(0) === 'unavailable') return 'unavailable';
-					return (medallionCheck(0) === 'possible') ? 'possible' : 'available';
-				}
-			}, { // [124]
-				caption: 'Mire Shed',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(124)) return 'available';
-					return (canReachSouthWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [125]
-				caption: 'Mire Fairy',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(125)) return 'available';
-					return (canReachSouthWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [126]
-				caption: 'Mire Hint',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(126)) return 'available';
-					return (canReachSouthWestDarkWorld()) ? 'available' : 'unavailable';
-				}
-			}, { // [127]
-				caption: 'Ganon\'s Tower',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(127)) return 'available';
-					if (canReachUpperDarkDeathMountain()) {
-						if (flags.opentowercount == 8) {
-							return 'possible';
-						}
-						return ((crystalCheck() >= flags.opentowercount)) ? 'available' : 'unavailable';
-					}
-					return 'unavailable';
-				}
-			}, { // [128]
-				caption: 'Spike Cave',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(128)) return 'available';
-					return (canReachLowerWestDeathMountain() || canReachUpperWestDeathMountain() || canReachLowerWestDarkDeathMountain()) ? 'available' : 'unavailable';
-				}
-			}, { // [129]
-				caption: 'Bumper Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(129)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [130]
-				caption: 'Dark Fairy Spring',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(130)) return 'available';
-					return (canReachLowerWestDeathMountain() || canReachUpperWestDeathMountain() || canReachLowerWestDarkDeathMountain()) ? 'available' : 'unavailable';
-				}
-			}, { // [131]
-				caption: 'Hookshot Cave (Exit)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(131)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [132]
-				caption: 'Hookshot Cave (Entrance)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(132)) return 'available';
-					return (canReachUpperDarkDeathMountain() && items.moonpearl && items.glove > 0) ? 'available' : 'unavailable';
-				}
-			}, { // [133]
-				caption: 'Superbunny Cave (Top)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(133)) return 'available';
-					return (canReachUpperDarkDeathMountain()) ? 'available' : 'unavailable';
-				}
-			}, { // [134]
-				caption: 'Superbunny Cave (Bottom)',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(134)) return 'available';
-					return (canReachLowerEastDarkDeathMountain()|| (canReachLowerEastDeathMountain() && items.glove === 2)) ? 'available' : 'unavailable';
-				}
-			}, { // [135]
-				caption: 'DDM Shop',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(135)) return 'available';
-					return (canReachLowerEastDarkDeathMountain()|| (canReachLowerEastDeathMountain() && items.glove === 2)) ? 'available' : 'unavailable';
-				}
-			}, { // [136]
-				caption: 'Turtle Rock - Main Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(136)) return 'available';
-					if (!canReachUpperEastDeathMountain() || !items.moonpearl || !items.hammer || items.glove < 2 || medallionCheck(1) === 'unavailable') return 'unavailable';
-					return (medallionCheck(1) === 'possible') ? 'possible' : 'available';
-					
-				}
-			}, { // [137]
-				caption: 'Turtle Rock - Back Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(137)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [138]
-				caption: 'Turtle Rock Ledge - West Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(138)) return 'available';
-					if (hasFoundEntrance(139)) return 'available';
-					return 'unavailable';
-				}
-			}, { // [139]
-				caption: 'Turtle Rock Ledge - East Entrance',
-				is_opened: false,
-				note: '',
-				known_location: '',
-				is_connector: false,
-				is_available: function() {
-					if (hasFoundEntrance(139)) return 'available';
-					if (hasFoundEntrance(138)) return 'available';
-					return 'unavailable';
-				}
-			}];		
-			
-			
-			// define dungeon chests
-			window.dungeons = [{ // [0]
-				caption: 'Eastern Palace',
-				is_beaten: false,
-				is_beatable: function() {
-					return dungeonBoss(0,[hasFoundLocation('ep') ? 'available' : 'unavailable'],[false]);
-				},
-				can_get_chest: function() {
-					return dungeonChests(0,[hasFoundLocation('ep') ? 'available' : 'unavailable'],[false]);
-				}
-			}, { // [1]
-				caption: 'Desert Palace',
-				is_beaten: false,
-				is_beatable: function() {
-					return dungeonBoss(1,[hasFoundLocation('dp_m') ? 'available' : 'unavailable',hasFoundLocation('dp_w') ? 'available' : 'unavailable',hasFoundLocation('dp_e') ? 'available' : 'unavailable',hasFoundLocation('dp_n') ? 'available' : 'unavailable'],[false,false,false,false]);
-				},
-				can_get_chest: function() {
-					return dungeonChests(1,[hasFoundLocation('dp_m') ? 'available' : 'unavailable',hasFoundLocation('dp_w') ? 'available' : 'unavailable',hasFoundLocation('dp_e') ? 'available' : 'unavailable',hasFoundLocation('dp_n') ? 'available' : 'unavailable'],[false,false,false,false]);
-				}
-			}, { // [2]
-				caption: 'Tower of Hera',
-				is_beaten: false,
-				is_beatable: function() {
-					return dungeonBoss(2,[hasFoundLocation('toh') ? 'available' : 'unavailable'],[false]);
-				},
-				can_get_chest: function() {
-					return dungeonChests(2,[hasFoundLocation('toh') ? 'available' : 'unavailable'],[false]);
-				}
-			}, { // [3]
-				caption: 'Palace of Darkness',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachEDW()) return 'unavailable';
-					if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers)) return 'unavailable';
-					return window.PoDBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachEDW()) return 'unavailable';
-					if (!items.agahnim && !(items.hammer && items.glove) && !(items.glove === 2 && items.flippers)) return 'unavailable';
-					return window.PoDChests();
-				}
-			}, { // [4]
-				caption: 'Swamp Palace {mirror} {flippers}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachSDW() || !items.mirror || !items.flippers) return 'unavailable';
-					if (!items.glove && !items.agahnim) return 'unavailable';
-					return window.SPBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachSDW() || !items.mirror || !items.flippers) return 'unavailable';
-					if (!items.glove && !items.agahnim) return 'unavailable';
-					return window.SPChests();
-				}
-			}, { // [5]
-				caption: 'Skull Woods',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
-					return window.SWBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
-					return window.SWChests();
-				}
-			}, { // [6]
-				caption: 'Thieves\' Town',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
-					return window.TTBoss();
-				},
-				can_get_chest: function() {
-					if (!canReachWestDarkWorld() || !canReachWDW()) return 'unavailable';
-					return window.TTChests();
-				}
-			}, { // [7]
-				caption: 'Ice Palace {flippers} [{firerod}/{bombos}]',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.moonpearl || !items.flippers || items.glove !== 2) return 'unavailable';
-					if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return window.IPBoss();
-				},
-				can_get_chest: function() {
-					if (!items.moonpearl || !items.flippers || items.glove !== 2) return 'unavailable';
-					if (!items.firerod && (!items.bombos || items.bombos && (items.sword == 0 && flags.swordmode != 'S'))) return 'unavailable';
-					return window.IPChests();
-				}
-			}, { // [8]
-				caption: 'Misery Mire {medallion0} [{boots}/{hookshot}]',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.moonpearl || items.flute === 0 || items.glove !== 2) return 'unavailable';
-					if (!items.boots && !items.hookshot) return 'unavailable';
-					if (!items.bigkey8) return 'unavailable';
-					var state = medallionCheck(0);
-					if (state) return state;
-					return window.MMBoss();
-				},
-				can_get_chest: function() {
-					if (!items.moonpearl || items.flute === 0 || items.glove !== 2) return 'unavailable';
-					if (!items.boots && !items.hookshot) return 'unavailable';
-					var state = medallionCheck(0);
-					if (state) return state;
-					return window.MMChests();
-				}
-			}, { // [9]
-				caption: 'Turtle Rock {medallion0} {hammer} {somaria}',
-				is_beaten: false,
-				is_beatable: function() {
-					if (!items.moonpearl || !items.hammer || items.glove !== 2 || !items.somaria || !canReachDDM()) return 'unavailable';
-					if (!items.hookshot && !items.mirror) return 'unavailable';
-					if (!items.bigkey9) return 'unavailable';
-					var state = medallionCheck(1);
-					if (state) return state;
-					return window.TRFrontBoss();
-				},
-				can_get_chest: function() {
-					if (!items.moonpearl || !items.hammer || items.glove !== 2 || !items.somaria || !canReachDDM()) return 'unavailable';
-					if (!items.hookshot && !items.mirror) return 'unavailable';
-					if (!items.somaria) return 'unavailable';
-					var state = medallionCheck(1);
-					if (state) return state;				
-					return window.TRFrontChests();
-				}
-			}, { // [10]
-				caption: 'Ganon\'s Castle (Crystals)',
-				is_beaten: false,
-				is_beatable: function() {
-					if (crystalCheck() < flags.ganonvulncount || !canReachDDM()) return 'unavailable';
-					//Fast Ganon
-					if (flags.goals === 'F' && (items.sword > 1 || flags.swordmode === 'S' && (items.hammer || items.net)) && (items.lantern || items.firerod)) return 'available';
-					return window.GTBoss();
-				},
-				can_get_chest: function() {
-					if (crystalCheck() < flags.opentowercount || items.glove < 2 || !items.hammer || !canReachDDM()) return 'unavailable';
-					return window.GTChests();
-				}
-			}, { // [11]
-				caption: 'Hyrule Castle',//Only used with Entrance or Door Shuffle
-				is_beaten: false,
-				is_beatable: function() {
-					return items.chest11 ?window.dungeons[11].can_get_chest() :'opened';
-				},
-				can_get_chest: function() {
-					return window.HCChests();
-				}
-			}, { // [12]
-				caption: 'Castle Tower',//Only used with Entrance or Door Shuffle
-				is_beaten: false,
-				is_beatable: function() {
-					return window.agahnim.is_available();
-				},
-				can_get_chest: function() {
-					return window.CTChests();
-				}
-			}];
-
-			window.agahnim = {
-				caption: 'Agahnim {sword2}/ ({cape}{sword1}){lantern}',
-				is_available: function() {
-					return window.CTBoss();
-				}
-			};
-
-			//define overworld chests
-			window.chests = [{ // [0]
-				caption: 'Dam (Underwater)',
-				is_opened: false,
-				is_available: function () {
-					return hasFoundLocation('dam') ? 'available' : 'unavailable';
-				}
-			}, { // [1]
-				caption: 'Stoops Lonk\'s Hoose',
-				is_opened: (flags.gametype === 'S'),
-				is_available: always
-			}, { // [2]
-				caption: 'Bottle Vendor: Pay 100 rupees',
-				is_opened: false,
-				is_available: always
-			}, { // [3]
-				caption: 'Ol\' Stumpy',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canReachSouthDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [4]
-				caption: 'Gary\'s Lunchbox (save the frog first)',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && items.glove === 2 ? 'available' : 'unavailable';
-				}
-			}, { // [5]
-				caption: 'Fugitive under the bridge {flippers}',
-				is_opened: false,
-				is_available: function() {
-					return items.flippers ? 'available' : 'unavailable';
-				}
-			}, { // [6]
-				caption: 'Ether Tablet {sword2}{book}',
-				is_opened: false,
-				is_available: function() {
-					if ((canReachUpperWestDeathMountain() || (canReachLowerWestDarkDeathMountain() && items.mirror)) && items.book) {
-						return (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer)) ? 'available' : 'information';
-					}
-					return 'unavailable';
-				}
-			}, { // [7]
-				caption: 'Bombos Tablet {mirror}{sword2}{book}',
-				is_opened: false,
-				is_available: function() {
-					return items.book && items.mirror && canReachSouthDarkWorld() ?
-						(items.sword >= 2 || (flags.swordmode === 'S' && items.hammer))? 'available' : 'information' :
-						'unavailable';
-				}
-			}, { // [8]
-				caption: 'Catfish',
-				is_opened: false,
-				is_available: function() {
-					if (canReachNorthEastDarkWorld() && items.moonpearl && items.glove) return 'available';
-					return 'unavailable';
-				}
-			}, { // [9]
-				caption: 'King Zora: Pay 500 rupees',
-				is_opened: false,
-				is_available: function() {
-					return items.flippers || items.glove ? 'available' : 'unavailable';
-				}
-			}, { // [10]
-				caption: 'Lost Old Man {lantern}',
-				is_opened: false,
-				is_available: function() {
-					if (canReachUpperWestDeathMountain()) {
-						return items.lantern ? 'available' : 'darkavailable';
-					}
-					if (canReachLowerWestDeathMountain()) {
-						return items.lantern ? 'possible' : 'darkpossible';
-					}
-					return 'unavailable';
-				}
-			}, { // [11]
-				caption: 'Mushroom',
-				is_opened: false,
-				is_available: always
-			}, { // [12]
-				caption: 'Spectacle Rock {mirror}',
-				is_opened: false,
-				is_available: function() {
-					if (canReachLowerWestDeathMountain()) {
-						return items.mirror ? 'available' : 'information';
-					}
-					return 'unavailable';
-				}
-			}, { // [13]
-				caption: 'Floating Island {mirror}',
-				is_opened: false,
-				is_available: function() {
-					return (hasFoundEntrance(131) && items.mirror) ? 'available' : (canReachUpperEastDeathMountain() ? 'information' : 'unavailable');
-				}
-			}, { // [14]
-				caption: 'Race Minigame',
-				is_opened: false,
-				is_available: function() {
-					return (hasFoundEntrance(46) || (canReachSouthDarkWorld() && items.mirror) ? 'available' : 'information');
-				}
-			}, { // [15]
-				caption: 'Desert West Ledge',
-				is_opened: false,
-				is_available: function() {
-					return (hasFoundEntrance(54) || (items.mirror && canReachSouthWestDarkWorld()) || (items.flute >= 1 && items.glove === 2 && items.mirror) || (hasFoundEntrance(56) && items.glove > 0)) ? 'available' : 'information';
-				}
-			}, { // [16]
-				caption: 'Lake Hylia Island {mirror}',
-				is_opened: false,
-				is_available: function() {
-					return items.flippers && items.mirror && items.moonpearl && canReachEastDarkWorld() ? 'available' : 'information';
-				}
-			}, { // [17]
-				caption: 'Bumper Cave {cape}',
-				is_opened: false,
-				is_available: function() {
-					return hasFoundEntrance(129) ? 'available' : (canReachWestDarkWorld() ? 'information' : 'unavailable');
-				}
-			}, { // [18]
-				caption: 'Pyramid',
-				is_opened: false,
-				is_available: function() {
-					return canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [19]
-				caption: 'Alec Baldwin\'s Dig-a-Thon: Pay 80 rupees',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canReachSouthDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [20]
-				caption: 'Zora River Ledge {flippers}',
-				is_opened: false,
-				is_available: function() {
-					if (items.flippers) return 'available';
-					if (items.glove) return 'information';
-					return 'unavailable';
-				}
-			}, { // [21]
-				caption: 'Buried Itam {shovel}',
-				is_opened: false,
-				is_available: function() {
-					return items.shovel ? 'available' : 'unavailable';
-				}
-			}, { // [22]
-				caption: 'Master Sword Pedestal {pendant0}{pendant1}{pendant2} (can check with {book})',
-				is_opened: false,
-				is_available: function() {
-					var pendant_count = 0;
-					for (var k = 0; k < 10; k++) {
-						if ((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k]) {
-							if (++pendant_count === 3) return 'available';
-						}
-					}
-					return items.book ? 'information' : 'unavailable';
-				}
-			}, { // [23]
-				caption: 'Lost Woods Hideout Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [24]
-				caption: 'Death Mountain Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() && canReachUpperEastDeathMountain() ? 'available' : 'unavailable';
-				}
-			}, { // [25]
-				caption: 'Mountain Entry Pull Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [26]
-				caption: 'Mountain Entry Southeast Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [27]
-				caption: 'Lost Woods Pass West Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [28]
-				caption: 'Kakariko Portal Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [29]
-				caption: 'Fortune Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [30]
-				caption: 'Kakariko Pond Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && (canGetBonkableItem()) ? 'available' : 'unavailable';
-				}
-			}, { // [31]
-				caption: 'Bonk Rocks Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && (canGetBonkableItem()) ? 'available' : 'unavailable';
-				}
-			}, { // [32]
-				caption: 'Sanctuary Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [33]
-				caption: 'River Bend West Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [34]
-				caption: 'River Bend East Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [35]
-				caption: 'Blinds Hideout Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [36]
-				caption: 'Kakariko Welcome Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [37]
-				caption: 'Forgotten Forest Southwest Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [38]
-				caption: 'Forgotten Forest Central Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [39]
-				caption: 'Hyrule Castle Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [40]
-				caption: 'Wooden Bridge Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [41]
-				caption: 'Eastern Palace Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [42]
-				caption: 'Flute Boy South Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [43]
-				caption: 'Flute Boy East Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [44]
-				caption: 'Central Bonk Rocks Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [45]
-				caption: 'Tree Line Tree 2',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [46]
-				caption: 'Tree Line Tree 4',
-				is_opened: false,
-				is_available: function() {
-					return items.agahnim && canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [47]
-				caption: 'Flute Boy Approach South Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [48]
-				caption: 'Flute Boy Approach North Tree',
-				is_opened: false,
-				is_available: function() {
-					return canGetBonkableItem() ? 'available' : 'unavailable';
-				}
-			}, { // [49]
-				caption: 'Dark Lumberjack Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [50]
-				caption: 'Dark Fortune Bonk Rocks (2)',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [51]
-				caption: 'Dark Graveyard West Bonk Rock',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [52]
-				caption: 'Dark Graveyard North Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [53]
-				caption: 'Dark Graveyard Tomb Bonk Rocks',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [54]
-				caption: 'Qirn Jump West Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachWestDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [55]
-				caption: 'Qirn Jump East Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachNorthEastDarkWorld() ? 'available' : (items.moonpearl && items.sword && items.quake && canReachWestDarkWorld() ? 'bonkinfo' : 'unavailable');
-				}
-			}, { // [56]
-				caption: 'Dark Witch Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachNorthEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [57]
-				caption: 'Pyramid Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [58]
-				caption: 'Palace of Darkness Tree',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [59]
-				caption: 'Dark Tree Line Tree 2',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [60]
-				caption: 'Dark Tree Line Tree 3',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [61]
-				caption: 'Dark Tree Line Tree 4',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachEastDarkWorld() ? 'available' : 'unavailable';
-				}
-			}, { // [62]
-				caption: 'Hype Cave Statue',
-				is_opened: false,
-				is_available: function() {
-					return items.moonpearl && canGetBonkableItem() && canReachSouthDarkWorld() ? 'available' : 'unavailable';
-				}
-			}];
-		}
+		window.chests = [{ // [0]
+			caption: 'Sunken Treasure',
+			is_opened: false,
+			is_available: function () {
+				return checkAvailabilityEntrance("Sunken Treasure");
+			}
+		}, { // [1]
+			caption: "Link's House",
+			is_opened: true,
+			is_available: always
+		}, { // [2]
+			caption: 'Bottle Vendor: Pay 100 rupees',
+			is_opened: false,
+			is_available: always
+		}, { // [3]
+			caption: 'Ol\' Stumpy',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Stumpy");
+			}
+		}, { // [4]
+			caption: 'Gary\'s Lunchbox (save the frog first)',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Purple Chest")
+			}
+		}, { // [5]
+			caption: 'Admin under the bridge {flippers}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Hobo")
+			}
+		}, { // [6]
+			caption: 'Ether Tablet {sword2}{book}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Ether Tablet")
+			}
+		}, { // [7]
+			caption: 'Bombos Tablet {mirror}{sword2}{book}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Bombos Tablet")
+			}
+		}, { // [8]
+			caption: 'Catfish',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Catfish")
+			}
+		}, { // [9]
+			caption: 'King Zora: Pay 500 rupees',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("King Zora")
+			}
+		}, { // [10]
+			caption: 'Lost Old Man {lantern}',
+			is_opened: true,
+			is_available: always
+		}, { // [11]
+			caption: 'Mushroom',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Mushroom")
+			}
+		}, { // [12]
+			caption: 'Spectacle Rock {mirror}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Spectacle Rock")
+			}
+		}, { // [13]
+			caption: 'Floating Island {mirror}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Floating Island")
+			}
+		}, { // [14]
+			caption: 'Race Minigame',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Maze Race")
+			}
+		}, { // [15]
+			caption: 'Desert West Ledge',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Desert Ledge")
+			}
+		}, { // [16]
+			caption: 'Lake Hylia Island {mirror}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Lake Hylia Island")
+			}
+		}, { // [17]
+			caption: 'Bumper Cave {cape}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Bumper Cave Ledge")
+			}
+		}, { // [18]
+			caption: 'Pyramid',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Pyramid")
+			}
+		}, { // [19]
+			caption: 'Digging Game: Pay 80 rupees',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Digging Game")
+			}
+		}, { // [20]
+			caption: 'Zora River Ledge {flippers}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Zora's Ledge")
+			}
+		}, { // [21]
+			caption: 'Buried Itam {shovel}',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Flute Spot")
+			}
+		}, { // [22]
+			caption: 'Master Sword Pedestal {pendant0}{pendant1}{pendant2} (can check with {book})',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Master Sword Pedestal")
+			}
+		}, { // [23]
+			caption: 'Lost Woods Hideout Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Lost Woods Hideout Tree");
+			}
+		}, { // [24]
+			caption: 'Death Mountain Bonk Rocks',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Death Mountain Bonk Rocks");
+			}
+		}, { // [25]
+			caption: 'Mountain Entry Pull Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Mountain Entry Pull Tree");
+			}
+		}, { // [26]
+			caption: 'Mountain Entry Southeast Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Mountain Entry Southeast Tree");
+			}
+		}, { // [27]
+			caption: 'Lost Woods Pass West Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Lost Woods Pass West Tree");
+			}
+		}, { // [28]
+			caption: 'Kakariko Portal Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Kakariko Portal Tree");
+			}
+		}, { // [29]
+			caption: 'Fortune Bonk Rocks',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Fortune Bonk Rocks");
+			}
+		}, { // [30]
+			caption: 'Kakariko Pond Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Kakariko Pond Tree");
+			}
+		}, { // [31]
+			caption: 'Bonk Rocks Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Bonk Rocks Tree");
+			}
+		}, { // [32]
+			caption: 'Sanctuary Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Sanctuary Tree");
+			}
+		}, { // [33]
+			caption: 'River Bend West Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("River Bend West Tree");
+			}
+		}, { // [34]
+			caption: 'River Bend East Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("River Bend East Tree");
+			}
+		}, { // [35]
+			caption: 'Blinds Hideout Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Blinds Hideout Tree");
+			}
+		}, { // [36]
+			caption: 'Kakariko Welcome Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Kakariko Welcome Tree");
+			}
+		}, { // [37]
+			caption: 'Forgotten Forest Southwest Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Forgotten Forest Southwest Tree");
+			}
+		}, { // [38]
+			caption: 'Forgotten Forest Central Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Forgotten Forest Central Tree");
+			}
+		}, { // [39]
+			caption: 'Hyrule Castle Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Hyrule Castle Tree");
+			}
+		}, { // [40]
+			caption: 'Wooden Bridge Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Wooden Bridge Tree");
+			}
+		}, { // [41]
+			caption: 'Eastern Palace Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Eastern Palace Tree");
+			}
+		}, { // [42]
+			caption: 'Flute Boy South Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Flute Boy South Tree");
+			}
+		}, { // [43]
+			caption: 'Flute Boy East Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Flute Boy East Tree");
+			}
+		}, { // [44]
+			caption: 'Central Bonk Rocks Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Central Bonk Rocks Tree");
+			}
+		}, { // [45]
+			caption: 'Tree Line Tree 2',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Tree Line Tree 2");
+			}
+		}, { // [46]
+			caption: 'Tree Line Tree 4',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Tree Line Tree 4");
+			}
+		}, { // [47]
+			caption: 'Flute Boy Approach South Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Flute Boy Approach South Tree")
+			}
+		}, { // [48]
+			caption: 'Flute Boy Approach North Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Flute Boy Approach North Tree")
+			}
+		}, { // [49]
+			caption: 'Dark Lumberjack Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Lumberjack Tree")
+			}
+		}, { // [50]
+			caption: 'Dark Fortune Bonk Rocks (2)',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Fortune Bonk Rocks (2)")
+			}
+		}, { // [51]
+			caption: 'Dark Graveyard West Bonk Rock',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Graveyard West Bonk Rocks")
+			}
+		}, { // [52]
+			caption: 'Dark Graveyard North Bonk Rocks',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Graveyard North Bonk Rocks")
+			}
+		}, { // [53]
+			caption: 'Dark Graveyard Tomb Bonk Rocks',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Graveyard Tomb Bonk Rocks")
+			}
+		}, { // [54]
+			caption: 'Qirn Jump West Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Qirn Jump West Tree")
+			}
+		}, { // [55]
+			caption: 'Qirn Jump East Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Qirn Jump East Tree")
+			}
+		}, { // [56]
+			caption: 'Dark Witch Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Witch Tree")
+			}
+		}, { // [57]
+			caption: 'Pyramid Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Pyramid Tree")
+			}
+		}, { // [58]
+			caption: 'Palace of Darkness Tree',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Palace of Darkness Tree")
+			}
+		}, { // [59]
+			caption: 'Dark Tree Line Tree 2',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Tree Line Tree 2")
+			}
+		}, { // [60]
+			caption: 'Dark Tree Line Tree 3',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Tree Line Tree 3")
+			}
+		}, { // [61]
+			caption: 'Dark Tree Line Tree 4',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Dark Tree Line Tree 4")
+			}
+		}, { // [62]
+			caption: 'Hype Cave Statue',
+			is_opened: false,
+			is_available: function() {
+				return checkAvailabilityEntrance("Hype Cave Statue")
+			}
+		}];
 	};
 
 	// #endregion

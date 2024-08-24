@@ -1,19 +1,25 @@
 (function(window) {
-    let dungeonLogicFile = "json/";
+    const jsondirectory = "json/";
 
     // Determine the correct file based on the flag
     if (flags.doorshuffle === 'P') {
-        dungeonLogicFile = dungeonLogicFile + "logic_dungeon_keydrop.json";
+        dungeonLogicFile = jsondirectory + "logic_dungeon_keydrop.json";
     } else {
-        dungeonLogicFile = dungeonLogicFile + "logic_dungeon.json";
+        dungeonLogicFile = jsondirectory + "logic_dungeon.json";
     };
+
+    if (flags.entrancemode === 'N') {
+        nondungeonLogicFile = jsondirectory + "logic_nondungeon_checks.json";
+    } else {
+        nondungeonLogicFile = jsondirectory + "logic_nondungeon_checks_entrance.json";
+    }
 
     // Load all JSON files and wait for all of them to complete
     $.when(
         $.getJSON(dungeonLogicFile),
         $.getJSON("json/logic_regions.json"),
         $.getJSON("json/logic_entrances.json"),
-        $.getJSON("json/logic_nondungeon_checks.json"),
+        $.getJSON(nondungeonLogicFile),
         $.getJSON("json/check_to_array_id.json"),
         $.getJSON("json/entrance_to_array_id.json")
     ).done(function(dungeonData, regionData, entranceData, checkData, checkToArrayIDData, entranceMapData) {
