@@ -12,6 +12,14 @@
             ]
         }
     },
+    "Bottle Vendor": {
+        "Open": {},
+        "Inverted": {
+            "allOf": [
+                "canReach|Inverted Light World Bunny"
+            ]
+        }
+    },
     "Stumpy": {
         "Open": {
             "allOf": [
@@ -196,6 +204,13 @@
                     "allOf": [
                         "canReach|South West Dark World",
                         "mirror"
+                    ]
+                },
+                "hasFoundEntrance|Desert Palace Entrance (West)",
+                {
+                    "allOf": [
+                        "hasFoundEntrance|Desert Palace Entrance (North)",
+                        "glove"
                     ]
                 }
             ]
