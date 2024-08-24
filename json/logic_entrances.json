@@ -476,7 +476,8 @@
         },
         "Inverted": {
             "allOf": [
-                "canReach|Inverted Upper East Death Mountain"
+                "canReach|Inverted Upper East Death Mountain",
+                "mirror"
             ]
         }
     },
@@ -1561,12 +1562,12 @@
     "Old Man House (Bottom)": {
         "Open": {
             "allOf": [
-                "canReach|Lower East Death Mountain"
+                "canReach|Lower West Death Mountain"
             ]
         },
         "Inverted": {
             "allOf": [
-                "canReach|Inverted Lower East Death Mountain"
+                "canReach|Inverted Lower West Death Mountain"
             ]
         }
     },

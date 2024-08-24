@@ -1970,7 +1970,7 @@
 		if (hasFoundRegion([
 			"Tower of Hera", "Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
 			"Old Man Cave (East)", "Death Mountain Return Cave (East)", "Old Man House (Bottom)",
-			"Old Man House (Top)", "Paradox Cave (Top)"
+			"Old Man House (Top)" 
 		])) return true;
 
 		if (items.moonpearl && items.hookshot && hasFoundRegion([
@@ -3146,13 +3146,13 @@
 				return checkEntranceAvailability("Paradox Cave (Bottom)");
 			}
 		}, { // [80]
-			caption: 'Spiral Cave (Bottom)',
+			caption: 'Spiral Cave',
 			is_opened: false,
 			note: '',
 			known_location: '',
 			is_connector: false,
 			is_available: function() {
-				return checkEntranceAvailability("Spiral Cave (Bottom)");
+				return checkEntranceAvailability("Spiral Cave");
 			}
 		}, { // [81]
 			caption: 'Spiral Cave (Bottom)',
@@ -3752,7 +3752,7 @@
 				return checkAvailabilityEntrance("King Zora")
 			}
 		}, { // [10]
-			caption: 'Lost Old Man {lantern}',
+			caption: 'Old Man House (Bottom)',
 			is_opened: true,
 			is_available: always
 		}, { // [11]
