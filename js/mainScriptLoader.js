@@ -20,15 +20,13 @@
         $.getJSON("json/logic_regions.json"),
         $.getJSON("json/logic_entrances.json"),
         $.getJSON(nondungeonLogicFile),
-        $.getJSON("json/check_to_array_id.json"),
         $.getJSON("json/entrance_to_array_id.json")
-    ).done(function(dungeonData, regionData, entranceData, checkData, checkToArrayIDData, entranceMapData) {
+    ).done(function(dungeonData, regionData, entranceData, checkData, entranceMapData) {
         // Assign the loaded data to the window object
         window.dungeonLogic = dungeonData[0];
         window.regionReachLogic = regionData[0];
         window.entranceLogic = entranceData[0];
         window.checkLogic = checkData[0];
-        window.checkToArrayID = checkToArrayIDData[0];
         window.entranceMap = entranceMapData[0];
 
         // Proceed with loading scripts after JSON data is fully loaded

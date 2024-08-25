@@ -2,18 +2,17 @@
     'use strict';
 
 	// #region Helper functions
-	const rankedAvailability = {
-		'available': 0, 'partialavailable': 1, 'darkavailable': 2, 'possible': 3, 'darkpossible': 4, 'information': 5, 'unavailable': 6
-	};
-	function bestAvailability(...availabilityList) {
-		var bestAvailability = 'unavailable';
-		for (var k = 0; k < availabilityList.length; k++) {
-			var availability = availabilityList[k];
-			if (rankedAvailability[availability] < rankedAvailability[bestAvailability]) {
-				bestAvailability = availability;
+	function bestAvailability(arr) {
+		var best = 'unavailable';
+		for (var i = 0; i < arr.length; i++) {
+			switch (arr[i]) {
+				case 'available': return 'available';
+				case 'partialavailable': best = 'partialavailable'; break;
+				case 'darkavailable': if (best != 'partialavailable') { best = 'darkavailable'; break };
+				case 'possible': if (best != 'darkavailable' && best != 'partialavailable') { best = 'possible'; break };
 			};
 		};
-		return bestAvailability;
+		return best;
 	};
 
 	const bossToColorMap = {
@@ -23,42 +22,63 @@
 		'darkpossible': 'purple',
 		'unavailable': 'red'
 	};
+
 	function ConvertBossToColor(availability) {
 		return bossToColorMap[availability];
 	};
 
 	function ConvertBossToChest(x) {
 		switch (x) {
-			case 'available':
-				return 'A';
-			case 'possible':
-				return 'P';
-			case 'darkavailable':
-				return 'DA';
-			case 'darkpossible':
-				return 'DP';
-			case 'unavailable':
-				return 'U';
+			case 'available': return 'A';
+			case 'possible': return 'P';
+			case 'darkavailable': return 'DA';
+			case 'darkpossible': return 'DP';
+			case 'unavailable': return 'U';
 		}
 	};
 
 	function ConvertChestToBoss(x) {
 		switch (x) {
-			case 'A':
-				return 'available';
-			case 'P':
-				return 'possible';
-			case 'DA':
-				return 'darkavailable';
-			case 'DP':
-				return 'darkpossible';
-			case 'U':
-				return 'unavailable';
+			case 'A': return 'available';
+			case 'P': return 'possible';
+			case 'DA': return 'darkavailable';
+			case 'DP': return 'darkpossible';
+			case 'U': return 'unavailable';
 		}
+	};
+
+	function colorDungeonSquares(dungeonID, accessibility, chestAvailability, bossAvailability) {
+		let bossvisibility = 'hidden';
+		let bosscolor = 'red';
+		let bgcolor = 'white';
+		let color = 'black';
+		if (accessibility != 'unavailable') {
+			if (dungeonID < 10) {
+				bossvisibility = (!dungeons[dungeonID].is_beaten && !owGraphLogic ? 'visible' : 'hidden');
+				bosscolor = ConvertBossToColor(bossAvailability);
+			};
+			const curStyle = window.getComputedStyle(document.documentElement);
+			bgcolor = curStyle.getPropertyValue("--" + chestAvailability + "-color");
+			color = rgbToTextColour(curStyle.getPropertyValue("--" + chestAvailability + "-color"));
+		};
+
+		if (dungeonID < 10) {
+			document.getElementById('entranceBoss' + dungeonID).style.visibility = bossvisibility;
+			document.getElementById('entranceBoss' + dungeonID).style.background = bosscolor;
+		};
+		document.getElementById('chest' + dungeonID).style.backgroundColor = bgcolor;
+		document.getElementById('chest' + dungeonID).style.color = color;
 	};
 
 	function isNewLogic() {
 		return flags.doorshuffle === 'P' || (flags.doorshuffle === 'N' && (flags.wildkeys || flags.gametype === 'R') && flags.wildbigkeys && flags.wildcompasses && flags.wildmaps);
+	};
+
+	function isDoorsBranch() {
+		if (flags.doorshuffle != 'N') return true;
+		if (flags.owGraphLogic) return true;
+		if (flags.bonkshuffle != 'N') return true;
+		return false;
 	};
 	// #endregion
 
@@ -129,7 +149,6 @@
 	function canHitRangedSwitch() { return items.bomb || items.bow > 0 || items.boomerang || items.somaria || rod(); }
 	function agatowerweapon() { return items.sword > 0 || items.somaria || items.bow > 0 || items.hammer || items.firerod; }
     function always() { return 'available'; }
-	function canGetBonkableItem() { return items.boots || (items.sword && items.quake) };
 	function activeFlute() { return items.flute > 1 || (items.flute && canReachLightWorld()) };
 	function canDoTorchDarkRooms() {
 		if (items.lantern) return true;
@@ -152,261 +171,9 @@
 		if (type === 'green') return green_pendant;
 		if (type === 'all') return pendant_count === 3;
 	};
-
-	// #endregion
-	
-	// #region Glitch functions
-	function glitchLinkState() { return flags.glitches === 'M' && (items.moonpearl || items.bottle) };
-	function canSpinSpeed() { return items.boots && (items.sword || items.hookshot) };
-	function canBunnyPocket() { return items.boots && (items.mirror || items.bottle) };
-	function canReachSwampGlitchedAsLink() {
-		return (flags.glitches != 'N' && items.moonpearl && (flags.glitches === 'M' || items.boots))
-	};
-
-	function glitchLinkState() {
-		return flags.glitches === 'M' && (items.moonpearl || items.bottle)
-	};
-	// To unlock Swamp, we need to unlock Hera using either the Hera BK or the Mire BK after clipping from Mire,
-	// then have at least one spare Mire key (logic assumes we use two in Mire) to open the switch room door.
-	// 
-	// Since there are no spare keys in vanilla, MG logic assumes we're smart enough to not open the basement door.
-	// However, we still may have to kill the Mire boss and/or check the fire-locked left side to get enough keys,
-	// so we can only be absolutely sure we have enough Mire small keys when we have the ability to full-clear Mire.
-	// 
-	// Assuming we enter Swamp with a Mire key, we can use it to unlock the second waterway door, then carefully 
-	// chain pot keys to unlock the doors on the way from the entrance to the second waterway.
-	// 
-	// The logic assumes we can either hammer the pegs to flood the second waterway after collecting the key, 
-	// or S+Q and clip from either Mire or Hera again just to flood the second waterway. This only really matters 
-	// for wild keys, because otherwise we're clipping from Mire just to unlock Hera/Swamp and hammer is logically 
-	// irrelevant.
-	//
-	// Assuming Swamp is unlocked, we need to either mirror from the DW and drain the dam as normal, or pre-drain
-	// the dam and clip from Hera without taking any overworld transitions. This means we need to either have the
-	// mirror or lantern for Swamp to be fully in logic.
-	//
-	// What if non-keysanity modes were a mistake?
-	function canClipFromMireToSwamp() {
-		if (!items.moonpearl && !glitchLinkState()) return 'unavailable';
-
-		var canReachMireArea = ((flags.glitches === 'H') && items.boots) || (flags.glitches === 'M')
-		if (!canReachMireArea) return 'unavailable';
-
-		if (!items.boots && !items.hookshot) return 'unavailable';
-
-		var med = medallionCheck(0)
-		if (med === 'available') {
-			if (items.somaria && (items.lantern || items.firerod)) return 'available';
-			return 'possible';
-		} else {
-			return med
-		}
-	};
-
-	function canWalkIntoSwampMG() {
-		if (items.hammer && items.hookshot && items.flippers && (items.lantern || items.mirror)) {
-			return 'possible';
-		}
-		return 'unavailable';
-	};
-
-	function canEnterSwampGlitched() {
-		var mire = canClipFromMireToSwamp();
-		var walk = canWalkIntoSwampMG();
-		if (flags.glitches === 'H' && !items.moonpearl) return 'unavailable';
-
-		if (mire === 'available') return canDrainDam('available');
-		if (mire === 'possible') {
-			return walk === 'unavailable' ? canDrainDam(mire) : walk
-		} else {
-			return canDrainDam(walk);
-		}
-	};
-
-	function canDrainDam(status) {
-		if (status === 'unavailable') return status;
-		return items.mirror ? status : (items.lantern ? status : 'dark' + status)
-	};
 	// #endregion
 
-	// #region Non-entrance
-	function canReachLightWorld() {
-		if (flags.gametype != 'I') {
-			return true;
-		};
-		if (flags.gametype === 'I') {
-			return items.moonpearl && (items.glove === 2 || (items.glove && items.hammer) || canReachLightWorldBunny());
-		};
-		return false;
-	};
-
-	function canReachLightWorldBunny() {
-		if (flags.gametype === 'I') {
-			if (items.agahnim || (items.glove === 2 && items.flute > 1)) return true;
-		};
-		return false;
-	};
-
-	function canReachEDW() { 
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N') {
-			if (items.moonpearl && items.boots) return true;
-			if (items.mirror && (items.boots || (canReachWDM() && items.moonpearl))) return true;
-		};
-		if (flags.gametype != 'I') {
-			if (items.moonpearl) {
-				if (items.agahnim) return true;
-				if (items.hammer && items.glove) return true;
-				if (items.glove === 2 && items.flippers) return true;
-			};
-		};
-		if (flags.gametype === 'I') {
-			if (items.agahnim && items.mirror) return true;
-			if (items.flippers || items.hammer || items.flute > 1) return true;
-		};
-		return false;
-	};
-
-	function canReachWDW() {
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.glitches != 'N' && canReachWDM() && items.mirror) return true;
-		if (flags.gametype != 'I') {
-			if (items.moonpearl) {
-				if (items.glove === 2) return true;
-				if (items.glove && items.hammer) return true;
-				if (items.agahnim && items.hookshot && (items.flippers || items.glove || items.hammer)) return true;
-			};
-		};
-		if (flags.gametype === 'I') {
-			return true;
-		};
-		return false;
-	};
-
-	function canReachSDW() { 
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots && items.moonpearl) return true;
-		if (flags.gametype != 'I') {
-			if (items.moonpearl) {
-				if (items.glove === 2) return true;
-				if (items.glove && items.hammer) return true;
-				if (items.agahnim && items.hammer) return true;
-				if (items.agahnim && items.hookshot && (items.flippers || items.glove)) return true;
-			}
-		};
-		if (flags.gametype === 'I') {
-			return true;
-		};
-		return false;
-	};
-
-	function canReachWDM() { 
-		if (flags.glitches === 'M' ) return true;
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.gametype != 'I') {
-			if (items.flute >= 1 || items.glove) return true;
-		};
-		if (flags.gametype === 'I') {
-			if (items.flute > 1 || items.glove) return true;
-		};
-		return false;
-	};
-
-	function canReachEDM() {
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.glitches != 'N' && canReachWDM() && items.mirror) return true;
-		if (flags.gametype != 'I') {
-			if (canReachWDM() && (items.hookshot || (items.mirror && items.hammer))) return true;
-		};
-		if (flags.gametype === 'I') {
-			if (canReachWDM()) {
-				if (items.moonpearl && items.hookshot) return true;
-				if (items.glove > 1) return true;
-			};
-		};
-		return false;
-	};
-
-	function canReachDDM() { 
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && canReachWDM() && items.mirror) return true;
-		if (flags.glitches != 'N' && items.boots && (items.moonpearl || items.hammer)) return true;
-		if (flags.gametype != 'I') {
-			if (canReachEDM() && items.moonpearl && items.glove > 1) return true;
-		};
-		if (flags.gametype === 'I') {
-			if (items.glove || items.flute > 1) return true;
-		};
-		return false;
-	};
-
-	function canReachDP() { 
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.gametype != 'I' ) {
-			if (items.book) return true;
-			if (items.mirror && canReachMire()) return true;	
-		};
-		if (flags.gametype === 'I') {
-			if (items.book && canReachLightWorld()) return true;
-		};
-		return false;
-	};
-
-	function canReachDPNorth() {
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.gametype != 'I' ) {
-			if (items.book && items.glove) return true;
-			if (items.mirror && canReachMire()) return true;	
-		};
-		if (flags.gametype === 'I') {
-			if (canReachDP() && items.glove) return true;
-		};
-		return false;
-	};
-
-	function canReachHera() { 
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots) return true;
-		if (flags.gametype != 'I') {
-			if (canReachWDM() && (items.mirror || (items.hookshot && items.hammer))) return true;
-		};
-		if (flags.gametype === 'I') {
-			if (canReachEDM() && items.moonpearl && items.hammer) return true;
-		};
-		return false;
-	};
-
-	function canReachMire() {
-		if (flags.glitches === 'M') return true;
-		if (flags.glitches != 'N' && items.boots && canReachSDW()) return true;
-		if (flags.gametype != 'I') {
-			if (items.glove === 2 && items.flute >= 1) return true;
-		};
-		if (flags.gametype === 'I') {
-			if (items.flute > 1 || (items.flute === 1 && canReachLightWorld())) return true;
-			if (canReachLightWorldBunny() && items.mirror) return true;
-		};
-		return false;
-	};
-
-
-	function locationRequiresMoonpearl(mapTrackerName) {
-		const moonpearlWorld = flags.gametype === 'I' ? 'light' : 'dark';
-		for (var i = 0; i < entrances.length; i++) {
-			if (entrances[i].known_location === mapTrackerName) {
-				if ("world" in entrances[i]) {
-					return entrances[i].world === moonpearlWorld;
-				} else {
-					return false;
-				};
-			};
-		};
-	};
-
+	// #region Non-entrance reach and check logic
 	// Location object contains "anyOf" or "allOf" arrays of conditions
 	function stateOfAll(requirements) {
 		if (requirements.allOf) {
@@ -598,6 +365,862 @@
 		if (required > 0) return 'darkavailable';
 		return 'unavailable';
 	};
+	// #endregion
+
+	// #region Entrance reach and check logic
+	function hasFoundLocation(x) {
+		for (var i = 0; i < entrances.length; i++) {
+			if (entrances[i].known_location === x) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function hasFoundEntrance(x) { 
+		if (flags.entrancemode === 'N') return false;
+		return (entrances[x].is_connector || entrances[x].known_location != '');
+	};
+
+	function hasFoundEntranceName(x) {
+		return hasFoundEntrance(entranceMap[x]);
+	};
+
+	function hasFoundRegion(x) {
+		if (flags.entrancemode === 'N') return false;
+		for (var i = 0; i < x.length; i++) {
+			if (hasFoundEntrance(entranceMap[x[i]])) {
+				return true;
+			};
+		};
+		return false;
+	};
+
+	function canLeaveNorthEastDarkWorldSouth() {
+		return items.moonpearl && (items.glove || items.hammer || items.flippers);
+	};
+
+	function canLeaveNorthEastDarkWorldWest() {
+		return items.moonpearl && items.hookshot;
+	};
+
+	function canLeaveSouthEastDarkWorld() {
+		return items.moonpearl && items.flippers;
+	};
+
+	// #region Connectors - Non-Inverted entrance
+	function canReachUpperWestDeathMountain() {
+		if (items.flute >= 1 && items.mirror) return true;
+		if (hasFoundEntranceName("Tower of Hera") || (hasFoundEntranceName("Paradox Cave (Top)") && items.hammer)) return true;
+		if (items.mirror && hasFoundRegion([
+			"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", "Death Mountain Return Cave (East)",
+			"Old Man House (Bottom)", "Old Man House (Top)", "Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave",
+			"Superbunny Cave (Top)", "Turtle Rock", "Spike Cave", "Dark Death Mountain Fairy"
+		])) return true;
+		if (items.hookshot && items.mirror && (hasFoundRegion([
+			"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy",
+			"Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Superbunny Cave (Bottom)", "Dark Death Mountain Shop",
+			"Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)"
+		]))) return true;
+
+		return false;
+	};
+
+	function canReachLowerWestDeathMountain() {
+		if (items.flute >= 1) return true;
+		if (hasFoundRegion([
+				"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", 
+				"Death Mountain Return Cave (East)", "Old Man House (Bottom)", "Old Man House (Top)"
+		])) return true;
+		if (items.hookshot && hasFoundRegion([
+				"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy",
+				"Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", 
+			])) return true;
+		if (items.mirror && items.hookshot && hasFoundRegion([
+			"Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)",
+			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop"
+		])) return true;
+		if (items.mirror && hasFoundRegion([
+			"Spike Cave", "Dark Death Mountain Fairy", "Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
+		])) return true;
+	
+		return false;
+	};
+
+	function canReachUpperEastDeathMountain() {
+		if (hasFoundEntranceName("Paradox Cave (Top)") || (canReachUpperWestDeathMountain() && items.hammer)) return true;
+		if (items.mirror && (hasFoundRegion([
+			"Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
+		]))) return true;
+		if (items.flute >= 1 && items.mirror && items.hammer) return true;
+		return false;
+	};
+
+	function canReachLowerEastDeathMountain() {
+		if ((items.flute >= 1 && items.hookshot)) return true; 
+		if (hasFoundRegion([
+			"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)"
+		])) return true;
+		if (items.mirror && (hasFoundRegion([
+			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)",
+			"Ganons Tower", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
+		]))) return true;
+		if (items.hookshot && canReachLowerWestDeathMountain()) return true;
+		if (canReachUpperWestDeathMountain() && items.hammer) return true;
+
+		return false;
+	};
+	
+	function canReachUpperDarkDeathMountain() {
+		if (hasFoundRegion([
+			"Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
+		])) return true;
+		if (items.hammer && items.glove === 2 && canReachUpperEastDeathMountain()) return true;
+		return false;
+	};
+
+	function canReachLowerWestDarkDeathMountain() {
+		return (hasFoundRegion(["Spike Cave", "Dark Death Mountain Fairy"]) || canReachLowerWestDeathMountain() || canReachUpperDarkDeathMountain());
+	};
+	
+	function canReachLowerEastDarkDeathMountain() {
+		return (canReachUpperDarkDeathMountain() || hasFoundRegion(["Superbunny Cave (Bottom)", "Dark Death Mountain Shop"]) || (canReachLowerEastDeathMountain() && items.glove === 2));
+	};
+
+	function canReachHyruleCastleBalcony() {
+		if (hasFoundRegion([
+			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower"
+		])) return true;
+		if (canReachEastDarkWorld() && items.mirror) return true;
+		return false;
+	};
+
+	function canReachSouthEastDarkWorld(toEastDarkWorld=false) {
+		if (hasFoundRegion([
+			"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
+		])) return true;
+		if (!toEastDarkWorld) {
+			if (items.flippers && items.moonpearl && canReachEastDarkWorld()) return true;
+		};
+		return false;
+	};
+
+	function canReachEastDarkWorld() {
+		if (items.agahnim) return true;
+		if (items.moonpearl && items.glove && items.hammer) return true;
+		if (items.moonpearl && items.glove > 1 && items.flippers) return true;
+		if (hasFoundRegion([
+			"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
+		])) return true;
+		if (items.moonpearl && (items.hammer || items.flippers) && hasFoundRegion([
+			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		])) return true;
+		if (canLeaveNorthEastDarkWorldSouth() && hasFoundEntranceName("Dark Potion Shop")) return true;
+		if (items.moonpearl && (items.flippers || items.hammer) && (hasFoundRegion([
+			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
+			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
+		]))) return true;
+		if ((items.hammer || items.flippers) && items.moonpearl && canReachSouthDarkWorld(true)) return true;
+		if (canLeaveSouthEastDarkWorld() && canReachSouthEastDarkWorld(true)) return true;
+		return false;
+	};
+
+	function canReachNorthEastDarkWorld() {
+		if (hasFoundEntranceName("Dark Potion Shop")) return true;
+		if (canReachEastDarkWorld() && items.moonpearl && (items.flippers || items.glove > 0 || items.hammer)) return true;
+		return false;
+	};
+
+	function canReachWestDarkWorld(toEastDarkWorld=false) {
+		if (items.moonpearl && (items.glove === 2 || (items.glove && items.hammer))) return true;
+		if (hasFoundRegion([
+			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
+			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
+		])) return true;
+		if (items.moonpearl && (hasFoundEntranceName("Dark World Shop") && items.hammer)) return true;
+		if (items.moonpearl && (items.hookshot && (items.flippers || items.hammer)) && hasFoundRegion([
+			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		])) return true;
+		if (!toEastDarkWorld) {
+			if (canLeaveNorthEastDarkWorldWest() && canReachNorthEastDarkWorld()) return true;
+		};
+		return false;
+	};
+
+	function canReachSouthDarkWorld(toEastDarkWorld=false) {
+		if (items.moonpearl && (items.glove === 2 || (items.glove && items.hammer))) return true;
+		if (hasFoundRegion([
+			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		])) return true;
+		if (!toEastDarkWorld) {
+			if (items.moonpearl && items.hammer && canReachEastDarkWorld()) return true;
+		};
+		if (canReachWestDarkWorld(toEastDarkWorld)) return true;
+		return false;
+	};
+
+	function canReachSouthWestDarkWorld() {
+		if (items.flute >= 1 && items.glove >= 2) return true;
+		if (hasFoundRegion([
+			"Misery Mire", "Mire Shed", "Mire Hint", "Mire Fairy"
+		])) return true;
+		return false;
+	};
+	// #endregion
+	
+	// #region Connectors - Inverted entrance
+	function activeFluteInvertedEntrance() { return items.flute > 1 || (items.flute && (canReachInvertedLightWorld() || flags.activatedflute)) };
+
+	function canReachInvertedLightWorld() {
+		if (!items.moonpearl) return false;
+		if (items.glove >= 2 || (items.glove && items.hammer)) return true;
+		if (items.agahnim || (items.glove === 2 && activeFluteInvertedEntrance()) || hasFoundRegion([
+			"Links House", "Bonk Fairy (Light)", "Dam", "Cave 45", "Light Hype Fairy", "Hyrule Castle Entrance (South)",
+			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower", "Sanctuary", "Bonk Rock Cave",
+			"North Fairy Cave", "Lost Woods Gamble", "Lost Woods Hideout Stump", "Lumberjack House", "Lumberjack Tree Cave",
+			"Old Man Cave (West)", "Fortune Teller (Light)", "Kakariko Well Cave", "Blinds Hideout", "Elder House (West)",
+			"Elder House (East)", "Snitch Lady (West)", "Snitch Lady (East)", "Chicken House", "Sick Kids House",
+			"Kakariko Shop", "Tavern (Front)", "Blacksmiths Hut", "Bat Cave Cave", "Library", "Tavern North", "Two Brothers House (West)",
+			"Two Brothers House (East)", "Kakariko Gamble Game", "Eastern Palace", "Sahasrahlas Hut", "Lake Hylia Fairy",
+			"Long Fairy Cave", "Desert Palace Entrance (West)", "Desert Palace Entrance (East)", "Checkerboard Cave",
+			"Aginahs Cave", "Desert Fairy", "50 Rupee Cave", "Lake Hylia Shop", "Lake Hylia Fortune Teller", "Mini Moldorm Cave",
+			"Ice Rod Cave", "Good Bee Cave", "20 Rupee Cave", "Death Mountain Return Cave (West)", "Pyramid Exit"
+		])) return true;
+		if (hasFoundRegion([
+			"Potion Shop", "Hyrule Castle Secret Entrance Stairs", "Graveyard Cave", "Bush Covered House", "Light World Bomb Hut"
+		])) return true;
+		if (items.flippers && hasFoundRegion(["Waterfall of Wishing", "Capacity Upgrade"])) return true;
+		if (items.glove > 1 && hasFoundEntranceName("Kings Grave")) return true;
+		if (items.glove && hasFoundEntranceName("Desert Palace Entrance (North)")) return true;
+
+		if (items.glove === 2 && (hasFoundRegion([
+			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop",
+			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
+			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
+		]))) return true;
+
+		if (items.glove && items.hammer && hasFoundRegion([
+			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop",
+			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
+			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)",
+			"Dark World Shop", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint",
+			"Pyramid Fairy", "Dark Potion Shop"
+		])) return true;
+
+		if (items.glove === 2 && items.hookshot && (hasFoundRegion([
+			"Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint",
+			"Pyramid Fairy", "Dark Potion Shop"
+		]))) return true;
+
+		if ((items.glove === 2 || (items.glove && items.hammer)) && items.flippers && (hasFoundRegion([
+			"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave",
+		]))) return true;
+
+		if (items.glove === 2 && items.hammer && hasFoundEntranceName("Hammer Peg Cave")) return true;
+
+		return false;
+	};
+
+	function canReachInvertedLightWorldBunny() {
+		if (canReachInvertedLightWorld()) return true;
+		if (items.agahnim || (items.glove === 2 && activeFluteInvertedEntrance()) || hasFoundRegion([
+			"Links House", "Bonk Fairy (Light)", "Dam", "Cave 45", "Light Hype Fairy", "Hyrule Castle Entrance (South)",
+			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower", "Sanctuary", "Bonk Rock Cave",
+			"North Fairy Cave", "Lost Woods Gamble", "Lost Woods Hideout Stump", "Lumberjack House", "Lumberjack Tree Cave",
+			"Old Man Cave (West)", "Fortune Teller (Light)", "Kakariko Well Cave", "Blinds Hideout", "Elder House (West)",
+			"Elder House (East)", "Snitch Lady (West)", "Snitch Lady (East)", "Chicken House", "Sick Kids House",
+			"Kakariko Shop", "Tavern (Front)", "Blacksmiths Hut", "Bat Cave Cave", "Library", "Tavern North", "Two Brothers House (West)",
+			"Two Brothers House (East)", "Kakariko Gamble Game", "Eastern Palace", "Sahasrahlas Hut", "Lake Hylia Fairy",
+			"Long Fairy Cave", "Desert Palace Entrance (West)", "Desert Palace Entrance (East)", "Checkerboard Cave",
+			"Aginahs Cave", "Desert Fairy", "50 Rupee Cave", "Lake Hylia Shop", "Lake Hylia Fortune Teller", "Mini Moldorm Cave",
+			"Ice Rod Cave", "Good Bee Cave", "20 Rupee Cave", "Death Mountain Return Cave (West)", "Pyramid Exit"
+		])) return true;
+
+		return false;
+	};
+	
+	function canReachInvertedWestDW() {
+		return true; // Always accessible
+		// Dark sanc is always in the north DW unless it changes
+		// if (hasFoundRegion([
+		// 	"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
+		// 	"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
+		// ])) return true;
+
+		// if (items.glove === 2 && hasFoundRegion([
+		// 	"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		// ])) return true;
+
+		// if (((items.hammer && items.glove === 2) || (items.hookshot && (items.flippers || items.glove || items.hammer))) && (hasFoundRegion([
+		// 	"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
+		// ]))) return true;
+
+		// if (hasFoundEntranceName("Dark Potion Shop") && ((items.hammer && items.glove === 2) || items.hookshot)) return true;
+
+		// if (hasFoundEntranceName("Dark World Shop") && items.hammer) return true;
+
+		// if (items.flippers && ((items.glove === 2 && items.hammer) || items.hookshot) && hasFoundRegion([
+		// 	"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
+		// ])) return true;
+
+		// if (activeFluteInvertedEntrance()) return true;
+
+		// if (items.mirror) {
+		// 	if (canReachInvertedLightWorldBunny()) return true;
+		// 	if (hasFoundRegion([
+		// 		"Graveyard Cave", "Light World Bomb Hut", "Kings Grave"
+		// 	])) return true;
+		// 	if (hasFoundEntranceName("Bush Covered House") && items.hammer) return true;
+		// 	if (hasFoundEntranceName("Potion Shop") && items.hookshot) return true;
+		// };
+
+		// return false;
+	};
+	
+	function canReachInvertedSouthDW() {
+		return true; // Always accessible
+		// if (activeFluteInvertedEntrance()) return true;
+
+		// if (hasFoundRegion([
+		// 	"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
+		// ])) return true;
+
+		// if (hasFoundRegion([
+		// 	"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
+		// ])) return true;
+
+		// if (items.flippers && items.hammer && hasFoundRegion([
+		// 	"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
+		// ])) return true;
+
+		// if (canReachInvertedNorthDW()) return true;
+
+		// return false;
+	};
+	
+	function canReachInvertedEastDW() {
+		if (activeFluteInvertedEntrance()) return true;
+
+		if (hasFoundRegion([
+			"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
+		])) return true;
+
+		if ((items.hammer || items.glove || items.flippers) && hasFoundEntranceName("Dark Potion Shop")) return true;
+
+		if (canReachInvertedSouthDW() && (items.flippers || items.hammer)) return true;
+
+		if (items.mirror) {
+			if (canReachInvertedLightWorldBunny()) return true;
+			if ((items.hammer || items.glove) && hasFoundEntranceName("Potion Shop")) return true;
+			if (hasFoundEntranceName("Hyrule Castle Secret Entrance Stairs")) return true;
+		};
+
+		return false;
+	};
+
+	function canReachInvertedNorthEastDW() {
+		if (activeFluteInvertedEntrance()) return true;
+		if (hasFoundEntranceName("Dark Potion Shop")) return true;
+		if (items.mirror && hasFoundEntranceName("Potion Shop")) return true;
+		if (items.mirror && canReachInvertedLightWorld()) return true;
+		if (items.flippers && (canReachInvertedWestDW() || canReachInvertedSouthDW() || canReachInvertedEastDW())) return true;
+		if ((items.hammer || items.glove) && canReachInvertedEastDW()) return true;
+		return false;
+	};
+	
+	function canReachInvertedSouthWestDW() {
+		if (activeFluteInvertedEntrance()) return true;
+
+		if (hasFoundRegion([
+			"Misery Mire", "Mire Shed", "Mire Hint", "Mire Fairy"
+		])) return true;
+
+		if (items.mirror) {
+			if (canReachInvertedLightWorldBunny()) return true;
+			if (hasFoundRegion(["Desert Palace Entrance (South)", "Desert Palace Entrance (North)"])) return true;		
+		};
+
+		return false;
+	};
+
+	function canReachInvertedSouthEastDW() {
+		if (hasFoundRegion([
+			"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
+		])) return true;
+		if (items.flippers && canReachInvertedSouthDW()) return true;
+		if (activeFluteInvertedEntrance()) return true;
+		if (items.mirror && canReachInvertedLightWorldBunny()) return true;
+		return false;
+	};
+
+	function canReachInvertedDarkDeathMountain() {
+		if (activeFluteInvertedEntrance()) return true;
+
+		if (hasFoundRegion([
+			"Ganons Tower", "Spike Cave", "Dark Death Mountain Fairy", "Hookshot Cave Back Entrance",
+			"Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
+		])) return true;
+
+		if (items.mirror) {
+			if (hasFoundRegion([
+				"Tower of Hera", "Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
+				"Old Man Cave (East)", "Death Mountain Return Cave (East)", "Old Man House (Bottom)",
+				"Old Man House (Top)", "Paradox Cave (Top)"
+			])) return true;
+
+			if (items.moonpearl && items.hookshot && hasFoundRegion([
+				"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)",
+				"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
+			])) return true;
+		};
+
+		return false;
+	};
+	
+	function canReachInvertedLowerWestDeathMountain() {
+
+		if (canReachInvertedDarkDeathMountain()) return true;
+
+		if (hasFoundRegion([
+			"Tower of Hera", "Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
+			"Old Man Cave (East)", "Death Mountain Return Cave (East)", "Old Man House (Bottom)",
+			"Old Man House (Top)" 
+		])) return true;
+
+		if (items.moonpearl && items.hookshot && hasFoundRegion([
+			"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)",
+			"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
+		])) return true;
+
+		if (items.moonpearl && items.hammer && hasFoundEntranceName("Paradox Cave (Top)")) return true;
+
+		return false;
+	};
+
+	function canReachInvertedUpperEastDeathMountain() {
+		if (hasFoundEntranceName("Paradox Cave (Top)") || (hasFoundEntranceName("Tower of Hera") && items.hammer)) return true;
+		if (canReachInvertedDarkDeathMountain() && items.mitts && items.hammer && items.moonpearl) return true;
+	};
+
+	function canReachInvertedUpperWestDeathMountain() {
+		if (hasFoundEntranceName("Tower of Hera")) return true;
+		if (items.moonpearl && items.hammer && hasFoundEntranceName("Paradox Cave (Top)")) return true;
+		if (canReachInvertedDarkDeathMountain() && items.mitts && items.hammer && items.moonpearl) return true;
+		return false;
+	};
+ 	
+	function canReachInvertedLowerEastDeathMountain() {
+		if (canReachInvertedUpperEastDeathMountain()) return true;
+
+		if (hasFoundRegion([
+			"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)",
+			"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
+		])) return true;
+
+		if (items.moonpearl && items.hookshot && canReachInvertedLowerWestDeathMountain()) return true;
+
+		if (items.glove === 2) {
+			if (canReachInvertedDarkDeathMountain()) return true;
+			if (hasFoundRegion([
+				"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance",
+			])) return true;
+		};
+
+		return false;
+	};
+
+	function canReachInvertedLowerEastDarkDeathMountain() {
+		if (hasFoundRegion([
+			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance",
+		])) return true;
+		if (canReachInvertedDarkDeathMountain()) return true;
+		if (items.mirror && canReachInvertedLowerWestDeathMountain()) return true;
+	};
+
+	function canReachInvertedHyruleCastleBalcony() {
+		if (hasFoundRegion([
+			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower"
+		])) return true;
+		if (items.agahnim && items.mirror) return true;
+		return false;
+	};
+
+	// #endregion
+
+	const dungeonCheckMap = [
+		{
+			"id": 0,
+			"dungeon": "Eastern Palace",
+			"regions": ["Eastern Palace"],
+			"mapTrackerNames": ["ep"]
+		},
+		{
+			"id": 1,
+			"dungeon": "Desert Palace",
+			"regions": ["Desert Palace - Main", "Desert Palace - North"],
+			"mapTrackerNames": ["dp_m","dp_w","dp_e","dp_n"]
+		},
+		{
+			"id": 2,
+			"dungeon": "Tower of Hera",
+			"regions": ["Tower of Hera"],
+			"mapTrackerNames": ["toh"]
+		},
+		{
+			"id": 3,
+			"dungeon": "Palace of Darkness",
+			"regions": ["Palace of Darkness"],
+			"mapTrackerNames": ["pod"]
+		},
+		{
+			"id": 4,
+			"dungeon": "Swamp Palace",
+			"regions": ["Swamp Palace"],
+			"mapTrackerNames": ["sp"]
+		},
+		{
+			"id": 5,
+			"dungeon": "Skull Woods",
+			"regions": ["Skull Woods - Main", "Skull Woods - Middle", "Skull Woods - Back", "Skull Woods - Drops"],
+			"mapTrackerNames": ["sw","sw_m","sw_w","sw_e"]
+		},
+		{
+			"id": 6,
+			"dungeon": "Thieves Town",
+			"regions": ["Thieves Town"],
+			"mapTrackerNames": ["tt"]
+		},
+		{
+			"id": 7,
+			"dungeon": "Ice Palace",
+			"regions": ["Ice Palace"],
+			"mapTrackerNames": ["ip"]
+		},
+		{
+			"id": 8,
+			"dungeon": "Misery Mire",
+			"regions": ["Misery Mire"],
+			"mapTrackerNames": ["mm"]
+		},
+		{
+			"id": 9,
+			"dungeon": "Turtle Rock",
+			"regions": ["Turtle Rock - Main", "Turtle Rock - West", "Turtle Rock - East", "Turtle Rock - Back"],
+			"mapTrackerNames": ["tr_m","tr_w","tr_e","tr_b"]
+		},
+		{
+			"id": 10,
+			"dungeon": "Ganons Tower",
+			"regions": ["Ganons Tower"],
+			"mapTrackerNames": ["gt"]
+		},
+		{
+			"id": 11,
+			"dungeon": "Hyrule Castle",
+			"regions": ["Hyrule Castle - Main", "Hyrule Castle - Sewers Dropdown", "Sanctuary"],
+			"mapTrackerNames": ["hc_m","hc_w","hc_e", "sanc"]
+		},
+		{
+			"id": 12,
+			"dungeon": "Castle Tower",
+			"regions": ["Castle Tower"],
+			"mapTrackerNames": ["ct"]
+		}
+	]
+
+	function checkAvailabilityEntrance(location) {
+		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
+		const requirements = window.checkLogic[location][category];
+		return stateOfAllEntrance(requirements) ? 'available' : 'unavailable';
+	};
+
+	function checkEntranceAvailability(entrance) {
+		if (hasFoundEntranceName(entrance)) return 'available';
+		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
+		const requirements = window.entranceLogic[entrance][category];
+		return stateOfAllEntrance(requirements) ? 'available' : 'unavailable';
+	}
+
+	function stateOfAllEntrance(requirements) {
+		if (requirements.allOf) {
+			for (const requirement of requirements.allOf) {
+				if (!stateOfEntrance(requirement)) return false;
+			}
+		}
+		if (requirements.anyOf) {
+			for (const requirement of requirements.anyOf) {
+				if (stateOfEntrance(requirement)) return true;
+			}
+			return false;
+		}
+		return true;
+	};
+
+	function stateOfEntrance(requirement) {
+		// If requirement is not a string call inLogic recursively
+		if (typeof requirement === 'object') return stateOfAllEntrance(requirement);
+
+		if (requirement.startsWith("canReach|")) {
+			const region = requirement.split("|")[1];
+			switch (region) {
+				case "South Dark World": return canReachSouthDarkWorld();
+				case "East Dark World": return canReachEastDarkWorld();
+				case "West Dark World": return canReachWestDarkWorld();
+				case "North East Dark World": return canReachNorthEastDarkWorld();
+				case "South West Dark World": return canReachSouthWestDarkWorld();
+				case "South East Dark World": return canReachSouthEastDarkWorld();
+				case "Hyrule Castle Balcony": return canReachHyruleCastleBalcony();
+				case "Lower West Death Mountain": return canReachLowerWestDeathMountain();
+				case "Lower East Death Mountain": return canReachLowerEastDeathMountain();
+				case "Upper West Death Mountain": return canReachUpperWestDeathMountain();
+				case "Upper East Death Mountain": return canReachUpperEastDeathMountain();
+				case "Lower East Dark Death Mountain": return canReachLowerEastDarkDeathMountain();
+				case "Lower West Dark Death Mountain": return canReachLowerWestDarkDeathMountain();
+				case "Upper Dark Death Mountain": return canReachUpperDarkDeathMountain();
+
+				case "Inverted South Dark World": return canReachInvertedSouthDW();
+				case "Inverted East Dark World": return canReachInvertedEastDW();
+				case "Inverted West Dark World": return canReachInvertedWestDW();
+				case "Inverted North East Dark World": return canReachInvertedNorthEastDW();
+				case "Inverted South West Dark World": return canReachInvertedSouthWestDW();
+				case "Inverted South East Dark World": return canReachInvertedSouthEastDW();
+				case "Inverted Light World": return canReachInvertedLightWorld();
+				case "Inverted Light World Bunny": return canReachInvertedLightWorldBunny();				
+				case "Inverted Dark Death Mountain": return canReachInvertedDarkDeathMountain();
+				case "Inverted Lower East Dark Death Mountain": return canReachInvertedLowerEastDarkDeathMountain();
+				case "Inverted Upper West Death Mountain": return canReachInvertedUpperWestDeathMountain();
+				case "Inverted Upper East Death Mountain": return canReachInvertedUpperEastDeathMountain();
+				case "Inverted Lower East Death Mountain": return canReachInvertedLowerEastDeathMountain();
+				case "Inverted Lower West Death Mountain": return canReachInvertedLowerWestDeathMountain();
+				case "Inverted Hyrule Castle Balcony": return canReachInvertedHyruleCastleBalcony();
+
+				default: throw new Error("Unknown region: " + region);
+			};
+		};
+
+		if (requirement.startsWith("hasFoundEntrance|")) {
+			const entrance = requirement.split("|")[1];
+			return hasFoundEntranceName(entrance);
+		};
+
+		if (requirement.startsWith("hasFoundMapEntry|")) {
+			const mapTrackerName = requirement.split("|")[1];
+			return hasFoundLocation(mapTrackerName);
+		}
+
+		switch (requirement) {
+			case "moonpearl": return items.moonpearl;
+			case "agahnim": return items.agahnim;
+			case "boots": return items.boots;
+			case "bombs": return items.bomb;
+			case "book": return items.book;
+			case "mitts": return items.glove > 1;
+			case "mirror": return items.mirror;
+			case "glove": return items.glove;
+			case "flippers": return items.flippers;
+			case "flute": return items.flute || (flags.gametype === 'I' && activeFluteInvertedEntrance());
+			case "firerod": return items.firerod;
+			case "shovel": return items.shovel;
+			case "agahnim": return items.agahnim;
+			case "hammer": return items.hammer;
+			case "agahnim2": return items.agahnim2;
+
+			case "canBreakTablets": return items.book && (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer));
+			case "canGetBonkableItem": return items.boots || (items.sword && items.quake);
+			case "canCrossEnergyBarrier": return items.sword > 1 || (flags.swordmode === 'S' && items.hammer) || items.cape;
+			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
+			case "canBuyBigBomb": {
+				var crystal_count = 0;
+				for (var k = 0; k < 10; k++) {
+					if (prizes[k] === 4 && items['boss'+k])
+						crystal_count += 1;
+				}
+				return crystal_count >= 2;
+			};
+			case "canPullPedestal": {
+				var pendant_count = 0;
+				for (var k = 0; k < 10; k++) {
+					if ((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k]) {
+						if (++pendant_count === 3) return true;
+					}
+				}
+				return false;
+			};
+
+			case "never": return false;
+
+			default: throw new Error("Unknown requirement: " + requirement);
+		};
+	};
+	// #endregion
+
+	// #region Dungeon Check Logic
+	// Location object contains "anyOf" or "allOf" arrays of conditions that need to be met
+	function inLogic(dungeonId, requirements) {
+		if (requirements.allOf) {
+			for (const requirement of requirements.allOf) {
+				if (!logicSwitch(dungeonId, requirement)) return false;
+			}
+		}
+		if (requirements.anyOf) {
+			for (const requirement of requirements.anyOf) {
+				if (logicSwitch(dungeonId, requirement)) return true;
+			}
+			return false;
+		}
+		return true;
+	};
+
+	function logicSwitch(dungeonId, requirement) {
+		// If requirement is not a string call inLogic recursively
+		if (typeof requirement === 'object') return inLogic(dungeonId, requirement);
+
+		if (requirement.startsWith('keys')) {
+			if (flags.gametype === 'R') return true;
+			const count = requirement.split('|')[1];
+			switch (dungeonId) {
+				case 11: var keyname = 'smallkeyhalf0'; break; // HC
+				case 12: var keyname = 'smallkeyhalf1'; break; // CT
+				default: var keyname = 'smallkey' + dungeonId;
+			};
+			return items[keyname] >= count;
+		};
+
+		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkeyhalf0; // HC
+		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkeyhalf1; // CT
+
+		if (requirement.startsWith('canReach|')) {
+			const region = requirement.split('|')[1];
+			return canReachRegion(region) === 'available';
+		};
+
+		if (requirement.startsWith('canBreach|')) {
+			const region = requirement.split('|')[1];
+			let state = canReachRegion(region);
+			return state != 'unavailable' && state != 'possible';
+		};
+
+		switch (requirement) {
+			case 'bigkey': return items['bigkey' + dungeonId];
+
+			case 'boots': return items.boots;
+			case 'bow': return items.bow > 1;
+			case 'net': return items.net;
+			case 'byrna': return items.byrna;
+			case 'cape': return items.cape;
+			case 'flippers': return items.flippers;
+			case 'firerod': return items.firerod;
+			case 'glove': return items.glove > 0;
+			case 'hammer': return items.hammer;
+			case 'hookshot': return items.hookshot;
+			case 'icerod': return items.icerod;
+			case 'lantern': return items.lantern;
+			case 'melee_bow': return items.sword > 0 || items.hammer || items.bow > 1;
+			case 'melee': return items.sword > 0 || items.hammer;
+			case 'mirrorshield': return items.shield > 2;
+			case 'somaria': return items.somaria;
+			case 'sword': return items.sword > 0;
+
+			case 'canKillBoss': return enemizer_check(dungeonId) === 'available';
+			case 'canKillArmos': return enemizer_check(0) === 'available';
+			case 'canUseBombs': return items.bomb;
+			case 'canKillMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod;
+			case 'canKillOrExplodeMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod || items.bomb;
+			case 'canFightAgahnim': return items.sword > 0 || items.hammer || items.net;
+			case 'canLightFires': return items.lantern || items.firerod;
+			case 'canDarkRoomNavigate': return items.lantern;
+			case 'canTorchRoomNavigate': return items.lantern || (items.firerod && !isDoorsBranch() && !flags.entrancemode === 'N');
+			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
+			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
+			case 'canCrossMireGap': return items.boots || items.hookshot;
+			case 'canBurnThings': return items.firerod || (items.bombos && items.sword > 0);
+			case 'canHitSwitch': return canHitSwitch();
+			case 'canHitRangedSwitch': return canHitRangedSwitch();
+
+			case 'canIceBreak': return items.somaria;
+			case 'canHookClip': return items.hookshot;
+			case 'canBombJump': return items.bomb;
+			case 'canHover': return items.boots;
+			case 'canHoverAlot': return items.boots;
+			case 'canSpeckyClip': return items.bomb && items.hookshot;
+			case 'canBombSpooky': return items.bomb;
+			case 'canHeraPot': return items.hookshot && (items.boots || items.bomb);
+			case 'canOpenBonkWalls': return items.boots || items.bomb;
+			case 'canFireSpooky': return items.firerod && items.somaria;
+			case 'canMimicClip': return true;
+			case 'canPotionCameraUnlock': return items.bottle > 0;
+			case 'canMoldormBounce': return items.bomb && items.sword > 0;
+			case 'canDarkRoomNavigateBlind': return true || items.lantern;
+			case 'canTorchRoomNavigateBlind': return true || (items.lantern || (items.firerod && !isDoorsBranch() && !flags.entrancemode === 'N'));
+			case 'canRushRightSidePod': return (items.bomb || items.boots) && (true || items.bow > 1 || items.bottle);
+
+			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode != 'N';
+			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'O' || flags.entrancemode != 'N');
+
+			case 'canReachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") === 'available' || (canReachRegion("Turtle Rock - East") === 'available' && (items.hookshot || items.somaria));
+
+			case 'canBreachMiseryMireMaybe': return canReachRegion('Misery Mire') != 'unavailable';
+			case 'canBreachTurtleRockMainMaybe': return canReachRegion("Turtle Rock - Main") != 'unavailable';
+			case 'canBreachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") != 'unavailable' || (canReachRegion("Turtle Rock - East") != 'unavailable' && (items.hookshot || items.somaria || items.bomb || items.boots));
+
+			case 'gtleft': return items.hammer && items.hookshot && canHitRangedSwitch();
+			case 'gtright': return items.somaria && items.firerod;
+			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
+			default: throw new Error('Unknown requirement: ' + requirement);
+		};
+	};
+
+	function dungeonAvailability(dungeonId, dungeonName) {
+		//            if ( window.autotrack === undefined) {
+		//                return 'possible';
+		//            }
+		var checksAlways = 0;
+		var checksRequired = 0;
+		var checksLogical = 0;
+		var checksSuperLogic = 0;
+		const hasNoBossItem = (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower')
+		for (const [location, requirements] of Object.entries(dungeonLogic[dungeonName])) {
+			if (location.includes(' - Boss') && hasNoBossItem) {
+				continue;
+			};
+			if (inLogic(dungeonId, requirements["always"])) {
+				checksAlways++;
+				if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) {
+					checksLogical++;
+					checksRequired++;
+					if (("superlogical" in requirements) && inLogic(dungeonId, requirements["superlogical"])) {
+						checksSuperLogic++;
+					}
+				} else if (!("required" in requirements) || inLogic(dungeonId, requirements["required"])) {
+					checksRequired++;
+					if (("superlogical" in requirements) && inLogic(dungeonId, requirements["superlogical"])) {
+						checksSuperLogic++;
+					}
+				};
+			};
+		};
+
+		const maxChecks = Object.keys(window.dungeonLogic[dungeonName]).length - hasNoBossItem;
+		const collected = maxChecks - items['chest' + dungeonId];
+
+		if (checksLogical >= maxChecks) return 'available';
+		if ((checksLogical - collected) > 0) return 'partialavailable';
+		if ((checksRequired - collected) > 0) return 'darkpossible';
+		if ((checksAlways - collected) > 0) return 'possible';
+
+		return 'unavailable';
+	};
+
+	function bossAvailability(dungeonId, dungeonName) {
+		const requirements = window.dungeonLogic[dungeonName][dungeonName + ' - Boss'];
+		if (!("always" in requirements) || inLogic(dungeonId, requirements["always"])) {
+			if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) return 'available';
+			if (!("required" in requirements) || (inLogic(dungeonId, requirements["required"]))) return 'darkpossible';
+			return 'possible';
+		};
+		return 'unavailable';
+	};
+	// #endregion
 
 	window.loadChestFlagsItem = function() {
 		window.dungeonChecks = [];
@@ -3420,1513 +4043,6 @@
 			}];
 		};
 	};
-	// #endregion
-
-	// #region Entrance
-	function hasFoundLocation(x) {
-		for (var i = 0; i < entrances.length; i++) {
-			if (entrances[i].known_location === x) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	function hasFoundEntrance(x) { 
-		if (flags.entrancemode === 'N') return false;
-		return (entrances[x].is_connector || entrances[x].known_location != '');
-	};
-
-	function hasFoundEntranceName(x) {
-		return hasFoundEntrance(entranceMap[x]);
-	};
-
-	function hasFoundRegion(x) {
-		if (flags.entrancemode === 'N') return false;
-		for (var i = 0; i < x.length; i++) {
-			if (hasFoundEntrance(entranceMap[x[i]])) {
-				return true;
-			};
-		};
-		return false;
-	};
-
-	function canLeaveNorthEastDarkWorldSouth() {
-		return items.moonpearl && (items.glove || items.hammer || items.flippers);
-	};
-
-	function canLeaveNorthEastDarkWorldWest() {
-		return items.moonpearl && items.hookshot;
-	};
-
-	function canLeaveSouthEastDarkWorld() {
-		return items.moonpearl && items.flippers;
-	};
-
-	// #region Connectors - Non-Inverted entrance
-	function canReachUpperWestDeathMountain() {
-		if (items.flute >= 1 && items.mirror) return true;
-		if (hasFoundEntranceName("Tower of Hera") || (hasFoundEntranceName("Paradox Cave (Top)") && items.hammer)) return true;
-		if (items.mirror && hasFoundRegion([
-			"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", "Death Mountain Return Cave (East)",
-			"Old Man House (Bottom)", "Old Man House (Top)", "Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave",
-			"Superbunny Cave (Top)", "Turtle Rock", "Spike Cave", "Dark Death Mountain Fairy"
-		])) return true;
-		if (items.hookshot && items.mirror && (hasFoundRegion([
-			"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy",
-			"Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Superbunny Cave (Bottom)", "Dark Death Mountain Shop",
-			"Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)"
-		]))) return true;
-
-		return false;
-	};
-
-	function canReachLowerWestDeathMountain() {
-		if (items.flute >= 1) return true;
-		if (hasFoundRegion([
-				"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", 
-				"Death Mountain Return Cave (East)", "Old Man House (Bottom)", "Old Man House (Top)"
-		])) return true;
-		if (items.hookshot && hasFoundRegion([
-				"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy",
-				"Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", 
-			])) return true;
-		if (items.mirror && items.hookshot && hasFoundRegion([
-			"Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)",
-			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop"
-		])) return true;
-		if (items.mirror && hasFoundRegion([
-			"Spike Cave", "Dark Death Mountain Fairy", "Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
-		])) return true;
-	
-		return false;
-	};
-
-	function canReachUpperEastDeathMountain() {
-		if (hasFoundEntranceName("Paradox Cave (Top)") || (canReachUpperWestDeathMountain() && items.hammer)) return true;
-		if (items.mirror && (hasFoundRegion([
-			"Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
-		]))) return true;
-		if (items.flute >= 1 && items.mirror && items.hammer) return true;
-		return false;
-	};
-
-	function canReachLowerEastDeathMountain() {
-		if ((items.flute >= 1 && items.hookshot)) return true; 
-		if (hasFoundRegion([
-			"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)", "Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)"
-		])) return true;
-		if (items.mirror && (hasFoundRegion([
-			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)",
-			"Ganons Tower", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
-		]))) return true;
-		if (items.hookshot && canReachLowerWestDeathMountain()) return true;
-		if (canReachUpperWestDeathMountain() && items.hammer) return true;
-
-		return false;
-	};
-	
-	function canReachUpperDarkDeathMountain() {
-		if (hasFoundRegion([
-			"Ganons Tower", "Hookshot Cave Back Entrance", "Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
-		])) return true;
-		if (items.hammer && items.glove === 2 && canReachUpperEastDeathMountain()) return true;
-		return false;
-	};
-
-	function canReachLowerWestDarkDeathMountain() {
-		return (hasFoundRegion(["Spike Cave", "Dark Death Mountain Fairy"]) || canReachLowerWestDeathMountain() || canReachUpperDarkDeathMountain());
-	};
-	
-	function canReachLowerEastDarkDeathMountain() {
-		return (canReachUpperDarkDeathMountain() || hasFoundRegion(["Superbunny Cave (Bottom)", "Dark Death Mountain Shop"]) || (canReachLowerEastDeathMountain() && items.glove === 2));
-	};
-
-	function canReachHyruleCastleBalcony() {
-		if (hasFoundRegion([
-			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower"
-		])) return true;
-		if (canReachEastDarkWorld() && items.mirror) return true;
-		return false;
-	};
-
-	function canReachSouthEastDarkWorld(toEastDarkWorld=false) {
-		if (hasFoundRegion([
-			"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-		])) return true;
-		if (!toEastDarkWorld) {
-			if (items.flippers && items.moonpearl && canReachEastDarkWorld()) return true;
-		};
-		return false;
-	};
-
-	function canReachEastDarkWorld() {
-		if (items.agahnim) return true;
-		if (items.moonpearl && items.glove && items.hammer) return true;
-		if (items.moonpearl && items.glove > 1 && items.flippers) return true;
-		if (hasFoundRegion([
-			"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
-		])) return true;
-		if (items.moonpearl && (items.hammer || items.flippers) && hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		])) return true;
-		if (canLeaveNorthEastDarkWorldSouth() && hasFoundEntranceName("Dark Potion Shop")) return true;
-		if (items.moonpearl && (items.flippers || items.hammer) && (hasFoundRegion([
-			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
-			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
-		]))) return true;
-		if ((items.hammer || items.flippers) && items.moonpearl && canReachSouthDarkWorld(true)) return true;
-		if (canLeaveSouthEastDarkWorld() && canReachSouthEastDarkWorld(true)) return true;
-		return false;
-	};
-
-	function canReachNorthEastDarkWorld() {
-		if (hasFoundEntranceName("Dark Potion Shop")) return true;
-		if (canReachEastDarkWorld() && items.moonpearl && (items.flippers || items.glove > 0 || items.hammer)) return true;
-		return false;
-	};
-
-	function canReachWestDarkWorld(toEastDarkWorld=false) {
-		if (items.moonpearl && (items.glove === 2 || (items.glove && items.hammer))) return true;
-		if (hasFoundRegion([
-			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
-			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
-		])) return true;
-		if (items.moonpearl && (hasFoundEntranceName("Dark World Shop") && items.hammer)) return true;
-		if (items.moonpearl && (items.hookshot && (items.flippers || items.hammer)) && hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		])) return true;
-		if (!toEastDarkWorld) {
-			if (canLeaveNorthEastDarkWorldWest() && canReachNorthEastDarkWorld()) return true;
-		};
-		return false;
-	};
-
-	function canReachSouthDarkWorld(toEastDarkWorld=false) {
-		if (items.moonpearl && (items.glove === 2 || (items.glove && items.hammer))) return true;
-		if (hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		])) return true;
-		if (!toEastDarkWorld) {
-			if (items.moonpearl && items.hammer && canReachEastDarkWorld()) return true;
-		};
-		if (canReachWestDarkWorld(toEastDarkWorld)) return true;
-		return false;
-	};
-
-	function canReachSouthWestDarkWorld() {
-		if (items.flute >= 1 && items.glove >= 2) return true;
-		if (hasFoundRegion([
-			"Misery Mire", "Mire Shed", "Mire Hint", "Mire Fairy"
-		])) return true;
-		return false;
-	};
-	// #endregion
-	
-	// #region Connectors - Inverted entrance
-	function activeFluteInvertedEntrance() { return items.flute > 1 || (items.flute && (canReachInvertedLightWorld() || flags.activatedflute)) };
-
-	function canReachInvertedLightWorld() {
-		if (!items.moonpearl) return false;
-		if (items.glove >= 2 || (items.glove && items.hammer)) return true;
-		if (items.agahnim || (items.glove === 2 && activeFluteInvertedEntrance()) || hasFoundRegion([
-			"Links House", "Bonk Fairy (Light)", "Dam", "Cave 45", "Light Hype Fairy", "Hyrule Castle Entrance (South)",
-			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower", "Sanctuary", "Bonk Rock Cave",
-			"North Fairy Cave", "Lost Woods Gamble", "Lost Woods Hideout Stump", "Lumberjack House", "Lumberjack Tree Cave",
-			"Old Man Cave (West)", "Fortune Teller (Light)", "Kakariko Well Cave", "Blinds Hideout", "Elder House (West)",
-			"Elder House (East)", "Snitch Lady (West)", "Snitch Lady (East)", "Chicken House", "Sick Kids House",
-			"Kakariko Shop", "Tavern (Front)", "Blacksmiths Hut", "Bat Cave Cave", "Library", "Tavern North", "Two Brothers House (West)",
-			"Two Brothers House (East)", "Kakariko Gamble Game", "Eastern Palace", "Sahasrahlas Hut", "Lake Hylia Fairy",
-			"Long Fairy Cave", "Desert Palace Entrance (West)", "Desert Palace Entrance (East)", "Checkerboard Cave",
-			"Aginahs Cave", "Desert Fairy", "50 Rupee Cave", "Lake Hylia Shop", "Lake Hylia Fortune Teller", "Mini Moldorm Cave",
-			"Ice Rod Cave", "Good Bee Cave", "20 Rupee Cave", "Death Mountain Return Cave (West)", "Pyramid Exit"
-		])) return true;
-		if (hasFoundRegion([
-			"Potion Shop", "Hyrule Castle Secret Entrance Stairs", "Graveyard Cave", "Bush Covered House", "Light World Bomb Hut"
-		])) return true;
-		if (items.flippers && hasFoundRegion(["Waterfall of Wishing", "Capacity Upgrade"])) return true;
-		if (items.glove > 1 && hasFoundEntranceName("Kings Grave")) return true;
-		if (items.glove && hasFoundEntranceName("Desert Palace Entrance (North)")) return true;
-
-		if (items.glove === 2 && (hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop",
-			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
-			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
-		]))) return true;
-
-		if (items.glove && items.hammer && hasFoundRegion([
-			"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop",
-			"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
-			"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)",
-			"Dark World Shop", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint",
-			"Pyramid Fairy", "Dark Potion Shop"
-		])) return true;
-
-		if (items.glove === 2 && items.hookshot && (hasFoundRegion([
-			"Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint",
-			"Pyramid Fairy", "Dark Potion Shop"
-		]))) return true;
-
-		if ((items.glove === 2 || (items.glove && items.hammer)) && items.flippers && (hasFoundRegion([
-			"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave",
-		]))) return true;
-
-		if (items.glove === 2 && items.hammer && hasFoundEntranceName("Hammer Peg Cave")) return true;
-
-		return false;
-	};
-
-	function canReachInvertedLightWorldBunny() {
-		if (canReachInvertedLightWorld()) return true;
-		if (items.agahnim || (items.glove === 2 && activeFluteInvertedEntrance()) || hasFoundRegion([
-			"Links House", "Bonk Fairy (Light)", "Dam", "Cave 45", "Light Hype Fairy", "Hyrule Castle Entrance (South)",
-			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower", "Sanctuary", "Bonk Rock Cave",
-			"North Fairy Cave", "Lost Woods Gamble", "Lost Woods Hideout Stump", "Lumberjack House", "Lumberjack Tree Cave",
-			"Old Man Cave (West)", "Fortune Teller (Light)", "Kakariko Well Cave", "Blinds Hideout", "Elder House (West)",
-			"Elder House (East)", "Snitch Lady (West)", "Snitch Lady (East)", "Chicken House", "Sick Kids House",
-			"Kakariko Shop", "Tavern (Front)", "Blacksmiths Hut", "Bat Cave Cave", "Library", "Tavern North", "Two Brothers House (West)",
-			"Two Brothers House (East)", "Kakariko Gamble Game", "Eastern Palace", "Sahasrahlas Hut", "Lake Hylia Fairy",
-			"Long Fairy Cave", "Desert Palace Entrance (West)", "Desert Palace Entrance (East)", "Checkerboard Cave",
-			"Aginahs Cave", "Desert Fairy", "50 Rupee Cave", "Lake Hylia Shop", "Lake Hylia Fortune Teller", "Mini Moldorm Cave",
-			"Ice Rod Cave", "Good Bee Cave", "20 Rupee Cave", "Death Mountain Return Cave (West)", "Pyramid Exit"
-		])) return true;
-
-		return false;
-	};
-	
-	function canReachInvertedWestDW() {
-		return true; // Always accessible
-		// Dark sanc is always in the north DW unless it changes
-		// if (hasFoundRegion([
-		// 	"Dark Sanctuary Hint", "Red Shield Shop", "Skull Woods Second Section Door (East)", "Skull Woods First Section Door", "Dark Lumberjack Shop",
-		// 	"Bumper Cave (Bottom)", "Fortune Teller (Dark)", "Chest Game", "Thieves Town", "C-Shaped House", "Brewery", "Bumper Cave (Top)"
-		// ])) return true;
-
-		// if (items.glove === 2 && hasFoundRegion([
-		// 	"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		// ])) return true;
-
-		// if (((items.hammer && items.glove === 2) || (items.hookshot && (items.flippers || items.glove || items.hammer))) && (hasFoundRegion([
-		// 	"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
-		// ]))) return true;
-
-		// if (hasFoundEntranceName("Dark Potion Shop") && ((items.hammer && items.glove === 2) || items.hookshot)) return true;
-
-		// if (hasFoundEntranceName("Dark World Shop") && items.hammer) return true;
-
-		// if (items.flippers && ((items.glove === 2 && items.hammer) || items.hookshot) && hasFoundRegion([
-		// 	"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-		// ])) return true;
-
-		// if (activeFluteInvertedEntrance()) return true;
-
-		// if (items.mirror) {
-		// 	if (canReachInvertedLightWorldBunny()) return true;
-		// 	if (hasFoundRegion([
-		// 		"Graveyard Cave", "Light World Bomb Hut", "Kings Grave"
-		// 	])) return true;
-		// 	if (hasFoundEntranceName("Bush Covered House") && items.hammer) return true;
-		// 	if (hasFoundEntranceName("Potion Shop") && items.hookshot) return true;
-		// };
-
-		// return false;
-	};
-	
-	function canReachInvertedSouthDW() {
-		return true; // Always accessible
-		// if (activeFluteInvertedEntrance()) return true;
-
-		// if (hasFoundRegion([
-		// 	"Big Bomb Shop", "Bonk Fairy (Dark)", "Hype Cave", "Swamp Palace", "Archery Game", "Dark Lake Hylia Shop"
-		// ])) return true;
-
-		// if (hasFoundRegion([
-		// 	"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
-		// ])) return true;
-
-		// if (items.flippers && items.hammer && hasFoundRegion([
-		// 	"Ice Palace", "Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-		// ])) return true;
-
-		// if (canReachInvertedNorthDW()) return true;
-
-		// return false;
-	};
-	
-	function canReachInvertedEastDW() {
-		if (activeFluteInvertedEntrance()) return true;
-
-		if (hasFoundRegion([
-			"Pyramid Fairy", "Pyramid Exit", "Palace of Darkness", "Palace of Darkness Hint", "Dark Lake Hylia Fairy", "East Dark World Hint"
-		])) return true;
-
-		if ((items.hammer || items.glove || items.flippers) && hasFoundEntranceName("Dark Potion Shop")) return true;
-
-		if (canReachInvertedSouthDW() && (items.flippers || items.hammer)) return true;
-
-		if (items.mirror) {
-			if (canReachInvertedLightWorldBunny()) return true;
-			if ((items.hammer || items.glove) && hasFoundEntranceName("Potion Shop")) return true;
-			if (hasFoundEntranceName("Hyrule Castle Secret Entrance Stairs")) return true;
-		};
-
-		return false;
-	};
-
-	function canReachInvertedNorthEastDW() {
-		if (activeFluteInvertedEntrance()) return true;
-		if (hasFoundEntranceName("Dark Potion Shop")) return true;
-		if (items.mirror && hasFoundEntranceName("Potion Shop")) return true;
-		if (items.mirror && canReachInvertedLightWorld()) return true;
-		if (items.flippers && (canReachInvertedWestDW() || canReachInvertedSouthDW() || canReachInvertedEastDW())) return true;
-		if ((items.hammer || items.glove) && canReachInvertedEastDW()) return true;
-		return false;
-	};
-	
-	function canReachInvertedSouthWestDW() {
-		if (activeFluteInvertedEntrance()) return true;
-
-		if (hasFoundRegion([
-			"Misery Mire", "Mire Shed", "Mire Hint", "Mire Fairy"
-		])) return true;
-
-		if (items.mirror) {
-			if (canReachInvertedLightWorldBunny()) return true;
-			if (hasFoundRegion(["Desert Palace Entrance (South)", "Desert Palace Entrance (North)"])) return true;		
-		};
-
-		return false;
-	};
-
-	function canReachInvertedSouthEastDW() {
-		if (hasFoundRegion([
-			"Dark Lake Hylia Ledge Fairy", "Dark Lake Hylia Ledge Hint", "Dark Lake Hylia Ledge Spike Cave"
-		])) return true;
-		if (items.flippers && canReachInvertedSouthDW()) return true;
-		if (activeFluteInvertedEntrance()) return true;
-		if (items.mirror && canReachInvertedLightWorldBunny()) return true;
-		return false;
-	};
-
-	function canReachInvertedDarkDeathMountain() {
-		if (activeFluteInvertedEntrance()) return true;
-
-		if (hasFoundRegion([
-			"Ganons Tower", "Spike Cave", "Dark Death Mountain Fairy", "Hookshot Cave Back Entrance",
-			"Hookshot Cave", "Superbunny Cave (Top)", "Turtle Rock"
-		])) return true;
-
-		if (items.mirror) {
-			if (hasFoundRegion([
-				"Tower of Hera", "Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
-				"Old Man Cave (East)", "Death Mountain Return Cave (East)", "Old Man House (Bottom)",
-				"Old Man House (Top)", "Paradox Cave (Top)"
-			])) return true;
-
-			if (items.moonpearl && items.hookshot && hasFoundRegion([
-				"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)",
-				"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
-			])) return true;
-		};
-
-		return false;
-	};
-	
-	function canReachInvertedLowerWestDeathMountain() {
-
-		if (canReachInvertedDarkDeathMountain()) return true;
-
-		if (hasFoundRegion([
-			"Tower of Hera", "Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)",
-			"Old Man Cave (East)", "Death Mountain Return Cave (East)", "Old Man House (Bottom)",
-			"Old Man House (Top)" 
-		])) return true;
-
-		if (items.moonpearl && items.hookshot && hasFoundRegion([
-			"Paradox Cave (Top)", "Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)",
-			"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
-		])) return true;
-
-		if (items.moonpearl && items.hammer && hasFoundEntranceName("Paradox Cave (Top)")) return true;
-
-		return false;
-	};
-
-	function canReachInvertedUpperEastDeathMountain() {
-		if (hasFoundEntranceName("Paradox Cave (Top)") || (hasFoundEntranceName("Tower of Hera") && items.hammer)) return true;
-		if (canReachInvertedDarkDeathMountain() && items.mitts && items.hammer && items.moonpearl) return true;
-	};
-
-	function canReachInvertedUpperWestDeathMountain() {
-		if (hasFoundEntranceName("Tower of Hera")) return true;
-		if (items.moonpearl && items.hammer && hasFoundEntranceName("Paradox Cave (Top)")) return true;
-		if (canReachInvertedDarkDeathMountain() && items.mitts && items.hammer && items.moonpearl) return true;
-		return false;
-	};
- 	
-	function canReachInvertedLowerEastDeathMountain() {
-		if (canReachInvertedUpperEastDeathMountain()) return true;
-
-		if (hasFoundRegion([
-			"Paradox Cave (Middle)", "Paradox Cave (Bottom)", "Spiral Cave", "Spiral Cave (Bottom)",
-			"Hookshot Fairy", "Fairy Ascension Cave (Top)", "Fairy Ascension Cave (Bottom)", "Mimic Cave"
-		])) return true;
-
-		if (items.moonpearl && items.hookshot && canReachInvertedLowerWestDeathMountain()) return true;
-
-		if (items.glove === 2) {
-			if (canReachInvertedDarkDeathMountain()) return true;
-			if (hasFoundRegion([
-				"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance",
-			])) return true;
-		};
-
-		return false;
-	};
-
-	function canReachInvertedLowerEastDarkDeathMountain() {
-		if (hasFoundRegion([
-			"Superbunny Cave (Bottom)", "Dark Death Mountain Shop", "Turtle Rock Isolated Ledge Entrance",
-		])) return true;
-		if (canReachInvertedDarkDeathMountain()) return true;
-		if (items.mirror && canReachInvertedLowerWestDeathMountain()) return true;
-	};
-
-	function canReachInvertedHyruleCastleBalcony() {
-		if (hasFoundRegion([
-			"Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Agahnims Tower"
-		])) return true;
-		if (items.agahnim && items.mirror) return true;
-		return false;
-	};
-
-	// #endregion
-
-	function bestAvailability(arr) {
-		var best = 'unavailable';
-		for (var i = 0; i < arr.length; i++) {
-			switch (arr[i]) {
-				case 'available': return 'available';
-				case 'partialavailable': best = 'partialavailable'; break;
-				case 'darkavailable': if (best != 'partialavailable') { best = 'darkavailable'; break };
-				case 'possible': if (best != 'darkavailable' && best != 'partialavailable') { best = 'possible'; break };
-			};
-		};
-		return best;
-	};
-
-	const dungeonCheckMap = [
-		{
-			"id": 0,
-			"dungeon": "Eastern Palace",
-			"regions": ["Eastern Palace"],
-			"mapTrackerNames": ["ep"]
-		},
-		{
-			"id": 1,
-			"dungeon": "Desert Palace",
-			"regions": ["Desert Palace - Main", "Desert Palace - North"],
-			"mapTrackerNames": ["dp_m","dp_w","dp_e","dp_n"]
-		},
-		{
-			"id": 2,
-			"dungeon": "Tower of Hera",
-			"regions": ["Tower of Hera"],
-			"mapTrackerNames": ["toh"]
-		},
-		{
-			"id": 3,
-			"dungeon": "Palace of Darkness",
-			"regions": ["Palace of Darkness"],
-			"mapTrackerNames": ["pod"]
-		},
-		{
-			"id": 4,
-			"dungeon": "Swamp Palace",
-			"regions": ["Swamp Palace"],
-			"mapTrackerNames": ["sp"]
-		},
-		{
-			"id": 5,
-			"dungeon": "Skull Woods",
-			"regions": ["Skull Woods - Main", "Skull Woods - Middle", "Skull Woods - Back", "Skull Woods - Drops"],
-			"mapTrackerNames": ["sw","sw_m","sw_w","sw_e"]
-		},
-		{
-			"id": 6,
-			"dungeon": "Thieves Town",
-			"regions": ["Thieves Town"],
-			"mapTrackerNames": ["tt"]
-		},
-		{
-			"id": 7,
-			"dungeon": "Ice Palace",
-			"regions": ["Ice Palace"],
-			"mapTrackerNames": ["ip"]
-		},
-		{
-			"id": 8,
-			"dungeon": "Misery Mire",
-			"regions": ["Misery Mire"],
-			"mapTrackerNames": ["mm"]
-		},
-		{
-			"id": 9,
-			"dungeon": "Turtle Rock",
-			"regions": ["Turtle Rock - Main", "Turtle Rock - West", "Turtle Rock - East", "Turtle Rock - Back"],
-			"mapTrackerNames": ["tr_m","tr_w","tr_e","tr_b"]
-		},
-		{
-			"id": 10,
-			"dungeon": "Ganons Tower",
-			"regions": ["Ganons Tower"],
-			"mapTrackerNames": ["gt"]
-		},
-		{
-			"id": 11,
-			"dungeon": "Hyrule Castle",
-			"regions": ["Hyrule Castle - Main", "Hyrule Castle - Sewers Dropdown", "Sanctuary"],
-			"mapTrackerNames": ["hc_m","hc_w","hc_e", "sanc"]
-		},
-		{
-			"id": 12,
-			"dungeon": "Castle Tower",
-			"regions": ["Castle Tower"],
-			"mapTrackerNames": ["ct"]
-		}
-	]
-
-	function checkAvailabilityEntrance(location) {
-		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
-		const requirements = window.checkLogic[location][category];
-		return stateOfAllEntrance(requirements) ? 'available' : 'unavailable';
-	};
-
-	function checkEntranceAvailability(entrance) {
-		if (hasFoundEntranceName(entrance)) return 'available';
-		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
-		const requirements = window.entranceLogic[entrance][category];
-		return stateOfAllEntrance(requirements) ? 'available' : 'unavailable';
-	}
-
-	function stateOfAllEntrance(requirements) {
-		if (requirements.allOf) {
-			for (const requirement of requirements.allOf) {
-				if (!stateOfEntrance(requirement)) return false;
-			}
-		}
-		if (requirements.anyOf) {
-			for (const requirement of requirements.anyOf) {
-				if (stateOfEntrance(requirement)) return true;
-			}
-			return false;
-		}
-		return true;
-	};
-
-	function stateOfEntrance(requirement) {
-		// If requirement is not a string call inLogic recursively
-		if (typeof requirement === 'object') return stateOfAllEntrance(requirement);
-
-		if (requirement.startsWith("canReach|")) {
-			const region = requirement.split("|")[1];
-			switch (region) {
-				case "South Dark World": return canReachSouthDarkWorld();
-				case "East Dark World": return canReachEastDarkWorld();
-				case "West Dark World": return canReachWestDarkWorld();
-				case "North East Dark World": return canReachNorthEastDarkWorld();
-				case "South West Dark World": return canReachSouthWestDarkWorld();
-				case "South East Dark World": return canReachSouthEastDarkWorld();
-				case "Hyrule Castle Balcony": return canReachHyruleCastleBalcony();
-				case "Lower West Death Mountain": return canReachLowerWestDeathMountain();
-				case "Lower East Death Mountain": return canReachLowerEastDeathMountain();
-				case "Upper West Death Mountain": return canReachUpperWestDeathMountain();
-				case "Upper East Death Mountain": return canReachUpperEastDeathMountain();
-				case "Lower East Dark Death Mountain": return canReachLowerEastDarkDeathMountain();
-				case "Lower West Dark Death Mountain": return canReachLowerWestDarkDeathMountain();
-				case "Upper Dark Death Mountain": return canReachUpperDarkDeathMountain();
-
-				case "Inverted South Dark World": return canReachInvertedSouthDW();
-				case "Inverted East Dark World": return canReachInvertedEastDW();
-				case "Inverted West Dark World": return canReachInvertedWestDW();
-				case "Inverted North East Dark World": return canReachInvertedNorthEastDW();
-				case "Inverted South West Dark World": return canReachInvertedSouthWestDW();
-				case "Inverted South East Dark World": return canReachInvertedSouthEastDW();
-				case "Inverted Light World": return canReachInvertedLightWorld();
-				case "Inverted Light World Bunny": return canReachInvertedLightWorldBunny();				
-				case "Inverted Dark Death Mountain": return canReachInvertedDarkDeathMountain();
-				case "Inverted Lower East Dark Death Mountain": return canReachInvertedLowerEastDarkDeathMountain();
-				case "Inverted Upper West Death Mountain": return canReachInvertedUpperWestDeathMountain();
-				case "Inverted Upper East Death Mountain": return canReachInvertedUpperEastDeathMountain();
-				case "Inverted Lower East Death Mountain": return canReachInvertedLowerEastDeathMountain();
-				case "Inverted Lower West Death Mountain": return canReachInvertedLowerWestDeathMountain();
-				case "Inverted Hyrule Castle Balcony": return canReachInvertedHyruleCastleBalcony();
-
-				default: throw new Error("Unknown region: " + region);
-			};
-		};
-
-		if (requirement.startsWith("hasFoundEntrance|")) {
-			const entrance = requirement.split("|")[1];
-			return hasFoundEntranceName(entrance);
-		};
-
-		if (requirement.startsWith("hasFoundMapEntry|")) {
-			const mapTrackerName = requirement.split("|")[1];
-			return hasFoundLocation(mapTrackerName);
-		}
-
-		switch (requirement) {
-			case "moonpearl": return items.moonpearl;
-			case "agahnim": return items.agahnim;
-			case "boots": return items.boots;
-			case "bombs": return items.bomb;
-			case "book": return items.book;
-			case "mitts": return items.glove > 1;
-			case "mirror": return items.mirror;
-			case "glove": return items.glove;
-			case "flippers": return items.flippers;
-			case "flute": return items.flute || (flags.gametype === 'I' && activeFluteInvertedEntrance());
-			case "firerod": return items.firerod;
-			case "shovel": return items.shovel;
-			case "agahnim": return items.agahnim;
-			case "hammer": return items.hammer;
-			case "agahnim2": return items.agahnim2;
-
-			case "canBreakTablets": return items.book && (items.sword >= 2 || (flags.swordmode === 'S' && items.hammer));
-			case "canGetBonkableItem": return items.boots || (items.sword && items.quake);
-			case "canCrossEnergyBarrier": return items.sword > 1 || (flags.swordmode === 'S' && items.hammer) || items.cape;
-			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
-			case "canBuyBigBomb": {
-				var crystal_count = 0;
-				for (var k = 0; k < 10; k++) {
-					if (prizes[k] === 4 && items['boss'+k])
-						crystal_count += 1;
-				}
-				return crystal_count >= 2;
-			};
-			case "canPullPedestal": {
-				var pendant_count = 0;
-				for (var k = 0; k < 10; k++) {
-					if ((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k]) {
-						if (++pendant_count === 3) return true;
-					}
-				}
-				return false;
-			};
-
-			case "never": return false;
-
-			default: throw new Error("Unknown requirement: " + requirement);
-		};
-	};
-
-	// #endregion
-
-	// #region Mike Chest Logic
-
-	// Location object contains "anyOf" or "allOf" arrays of conditions that need to be met
-	function inLogic(dungeonId, requirements) {
-		if (requirements.allOf) {
-			for (const requirement of requirements.allOf) {
-				if (!logicSwitch(dungeonId, requirement)) return false;
-			}
-		}
-		if (requirements.anyOf) {
-			for (const requirement of requirements.anyOf) {
-				if (logicSwitch(dungeonId, requirement)) return true;
-			}
-			return false;
-		}
-		return true;
-	};
-
-	function isDoorsBranch() {
-		if (flags.doorshuffle != 'N') return true;
-		if (flags.owGraphLogic) return true;
-		if (flags.bonkshuffle != 'N') return true;
-		return false;
-	};
-
-	function logicSwitch(dungeonId, requirement) {
-		// If requirement is not a string call inLogic recursively
-		if (typeof requirement === 'object') return inLogic(dungeonId, requirement);
-
-		if (requirement.startsWith('keys')) {
-			if (flags.gametype === 'R') return true;
-			const count = requirement.split('|')[1];
-			switch (dungeonId) {
-				case 11: var keyname = 'smallkeyhalf0'; break; // HC
-				case 12: var keyname = 'smallkeyhalf1'; break; // CT
-				default: var keyname = 'smallkey' + dungeonId;
-			};
-			return items[keyname] >= count;
-		};
-
-		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkeyhalf0; // HC
-		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkeyhalf1; // CT
-
-		if (requirement.startsWith('canReach|')) {
-			const region = requirement.split('|')[1];
-			return canReachRegion(region) === 'available';
-		};
-
-		if (requirement.startsWith('canBreach|')) {
-			const region = requirement.split('|')[1];
-			let state = canReachRegion(region);
-			return state != 'unavailable' && state != 'possible';
-		};
-
-		switch (requirement) {
-			case 'bigkey': return items['bigkey' + dungeonId];
-
-			case 'boots': return items.boots;
-			case 'bow': return items.bow > 1;
-			case 'net': return items.net;
-			case 'byrna': return items.byrna;
-			case 'cape': return items.cape;
-			case 'flippers': return items.flippers;
-			case 'firerod': return items.firerod;
-			case 'glove': return items.glove > 0;
-			case 'hammer': return items.hammer;
-			case 'hookshot': return items.hookshot;
-			case 'icerod': return items.icerod;
-			case 'lantern': return items.lantern;
-			case 'melee_bow': return items.sword > 0 || items.hammer || items.bow > 1;
-			case 'melee': return items.sword > 0 || items.hammer;
-			case 'mirrorshield': return items.shield > 2;
-			case 'somaria': return items.somaria;
-			case 'sword': return items.sword > 0;
-
-			case 'canKillBoss': return enemizer_check(dungeonId) === 'available';
-			case 'canKillArmos': return enemizer_check(0) === 'available';
-			case 'canUseBombs': return items.bomb;
-			case 'canKillMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod;
-			case 'canKillOrExplodeMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod || items.bomb;
-			case 'canFightAgahnim': return items.sword > 0 || items.hammer || items.net;
-			case 'canLightFires': return items.lantern || items.firerod;
-			case 'canDarkRoomNavigate': return items.lantern;
-			case 'canTorchRoomNavigate': return items.lantern || (items.firerod && !isDoorsBranch() && !flags.entrancemode === 'N');
-			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
-			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
-			case 'canCrossMireGap': return items.boots || items.hookshot;
-			case 'canBurnThings': return items.firerod || (items.bombos && items.sword > 0);
-			case 'canHitSwitch': return canHitSwitch();
-			case 'canHitRangedSwitch': return canHitRangedSwitch();
-
-			case 'canIceBreak': return items.somaria;
-			case 'canHookClip': return items.hookshot;
-			case 'canBombJump': return items.bomb;
-			case 'canHover': return items.boots;
-			case 'canHoverAlot': return items.boots;
-			case 'canSpeckyClip': return items.bomb && items.hookshot;
-			case 'canBombSpooky': return items.bomb;
-			case 'canHeraPot': return items.hookshot && (items.boots || items.bomb);
-			case 'canOpenBonkWalls': return items.boots || items.bomb;
-			case 'canFireSpooky': return items.firerod && items.somaria;
-			case 'canMimicClip': return true;
-			case 'canPotionCameraUnlock': return items.bottle > 0;
-			case 'canMoldormBounce': return items.bomb && items.sword > 0;
-			case 'canDarkRoomNavigateBlind': return true || items.lantern;
-			case 'canTorchRoomNavigateBlind': return true || (items.lantern || (items.firerod && !isDoorsBranch() && !flags.entrancemode === 'N'));
-			case 'canRushRightSidePod': return (items.bomb || items.boots) && (true || items.bow > 1 || items.bottle);
-
-			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode != 'N';
-			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'O' || flags.entrancemode != 'N');
-
-			case 'canReachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") === 'available' || (canReachRegion("Turtle Rock - East") === 'available' && (items.hookshot || items.somaria));
-
-			case 'canBreachMiseryMireMaybe': return canReachRegion('Misery Mire') != 'unavailable';
-			case 'canBreachTurtleRockMainMaybe': return canReachRegion("Turtle Rock - Main") != 'unavailable';
-			case 'canBreachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") != 'unavailable' || (canReachRegion("Turtle Rock - East") != 'unavailable' && (items.hookshot || items.somaria || items.bomb || items.boots));
-
-			case 'gtleft': return items.hammer && items.hookshot && canHitRangedSwitch();
-			case 'gtright': return items.somaria && items.firerod;
-			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
-			default: throw new Error('Unknown requirement: ' + requirement);
-		};
-	};
-
-	function dungeonAvailability(dungeonId, dungeonName) {
-		//            if ( window.autotrack === undefined) {
-		//                return 'possible';
-		//            }
-		var checksAlways = 0;
-		var checksRequired = 0;
-		var checksLogical = 0;
-		var checksSuperLogic = 0;
-		const hasNoBossItem = (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower')
-		for (const [location, requirements] of Object.entries(dungeonLogic[dungeonName])) {
-			if (location.includes(' - Boss') && hasNoBossItem) {
-				continue;
-			};
-			if (inLogic(dungeonId, requirements["always"])) {
-				checksAlways++;
-				if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) {
-					checksLogical++;
-					checksRequired++;
-					if (("superlogical" in requirements) && inLogic(dungeonId, requirements["superlogical"])) {
-						checksSuperLogic++;
-					}
-				} else if (!("required" in requirements) || inLogic(dungeonId, requirements["required"])) {
-					checksRequired++;
-					if (("superlogical" in requirements) && inLogic(dungeonId, requirements["superlogical"])) {
-						checksSuperLogic++;
-					}
-				};
-			};
-		};
-
-		const maxChecks = Object.keys(window.dungeonLogic[dungeonName]).length - hasNoBossItem;
-		const collected = maxChecks - items['chest' + dungeonId];
-
-		if (checksLogical >= maxChecks) return 'available';
-		if ((checksLogical - collected) > 0) return 'partialavailable';
-		if ((checksRequired - collected) > 0) return 'darkpossible';
-		if ((checksAlways - collected) > 0) return 'possible';
-
-		return 'unavailable';
-	};
-
-	function bossAvailability(dungeonId, dungeonName) {
-		const requirements = window.dungeonLogic[dungeonName][dungeonName + ' - Boss'];
-		if (!("always" in requirements) || inLogic(dungeonId, requirements["always"])) {
-			if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) return 'available';
-			if (!("required" in requirements) || (inLogic(dungeonId, requirements["required"]))) return 'darkpossible';
-			return 'possible';
-		};
-		return 'unavailable';
-	};
-	// #endregion
-
-	// #region Door Chest Logic
-	function available_chests(dungeonid, allchests, maxchest, chestcount) {
-		var achests = 0;
-		var pchests = 0;
-		var dachests = 0;
-		var dpchests = 0;
-		var uchests = 0;
-		var keys = 0;
-
-		for (var i = 0; i < allchests.length; i++) {
-			switch (allchests[i]) {
-				case 'A':
-					achests++;
-					break;
-				case 'P':
-					pchests++;
-					break;
-				case 'DA':
-					dachests++;
-					break;
-				case 'DP':
-					dpchests++;
-					break;
-				case 'U':
-					uchests++;
-					break;
-				case 'K':
-					keys++;
-					break;
-			}
-		}
-
-		//Move dungeon items from available to possible
-		if (!flags.wildmaps && dungeonid != 12) {
-			if (achests > 0) {
-				pchests++;
-				achests--;
-			} else if (dachests > 0) {
-				dpchests++;
-				dachests--;
-			}
-		}
-
-		if (!flags.wildcompasses && dungeonid < 11) {
-			if (achests > 0) {
-				pchests++;
-				achests--;
-			} else if (dachests > 0) {
-				dpchests++;
-				dachests--;
-			}
-		}
-
-		var itemscollected = (maxchest - chestcount);
-
-		for (var i = 0; i < itemscollected; i++) {
-			if (achests > 0) {
-				achests--;
-			} else if (dachests > 0) {
-				dachests--;
-			} else if (pchests > 0) {
-				pchests--;
-			} else if (dpchests > 0) {
-				dpchests--;
-			}
-		}
-
-		if (flags.ambrosia === 'Y' && dungeonid < 10 && chestcount === 1 && !dungeons[dungeonid].is_beaten) {
-			return ConvertChestToBoss(allchests[allchests.length - 1]);
-		}
-
-		if (achests > 0) return 'available';
-		if (dachests > 0) return 'darkavailable';
-		if (pchests > 0) return 'possible';
-		if (dpchests > 0) return 'darkpossible';
-		return 'unavailable';
-	};
-
-	function maxKeys(dungeon) {
-		return flags.doorshuffle === 'C' ? 29 : [0, 1, 1, 6, 1, 3, 1, 2, 3, 4, 4, 1, 2][dungeon];//Note: This assumes Key Drop Shuffle is off in Basic
-	};
-
-	function door_enemizer_check(dungeon) {
-		if (dungeon === 6) {
-			var atticCell = (flags.doorshuffle === 'C' ? items.bombfloor : items.bomb) && (items.bigkey6 || !flags.wildbigkeys);
-			if (!atticCell && (flags.bossshuffle === 'N' || enemizer[6] === 7))
-				return 'unavailable';
-			if (!atticCell && flags.bossshuffle != 'N' && enemizer[6] % 11 === 0) {
-				var check = enemizer_check(6);
-				return check === 'available' ? 'possible' : check;
-			}
-		}
-		if (dungeon >= 10)
-			return items.sword || items.hammer || items.net || dungeon === 11 ? 'available' : 'unavailable';
-		return (dungeon === 7 && (!items.hammer || items.glove == 0)) ? 'unavailable' : enemizer_check(dungeon);
-	};
-
-	window.entranceInDarkWorld = function (n) {
-		return n == 93 || n == 95 ? flags.gametype != 'I' : n >= 86;
-	};
-
-	window.entranceInBunnyWorld = function (n) {
-		return n == 93 || n == 95 || (n >= 86) == (flags.gametype != 'I');
-	};
-
-	// Tells chest logic if the player can reach the dungeon in logic in entrance modes
-	window.entranceChests = function (entranceNames, dungeonID) {
-		if (!(items['chest' + dungeonID] > 0 || (dungeonID < 10 && !dungeons[dungeonID].is_beaten))) {
-			if (dungeonID < 10) document.getElementById('entranceBoss' + dungeonID).style.visibility = 'hidden';
-			return;
-		};
-
-		var entranceAvail = [];
-		var entranceBunny = [];
-		var found = false;
-
-		nextEntrance:
-		for (var i = 0; i < entranceNames.length; i++) {
-			for (var j = 0; j < entrances.length; j++) {
-				if (entrances[j].known_location === entranceNames[i]) {
-					entranceAvail.push('available');
-					entranceBunny.push(!items.moonpearl && entranceInBunnyWorld(j));
-					found = true;
-					continue nextEntrance;
-				}
-			}
-
-			//special cases
-			if (entranceNames[i] === 'placeholder') {
-				if (dungeonID == 5 && canReachWestDarkWorld()) {
-					entranceAvail.push('available');
-					entranceBunny.push(!items.moonpearl && entranceInBunnyWorld(102));
-					found = true;
-				};
-
-				if (dungeonID == 11 && i == 3) {
-					entranceAvail.push(flags.gametype != 'I' && (flags.gametype == 'S' || (flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) ? 'available' : 'possible');
-					entranceBunny.push(false);
-					found = true;
-				};
-
-				if (dungeonID == 11 && i == 4) {
-					if (
-						entrances[22].known_location === 'sanc' ||
-						entrances[29].known_location === 'sanc' ||
-						entrances[18].known_location === 'sanc' ||
-						entrances[11].known_location === 'sanc' ||
-						(entrances[24].known_location === 'sanc' && items.boots && items.agahnim) ||
-						(entrances[43].known_location === 'sanc' && items.hammer) ||
-						(entrances[95].known_location === 'sanc' && items.agahnim2) ||
-						(entrances[13].known_location === 'sanc' && items.glove > 0 && (flags.gametype != 'I' || (items.moonpearl && canReachWestDarkWorld())))
-					) {
-						entranceAvail.push('available');
-						var bunny = false;
-						for (var j = 0; j < entrances.length; j++) {
-							if (entrances[j].known_location === 'sanc') {
-								bunny = !items.moonpearl && entranceInBunnyWorld(j);
-								break;
-							};
-						};
-						entranceBunny.push(bunny);
-						found = true;
-					};
-				};
-
-				continue nextEntrance;
-			};
-
-			//not found
-			entranceAvail.push('unavailable');
-			entranceBunny.push(false);
-		};
-
-		if (!found) {
-			if (dungeonID < 10) {
-				document.getElementById('entranceBoss' + dungeonID).style.visibility = 'hidden';
-			};
-			document.getElementById('chest' + dungeonID).style.backgroundColor = 'white';
-			document.getElementById('chest' + dungeonID).style.color = 'black';
-		} else {
-			if (dungeonID < 10) {
-				document.getElementById('entranceBoss' + dungeonID).style.visibility = (!dungeons[dungeonID].is_beaten && !owGraphLogic ? 'visible' : 'hidden');
-				document.getElementById('entranceBoss' + dungeonID).style.background = ConvertBossToColor(dungeonBoss(dungeonID, entranceAvail, entranceBunny));
-			};
-			const curStyle = window.getComputedStyle(document.documentElement);
-			var c = dungeonChests(dungeonID, entranceAvail, entranceBunny);
-			switch (c) {
-				case 'available':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--available-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--available-color'));
-					break;
-				case 'darkavailable':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkavailable-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkavailable-color'));
-					break;
-				case 'possible':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--possible-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--possible-color'));
-					break;
-				case 'darkpossible':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkpossible-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkpossible-color'));
-					break;
-				case 'partialavailable':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--partialavailable-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--partialavailable-color'));
-					break;
-				case 'information':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--information-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--information-color'));
-					break;
-				default:
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--unavailable-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--unavailable-color'));
-			};
-		};
-	};
-
-	window.colorDungeonSquares = function (dungeonID, accessibility, chestAvailability, bossAvailability) {
-		if (accessibility === 'unavailable') {
-			if (dungeonID < 10) {
-				document.getElementById('entranceBoss' + dungeonID).style.visibility = 'hidden';
-			};
-			document.getElementById('chest' + dungeonID).style.backgroundColor = 'white';
-			document.getElementById('chest' + dungeonID).style.color = 'black';
-		} else {
-			if (dungeonID < 10) {
-				document.getElementById('entranceBoss' + dungeonID).style.visibility = (!dungeons[dungeonID].is_beaten && !owGraphLogic ? 'visible' : 'hidden');
-				document.getElementById('entranceBoss' + dungeonID).style.background = ConvertBossToColor(bossAvailability);
-			};
-			const curStyle = window.getComputedStyle(document.documentElement);
-			switch (chestAvailability) {
-				case 'available':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--available-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--available-color'));
-					break;
-				case 'darkavailable':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkavailable-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkavailable-color'));
-					break;
-				case 'possible':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--possible-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--possible-color'));
-					break;
-				case 'darkpossible':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkpossible-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkpossible-color'));
-					break;
-				case 'partialavailable':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--partialavailable-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--partialavailable-color'));
-					break;
-				case 'information':
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--information-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--information-color'));
-					break;
-				default:
-					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--unavailable-color');
-					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--unavailable-color'));
-			};
-		};
-	};
-
-	window.doorCheck = function (dungeon, onlyDarkPossible, darkRoom, torchDarkRoom, posRequired, goal, onlyBunny = false) {
-
-		if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P')
-			return null; // non-doors uses the normal logic
-
-		var doorcheck = 'available'
-		if (onlyBunny) {
-			var bosscheck = 'unavailable';
-		} else {
-			var bosscheck = door_enemizer_check(dungeon);
-		};
-		if (goal === 'boss') doorcheck = bosscheck;
-		if (doorcheck === 'unavailable') return 'unavailable';
-
-		var wildsmallkeys = flags.wildkeys || flags.gametype === 'R';
-
-		if (goal === 'item') {
-			// Is last item on the boss?
-			if (items['chest' + dungeon] === 1) {
-				if (dungeon < 10 && flags.doorshuffle === 'B' && !items['boss' + dungeon] && bosscheck != 'available') {
-					if (bosscheck === 'unavailable' && (flags.ambrosia === 'Y' || (flags.wildmaps && flags.wildcompasses && (wildsmallkeys || maxKeys(dungeon) == 0) && flags.wildbigkeys)))
-						return 'unavailable';
-					doorcheck = 'possible';
-				};
-			};
-
-			if (dungeon < 10 && flags.doorshuffle === 'C' && !items['boss' + dungeon] && bosscheck != 'available' && (items['chest' + dungeon] == 1 || (!items['chestknown' + dungeon] && items['chest' + dungeon] == 2))) {
-				if (bosscheck === 'unavailable' && items['chestknown' + dungeon] && (flags.ambrosia === 'Y' || (flags.wildmaps && flags.wildcompasses && wildsmallkeys && flags.wildbigkeys)))
-					return 'unavailable';
-				doorcheck = 'possible';
-			}
-		};
-
-		var dungeonAlt = dungeon > 10 ? 'half' + (dungeon - 11) : '' + dungeon;
-
-		if (doorcheck === 'available') {
-			if (onlyBunny) doorcheck = 'possible'; 
-			if (goal === 'item' && flags.doorshuffle === 'C' && items['chest' + dungeon] === 1 && !items['chestknown' + dungeon]) doorcheck = 'possible'; //Unknown if even one item is still in there
-			if (flags.wildkeys && flags.gametype != 'R' && items['smallkey' + dungeonAlt] < maxKeys(dungeon)) doorcheck = 'possible'; //Could need more small keys
-			if (flags.wildbigkeys && (dungeon <= 10 || flags.doorshuffle === 'C') && !items['bigkey' + dungeonAlt]) doorcheck = 'possible';	//Could need big key
-			if (goal != 'boss' && dungeon < 10 && bosscheck != 'available' && flags.ambrosia === 'N' && ((!wildsmallkeys && maxKeys(dungeon) > 0) || !flags.wildbigkeys)) doorcheck = 'possible';//Boss could have required key
-		};
-
-		if (flags.doorshuffle === 'C') {
-			posRequired = ['firerod', 'somaria', 'flippers', 'hookshot', 'boots', 'bow', 'hammer', 'swordorswordless', 'glove', 'bomb', flags.bossshuffle === 'N' ? '' : 'icerod'];
-			if (goal === 'item' || !wildsmallkeys || !flags.wildbigkeys)
-				posRequired.push('laserbridge');
-			if (flags.entrancemode === 'N' && dungeon === 4)
-				posRequired.push('mirror');
-			if (flags.gametype != 'I' && flags.entrancemode === 'N' && !owGraphLogic && dungeon === 1)
-				posRequired.push('mirrordesert');
-			if (flags.gametype === 'I' && flags.entrancemode === 'N' && !owGraphLogic && dungeon === 5)
-				posRequired.push('mirrorskull');
-			darkRoom = torchDarkRoom = true;
-		};
-
-		if (doorcheck === 'available') {
-			label:
-			for (var i = 0; i < posRequired.length; i++) {
-				switch (posRequired[i]) {
-					case '':
-						break;
-					case 'firesource':
-						if (!items.lantern && !items.firerod) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'hookboots':
-						if (!items.hookshot && !items.boots) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'wizzrobe':
-						if (!melee_bow() && !rod() && !cane()) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'freezor':
-						if (!items.firerod && (!items.bombos || (items.sword === 0 && flags.swordmode != 'S'))) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'swordorswordless':
-						if (items.sword === 0 && flags.swordmode != 'S') {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'boomerang':
-						if (!items.boomerang && !items.bomb) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'bombdash':
-						if (!items.bomb && !items.boots) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'kill':
-						if (!melee_bow() && !cane() && !items.firerod) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'killbomb':
-						if (!items.bomb && !melee_bow() && !cane() && !items.firerod) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'laserbridge':
-						if (!items.cape && !items.byrna && items.shield < 3) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'mirrordesert':
-						if (!items.mirror || items.flute === 0 || items.glove < 2) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					case 'mirrorskull':
-						if (!items.mirror || !canReachLightWorldBunny()) {
-							doorcheck = 'possible';
-							break label;
-						}
-						break;
-					default:
-						if (!items[posRequired[i]]) {
-							doorcheck = 'possible';
-							break label;
-						}
-				}
-			}
-		};
-
-		if (onlyDarkPossible) doorcheck = 'dark' + doorcheck;
-
-		if (doorcheck === 'available' && !onlyDarkPossible && !items.lantern && (darkRoom || torchDarkRoom))
-			doorcheck = 'darkavailable';
-
-		return doorcheck;
-	};
-
-	//dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
-	//dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
-	window.dungeonBoss = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
-		if (dungeonID === 11)
-			return items.chest11 ? dungeonChests(11, dungeonEntrances, dungeonEntrancesBunny) : "opened";
-		var state = "unavailable", bunny = true, allAccessible = true;
-		for (var k = 0; k < dungeonEntranceCounts[dungeonID]; k++) {
-			if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && dungeonEntrancesBunny[k])
-				dungeonEntrances[k] = "unavailable";
-			if (dungeonEntrances[k] !== "unavailable") {
-				state = bestAvailability(state, dungeonEntrances[k]);
-				if (!dungeonEntrancesBunny[k])
-					bunny = false;
-			}
-			if (dungeonEntrances[k] !== "available" || dungeonEntrancesBunny[k]) {
-				if (k !== 0 && dungeonID === 1 && dpFrontLogic)
-					continue;
-				if (k !== 0 && dungeonID === 9 && trFrontLogic)
-					continue;
-				allAccessible = false;
-			}
-		}
-		if (bunny)
-			return "unavailable";
-		var best = state;
-		switch (dungeonID) {
-			case 0:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? EPBoss() : doorCheck(0, false, true, true, ['hookshot', 'bow'], 'boss');
-				break;
-			case 1:
-				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
-					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3]
-					state = DPBoss(front, back);
-				}
-				else
-					state = doorCheck(1, false, false, false, [(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '', 'firesource', 'killbomb'], 'boss');
-				break;
-			case 2:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? HeraBoss() : doorCheck(2, false, false, false, [(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '', 'kill'], 'boss');
-				break;
-			case 3:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? PoDBoss() : doorCheck(3, false, true, true, ['boots', 'hammer', 'bow', 'bomb'], 'boss');
-				break;
-			case 4:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? SPBoss() : doorCheck(4, false, false, false, ['flippers', flags.entrancemode === 'N' ? 'mirror' : '', 'hookshot', 'hammer', 'bomb'], 'boss');
-				break;
-			case 5:
-				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
-					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3];
-					state = SWBoss(front, back);
-				}
-				else
-					state = doorCheck(5, false, false, false, ['firerod', 'swordorswordless', 'bomb'], 'boss');
-				break;
-			case 6:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TTBoss() : doorCheck(6, false, false, false, [(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '', 'glove', 'bomb'], 'boss');
-				break;
-			case 7:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? IPBoss() : doorCheck(7, false, false, false, ['freezor', 'hammer', 'glove', 'hookshot', 'somaria', 'bomb'], 'boss');
-				break;
-			case 8:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? MMBoss("available") : doorCheck(8, false, true, false, ['hookshot', 'firesource', 'somaria', 'bomb'], 'boss');
-				break;
-			case 9:
-				if (trFrontLogic)
-					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRFrontBoss("available") : doorCheck(9, false, true, false, ['somaria', 'firerod', (!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''], 'boss');
-				else
-					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRBoss(...dungeonEntrances) : doorCheck(9, false, true, false, ['somaria', 'firerod', (!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''], 'boss');
-				break;
-			case 10:
-				if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck())))
-					return "unavailable";
-				if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!items.lantern && !items.firerod))
-					return "unavailable";
-				if (flags.goals === 'F' && (items.sword > 1 || (flags.swordmode === 'S' && items.hammer)) && (items.lantern || items.firerod))
-					state = "available";
-				else
-					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? GTBoss() : doorCheck(10, false, false, false, ['hammer', 'firerod', 'hookshot', 'boomerang', 'somaria', (!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '', 'bow', flags.bossshuffle === 'N' ? '' : 'icerod', 'bomb'], 'boss');
-				break;
-			case 12:
-				if (!items.sword && !items.hammer && !items.net)
-					return "unavailable";
-				state = flags.doorshuffle === 'C' ? doorCheck(12, false, true, true, [], 'boss') : CTBoss();
-		}
-		if (best === "darkavailable") {
-			if (state === "available" || state === "possible")
-				state = "dark" + state;
-			best = "available";
-		}
-		if (best === "darkpossible") {
-			if (state === "available" || state === "darkavailable" || state === "possible")
-				state = "darkpossible";
-			best = "possible";
-		}
-		if (flags.doorshuffle !== 'N' && state === "available" && (best === "possible" || !allAccessible))
-			return "possible";
-		if (flags.doorshuffle !== 'N' && state === "darkavailable" && (best === "possible" || !allAccessible))
-			return "darkpossible";
-		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "available" && best === "possible")
-			return "possible";
-		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "darkavailable" && best === "possible")
-			return "darkpossible";
-		return state;
-	};
-
-	//dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
-	//dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
-	window.dungeonChests = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
-		var state = "unavailable", bunny = true, allAccessible = true;
-		for (var k = 0; k < dungeonEntranceCounts[dungeonID]; k++) {
-			if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && dungeonEntrancesBunny[k])
-				dungeonEntrances[k] = "unavailable";
-			if (dungeonEntrances[k] !== "unavailable") {
-				state = bestAvailability(state, dungeonEntrances[k]);
-				if (!dungeonEntrancesBunny[k])
-					bunny = false;
-			}
-			if (dungeonEntrances[k] !== "available" || dungeonEntrancesBunny[k]) {
-				if (k !== 0 && dungeonID === 1 && dpFrontLogic)
-					continue;
-				if (k !== 0 && dungeonID === 9 && trFrontLogic)
-					continue;
-				allAccessible = false;
-			}
-		}
-		if (state === "unavailable")
-			return "unavailable";
-		if (bunny && (flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
-			return "unavailable";
-		if (bunny && flags.doorshuffle === 'B' && dungeonID !== 2)
-			return "unavailable";
-
-		var best = state;
-		switch (dungeonID) {
-			case 0:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? EPChests() : doorCheck(0, false, true, true, ['hookshot', 'bow'], 'item', bunny);
-				break;
-			case 1:
-				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
-					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3];
-					state = DPChests(front, back);
-				} else
-					state = doorCheck(1, false, false, false, ['boots', 'firesource', 'killbomb'], 'item', bunny);
-				break;
-			case 2:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? HeraChests() : doorCheck(2, false, false, false, ['firesource', 'kill'], 'item', bunny);
-				break;
-			case 3:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? PoDChests() : doorCheck(3, false, true, true, ['boots', 'hammer', 'bow', 'bomb'], 'item', bunny);
-				break;
-			case 4:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? SPChests() : doorCheck(4, false, false, false, ['flippers', flags.entrancemode === 'N' ? 'mirror' : '', 'hookshot', 'hammer', 'bomb'], 'item', bunny);
-				break;
-			case 5:
-				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
-					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3];
-					state = SWChests(front, back);
-				}
-				else
-					state = doorCheck(5, false, false, false, ['firerod', 'swordorswordless', 'bomb'], 'item', bunny);
-				break;
-			case 6:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TTChests() : doorCheck(6, false, false, false, ['hammer', 'glove', 'bomb'], 'item', bunny);
-				break;
-			case 7:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? IPChests() : doorCheck(7, false, false, false, ['freezor', 'hammer', 'glove', 'hookshot', 'somaria', 'bomb'], 'item', bunny);
-				break;
-			case 8:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? MMChests("available") : doorCheck(8, false, true, false, ['hookshot', 'firesource', 'somaria', 'bomb'], 'item', bunny);
-				break;
-			case 9:
-				if (trFrontLogic)
-					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRFrontChests("available") : doorCheck(9, false, true, false, ['somaria', 'firerod', 'laserbridge'], 'item', bunny);
-				else
-					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRChests(...dungeonEntrances) : doorCheck(9, false, true, false, ['somaria', 'firerod', 'laserbridge'], 'item', bunny);
-				break;
-			case 10:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? GTChests() : doorCheck(10, false, false, false, ['hammer', 'firerod', 'hookshot', 'boomerang', 'somaria', 'boots', 'bow', flags.bossshuffle === 'N' ? '' : 'icerod', 'bomb'], 'item', bunny);
-				break;
-			case 11:
-				if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') {
-					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[4], sanc = dungeonEntrances[3];
-					state = HCChests(front, back, sanc);
-				}
-				else
-					state = doorCheck(11, false, false, flags.gametype != 'S', ['killbomb', 'bombdash'], 'item', bunny);
-				break;
-			case 12:
-				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? CTChests() : doorCheck(12, false, true, true, ['kill', 'swordorswordless'], 'item', bunny);
-		}
-
-		if (best === "darkavailable") {
-			if (state === "available" || state === "possible")
-				state = "dark" + state;
-			best = "available";
-		}
-		if (best === "darkpossible") {
-			if (state === "available" || state === "darkavailable" || state === "possible")
-				state = "darkpossible";
-			best = "possible";
-		}
-
-		if ((flags.doorshuffle !== 'N' && flags.doorshuffle !== 'P') && state === "available" && (best === "possible" || !allAccessible))
-			return "possible";
-		if ((flags.doorshuffle !== 'N' && flags.doorshuffle !== 'P') && state === "darkavailable" && (best === "possible" || !allAccessible))
-			return "darkpossible";
-		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "available" && best === "possible")
-			return "possible";
-		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "darkavailable" && best === "possible")
-			return "darkpossible";
-
-		return state;
-	};
-	// #endregion
 
 	// #region Dungeon Bosses
 	window.EPBoss = function () {
@@ -7644,6 +6760,843 @@
 
 			return available_chests(12, chests, items.maxchest12, items.chest12);
 		};
+	};
+	// #endregion
+
+	// #region Glitch functions
+	function glitchLinkState() { return flags.glitches === 'M' && (items.moonpearl || items.bottle) };
+	function canSpinSpeed() { return items.boots && (items.sword || items.hookshot) };
+	function canBunnyPocket() { return items.boots && (items.mirror || items.bottle) };
+	function canReachSwampGlitchedAsLink() {
+		return (flags.glitches != 'N' && items.moonpearl && (flags.glitches === 'M' || items.boots))
+	};
+
+	function glitchLinkState() {
+		return flags.glitches === 'M' && (items.moonpearl || items.bottle)
+	};
+	// To unlock Swamp, we need to unlock Hera using either the Hera BK or the Mire BK after clipping from Mire,
+	// then have at least one spare Mire key (logic assumes we use two in Mire) to open the switch room door.
+	// 
+	// Since there are no spare keys in vanilla, MG logic assumes we're smart enough to not open the basement door.
+	// However, we still may have to kill the Mire boss and/or check the fire-locked left side to get enough keys,
+	// so we can only be absolutely sure we have enough Mire small keys when we have the ability to full-clear Mire.
+	// 
+	// Assuming we enter Swamp with a Mire key, we can use it to unlock the second waterway door, then carefully 
+	// chain pot keys to unlock the doors on the way from the entrance to the second waterway.
+	// 
+	// The logic assumes we can either hammer the pegs to flood the second waterway after collecting the key, 
+	// or S+Q and clip from either Mire or Hera again just to flood the second waterway. This only really matters 
+	// for wild keys, because otherwise we're clipping from Mire just to unlock Hera/Swamp and hammer is logically 
+	// irrelevant.
+	//
+	// Assuming Swamp is unlocked, we need to either mirror from the DW and drain the dam as normal, or pre-drain
+	// the dam and clip from Hera without taking any overworld transitions. This means we need to either have the
+	// mirror or lantern for Swamp to be fully in logic.
+	//
+	// What if non-keysanity modes were a mistake?
+	function canClipFromMireToSwamp() {
+		if (!items.moonpearl && !glitchLinkState()) return 'unavailable';
+
+		var canReachMireArea = ((flags.glitches === 'H') && items.boots) || (flags.glitches === 'M')
+		if (!canReachMireArea) return 'unavailable';
+
+		if (!items.boots && !items.hookshot) return 'unavailable';
+
+		var med = medallionCheck(0)
+		if (med === 'available') {
+			if (items.somaria && (items.lantern || items.firerod)) return 'available';
+			return 'possible';
+		} else {
+			return med
+		}
+	};
+
+	function canWalkIntoSwampMG() {
+		if (items.hammer && items.hookshot && items.flippers && (items.lantern || items.mirror)) {
+			return 'possible';
+		}
+		return 'unavailable';
+	};
+
+	function canEnterSwampGlitched() {
+		var mire = canClipFromMireToSwamp();
+		var walk = canWalkIntoSwampMG();
+		if (flags.glitches === 'H' && !items.moonpearl) return 'unavailable';
+
+		if (mire === 'available') return canDrainDam('available');
+		if (mire === 'possible') {
+			return walk === 'unavailable' ? canDrainDam(mire) : walk
+		} else {
+			return canDrainDam(walk);
+		}
+	};
+
+	function canDrainDam(status) {
+		if (status === 'unavailable') return status;
+		return items.mirror ? status : (items.lantern ? status : 'dark' + status)
+	};
+	// #endregion
+
+	// #region Old reach logic
+	function canReachLightWorld() {
+		if (flags.gametype != 'I') {
+			return true;
+		};
+		if (flags.gametype === 'I') {
+			return items.moonpearl && (items.glove === 2 || (items.glove && items.hammer) || canReachLightWorldBunny());
+		};
+		return false;
+	};
+
+	function canReachLightWorldBunny() {
+		if (flags.gametype === 'I') {
+			if (items.agahnim || (items.glove === 2 && items.flute > 1)) return true;
+		};
+		return false;
+	};
+
+	function canReachEDW() { 
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N') {
+			if (items.moonpearl && items.boots) return true;
+			if (items.mirror && (items.boots || (canReachWDM() && items.moonpearl))) return true;
+		};
+		if (flags.gametype != 'I') {
+			if (items.moonpearl) {
+				if (items.agahnim) return true;
+				if (items.hammer && items.glove) return true;
+				if (items.glove === 2 && items.flippers) return true;
+			};
+		};
+		if (flags.gametype === 'I') {
+			if (items.agahnim && items.mirror) return true;
+			if (items.flippers || items.hammer || items.flute > 1) return true;
+		};
+		return false;
+	};
+
+	function canReachWDW() {
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots) return true;
+		if (flags.glitches != 'N' && canReachWDM() && items.mirror) return true;
+		if (flags.gametype != 'I') {
+			if (items.moonpearl) {
+				if (items.glove === 2) return true;
+				if (items.glove && items.hammer) return true;
+				if (items.agahnim && items.hookshot && (items.flippers || items.glove || items.hammer)) return true;
+			};
+		};
+		if (flags.gametype === 'I') {
+			return true;
+		};
+		return false;
+	};
+
+	function canReachSDW() { 
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots && items.moonpearl) return true;
+		if (flags.gametype != 'I') {
+			if (items.moonpearl) {
+				if (items.glove === 2) return true;
+				if (items.glove && items.hammer) return true;
+				if (items.agahnim && items.hammer) return true;
+				if (items.agahnim && items.hookshot && (items.flippers || items.glove)) return true;
+			}
+		};
+		if (flags.gametype === 'I') {
+			return true;
+		};
+		return false;
+	};
+
+	function canReachWDM() { 
+		if (flags.glitches === 'M' ) return true;
+		if (flags.glitches != 'N' && items.boots) return true;
+		if (flags.gametype != 'I') {
+			if (items.flute >= 1 || items.glove) return true;
+		};
+		if (flags.gametype === 'I') {
+			if (items.flute > 1 || items.glove) return true;
+		};
+		return false;
+	};
+
+	function canReachEDM() {
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots) return true;
+		if (flags.glitches != 'N' && canReachWDM() && items.mirror) return true;
+		if (flags.gametype != 'I') {
+			if (canReachWDM() && (items.hookshot || (items.mirror && items.hammer))) return true;
+		};
+		if (flags.gametype === 'I') {
+			if (canReachWDM()) {
+				if (items.moonpearl && items.hookshot) return true;
+				if (items.glove > 1) return true;
+			};
+		};
+		return false;
+	};
+
+	function canReachDDM() { 
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && canReachWDM() && items.mirror) return true;
+		if (flags.glitches != 'N' && items.boots && (items.moonpearl || items.hammer)) return true;
+		if (flags.gametype != 'I') {
+			if (canReachEDM() && items.moonpearl && items.glove > 1) return true;
+		};
+		if (flags.gametype === 'I') {
+			if (items.glove || items.flute > 1) return true;
+		};
+		return false;
+	};
+
+	function canReachDP() { 
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots) return true;
+		if (flags.gametype != 'I' ) {
+			if (items.book) return true;
+			if (items.mirror && canReachMire()) return true;	
+		};
+		if (flags.gametype === 'I') {
+			if (items.book && canReachLightWorld()) return true;
+		};
+		return false;
+	};
+
+	function canReachDPNorth() {
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots) return true;
+		if (flags.gametype != 'I' ) {
+			if (items.book && items.glove) return true;
+			if (items.mirror && canReachMire()) return true;	
+		};
+		if (flags.gametype === 'I') {
+			if (canReachDP() && items.glove) return true;
+		};
+		return false;
+	};
+
+	function canReachHera() { 
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots) return true;
+		if (flags.gametype != 'I') {
+			if (canReachWDM() && (items.mirror || (items.hookshot && items.hammer))) return true;
+		};
+		if (flags.gametype === 'I') {
+			if (canReachEDM() && items.moonpearl && items.hammer) return true;
+		};
+		return false;
+	};
+
+	function canReachMire() {
+		if (flags.glitches === 'M') return true;
+		if (flags.glitches != 'N' && items.boots && canReachSDW()) return true;
+		if (flags.gametype != 'I') {
+			if (items.glove === 2 && items.flute >= 1) return true;
+		};
+		if (flags.gametype === 'I') {
+			if (items.flute > 1 || (items.flute === 1 && canReachLightWorld())) return true;
+			if (canReachLightWorldBunny() && items.mirror) return true;
+		};
+		return false;
+	};
+
+
+	function locationRequiresMoonpearl(mapTrackerName) {
+		const moonpearlWorld = flags.gametype === 'I' ? 'light' : 'dark';
+		for (var i = 0; i < entrances.length; i++) {
+			if (entrances[i].known_location === mapTrackerName) {
+				if ("world" in entrances[i]) {
+					return entrances[i].world === moonpearlWorld;
+				} else {
+					return false;
+				};
+			};
+		};
+	};
+	// #endregion
+
+	// #region Old door Chest Logic
+	function available_chests(dungeonid, allchests, maxchest, chestcount) {
+		var achests = 0;
+		var pchests = 0;
+		var dachests = 0;
+		var dpchests = 0;
+		var uchests = 0;
+		var keys = 0;
+
+		for (var i = 0; i < allchests.length; i++) {
+			switch (allchests[i]) {
+				case 'A':
+					achests++;
+					break;
+				case 'P':
+					pchests++;
+					break;
+				case 'DA':
+					dachests++;
+					break;
+				case 'DP':
+					dpchests++;
+					break;
+				case 'U':
+					uchests++;
+					break;
+				case 'K':
+					keys++;
+					break;
+			}
+		}
+
+		//Move dungeon items from available to possible
+		if (!flags.wildmaps && dungeonid != 12) {
+			if (achests > 0) {
+				pchests++;
+				achests--;
+			} else if (dachests > 0) {
+				dpchests++;
+				dachests--;
+			}
+		}
+
+		if (!flags.wildcompasses && dungeonid < 11) {
+			if (achests > 0) {
+				pchests++;
+				achests--;
+			} else if (dachests > 0) {
+				dpchests++;
+				dachests--;
+			}
+		}
+
+		var itemscollected = (maxchest - chestcount);
+
+		for (var i = 0; i < itemscollected; i++) {
+			if (achests > 0) {
+				achests--;
+			} else if (dachests > 0) {
+				dachests--;
+			} else if (pchests > 0) {
+				pchests--;
+			} else if (dpchests > 0) {
+				dpchests--;
+			}
+		}
+
+		if (flags.ambrosia === 'Y' && dungeonid < 10 && chestcount === 1 && !dungeons[dungeonid].is_beaten) {
+			return ConvertChestToBoss(allchests[allchests.length - 1]);
+		}
+
+		if (achests > 0) return 'available';
+		if (dachests > 0) return 'darkavailable';
+		if (pchests > 0) return 'possible';
+		if (dpchests > 0) return 'darkpossible';
+		return 'unavailable';
+	};
+
+	function maxKeys(dungeon) {
+		return flags.doorshuffle === 'C' ? 29 : [0, 1, 1, 6, 1, 3, 1, 2, 3, 4, 4, 1, 2][dungeon];//Note: This assumes Key Drop Shuffle is off in Basic
+	};
+
+	function door_enemizer_check(dungeon) {
+		if (dungeon === 6) {
+			var atticCell = (flags.doorshuffle === 'C' ? items.bombfloor : items.bomb) && (items.bigkey6 || !flags.wildbigkeys);
+			if (!atticCell && (flags.bossshuffle === 'N' || enemizer[6] === 7))
+				return 'unavailable';
+			if (!atticCell && flags.bossshuffle != 'N' && enemizer[6] % 11 === 0) {
+				var check = enemizer_check(6);
+				return check === 'available' ? 'possible' : check;
+			}
+		}
+		if (dungeon >= 10)
+			return items.sword || items.hammer || items.net || dungeon === 11 ? 'available' : 'unavailable';
+		return (dungeon === 7 && (!items.hammer || items.glove == 0)) ? 'unavailable' : enemizer_check(dungeon);
+	};
+
+	window.entranceInDarkWorld = function (n) {
+		return n == 93 || n == 95 ? flags.gametype != 'I' : n >= 86;
+	};
+
+	window.entranceInBunnyWorld = function (n) {
+		return n == 93 || n == 95 || (n >= 86) == (flags.gametype != 'I');
+	};
+
+	// Tells chest logic if the player can reach the dungeon in logic in entrance modes
+	window.entranceChests = function (entranceNames, dungeonID) {
+		if (!(items['chest' + dungeonID] > 0 || (dungeonID < 10 && !dungeons[dungeonID].is_beaten))) {
+			if (dungeonID < 10) document.getElementById('entranceBoss' + dungeonID).style.visibility = 'hidden';
+			return;
+		};
+
+		var entranceAvail = [];
+		var entranceBunny = [];
+		var found = false;
+
+		nextEntrance:
+		for (var i = 0; i < entranceNames.length; i++) {
+			for (var j = 0; j < entrances.length; j++) {
+				if (entrances[j].known_location === entranceNames[i]) {
+					entranceAvail.push('available');
+					entranceBunny.push(!items.moonpearl && entranceInBunnyWorld(j));
+					found = true;
+					continue nextEntrance;
+				}
+			}
+
+			//special cases
+			if (entranceNames[i] === 'placeholder') {
+				if (dungeonID == 5 && canReachWestDarkWorld()) {
+					entranceAvail.push('available');
+					entranceBunny.push(!items.moonpearl && entranceInBunnyWorld(102));
+					found = true;
+				};
+
+				if (dungeonID == 11 && i == 3) {
+					entranceAvail.push(flags.gametype != 'I' && (flags.gametype == 'S' || (flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) ? 'available' : 'possible');
+					entranceBunny.push(false);
+					found = true;
+				};
+
+				if (dungeonID == 11 && i == 4) {
+					if (
+						entrances[22].known_location === 'sanc' ||
+						entrances[29].known_location === 'sanc' ||
+						entrances[18].known_location === 'sanc' ||
+						entrances[11].known_location === 'sanc' ||
+						(entrances[24].known_location === 'sanc' && items.boots && items.agahnim) ||
+						(entrances[43].known_location === 'sanc' && items.hammer) ||
+						(entrances[95].known_location === 'sanc' && items.agahnim2) ||
+						(entrances[13].known_location === 'sanc' && items.glove > 0 && (flags.gametype != 'I' || (items.moonpearl && canReachWestDarkWorld())))
+					) {
+						entranceAvail.push('available');
+						var bunny = false;
+						for (var j = 0; j < entrances.length; j++) {
+							if (entrances[j].known_location === 'sanc') {
+								bunny = !items.moonpearl && entranceInBunnyWorld(j);
+								break;
+							};
+						};
+						entranceBunny.push(bunny);
+						found = true;
+					};
+				};
+
+				continue nextEntrance;
+			};
+
+			//not found
+			entranceAvail.push('unavailable');
+			entranceBunny.push(false);
+		};
+
+		if (!found) {
+			if (dungeonID < 10) {
+				document.getElementById('entranceBoss' + dungeonID).style.visibility = 'hidden';
+			};
+			document.getElementById('chest' + dungeonID).style.backgroundColor = 'white';
+			document.getElementById('chest' + dungeonID).style.color = 'black';
+		} else {
+			if (dungeonID < 10) {
+				document.getElementById('entranceBoss' + dungeonID).style.visibility = (!dungeons[dungeonID].is_beaten && !owGraphLogic ? 'visible' : 'hidden');
+				document.getElementById('entranceBoss' + dungeonID).style.background = ConvertBossToColor(dungeonBoss(dungeonID, entranceAvail, entranceBunny));
+			};
+			const curStyle = window.getComputedStyle(document.documentElement);
+			var c = dungeonChests(dungeonID, entranceAvail, entranceBunny);
+			switch (c) {
+				case 'available':
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--available-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--available-color'));
+					break;
+				case 'darkavailable':
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkavailable-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkavailable-color'));
+					break;
+				case 'possible':
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--possible-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--possible-color'));
+					break;
+				case 'darkpossible':
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--darkpossible-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--darkpossible-color'));
+					break;
+				case 'partialavailable':
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--partialavailable-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--partialavailable-color'));
+					break;
+				case 'information':
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--information-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--information-color'));
+					break;
+				default:
+					document.getElementById('chest' + dungeonID).style.backgroundColor = curStyle.getPropertyValue('--unavailable-color');
+					document.getElementById('chest' + dungeonID).style.color = rgbToTextColour(curStyle.getPropertyValue('--unavailable-color'));
+			};
+		};
+	};
+
+	window.doorCheck = function (dungeon, onlyDarkPossible, darkRoom, torchDarkRoom, posRequired, goal, onlyBunny = false) {
+
+		if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P')
+			return null; // non-doors uses the normal logic
+
+		var doorcheck = 'available'
+		if (onlyBunny) {
+			var bosscheck = 'unavailable';
+		} else {
+			var bosscheck = door_enemizer_check(dungeon);
+		};
+		if (goal === 'boss') doorcheck = bosscheck;
+		if (doorcheck === 'unavailable') return 'unavailable';
+
+		var wildsmallkeys = flags.wildkeys || flags.gametype === 'R';
+
+		if (goal === 'item') {
+			// Is last item on the boss?
+			if (items['chest' + dungeon] === 1) {
+				if (dungeon < 10 && flags.doorshuffle === 'B' && !items['boss' + dungeon] && bosscheck != 'available') {
+					if (bosscheck === 'unavailable' && (flags.ambrosia === 'Y' || (flags.wildmaps && flags.wildcompasses && (wildsmallkeys || maxKeys(dungeon) == 0) && flags.wildbigkeys)))
+						return 'unavailable';
+					doorcheck = 'possible';
+				};
+			};
+
+			if (dungeon < 10 && flags.doorshuffle === 'C' && !items['boss' + dungeon] && bosscheck != 'available' && (items['chest' + dungeon] == 1 || (!items['chestknown' + dungeon] && items['chest' + dungeon] == 2))) {
+				if (bosscheck === 'unavailable' && items['chestknown' + dungeon] && (flags.ambrosia === 'Y' || (flags.wildmaps && flags.wildcompasses && wildsmallkeys && flags.wildbigkeys)))
+					return 'unavailable';
+				doorcheck = 'possible';
+			}
+		};
+
+		var dungeonAlt = dungeon > 10 ? 'half' + (dungeon - 11) : '' + dungeon;
+
+		if (doorcheck === 'available') {
+			if (onlyBunny) doorcheck = 'possible'; 
+			if (goal === 'item' && flags.doorshuffle === 'C' && items['chest' + dungeon] === 1 && !items['chestknown' + dungeon]) doorcheck = 'possible'; //Unknown if even one item is still in there
+			if (flags.wildkeys && flags.gametype != 'R' && items['smallkey' + dungeonAlt] < maxKeys(dungeon)) doorcheck = 'possible'; //Could need more small keys
+			if (flags.wildbigkeys && (dungeon <= 10 || flags.doorshuffle === 'C') && !items['bigkey' + dungeonAlt]) doorcheck = 'possible';	//Could need big key
+			if (goal != 'boss' && dungeon < 10 && bosscheck != 'available' && flags.ambrosia === 'N' && ((!wildsmallkeys && maxKeys(dungeon) > 0) || !flags.wildbigkeys)) doorcheck = 'possible';//Boss could have required key
+		};
+
+		if (flags.doorshuffle === 'C') {
+			posRequired = ['firerod', 'somaria', 'flippers', 'hookshot', 'boots', 'bow', 'hammer', 'swordorswordless', 'glove', 'bomb', flags.bossshuffle === 'N' ? '' : 'icerod'];
+			if (goal === 'item' || !wildsmallkeys || !flags.wildbigkeys)
+				posRequired.push('laserbridge');
+			if (flags.entrancemode === 'N' && dungeon === 4)
+				posRequired.push('mirror');
+			if (flags.gametype != 'I' && flags.entrancemode === 'N' && !owGraphLogic && dungeon === 1)
+				posRequired.push('mirrordesert');
+			if (flags.gametype === 'I' && flags.entrancemode === 'N' && !owGraphLogic && dungeon === 5)
+				posRequired.push('mirrorskull');
+			darkRoom = torchDarkRoom = true;
+		};
+
+		if (doorcheck === 'available') {
+			label:
+			for (var i = 0; i < posRequired.length; i++) {
+				switch (posRequired[i]) {
+					case '':
+						break;
+					case 'firesource':
+						if (!items.lantern && !items.firerod) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'hookboots':
+						if (!items.hookshot && !items.boots) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'wizzrobe':
+						if (!melee_bow() && !rod() && !cane()) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'freezor':
+						if (!items.firerod && (!items.bombos || (items.sword === 0 && flags.swordmode != 'S'))) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'swordorswordless':
+						if (items.sword === 0 && flags.swordmode != 'S') {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'boomerang':
+						if (!items.boomerang && !items.bomb) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'bombdash':
+						if (!items.bomb && !items.boots) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'kill':
+						if (!melee_bow() && !cane() && !items.firerod) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'killbomb':
+						if (!items.bomb && !melee_bow() && !cane() && !items.firerod) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'laserbridge':
+						if (!items.cape && !items.byrna && items.shield < 3) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'mirrordesert':
+						if (!items.mirror || items.flute === 0 || items.glove < 2) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					case 'mirrorskull':
+						if (!items.mirror || !canReachLightWorldBunny()) {
+							doorcheck = 'possible';
+							break label;
+						}
+						break;
+					default:
+						if (!items[posRequired[i]]) {
+							doorcheck = 'possible';
+							break label;
+						}
+				}
+			}
+		};
+
+		if (onlyDarkPossible) doorcheck = 'dark' + doorcheck;
+
+		if (doorcheck === 'available' && !onlyDarkPossible && !items.lantern && (darkRoom || torchDarkRoom))
+			doorcheck = 'darkavailable';
+
+		return doorcheck;
+	};
+
+	//dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
+	//dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
+	window.dungeonBoss = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
+		if (dungeonID === 11)
+			return items.chest11 ? dungeonChests(11, dungeonEntrances, dungeonEntrancesBunny) : "opened";
+		var state = "unavailable", bunny = true, allAccessible = true;
+		for (var k = 0; k < dungeonEntranceCounts[dungeonID]; k++) {
+			if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && dungeonEntrancesBunny[k])
+				dungeonEntrances[k] = "unavailable";
+			if (dungeonEntrances[k] !== "unavailable") {
+				state = bestAvailability(state, dungeonEntrances[k]);
+				if (!dungeonEntrancesBunny[k])
+					bunny = false;
+			}
+			if (dungeonEntrances[k] !== "available" || dungeonEntrancesBunny[k]) {
+				if (k !== 0 && dungeonID === 1 && dpFrontLogic)
+					continue;
+				if (k !== 0 && dungeonID === 9 && trFrontLogic)
+					continue;
+				allAccessible = false;
+			}
+		}
+		if (bunny)
+			return "unavailable";
+		var best = state;
+		switch (dungeonID) {
+			case 0:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? EPBoss() : doorCheck(0, false, true, true, ['hookshot', 'bow'], 'boss');
+				break;
+			case 1:
+				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
+					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3]
+					state = DPBoss(front, back);
+				}
+				else
+					state = doorCheck(1, false, false, false, [(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '', 'firesource', 'killbomb'], 'boss');
+				break;
+			case 2:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? HeraBoss() : doorCheck(2, false, false, false, [(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'firesource' : '', 'kill'], 'boss');
+				break;
+			case 3:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? PoDBoss() : doorCheck(3, false, true, true, ['boots', 'hammer', 'bow', 'bomb'], 'boss');
+				break;
+			case 4:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? SPBoss() : doorCheck(4, false, false, false, ['flippers', flags.entrancemode === 'N' ? 'mirror' : '', 'hookshot', 'hammer', 'bomb'], 'boss');
+				break;
+			case 5:
+				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
+					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3];
+					state = SWBoss(front, back);
+				}
+				else
+					state = doorCheck(5, false, false, false, ['firerod', 'swordorswordless', 'bomb'], 'boss');
+				break;
+			case 6:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TTBoss() : doorCheck(6, false, false, false, [(!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'hammer' : '', 'glove', 'bomb'], 'boss');
+				break;
+			case 7:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? IPBoss() : doorCheck(7, false, false, false, ['freezor', 'hammer', 'glove', 'hookshot', 'somaria', 'bomb'], 'boss');
+				break;
+			case 8:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? MMBoss("available") : doorCheck(8, false, true, false, ['hookshot', 'firesource', 'somaria', 'bomb'], 'boss');
+				break;
+			case 9:
+				if (trFrontLogic)
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRFrontBoss("available") : doorCheck(9, false, true, false, ['somaria', 'firerod', (!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''], 'boss');
+				else
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRBoss(...dungeonEntrances) : doorCheck(9, false, true, false, ['somaria', 'firerod', (!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'laserbridge' : ''], 'boss');
+				break;
+			case 10:
+				if ((crystalCheck() < flags.ganonvulncount && flags.goals != 'A') || ((crystalCheck() < flags.opentowercount || !items.agahnim2) && flags.goals != 'F') || (flags.goals === 'A' && (!items.agahnim || !allDungeonCheck())))
+					return "unavailable";
+				if ((flags.swordmode != 'S' && items.sword < 2) || (flags.swordmode === 'S' && !items.hammer) || (!items.lantern && !items.firerod))
+					return "unavailable";
+				if (flags.goals === 'F' && (items.sword > 1 || (flags.swordmode === 'S' && items.hammer)) && (items.lantern || items.firerod))
+					state = "available";
+				else
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? GTBoss() : doorCheck(10, false, false, false, ['hammer', 'firerod', 'hookshot', 'boomerang', 'somaria', (!flags.wildkeys && flags.gametype != 'R') || !flags.wildbigkeys ? 'boots' : '', 'bow', flags.bossshuffle === 'N' ? '' : 'icerod', 'bomb'], 'boss');
+				break;
+			case 12:
+				if (!items.sword && !items.hammer && !items.net)
+					return "unavailable";
+				state = flags.doorshuffle === 'C' ? doorCheck(12, false, true, true, [], 'boss') : CTBoss();
+		}
+		if (best === "darkavailable") {
+			if (state === "available" || state === "possible")
+				state = "dark" + state;
+			best = "available";
+		}
+		if (best === "darkpossible") {
+			if (state === "available" || state === "darkavailable" || state === "possible")
+				state = "darkpossible";
+			best = "possible";
+		}
+		if (flags.doorshuffle !== 'N' && state === "available" && (best === "possible" || !allAccessible))
+			return "possible";
+		if (flags.doorshuffle !== 'N' && state === "darkavailable" && (best === "possible" || !allAccessible))
+			return "darkpossible";
+		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "available" && best === "possible")
+			return "possible";
+		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "darkavailable" && best === "possible")
+			return "darkpossible";
+		return state;
+	};
+
+	//dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
+	//dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
+	window.dungeonChests = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
+		var state = "unavailable", bunny = true, allAccessible = true;
+		for (var k = 0; k < dungeonEntranceCounts[dungeonID]; k++) {
+			if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && dungeonEntrancesBunny[k])
+				dungeonEntrances[k] = "unavailable";
+			if (dungeonEntrances[k] !== "unavailable") {
+				state = bestAvailability(state, dungeonEntrances[k]);
+				if (!dungeonEntrancesBunny[k])
+					bunny = false;
+			}
+			if (dungeonEntrances[k] !== "available" || dungeonEntrancesBunny[k]) {
+				if (k !== 0 && dungeonID === 1 && dpFrontLogic)
+					continue;
+				if (k !== 0 && dungeonID === 9 && trFrontLogic)
+					continue;
+				allAccessible = false;
+			}
+		}
+		if (state === "unavailable")
+			return "unavailable";
+		if (bunny && (flags.doorshuffle === 'N' || flags.doorshuffle === 'P'))
+			return "unavailable";
+		if (bunny && flags.doorshuffle === 'B' && dungeonID !== 2)
+			return "unavailable";
+
+		var best = state;
+		switch (dungeonID) {
+			case 0:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? EPChests() : doorCheck(0, false, true, true, ['hookshot', 'bow'], 'item', bunny);
+				break;
+			case 1:
+				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
+					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3];
+					state = DPChests(front, back);
+				} else
+					state = doorCheck(1, false, false, false, ['boots', 'firesource', 'killbomb'], 'item', bunny);
+				break;
+			case 2:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? HeraChests() : doorCheck(2, false, false, false, ['firesource', 'kill'], 'item', bunny);
+				break;
+			case 3:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? PoDChests() : doorCheck(3, false, true, true, ['boots', 'hammer', 'bow', 'bomb'], 'item', bunny);
+				break;
+			case 4:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? SPChests() : doorCheck(4, false, false, false, ['flippers', flags.entrancemode === 'N' ? 'mirror' : '', 'hookshot', 'hammer', 'bomb'], 'item', bunny);
+				break;
+			case 5:
+				if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
+					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[3];
+					state = SWChests(front, back);
+				}
+				else
+					state = doorCheck(5, false, false, false, ['firerod', 'swordorswordless', 'bomb'], 'item', bunny);
+				break;
+			case 6:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TTChests() : doorCheck(6, false, false, false, ['hammer', 'glove', 'bomb'], 'item', bunny);
+				break;
+			case 7:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? IPChests() : doorCheck(7, false, false, false, ['freezor', 'hammer', 'glove', 'hookshot', 'somaria', 'bomb'], 'item', bunny);
+				break;
+			case 8:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? MMChests("available") : doorCheck(8, false, true, false, ['hookshot', 'firesource', 'somaria', 'bomb'], 'item', bunny);
+				break;
+			case 9:
+				if (trFrontLogic)
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRFrontChests("available") : doorCheck(9, false, true, false, ['somaria', 'firerod', 'laserbridge'], 'item', bunny);
+				else
+					state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? TRChests(...dungeonEntrances) : doorCheck(9, false, true, false, ['somaria', 'firerod', 'laserbridge'], 'item', bunny);
+				break;
+			case 10:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? GTChests() : doorCheck(10, false, false, false, ['hammer', 'firerod', 'hookshot', 'boomerang', 'somaria', 'boots', 'bow', flags.bossshuffle === 'N' ? '' : 'icerod', 'bomb'], 'item', bunny);
+				break;
+			case 11:
+				if (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') {
+					var front = bestAvailability(dungeonEntrances[0], dungeonEntrances[1], dungeonEntrances[2]), back = dungeonEntrances[4], sanc = dungeonEntrances[3];
+					state = HCChests(front, back, sanc);
+				}
+				else
+					state = doorCheck(11, false, false, flags.gametype != 'S', ['killbomb', 'bombdash'], 'item', bunny);
+				break;
+			case 12:
+				state = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? CTChests() : doorCheck(12, false, true, true, ['kill', 'swordorswordless'], 'item', bunny);
+		}
+
+		if (best === "darkavailable") {
+			if (state === "available" || state === "possible")
+				state = "dark" + state;
+			best = "available";
+		}
+		if (best === "darkpossible") {
+			if (state === "available" || state === "darkavailable" || state === "possible")
+				state = "darkpossible";
+			best = "possible";
+		}
+
+		if ((flags.doorshuffle !== 'N' && flags.doorshuffle !== 'P') && state === "available" && (best === "possible" || !allAccessible))
+			return "possible";
+		if ((flags.doorshuffle !== 'N' && flags.doorshuffle !== 'P') && state === "darkavailable" && (best === "possible" || !allAccessible))
+			return "darkpossible";
+		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "available" && best === "possible")
+			return "possible";
+		if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && state === "darkavailable" && best === "possible")
+			return "darkpossible";
+
+		return state;
 	};
 	// #endregion
 

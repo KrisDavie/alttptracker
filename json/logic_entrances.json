@@ -1546,7 +1546,7 @@
     },
     "Old Man Cave (West)": {
         "Open": {
-            "allOf": [
+            "anyOf": [
                 "glove",
                 {
                     "allOf": [
