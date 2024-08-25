@@ -1393,7 +1393,7 @@
 		var oldchests = chests;
 		var oldentrances = flags.entrancemode === 'N' ?null :entrances;
 		var olddungeonChecks = flags.entrancemode === 'N' ?null :dungeonChecks;
-		flags.entrancemode === 'N' ?loadChestFlagsItem() :loadChestFlagsEntrance();
+		loadChestFlagsItem();
 		for(var k = 0; k < dungeons.length; k++)
 		{
 			olddungeons[k].is_beatable = dungeons[k].is_beatable;
@@ -3429,7 +3429,7 @@
 			connectorTwo = [];
 			document.getElementById('connectorLineDiv').innerHTML = '';
 			document.getElementById('informationDiv').innerHTML = '';
-			flags.entrancemode === 'N' ? loadChestFlagsItem() : loadChestFlagsEntrance();
+			loadChestFlagsItem();
 			resetLogic = false;
 		}
 
@@ -3740,7 +3740,7 @@
 			window.document.getElementById('map_light').style.marginLeft = "6px";
 			window.document.getElementById('map_dark').style.marginLeft = "2px";
 		}
-		flags.entrancemode === 'N' ? loadChestFlagsItem() : loadChestFlagsEntrance();
+		loadChestFlagsItem();
 	};
 
     window.start = function() {

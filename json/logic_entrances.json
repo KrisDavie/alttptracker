@@ -762,7 +762,8 @@
     "Misery Mire": {
         "Open": {
             "allOf": [
-                "canReach|South West Dark World"
+                "canReach|South West Dark World",
+                "moonpearl"
             ]
         },
         "Inverted": {
@@ -1039,7 +1040,8 @@
             "allOf": [
                 "canReach|Upper East Death Mountain",
                 "mitts",
-                "hammer"
+                "hammer",
+                "moonpearl"
             ]
         },
         "Inverted": {
@@ -1225,7 +1227,8 @@
 
                             "anyOf": [
                                 "hasFoundEntrance|Spiral Cave",
-                                "hasFoundEntrance|Mimic Cave"
+                                "hasFoundEntrance|Mimic Cave",
+                                "canReach|Inverted Upper East Death Mountain"
                             ]
                         }
                     ]
@@ -1249,7 +1252,8 @@
 
                             "anyOf": [
                                 "hasFoundEntrance|Spiral Cave",
-                                "hasFoundEntrance|Mimic Cave"
+                                "hasFoundEntrance|Mimic Cave",
+                                "canReach|Inverted Upper East Death Mountain"
                             ]
                         }
                     ]
