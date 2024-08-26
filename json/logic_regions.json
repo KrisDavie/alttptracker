@@ -864,7 +864,7 @@
     },
     "Ice Palace": {
         "Open": {
-            "required": {
+            "always": {
                 "allOf": [
                     "mitts",
                     {

@@ -2881,8 +2881,7 @@
 		var resetLogic = false;
 		
 		//World State
-		if (document.getElementById('stateselect').value != flags.gametype)
-		{
+		if (document.getElementById('stateselect').value != flags.gametype) {
 			if (document.getElementById('stateselect').value === "R" || flags.gametype === "R") {
 				adjustForRetro = true;
 			}
@@ -2895,8 +2894,7 @@
 		}
 		
 		//Boss Shuffle
-		if (document.getElementById('bossselect').value != flags.bossshuffle)
-		{
+		if (document.getElementById('bossselect').value != flags.bossshuffle) {
 			flags.bossshuffle = document.getElementById('bossselect').value;
 			if (flags.bossshuffle === 'N') {
 				document.getElementById('dungeonEnemy0').style.visibility = 'hidden';
