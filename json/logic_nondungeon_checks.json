@@ -1140,6 +1140,7 @@
             "always": {
                 "allOf": [
                     "canBreach|Dark World - Death Mountain",
+                    "moonpearl",
                     "glove"
                 ],
                 "anyOf": [
@@ -1207,6 +1208,7 @@
             "always": {
                 "allOf": [
                     "canBreach|Dark World - Death Mountain",
+                    "moonpearl",
                     "glove"
                 ],
                 "anyOf": [
@@ -1270,6 +1272,7 @@
             "always": {
                 "allOf": [
                     "canBreach|Dark World - Death Mountain",
+                    "moonpearl",
                     "glove"
                 ],
                 "anyOf": [
@@ -1337,6 +1340,7 @@
             "always": {
                 "allOf": [
                     "canBreach|Dark World - Death Mountain",
+                    "moonpearl",
                     "glove"
                 ],
                 "anyOf": [

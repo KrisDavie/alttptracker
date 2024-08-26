@@ -1230,9 +1230,9 @@
 				can_get_chest: function() {
 					const reachability = bestAvailability(dungeon.regions.map(canReachRegion));
 					const chestAvailabilityState = dungeonAvailability(dungeon.id, dungeon.dungeon);
-					var bossAvailabilityState = 'unavailable';
+					let bossAvailabilityState = 'unavailable';
 					if (dungeon.id < 10) {
-						var bossAvailabilityState = bossAvailability(dungeon.id, dungeon.dungeon);
+						bossAvailabilityState = bossAvailability(dungeon.id, dungeon.dungeon);
 					};
 					colorDungeonSquares(dungeon.id, reachability, chestAvailabilityState, bossAvailabilityState);
 				}
