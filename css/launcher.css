@@ -31,13 +31,13 @@ div {
 	font-size: 24px;
     font-family: ptsans_regular;
 	font-variant: small-caps;
-	background-color: black;
+	background-color: rgb(12, 12, 12);
 	color: white;
 	padding: 6px;
-    border-color: #5cc143;
-	border-width: 5px;
+    border-color: #31801d;
+	border-width: 3px;
     border-style: solid;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
 .preset-header {
@@ -63,8 +63,6 @@ div {
 
 
 .preset-btn-span {
-	padding-left: 2px;
-	font-size: 24px;
 	min-width: 110px;
     display: inline-block;
 }
@@ -78,8 +76,18 @@ div {
 .preset-btn { 
 	font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
 	font-size: 14px; 
-	background-color: #BBB; 
+	background-color: #d6dfdc; 
 	width: 140px; 
+	padding: 4px 4px;
+	border: 2px solid #333632;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.preset-btn:hover { 
+    background-color: #ffdc7a; 
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 .select-label {
@@ -109,14 +117,14 @@ div {
     background: black;
 	padding: 5px;
     border-color: #ffa700;
-	border-width: 5px;
+	border-width: 3px;
     border-style: solid;
-    border-radius: 5px;	
+    border-radius: 3px;	
 }
 
 .sprite-dropdown {
-	width: 350px;
-    font-size: 16px;
+	width: 280px;
+    font-size: 14px;
 }
 
 .header-links {
