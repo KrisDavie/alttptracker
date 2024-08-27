@@ -1109,7 +1109,7 @@
             "allOf": [
                 "canReach|West Dark World",
                 "moonpearl",
-                "mirror"
+                "glove"
             ]
         },
         "Inverted": {
