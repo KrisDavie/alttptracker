@@ -341,6 +341,7 @@
 		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
 		let available = 0;
 		let required = 0;
+		let possible = 0;
 		let unavailable = 0; 
 		for (var i = 0; i < locations.length; i++) {
 			const location = locations[i];
@@ -357,12 +358,14 @@
 			switch (availability) {
 				case 'available': available++; break;
 				case 'darkavailable': required++; break;
+				case 'possible': possible++; break;
 				default: unavailable++;
 			};
 		};
 		if (available > 0 && unavailable === 0) return 'available';
 		if (available > 0 && unavailable > 0) return 'partialavailable';
 		if (required > 0) return 'darkavailable';
+		if (possible > 0) return 'possible';
 		return 'unavailable';
 	};
 	// #endregion
@@ -1140,6 +1143,7 @@
 			case 'canIceBreak': return items.somaria;
 			case 'canHookClip': return items.hookshot;
 			case 'canBombJump': return items.bomb;
+			case 'canBombOrBonkCameraUnlock': return items.bomb || items.boots;
 			case 'canHover': return items.boots;
 			case 'canHoverAlot': return items.boots;
 			case 'canSpeckyClip': return items.bomb && items.hookshot;
@@ -1154,7 +1158,7 @@
 			case 'canTorchRoomNavigateBlind': return true || (items.lantern || (items.firerod && !isDoorsBranch() && !flags.entrancemode === 'N'));
 			case 'canRushRightSidePod': return (items.bomb || items.boots) && (true || items.bow > 1 || items.bottle);
 
-			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode != 'N';
+			case "canExitTurtleRockWestAndEnterEast": return (items.bomb || flags.gametype === 'I') && flags.entrancemode === 'N';
 			case "canExitTurtleRockBack": return items.bomb || (flags.gametype != 'O' || flags.entrancemode != 'N');
 
 			case 'canReachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") === 'available' || (canReachRegion("Turtle Rock - East") === 'available' && (items.hookshot || items.somaria));
@@ -1162,6 +1166,7 @@
 			case 'canBreachMiseryMireMaybe': return canReachRegion('Misery Mire') != 'unavailable';
 			case 'canBreachTurtleRockMainMaybe': return canReachRegion("Turtle Rock - Main") != 'unavailable';
 			case 'canBreachTurtleRockMiddle': return canReachRegion("Turtle Rock - West") != 'unavailable' || (canReachRegion("Turtle Rock - East") != 'unavailable' && (items.hookshot || items.somaria || items.bomb || items.boots));
+			case 'canOnlyReachTurtleRockMain': return flags.gametype != 'I' && flags.entrancemode === 'N';
 
 			case 'gtleft': return items.hammer && items.hookshot && canHitRangedSwitch();
 			case 'gtright': return items.somaria && items.firerod;

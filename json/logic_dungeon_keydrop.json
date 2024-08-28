@@ -2688,11 +2688,18 @@
                      "canBreachTurtleRockMainMaybe",
                      "keys|3",
                      "canExitTurtleRockWestAndEnterEast",
-                     "canKillOrExplodeMostEnemies"
-                  ],
-                  "anyOf": [
-                     "somaria",
-                     "canHoverAlot"
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "canHoverAlot"
+                        ]
+                     },
+                     {
+                        "anyOf": [
+                           "canKillOrExplodeMostEnemies",
+                           "canBombOrBonkCameraUnlock"
+                        ]
+                     }
                   ]
                },
                {
@@ -2716,11 +2723,18 @@
                      "canBreach|Turtle Rock - Main",
                      "keys|3",
                      "canExitTurtleRockWestAndEnterEast",
-                     "canKillOrExplodeMostEnemies"
-                  ],
-                  "anyOf": [
-                     "somaria",
-                     "canHoverAlot"
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "canHoverAlot"
+                        ]
+                     },
+                     {
+                        "anyOf": [
+                           "canKillMostEnemies",
+                           "canBombOrBonkCameraUnlock"
+                        ]
+                     }
                   ]
                }
             ]
@@ -2730,6 +2744,9 @@
                {
                   "allOf": [
                      "canReach|Turtle Rock - Main",
+                     "keys|3",
+                     "canExitTurtleRockWestAndEnterEast",
+                     "canKillMostEnemies",
                      "somaria"
                   ]
                },
@@ -2838,7 +2855,13 @@
          "always": {
             "allOf": [
                "bigkey",
-               "canKillBoss"
+               "canKillBoss",
+               {
+                  "anyOf": [
+                     "canHoverAlot",
+                     "somaria"
+                  ]
+               }
             ],
             "anyOf": [
                {
@@ -2848,10 +2871,6 @@
                      "canOpenBonkWalls",
                      "canHitRangedSwitch",
                      "canDarkRoomNavigateBlind"
-                  ],
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
                   ]
                },
                {
@@ -2861,25 +2880,25 @@
                      "canOpenBonkWalls",
                      "canHitRangedSwitch",
                      "canDarkRoomNavigateBlind"
-                  ],
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
                   ]
                },
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Back",
                      "keys|1"
-                  ],
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
                   ]
                }
             ]
          },
          "required": {
+            "allOf": [
+               {
+                  "anyOf": [
+                     "canHoverAlot",
+                     "somaria"
+                  ]
+               }
+            ],
             "anyOf": [
                {
                   "allOf": [
@@ -2888,10 +2907,6 @@
                      "canOpenBonkWalls",
                      "canHitRangedSwitch",
                      "canDarkRoomNavigateBlind"
-                  ],
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
                   ]
                },
                {
@@ -2901,20 +2916,12 @@
                      "canOpenBonkWalls",
                      "canHitRangedSwitch",
                      "canDarkRoomNavigateBlind"
-                  ],
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
                   ]
                },
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Back",
-                     "keys|2"
-                  ],
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
+                     "keys|1"
                   ]
                }
             ]
@@ -2925,23 +2932,20 @@
                "somaria"
             ],
             "anyOf": [
+               "canReach|Turtle Rock - Back",
                {
                   "allOf": [
-                     "canReach|Turtle Rock - Main",
+                     {
+                        "anyOf": [
+                           "canReach|Turtle Rock - Main",
+                           "canReachTurtleRockMiddle"
+                        ]
+                     },                     
                      "canOpenBonkWalls",
                      "canHitRangedSwitch",
                      "canDarkRoomNavigate"
                   ]
-               },
-               {
-                  "allOf": [
-                     "canReachTurtleRockMiddle",
-                     "canOpenBonkWalls",
-                     "canHitRangedSwitch",
-                     "canDarkRoomNavigate"
-                  ]
-               },
-               "canReach|Turtle Rock - Back"
+               }
             ]
          }
       },
@@ -2980,7 +2984,17 @@
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Main",
-                     "keys|2"
+                     {
+                        "anyOf": [
+                           "keys|2",
+                           {
+                              "allOf": [
+                                 "canOnlyReachTurtleRockMain",
+                                 "keys|2"
+                              ]
+                           }
+                        ]
+                     }
                   ],
                   "anyOf": [
                      "somaria",
@@ -3006,8 +3020,18 @@
                {
                   "allOf": [
                      "canReach|Turtle Rock - Main",
-                     "keys|4",
-                     "somaria"
+                     "somaria",
+                     {
+                        "anyOf": [
+                           "keys|4",
+                           {
+                              "allOf": [
+                                 "canOnlyReachTurtleRockMain",
+                                 "keys|2"
+                              ]
+                           }
+                        ]
+                     }
                   ]
                },
                "canReachTurtleRockMiddle",
@@ -3024,49 +3048,79 @@
       },
       "Turtle Rock - Compass Chest": {
          "always": {
-            "anyOf": [
+            "allOf": [
                {
-                  "allOf": [
-                     "canBreachTurtleRockMainMaybe"
-                  ],
                   "anyOf": [
                      "somaria",
                      "canHoverAlot"
-                  ]      
-               },
+                  ]
+               }
+            ],
+            "anyOf": [
+               "canBreachTurtleRockMainMaybe",
                {
                   "allOf": [
                      "canBreachTurtleRockMiddle",
-                     "keys|4"
-                  ],
-                  "anyOf": [
-                     "somaria",
-                     "canHoverAlot"
+                     "keys|2"
                   ]
                },
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Back",
-                     "keys|4",
+                     "keys|2",
                      "canOpenBonkWalls",
                      "canDarkRoomNavigateBlind"
-                  ],
-                  "anyOf": [
-                     "somaria",
-                     "canHoverAlot"
                   ]
                }
             ]
          },
          "required": {
             "allOf": [
-               "canBreach|Turtle Rock - Main"
+               {
+                  "anyOf": [
+                     "somaria",
+                     "canHoverAlot"
+                  ]
+               }
+            ],
+            "anyOf": [
+               "canBreach|Turtle Rock - Main",
+               {
+                  "allOf": [
+                     "canBreachTurtleRockMiddle",
+                     "keys|3"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canBreach|Turtle Rock - Back",
+                     "keys|3",
+                     "canOpenBonkWalls",
+                     "canDarkRoomNavigateBlind"
+                  ]
+               }
             ]
          },
          "logical": {
             "allOf": [
-               "canReach|Turtle Rock - Main",
                "somaria"
+            ],
+            "anyOf": [
+               "canReach|Turtle Rock - Main",
+               {
+                  "allOf": [
+                     "canReachTurtleRockMiddle",
+                     "keys|6"
+                  ]
+               },
+               {
+                  "allOf": [
+                     "canReach|Turtle Rock - Back",
+                     "keys|6",
+                     "canOpenBonkWalls",
+                     "canDarkRoomNavigate"
+                  ]
+               }
             ]
          }
       },
@@ -3114,12 +3168,24 @@
                   "allOf": [
                      "canBreach|Turtle Rock - Main",
                      "bigkey",
-                     "keys|3",
-                     "canOpenBonkWalls"
-                  ],
-                  "anyOf": [
-                     "somaria",
-                     "canHoverAlot"
+                     "canOpenBonkWalls",
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "canHoverAlot"
+                        ]
+                     },
+                     {
+                        "anyOf": [
+                           "keys|4",
+                           {
+                              "allOf": [
+                                 "canOnlyReachTurtleRockMain",
+                                 "keys|3"
+                              ]
+                           }
+                        ]
+                     }
                   ]
                },
                {
@@ -3148,9 +3214,17 @@
                   "allOf": [
                      "canReach|Turtle Rock - Main",
                      "bigkey",
-                     "keys|3",
                      "canOpenBonkWalls",
                      "somaria"
+                  ],
+                  "anyOf": [
+                     "keys|4",
+                     {
+                        "allOf": [
+                           "canOnlyReachTurtleRockMain",
+                           "keys|3"
+                        ]
+                     }
                   ]
                },
                {
@@ -3259,7 +3333,7 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "bigkey",
-                     "keys|1",
+                     "keys|5",
                      "canOpenBonkWalls",
                      "canDarkRoomNavigate",
                      "somaria"
@@ -3357,7 +3431,7 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "bigkey",
-                     "keys|1",
+                     "keys|5",
                      "canOpenBonkWalls",
                      "canDarkRoomNavigate",
                      "somaria"
@@ -3455,7 +3529,7 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "bigkey",
-                     "keys|1",
+                     "keys|5",
                      "canOpenBonkWalls",
                      "canDarkRoomNavigate",
                      "somaria"
@@ -3553,7 +3627,7 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "bigkey",
-                     "keys|1",
+                     "keys|5",
                      "canOpenBonkWalls",
                      "canDarkRoomNavigate",
                      "somaria"
@@ -3591,7 +3665,8 @@
                      "canBreach|Turtle Rock - Back",
                      "canDarkRoomNavigateBlind",
                      "canHitRangedSwitch",
-                     "canOpenBonkWalls"
+                     "canOpenBonkWalls",
+                     "keys|1"
                   ],
                   "anyOf": [
                      "somaria",
@@ -3605,17 +3680,30 @@
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Main",
-                     "keys|2"
-                  ],
-                  "anyOf": [
-                     "somaria",
-                     "canHoverAlot"
+                     {
+                        "anyOf": [
+                           "keys|2",
+                           {
+                              "allOf": [
+                                 "canOnlyReachTurtleRockMain",
+                                 "keys|1"
+                              ]
+                           }
+                        ]
+                     },
+                     {
+                        "anyOf": [
+                           "somaria",
+                           "canHoverAlot"
+                        ]
+                     }
                   ]
                },
                {
                   "allOf": [
                      "canBreachTurtleRockMiddle",
-                     "canHitSwitch"
+                     "canHitSwitch",
+                     "keys|1"
                   ]
                },
                {
@@ -3623,7 +3711,8 @@
                      "canBreach|Turtle Rock - Back",
                      "canDarkRoomNavigateBlind",
                      "canHitRangedSwitch",
-                     "canOpenBonkWalls"
+                     "canOpenBonkWalls",
+                     "keys|1"
                   ],
                   "anyOf": [
                      "somaria",
@@ -3634,7 +3723,17 @@
          },
          "logical": {
             "allOf": [
-               "keys|5"
+               {
+                  "anyOf": [
+                     "keys|5",
+                     {
+                        "allOf": [
+                           "canOnlyReachTurtleRockMain",
+                           "keys|1"
+                        ]
+                     }
+                  ]
+               }
             ],
             "anyOf": [
                {
@@ -3725,11 +3824,18 @@
                {
                   "allOf": [
                      "canReach|Turtle Rock - Main",
-                     "keys|4"
-                  ],
-                  "anyOf": [
                      "somaria",
-                     "canHoverAlot"
+                     {
+                        "anyOf": [
+                           "keys|5",
+                           {
+                              "allOf": [
+                                 "canOnlyReachTurtleRockMain",
+                                 "keys|3"
+                              ]
+                           }
+                        ]
+                     }
                   ]
                },
                "canReachTurtleRockMiddle",
@@ -3757,13 +3863,13 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "canHitSwitch",
-                     "keys|3"
+                     "keys|2"
                   ]
                },
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Back",
-                     "keys|3",
+                     "keys|2",
                      "canDarkRoomNavigateBlind",
                      "canHitRangedSwitch",
                      "canOpenBonkWalls"
@@ -3778,7 +3884,7 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "canHitSwitch",
-                     "keys|4"
+                     "keys|3"
                   ]
                },
                {
@@ -3826,13 +3932,13 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "canHitSwitch",
-                     "keys|3"
+                     "keys|2"
                   ]
                },
                {
                   "allOf": [
                      "canBreach|Turtle Rock - Back",
-                     "keys|3",
+                     "keys|2",
                      "canDarkRoomNavigateBlind",
                      "canHitRangedSwitch",
                      "canOpenBonkWalls"
@@ -3847,7 +3953,7 @@
                   "allOf": [
                      "canBreachTurtleRockMiddle",
                      "canHitSwitch",
-                     "keys|4"
+                     "keys|3"
                   ]
                },
                {

@@ -1927,12 +1927,13 @@
         "Open": {
             "always": {
                 "allOf": [
+                    "agahnim",
+                    "boots"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "agahnim",
-                    "boots"
+                    "lantern"
                 ]
             }
         },
