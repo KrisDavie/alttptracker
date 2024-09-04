@@ -28,7 +28,24 @@ const allLogic = {
   "canBunnyPocket": true,
   "canFairyBarrierRevive": true,
   "canShockBlock": true,
-  "canTombRaider": true
+  "canTombRaider": true,
+  "canIBJ": true,
+  "canGravityJump": true,
+  "canGateGlitch": true,
+  "canSpringBallJump": true,
+  "canMochtroidIceClip": true,
+  "canHellRun": true,
+  "canLavaDive": true,
+  "canSuitlessMaridia": true,
+  "canGrappleJump": true,
+  "canSnailClimb": true,
+  "canDoubleSpringBallJump": true,
+  "canBombCrystalFlashClip": true,
+  "canSuitlessCrystalFlashClip": true,
+  "canBootlessLavaDive": true,
+  "canSuitlessLavaDive": true,
+  "canUnderwaterWallJump": true,
+  "canNovaBoost": true
 };
 
 const noStupid = {
@@ -59,7 +76,24 @@ const noStupid = {
   "canBunnyPocket": true,
   "canFairyBarrierRevive": false,
   "canShockBlock": false,
-  "canTombRaider": true
+  "canTombRaider": true,
+  "canIBJ": true,
+  "canGravityJump": true,
+  "canGateGlitch": true,
+  "canSpringBallJump": true,
+  "canMochtroidIceClip": true,
+  "canHellRun": true,
+  "canLavaDive": true,
+  "canSuitlessMaridia": false,
+  "canGrappleJump": false,
+  "canSnailClimb": false,
+  "canDoubleSpringBallJump": false,
+  "canBombCrystalFlashClip": false,
+  "canSuitlessCrystalFlashClip": false,
+  "canBootlessLavaDive": false,
+  "canSuitlessLavaDive": false,
+  "canUnderwaterWallJump": false,
+  "canNovaBoost": false
 };
 
 const basicLogic = {
@@ -90,7 +124,24 @@ const basicLogic = {
   "canBunnyPocket": false,
   "canFairyBarrierRevive": false,
   "canShockBlock": false,
-  "canTombRaider": true
+  "canTombRaider": true,
+  "canIBJ": true,
+  "canGravityJump": true,
+  "canGateGlitch": true,
+  "canSpringBallJump": true,
+  "canMochtroidIceClip": true,
+  "canHellRun": true,
+  "canLavaDive": true,
+  "canSuitlessMaridia": false,
+  "canGrappleJump": false,
+  "canSnailClimb": false,
+  "canDoubleSpringBallJump": false,
+  "canBombCrystalFlashClip": false,
+  "canSuitlessCrystalFlashClip": false,
+  "canBootlessLavaDive": false,
+  "canSuitlessLavaDive": false,
+  "canUnderwaterWallJump": false,
+  "canNovaBoost": false
 };
 
 // Save logic settings to local storage

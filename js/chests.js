@@ -276,6 +276,45 @@
 			case "canFairyBarrierRevive": return userLogicSettings[requirement] && (items.bottle && items.net && items.mirror);
 			case "canShockBlock": return userLogicSettings[requirement] && (items.somaria);
 			case "canHover": return userLogicSettings[requirement] && (items.boots);
+			
+			case "charge": return items.charge;
+			case "grapple": return items.grapple;
+			case "gravity": return items.gravity;
+			case "hijump": return items.hijump;
+			case "ice": return items.ice;
+			case "missile": return items.missile > 0;
+			case "morph": return items.morph;
+			case "morphbombs": return items.morphbombs;
+			case "plasma": return items.plasma;
+			case "powerbomb": return items.powerbomb > 0;
+			case "screw": return items.screw;
+			case "space": return items.space;
+			case "spazer": return items.spazer;
+			case "speed": return items.speed;
+			case "spring": return items.spring;
+			case "super": return items.super > 0;
+			case "varia": return items.varia;
+			case "wave": return items.wave;
+			case "xray": return items.xray;
+
+			case "canIBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
+			case "canGravityJump": return userLogicSettings[requirement] && (items.gravity);
+			case "canGateGlitch": return userLogicSettings[requirement] && (items.super >= 1);
+			case "canSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.spring);
+			case "canMochtroidIceClip": return userLogicSettings[requirement] && (items.ice);
+			case "canHellRun": return userLogicSettings[requirement] && (true);
+			case "canLavaDive": return userLogicSettings[requirement] && (items.varia && items.hijump);
+			case "canSuitlessMaridia": return userLogicSettings[requirement] && (true);
+			case "canGrappleJump": return userLogicSettings[requirement] && (items.morph && items.grapple);
+			case "canSnailClimb": return userLogicSettings[requirement] && (true);
+			case "canDoubleSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.hijump && items.spring);
+			case "canBombCrystalFlashClip": return userLogicSettings[requirement] && (items.morph && items.morphbombs && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
+			case "canSuitlessCrystalFlashClip": return userLogicSettings[requirement] && (items.morph && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
+			case "canBootlessLavaDive": return userLogicSettings[requirement] && (items.varia && (items.etank && items.rtank) >= 2);
+			case "canSuitlessLavaDive": return userLogicSettings[requirement] && (items.hijump && (items.etank && items.rtank) >= 8 && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
+			case "canUnderwaterWallJump": return userLogicSettings[requirement] && (items.hijump);
+			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
+
 
 			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
 			case "canBuyBigBomb": {

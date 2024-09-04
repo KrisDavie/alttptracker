@@ -10,8 +10,28 @@ var autotrackPrevData = null;
 var autotrackRefreshInterval = 1000;
 var autotrackTimeoutDelay = 10000;
 
+var currentGame = null
+
+var GAME_CHECK_LOC = 0xE033FE;
+
 var WRAM_START = 0xF50000;
 var WRAM_SIZE = 0x20000;
+
+var NATIVE_LTTP_SRAM = 0xF5F000;
+var FOREIGN_LTTP_SRAM = 0xE03B40;
+
+var NATIVE_SM_SRAM = 0xF509A4;
+var FOREIGN_SM_SRAM = 0xE03900;
+
+var NATIVE_SM_BOSSES_KEYS = 0xF5D828;
+var FOREIGN_SM_BOSSES_KEYS = 0xE03970;
+
+var NATIVE_SM_AMMO = 0xF509C0; // 0xF509C2
+var FOREIGN_SM_AMMO = 0xE0391E;
+
+var LTTP_GAME_MODE = 0xF50010;
+var SM_GAME_MODE = 0xF50998;
+
 var SAVEDATA_START = WRAM_START + 0xF000;
 var SAVEDATA_SIZE = 0x500;
 var POTDATA_START = SAVEDATA_START + 0x7018;
@@ -507,8 +527,6 @@ function parseStartingInventory(config_data) {
 }
 
 
-
-
 async function autotrackerConfigure() {
     var config_data = {}
     var MYSTERY_SEED = false;
@@ -652,122 +670,226 @@ async function autotrackerConfigure() {
 }
 
 function autotrackReadMem() {
+  if (autotrackReconnectTimer !== null) clearTimeout(autotrackReconnectTimer);
+  autotrackReconnectTimer = setTimeout(function () {
+    autotrackReconnectTimer = null;
+    autotrackCleanup();
+    autotrackConnect(autotrackHost);
+  }, autotrackTimeoutDelay);
 
-    if (autotrackReconnectTimer !== null)
-        clearTimeout(autotrackReconnectTimer);
-    autotrackReconnectTimer = setTimeout(function () {
-        autotrackReconnectTimer = null;
-        autotrackCleanup();
-        autotrackConnect(autotrackHost);
-    }, autotrackTimeoutDelay);
+  var data = {};
 
-    var data = {};
-    snesreadsave(WRAM_START + 0x10, 1, data, 'gamemode', addMainAutoTrackData1);
+  snesreadsave(GAME_CHECK_LOC, 1, data, "currentgame", handleCurrentGame);
 
-    function addMainAutoTrackData1() {
-        var gamemode = data["gamemode"][0];
-        if (![0x07, 0x09, 0x0b].includes(gamemode)) {
-            autotrackStartTimer();
-            return;
-        }
-        snesreadsave(SAVEDATA_START, 0x280, data, 'rooms_inv', addMainAutoTrackData2);
+  function handleCurrentGame() {
+    console.log(data["currentgame"][0]);
+    if (data["currentgame"][0] == 0x00) {
+      autotrackSetStatus("[ALTTP] Connected to " + autotrackDeviceName);
+      currentGame = "alttp";
+    } else if (data["currentgame"][0] == 0xff) {
+      autotrackSetStatus("[SM] Connected to " + autotrackDeviceName);
+      currentGame = "sm";
+    } else {
+      autotrackSetStatus("[No Game] Connected to " + autotrackDeviceName);
+      currentGame = null;
+      autotrackStartTimer();
+      return;
     }
+    addGamemode(data["currentgame"][0]);
+  }
 
-    function addMainAutoTrackData2() {
-        snesreadsave(SAVEDATA_START + 0x280, 0x280,
-            data,
-            'rooms_inv',
-            flags.autotracking === 'Y' ? addEntranceData : handleAutoTrackData,
-            merge = true);
-    }
+  function addGamemode() {
+    gamemodeAddr = currentGame === "alttp" ? LTTP_GAME_MODE : SM_GAME_MODE;
+    snesreadsave(gamemodeAddr, 1, data, "gamemode", handleGameMode);
+  }
 
-    function addEntranceData() {
-        snesreadsave(0x180211, 0x1, data, 'entrances', addPotData);
+  function handleGameMode() {
+    var gamemode = data["gamemode"][0];
+    if (
+      (currentGame === "alttp" && ![0x07, 0x09, 0x0b].includes(gamemode)) ||
+      (currentGame === "sm" && gamemode !== 0x08)
+    ) {
+      autotrackStartTimer();
+      return;
     }
+    if (currentGame === "alttp") {
+      addMainAutoTrackData1();
+    } else {
+      addMainAutoTrackDataMinimal();
+    }
+  }
 
-    function addPotData() {
-        snesreadsave(POTDATA_START, 0x250, data, 'potdata', addSpriteDropData);
-    }
+  function addMainAutoTrackDataMinimal() {
+    snesreadsave(
+      FOREIGN_LTTP_SRAM,
+      0x50,
+      data,
+      "lttp_rooms_inv_sm",
+      handleMinimalAutoTrackData
+    );
+  }
 
-    function addSpriteDropData() {
-        snesreadsave(SPRITEDATA_START, 0x250, data, 'spritedata', addPrizeData);
+  function handleMinimalAutoTrackData() {
+    data["lttp_rooms_inv"] = new Uint8Array(0x280 * 2);
+    for (var i = 0; i < 0x50; i++) {
+      data["lttp_rooms_inv"][i + 0x340] = data["lttp_rooms_inv_sm"][i];
     }
+    addSMItemData();
+  }
 
-    function addPrizeData() {
-        snesreadsave(PRIZES_LOC, 0xD, data, 'prizes', addPrize2Data);
-    }
+  function addMainAutoTrackData1() {
+    snesreadsave(
+      NATIVE_LTTP_SRAM,
+      0x280,
+      data,
+      "lttp_rooms_inv",
+      addMainAutoTrackData2
+    );
+  }
 
-    function addPrize2Data() {
-        snesreadsave(PRIZES2_LOC, 0xD, data, 'prizes', addRandoVersion, merge = true);
-    }
+  function addMainAutoTrackData2() {
+    snesreadsave(
+      NATIVE_LTTP_SRAM + 0x280,
+      0x280,
+      data,
+      "lttp_rooms_inv",
+      addSMItemData,
+      (merge = true)
+    );
+  }
 
-    function addRandoVersion() {
-        snesreadsave(RANDOVERSION_LOC, 0x21, data, 'version', parseRandoVersion);
-    }
+  function addSMItemData() {
+    snesreadsave(
+      currentGame === "sm" ? NATIVE_SM_SRAM : FOREIGN_SM_SRAM,
+      0x10,
+      data,
+      "sm_items",
+      addSMKeyData
+    );
+  }
 
-    function parseRandoVersion() {
-        data['fork'] = Array.from(data['version']).slice(0, 2).map(c => String.fromCharCode(c)).join('')
-        if (data['fork'] !== 'VT') {
-            data['version'] = Array.from(data['version']).slice(2, 5).map(c => String.fromCharCode(c)).join('')
-        } else {
-            data['version'] = 'VT';
-        }
-        addORVersion();
-    }
+  function addSMKeyData() {
+    snesreadsave(
+      currentGame === "sm" ? NATIVE_SM_BOSSES_KEYS : FOREIGN_SM_BOSSES_KEYS,
+      0x10,
+      data,
+      "sm_bosses_keys",
+      addSMAmmoData
+    );
+  }
 
-    function addORVersion() {
-        if (data['fork'] === "OR") {
-            snesreadsave(ORVERSION_LOC, 0x21, data, 'orversion', parseORVersion);
-        } else {
-            data['orversion'] = [0, 0, 0, 0]
-            addMysteryFlag();
-        }
-    }
+  function addSMAmmoData() {
+    snesreadsave(
+      currentGame === "sm" ? NATIVE_SM_AMMO : FOREIGN_SM_AMMO,
+      0x16,
+      data,
+      "sm_ammo",
+      handleAutoTrackData
+    );
+  }
 
-    function parseORVersion() {
-        var orver = Array.from(data['orversion']).map(c => String.fromCharCode(c)).join('').split('\x00')[0]
-        data['orversion'] = orver.split('-')[0].split('.').map(Number)
-        addMysteryFlag();
-    }
+  // function addEntranceData() {
+  //     snesreadsave(0x180211, 0x1, data, 'entrances', addPotData);
+  // }
 
-    function addMysteryFlag() {
-        snesreadsave(DRFLAGS_LOC, 0x2, data, 'mystery', addKeysanityFlags);
-    }
+  // function addPotData() {
+  //     snesreadsave(POTDATA_START, 0x250, data, 'potdata', addSpriteDropData);
+  // }
 
-    // We pull out keysanity flags to see if prizeShuffle is wild. If so, we do not auto-assign prizes to dungeons
-    function addKeysanityFlags() {
-        snesreadsave(KEYSANITY_LOC, 0x1, data, 'keysanity', addPseudobootsFlag);
-    }
+  // function addSpriteDropData() {
+  //     snesreadsave(SPRITEDATA_START, 0x250, data, 'spritedata', addPrizeData);
+  // }
 
-    function addPseudobootsFlag() {
-        // Check if we're playing DR and that the mystery flag is not set
-        if (["DR", "OR"].includes(data['fork']) && (data['mystery'][1] & 0x1) === 0) {
-            snesreadsave(PSEUDOBOOTS_LOC, 0x1, data, 'pseudoboots', handleAutoTrackData);
-        } else {
-            handleAutoTrackData();
-        }
-    }
+  // function addPrizeData() {
+  //     snesreadsave(PRIZES_LOC, 0xD, data, 'prizes', addPrize2Data);
+  // }
 
-    function handleAutoTrackData() {
-        // If autotracking is set to "Old", we get the second half of rooms_inv data, else we're getting the pseudoboots flag
-        autotrackDoTracking(data);
-        autotrackPrevData = data;
-        autotrackStartTimer();
-    }
+  // function addPrize2Data() {
+  //     snesreadsave(PRIZES2_LOC, 0xD, data, 'prizes', addRandoVersion, merge = true);
+  // }
+
+  // function addRandoVersion() {
+  //     snesreadsave(RANDOVERSION_LOC, 0x21, data, 'version', parseRandoVersion);
+  // }
+
+  // function parseRandoVersion() {
+  //     data['fork'] = Array.from(data['version']).slice(0, 2).map(c => String.fromCharCode(c)).join('')
+  //     if (data['fork'] !== 'VT') {
+  //         data['version'] = Array.from(data['version']).slice(2, 5).map(c => String.fromCharCode(c)).join('')
+  //     } else {
+  //         data['version'] = 'VT';
+  //     }
+  //     addORVersion();
+  // }
+
+  // function addORVersion() {
+  //     if (data['fork'] === "OR") {
+  //         snesreadsave(ORVERSION_LOC, 0x21, data, 'orversion', parseORVersion);
+  //     } else {
+  //         data['orversion'] = [0, 0, 0, 0]
+  //         addMysteryFlag();
+  //     }
+  // }
+
+  // function parseORVersion() {
+  //     var orver = Array.from(data['orversion']).map(c => String.fromCharCode(c)).join('').split('\x00')[0]
+  //     data['orversion'] = orver.split('-')[0].split('.').map(Number)
+  //     addMysteryFlag();
+  // }
+
+  // function addMysteryFlag() {
+  //     snesreadsave(DRFLAGS_LOC, 0x2, data, 'mystery', addKeysanityFlags);
+  // }
+
+  // // We pull out keysanity flags to see if prizeShuffle is wild. If so, we do not auto-assign prizes to dungeons
+  // function addKeysanityFlags() {
+  //     snesreadsave(KEYSANITY_LOC, 0x1, data, 'keysanity', addPseudobootsFlag);
+  // }
+
+  // function addPseudobootsFlag() {
+  //     // Check if we're playing DR and that the mystery flag is not set
+  //     if (["DR", "OR"].includes(data['fork']) && (data['mystery'][1] & 0x1) === 0) {
+  //         snesreadsave(PSEUDOBOOTS_LOC, 0x1, data, 'pseudoboots', handleAutoTrackData);
+  //     } else {
+  //         handleAutoTrackData();
+  //     }
+  // }
+
+  function handleAutoTrackData() {
+    // If autotracking is set to "Old", we get the second half of lttp_rooms_inv data, else we're getting the pseudoboots flag
+    console.log(data);
+    autotrackDoTracking(data);
+    autotrackPrevData = data;
+    autotrackStartTimer();
+  }
 }
 
 
 function autotrackDoTracking(data) {
-    function changed(offset, data_loc = 'rooms_inv') {
-        return autotrackPrevData === null || autotrackPrevData[data_loc][offset] !== data[data_loc][offset];
-    };
-    function disabledbit(offset, mask, data_loc = 'rooms_inv') {
+    function changed(offset, data_loc = "lttp_rooms_inv") {
+      return (
+        autotrackPrevData === null ||
+        autotrackPrevData[data_loc][offset] !== data[data_loc][offset]
+      );
+    }
+
+    function changed_twobits(offset, data_loc = "sm_ammo") {
+      return (
+        autotrackPrevData === null ||
+        autotrackPrevData[data_loc][offset] !== data[data_loc][offset] ||
+        autotrackPrevData[data_loc][offset + 1] !== data[data_loc][offset + 1]
+      );
+    }
+
+    function disabledbit(offset, mask, data_loc = 'lttp_rooms_inv') {
         return (data[data_loc][offset] & mask) === 0 && (autotrackPrevData === null || ((autotrackPrevData[data_loc][offset] & mask) !== 0));
     };
-    function newbit(offset, mask, data_loc = 'rooms_inv') {
+
+    function newbit(offset, mask, data_loc = 'lttp_rooms_inv') {
         return (data[data_loc][offset] & mask) !== 0 && (autotrackPrevData === null || ((autotrackPrevData[data_loc][offset] & mask) !== (data[data_loc][offset] & mask)));
     };
-    function newbit_group(locations, data_loc = 'rooms_inv') {
+
+    function newbit_group(locations, data_loc = 'lttp_rooms_inv') {
         var activated = false;
         for (const location of locations) {
             if ((data[data_loc][location[0]] & location[1]) === 0)
@@ -778,22 +900,24 @@ function autotrackDoTracking(data) {
         return activated
     };
 
-    function updatechest(chest, offset, mask, data_loc = 'rooms_inv') {
+    function updatechest(chest, offset, mask, data_loc = 'lttp_rooms_inv') {
+        if (flags.autotracking !== 'Y') return;
         if (newbit(offset, mask, data_loc) && !chests[chest].is_opened)
             toggle_chest(chest);
     };
-    function updatechest_group(chest, locations, data_loc = 'rooms_inv') {
+    function updatechest_group(chest, locations, data_loc = 'lttp_rooms_inv') {
+        if (flags.autotracking !== 'Y') return;
         if (newbit_group(locations, data_loc) && !chests[chest].is_opened)
             toggle_chest(chest);
     };
 
-    function checkItem(data, item, data_loc = 'rooms_inv') {
+    function checkItem(data, item, data_loc = 'lttp_rooms_inv') {
         return (data[data_loc][item[0]] & item[1]) !== 0;
     }
 
 
     // Decrement dungeon count unless a non-wild dungeon item is found 
-    if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P') && flags.autotracking === 'Y') {
+    if ((flags.doorshuffle === 'N' || flags.doorshuffle === 'P')) {
         Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
             if (items[dungeondata["dungeonarrayname"]] > 0) {
                 let newCheckedLocationCount = dungeondata.locations.filter(location => checkItem(data, location)).length;
@@ -813,7 +937,7 @@ function autotrackDoTracking(data) {
                     newDungeonItemCount++;
                 }
                 if (!flags.wildkeys) {
-                    let keyCount = data['rooms_inv'][dungeondata.smallkeys];
+                    let keyCount = data['lttp_rooms_inv'][dungeondata.smallkeys];
                     if (dungeon === 'toh') { // Temporary fix for Tower of Hera small key being counted twice
                         keyCount = Math.min(keyCount, 1);
                     }
@@ -829,7 +953,7 @@ function autotrackDoTracking(data) {
     }
 
     dungeonPrizes = {}
-    if (flags.autotracking === 'Y' && !((data['fork'] === "OR") && (data['keysanity'][0] & 0x20) === 0x20)) {
+    if (currentGame === 'lttp' && !((data['fork'] === "OR") && (data['keysanity'][0] & 0x20) === 0x20)) {
         Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
             if ('prize' in dungeondata && dungeondata.prize > 0) {
                 const prizeType = data['prizes'][dungeondata.prize + 0xD] == 0x40 ? 'crystal' : 'pendant';
@@ -857,7 +981,7 @@ function autotrackDoTracking(data) {
                     newbit(
                       prizeType === "pendant" ? 0x374 : 0x37a,
                       mask,
-                      "rooms_inv"
+                      "lttp_rooms_inv"
                     )
                   ) {
                     const dungeonNum = dungeonPrizes[`${prizeType}${prize}`];
@@ -1018,15 +1142,13 @@ function autotrackDoTracking(data) {
         updatechest(103, 0x300, 0x40); // Pedestal
         updatechest_group(105, [[0x228, 0x10], [0x228, 0x20]]); // Waterfall Fairy Left + Right
         updatechest_group(97, [[0x3C6, 0x01], [0x0AA, 0x10]]); // Uncle + Passage
-
-        if (flags.autotracking === 'Y') {
-            updatechest_group(96, [[0x022, 0x10], [0x022, 0x20], [0x022, 0x40]]); // Sewers Left + Middle + Right
-            updatechest_group(98, [[0x0E4, 0x10], [0x0E2, 0x10], [0x100, 0x10]]); // Hyrule Castle Map + Boomerang + Zelda
-            updatechest(99, 0x024, 0x10); // Sanctuary
-            updatechest(104, 0x064, 0x10); // Hyrule Castle - Dark Cross
-            updatechest(106, 0x1C0, 0x10); // Castle Tower - Room 03
-            updatechest(107, 0x1A0, 0x10); // Castle Tower - Dark Maze
-        }
+        updatechest_group(96, [[0x022, 0x10], [0x022, 0x20], [0x022, 0x40]]); // Sewers Left + Middle + Right
+        updatechest_group(98, [[0x0E4, 0x10], [0x0E2, 0x10], [0x100, 0x10]]); // Hyrule Castle Map + Boomerang + Zelda
+        updatechest(99, 0x024, 0x10); // Sanctuary
+        updatechest(104, 0x064, 0x10); // Hyrule Castle - Dark Cross
+        updatechest(106, 0x1C0, 0x10); // Castle Tower - Room 03
+        updatechest(107, 0x1A0, 0x10); // Castle Tower - Dark Maze
+        
 
     } else {
         updatechest(0, 0x2BB, 0x40); // Sunken Treasure
@@ -1121,7 +1243,7 @@ function autotrackDoTracking(data) {
     function updatesmallkeys(dungeon, offset) {
         if (changed(offset)) {
             var label = "smallkey" + dungeon;
-            var newkeys = autotrackPrevData === null ? data['rooms_inv'][offset] : (data['rooms_inv'][offset] - autotrackPrevData['rooms_inv'][offset] + items[label]);
+            var newkeys = autotrackPrevData === null ? data['lttp_rooms_inv'][offset] : (data['lttp_rooms_inv'][offset] - autotrackPrevData['lttp_rooms_inv'][offset] + items[label]);
             if (newkeys > items[label]) {
                 document.getElementById(label).style.color = (newkeys === items.range[label].max) ? "green" : "white";
                 document.getElementById(label).innerHTML = newkeys;
@@ -1186,24 +1308,24 @@ function autotrackDoTracking(data) {
     };
 
     if (changed(0x343)) // Bombs
-        setitem("bomb", data['rooms_inv'][0x343] > 0);
+        setitem("bomb", data['lttp_rooms_inv'][0x343] > 0);
 
-    if (changed(0x3C5) && data['rooms_inv'][0x3C5] >= 3) // Agahnim Killed
+    if (changed(0x3C5) && data['lttp_rooms_inv'][0x3C5] >= 3) // Agahnim Killed
         setitem("agahnim", true);
 
     if (newbit(0x38E, 0xC0)) {
-        var bits = data['rooms_inv'][0x38E] & 0xC0;
+        var bits = data['lttp_rooms_inv'][0x38E] & 0xC0;
         setitem("bow", bits == 0x40 && flags.nonprogressivebows ? 1 : (bits == 0x80 ? 2 : 3));
     }
 
     if (newbit(0x38C, 0xC0)) {
-        var bits = data['rooms_inv'][0x38C] & 0xC0;
+        var bits = data['lttp_rooms_inv'][0x38C] & 0xC0;
         setitem("boomerang", bits == 0x80 ? 1 : (bits == 0x40 ? 2 : 3));
     }
 
     if (changed(0x38C)) {
-        setitem("mushroom", (data['rooms_inv'][0x38C] & 0x28) == 0x28 ? 1 : ((data['rooms_inv'][0x38C] & 0x28) == 0x08 ? 2 : 0));
-        setitem("flute", (data['rooms_inv'][0x38C] & 0x03) == 0x01 ? 2 : ((data['rooms_inv'][0x38C] & 0x03) == 0x02 ? 1 : 0));
+        setitem("mushroom", (data['lttp_rooms_inv'][0x38C] & 0x28) == 0x28 ? 1 : ((data['lttp_rooms_inv'][0x38C] & 0x28) == 0x08 ? 2 : 0));
+        setitem("flute", (data['lttp_rooms_inv'][0x38C] & 0x03) == 0x01 ? 2 : ((data['lttp_rooms_inv'][0x38C] & 0x03) == 0x02 ? 1 : 0));
     }
     if (newbit(0x38C, 0x10))
         setitem("powder", true);
@@ -1263,22 +1385,22 @@ function autotrackDoTracking(data) {
         setitem("moonpearl", true);
 
     if (changed(0x354))
-        setitem("glove", data['rooms_inv'][0x354]);
+        setitem("glove", data['lttp_rooms_inv'][0x354]);
 
     if (changed(0x359))
-        setitem("sword", (flags['swordmode'] === 'S' || data['rooms_inv'][0x359] == 0xFF) ? 0 : data['rooms_inv'][0x359]);
+        setitem("sword", (flags['swordmode'] === 'S' || data['lttp_rooms_inv'][0x359] == 0xFF) ? 0 : data['lttp_rooms_inv'][0x359]);
 
     if (changed(0x35A))
-        setitem("shield", data['rooms_inv'][0x35A]);
+        setitem("shield", data['lttp_rooms_inv'][0x35A]);
 
     if (changed(0x35B))
-        setitem("tunic", data['rooms_inv'][0x35B] + 1);
+        setitem("tunic", data['lttp_rooms_inv'][0x35B] + 1);
 
     if (changed(0x36B))
-        setitem("heartpiece", data['rooms_inv'][0x36B]);
+        setitem("heartpiece", data['lttp_rooms_inv'][0x36B]);
 
     if (changed(0x37B))
-        setitem("magic", data['rooms_inv'][0x37B] > 0);
+        setitem("magic", data['lttp_rooms_inv'][0x37B] > 0);
 
     if (flags.wildmaps) {
         if (newbit(0x369, 0x20) && prizes[0] === 0)
@@ -1344,6 +1466,125 @@ function autotrackDoTracking(data) {
             setcompass(9, 11);
     }
 
+    // updateAmmoFrom2Bytes(segment, "etank", 0x7e09c4)
+    // updateAmmoFrom2Bytes(segment, "missile", 0x7e09c8)
+    // updateAmmoFrom2Bytes(segment, "supers", 0x7e09cc)
+    // updateAmmoFrom2Bytes(segment, "pb", 0x7e09d0)
+    // updateAmmoFrom2Bytes(segment, "reserve", 0x7e09d4)
+    var ammo_checks = {
+        'etank': 0x04,
+        'missile': 0x08,
+        'super': 0x0C,
+        'powerbomb': 0x10,
+        'rtank': 0x14
+    }
+
+    for (var ammo in ammo_checks) {
+        if (changed_twobits(ammo_checks[ammo])) {
+            var newval = data['sm_ammo'][ammo_checks[ammo] + 1] * 0x100 + data['sm_ammo'][ammo_checks[ammo]];
+            switch (ammo) {
+                case 'etank':
+                    newval -= 99;
+                    if (newval >= 100) {
+                        newval /= 100;
+                    }
+                    break;
+                case 'rtank':
+                    if (newval >= 100) {
+                        newval /= 100;
+                    }
+                    break;
+                case 'missile':
+                case 'super':
+                case 'powerbomb':
+                    newval /= 5;
+                    break;
+            } 
+            setitem(ammo, newval);
+        }
+    }
+
+    if (newbit(0x00, 0x01, 'sm_items')) {
+        setitem("varia", true);
+    }
+
+    if (newbit(0x00, 0x02, 'sm_items')) {
+        setitem("spring", true);
+    }
+
+    if (newbit(0x00, 0x04, 'sm_items')) {
+        setitem("morph", true);
+    }
+
+    if (newbit(0x00, 0x08, 'sm_items')) {
+        setitem("screw", true);
+    }
+
+    if (newbit(0x00, 0x20, 'sm_items')) {
+        setitem("gravity", true);
+    }
+
+    if (newbit(0x01, 0x01, 'sm_items')) {
+        setitem("hijump", true);
+    }
+
+    if (newbit(0x01, 0x02, 'sm_items')) {
+        setitem("space", true);
+    }
+
+    if (newbit(0x01, 0x10, 'sm_items')) {
+        setitem("morphbombs", true);
+    }
+
+    if (newbit(0x01, 0x20, 'sm_items')) {
+        setitem("speed", true);
+    }
+
+    if (newbit(0x01, 0x40, 'sm_items')) {
+        setitem("grapple", true);
+    }
+
+    if (newbit(0x01, 0x80, 'sm_items')) {
+        setitem("xray", true);
+    }
+
+    if (newbit(0x04, 0x01, 'sm_items')) {
+        setitem("wave", true);
+    }
+
+    if (newbit(0x04, 0x02, 'sm_items')) {
+        setitem("ice", true);
+    }
+
+    if (newbit(0x04, 0x04, 'sm_items')) {
+        setitem("spazer", true);
+    }
+
+    if (newbit(0x04, 0x08, 'sm_items')) {
+        setitem("plasma", true);
+    }
+
+    if (newbit(0x04, 0x10, 'sm_items')) {
+        setitem("charge", true);
+    }
+
+    if (newbit(0x01, 0x01, 'sm_bosses_keys')){
+        setitem("kraid", false);
+    }
+
+    if (newbit(0x02, 0x01, 'sm_bosses_keys')){
+        setitem("ridley", false);
+    }
+
+    if (newbit(0x03, 0x01, 'sm_bosses_keys')){
+        setitem("phantoon", false);
+    }
+
+    if (newbit(0x04, 0x01, 'sm_bosses_keys')){
+        setitem("draygon", false);
+    }
+
+
     function setmap(dungeon, value) {
         rightClickPrize(dungeon);
     };
@@ -1355,7 +1596,7 @@ function autotrackDoTracking(data) {
     for (let i = 1; i <= 4; i++) {
         const bottleLoc = 0x35C + i - 1;
         if (changed(bottleLoc)) {
-            setitem(`bottle${i}`, Math.max(0, data['rooms_inv'][bottleLoc] - 1))
+            setitem(`bottle${i}`, Math.max(0, data['lttp_rooms_inv'][bottleLoc] - 1))
         }
     }
 }

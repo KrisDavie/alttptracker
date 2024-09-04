@@ -96,6 +96,18 @@
                             "glove",
                             "hammer"
                         ]
+                    },
+                    {
+                        "allOf": [
+                            "moonpearl",
+                            "canBreach|Super Metroid - Maridia Portal",
+                            {
+                                "anyOf": [
+                                    "flippers",
+                                    "canFakeFlipper"
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -119,6 +131,13 @@
                             "moonpearl",
                             "glove",
                             "hammer"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Super Metroid - Maridia Portal",
+                            "moonpearl",
+                            "flippers"
                         ]
                     }
                 ]
@@ -183,6 +202,18 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Super Metroid - Maridia Portal",
+                            "hookshot",
+                            {
+                                "anyOf": [
+                                    "flippers",
+                                    "canFakeFlipper"
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -208,6 +239,13 @@
                                 ]
                             }
                         ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Super Metroid - Maridia Portal",
+                            "hookshot",
+                            "flippers"
+                        ]
                     }
                 ]
             }
@@ -225,6 +263,19 @@
                             "moonpearl",
                             "hammer"
                         ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Super Metroid - Maridia Portal",
+                            "moonpearl",
+                            "hammer",
+                            {
+                                "anyOf": [
+                                    "flippers",
+                                    "canFakeFlipper"
+                                ]
+                            }
+                        ]
                     }
                 ]
             },
@@ -236,6 +287,14 @@
                             "agahnim",
                             "moonpearl",
                             "hammer"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Super Metroid - Maridia Portal",
+                            "moonpearl",
+                            "hammer",
+                            "flippers"
                         ]
                     }
                 ]
@@ -258,7 +317,8 @@
                                 ]
                             }
                         ]
-                    }
+                    },
+                    "canBreach|Super Metroid - Norfair Portal"
                 ]
             },
             "logical": {
@@ -269,7 +329,8 @@
                             "glove",
                             "lantern"
                         ]
-                    }
+                    },
+                    "canReach|Super Metroid - Norfair Portal"
                 ]
             }
         },
@@ -452,10 +513,16 @@
     "Dark World - Mire": {
         "Open": {
             "always": {
-                "allOf": [
-                    "flute",
-                    "mitts"
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "flute",
+                            "mitts"
+                        ]
+                    },
+                    "canBreach|Super Metroid - Lower Norfair Portal"
                 ]
+                
             }
         },
         "Inverted": {
@@ -1175,6 +1242,294 @@
         "Entrance": [
             "ct"
         ]
+    },
+    "Super Metroid - Norfair Portal": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "morph",
+                    "super",
+                    {
+                        "anyOf": [
+                            "powerbomb",
+                            "screw",
+                            "speed",
+                            "morphbombs"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "morph",
+                    "super",
+                    {
+                        "anyOf": [
+                            "powerbomb",
+                            "screw",
+                            "speed",
+                            "morphbombs"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+    },
+    "Super Metroid - Lower Norfair Portal": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "morph",
+                    "super",
+                    "powerbomb",
+                    {
+                        "anyOf": [
+                            "speed",
+                            {
+                                "allOf": [
+                                    "hijump",
+                                    {
+                                        "anyOf": [
+                                            "varia",
+                                            {
+                                                "allOf": [
+                                                    "tanks|3",
+                                                    "canHellRun"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canIBJ",
+                                    {
+                                        "anyOf": [
+                                            "varia",
+                                            {
+                                                "allOf": [
+                                                    "tanks|5",
+                                                    "canHellRun"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canSpringBallJump",
+                                    {
+                                        "anyOf": [
+                                            "varia",
+                                            {
+                                                "allOf": [
+                                                    "tanks|5",
+                                                    "canHellRun"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "ice",
+                                    "varia"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canNovaBoost"
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "varia",
+                                    "gravity",
+                                    "space"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "varia",
+                                    "canGravityJump"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canLavaDive"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canBootlessLavaDive"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canSuitlessLavaDive"
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "canGateGlitch",
+                            {
+                                "allOf": [
+                                    "space",
+                                    "varia"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "morph",
+                    "super",
+                    "powerbomb",
+                    "gravity",
+                    "varia",
+                    "space"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
+    },
+    "Super Metroid - Maridia Portal": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    {
+                        "allOf": [
+                            "morph",
+                            "super",
+                            "powerbomb"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    "speed"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    {
+                                        "anyOf": [
+                                            "canGravityJump",
+                                            "space",
+                                            "grapple",
+                                            "speed"
+                                        ]
+                                    },
+                                    "canMochtroidIceClip"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    {
+                                        "anyOf": [
+                                            "canGravityJump",
+                                            "space",
+                                            "grapple",
+                                            "speed"
+                                        ]
+                                    },
+                                    "canBombCrystalFlashClip"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    {
+                                        "anyOf": [
+                                            "canGravityJump",
+                                            "space",
+                                            "grapple",
+                                            "speed"
+                                        ]
+                                    },
+                                    "canSuitlessCrystalFlashClip"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canSuitlessMaridia",
+                                    "hijump",
+                                    {
+                                        "anyOf": [
+                                            "ice",
+                                            "canSpringBallJump",
+                                            "canUnderwaterWallJump"
+                                        ]
+                                    },
+                                    {
+                                        "anyOf": [
+                                            "grapple",
+                                            "canDoubleSpringBallJump"
+                                        ]
+                                    },
+                                    {
+                                        "anyOf": [
+                                            "canGrappleJump",
+                                            "canSnailClimb"
+                                        ]
+                                    },
+                                    {
+                                        "anyOf": [
+                                            "canMochtroidIceClip",
+                                            "canSuitlessCrystalFlashClip"
+                                        ]
+                                    },
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "morph",
+                    "super",
+                    "powerbomb",
+                    "gravity",
+                    "speed",
+                    {
+                        "anyOf": [
+                            "super|10",
+                            "charge"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        },
     },
     "Placeholder": {
         "Open": {

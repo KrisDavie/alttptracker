@@ -1,9 +1,9 @@
 .logicrow {
     display: flex;
-    width: 75%;
+    width: 90%;
     justify-content: space-between;
   }
   
 .logiccolumn {
-    flex: 50%;
+    flex: 30%;
 }

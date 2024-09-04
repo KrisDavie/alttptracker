@@ -155,7 +155,14 @@
         chest9: { min: 0, max: maxchests9 },
         chest10: { min: 0, max: maxchests10 },
         chest11: { min: 0, max: maxchests11 },
-        chest12: { min: 0, max: maxchests12 }
+        chest12: { min: 0, max: maxchests12 },
+
+        // SM
+        etank: { min: 0, max: 10 },
+        missile: { min: 0, max: 50 },
+        powerbomb: { min: 0, max: 10 },
+        rtank: { min: 0, max: 11 },
+        super: { min: 0, max: 50 },
     };
     
     window.items = {
@@ -286,6 +293,34 @@
         smallkey10: (flags.wildkeys ? 0 : range['smallkey10'].max),
         smallkeyhalf0: (flags.wildkeys ? 0 : range['smallkeyhalf0'].max),
         smallkeyhalf1: (flags.wildkeys ? 0 : range['smallkeyhalf1'].max),
+
+        kraid: true,
+        ridley: true,
+        phantoon: true,
+        draygon: true,
+
+        // SM
+        charge: false,
+        etank: 0,
+        grapple: false,
+        gravity: false,
+        hijump: false,
+        ice: false,
+        missile: 0,
+        morph: false,
+        morphbombs: false,
+        plasma: false,
+        powerbomb: 0,
+        rtank: 0,
+        screw: false,
+        space: false,
+        spazer: false,
+        speed: false,
+        spring: false,
+        super: 0,
+        varia: false,
+        wave: false,
+        xray: false,
         
         range: range,
         inc: limit(1, range),

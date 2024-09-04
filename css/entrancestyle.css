@@ -482,6 +482,35 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .pendant-1 { background-image: url(../images/overlay/pendant1.png); }
 .pendant-2 { background-image: url(../images/overlay/pendant2.png); }
 
+.smitem {width: 64; height: 64; background-size: 90%; background-repeat: no-repeat; background-position: center;}
+
+.charge { background-image: url(../images/items/charge.png); }
+.etank { background-image: url(../images/items/etank.png); }
+.grapple { background-image: url(../images/items/grapple.png); }
+.gravity { background-image: url(../images/items/gravity.png); }
+.hijump { background-image: url(../images/items/hijump.png); }
+.ice { background-image: url(../images/items/ice.png); }
+.missile { background-image: url(../images/items/missile.png); }
+.morph { background-image: url(../images/items/morph.png); }
+.morphbombs { background-image: url(../images/items/morphbombs.png); }
+.plasma { background-image: url(../images/items/plasma.png); }
+.powerbomb { background-image: url(../images/items/powerbomb.png); }
+.rtank { background-image: url(../images/items/rtank.png); }
+.screw { background-image: url(../images/items/screw.png); }
+.space { background-image: url(../images/items/space.png); }
+.spazer { background-image: url(../images/items/spazer.png); }
+.speed { background-image: url(../images/items/speed.png); }
+.spring { background-image: url(../images/items/spring.png); }
+.super { background-image: url(../images/items/super.png); }
+.varia { background-image: url(../images/items/varia.png); }
+.wave { background-image: url(../images/items/wave.png); }
+.xray { background-image: url(../images/items/xray.png); }
+
+.kraid { background-image: url(../images/dungeons/kraid.png); }
+.phantoon { background-image: url(../images/dungeons/phantoon.png); }
+.draygon { background-image: url(../images/dungeons/draygon.png); }
+.ridley { background-image: url(../images/dungeons/ridley.png); }
+
 .noitem { background-image: url(../images/dungeons/prize0.png); opacity: .25; }
 
 .separatortop { border-top: 1px dotted gray; margin-top: -1px; }
