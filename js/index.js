@@ -191,7 +191,7 @@ function launch_tracker() {
 		if (sphere === "Y") {
 			height = 744;
 		} else {
-			height = 448;
+			height = 705;
 		}
 	}
 		
