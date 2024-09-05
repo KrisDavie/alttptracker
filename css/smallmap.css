@@ -24,6 +24,19 @@
   bottom: -20px;
 }
 
+#map {
+  position: static;
+}
+
+#smtracker {
+  position: static;
+  margin-left: 64px;
+  margin-top: 0px;
+  margin-right: -64px;
+
+}
+
+
 #autotrackingstatus {
   bottom: -20px;
   right: 3px;

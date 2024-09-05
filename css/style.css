@@ -143,8 +143,24 @@ body {
   background-size: 99% 100%;
   background-position: right;
   background-repeat: no-repeat;
+}
+
+#map {
+  position: absolute;
+  left: -5px !important;
+  top: 448px !important;
+}
+
+#smtracker {
+  position: absolute;
+  left: 448px !important;
+  top: 0px !important;
+  width: 448px;
+  margin-left: 64px;
+  margin-top: 64px;
 
 }
+
 
 .location {
   border-color:#000;
@@ -387,12 +403,13 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .boss10, #bossmap10 { background-image: url(../images/dungeons/boss10.png); }
 #bossmap11 { background-image: url(../images/dungeons/ballnchain.png); }
 #bossmap12 { background-image: url(../images/dungeons/agahnim0.png); }
-.bossprize-0 { background-image: url(../images/dungeons/bossicon0.png); }
-.bossprize-1 { background-image: url(../images/dungeons/bossicon1.png); }
-.bossprize-2 { background-image: url(../images/dungeons/bossicon2.png); }
-.bossprize-3 { background-image: url(../images/dungeons/bossicon3.png); }
-.bossprize-4 { background-image: url(../images/dungeons/bossicon4.png); }
-.bossprize-5 { background-image: url(../images/dungeons/bossicon5.png); }
+.bossprize-0 { background-image: url(../images/dungeons/prize0.png); }
+.bossprize-1 { background-image: url(../images/dungeons/prize1.png); }
+.bossprize-2 { background-image: url(../images/dungeons/prize2.png); }
+.bossprize-3 { background-image: url(../images/dungeons/prize3.png); }
+.bossprize-4 { background-image: url(../images/dungeons/prize4.png); }
+.bossprize-5 { background-image: url(../images/dungeons/prize5.png); }
+.bossprize-5 { background-image: url(../images/dungeons/prize5.png); }
 
 .enemizer-0 { background-image: url(../images/dungeons/prize0.png); background-size: 32px; }
 .enemizer-1 { background-image: url(../images/dungeons/boss0.png); background-size: 32px; }
@@ -412,6 +429,7 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .prize-3 { background-image: url(../images/dungeons/prize3.png); }
 .prize-4 { background-image: url(../images/dungeons/prize4.png); }
 .prize-5 { background-image: url(../images/dungeons/prize5.png); }
+.prize-6 { background-image: url(../images/dungeons/prize6.png); }
 .medallion-0 { background-image: url(../images/dungeons/medallion0.png); }
 .medallion-1 { background-image: url(../images/dungeons/medallion1.png); }
 .medallion-2 { background-image: url(../images/dungeons/medallion2.png); }
@@ -455,10 +473,32 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .wave { background-image: url(../images/items/wave.png); }
 .xray { background-image: url(../images/items/xray.png); }
 
-.kraid { background-image: url(../images/dungeons/kraid.png); }
-.phantoon { background-image: url(../images/dungeons/phantoon.png); }
-.draygon { background-image: url(../images/dungeons/draygon.png); }
-.ridley { background-image: url(../images/dungeons/ridley.png); }
+.kraid { background-image: url(../images/dungeons/kraid.png); filter: grayscale(1);}
+.phantoon { background-image: url(../images/dungeons/phantoon.png); filter: grayscale(1);}
+.draygon { background-image: url(../images/dungeons/draygon.png); filter: grayscale(1);}
+.ridley { background-image: url(../images/dungeons/ridley.png); filter: grayscale(1);}
+
+.smboss.active { filter: none; }
+
+.smtext { 
+  padding-left: 3px;
+  padding-right: 3px;
+  background-color: #00000081;
+  /* make roudned on top*/
+  border-top-left-radius: 20%;
+  border-top-right-radius: 20%;
+  right: 6px;
+  bottom: -3px;
+  text-align: right;
+  font-size: 24px; 
+  font-weight: 700; 
+  color: #FFF; 
+  text-shadow: 1px 1px 2px #000; 
+  position: absolute;
+  user-select: none;
+}
+
+
 
 .noitem { background-image: url(../images/dungeons/prize0.png); opacity: .25; }
 

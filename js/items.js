@@ -158,11 +158,11 @@
         chest12: { min: 0, max: maxchests12 },
 
         // SM
-        etank: { min: 0, max: 10 },
-        missile: { min: 0, max: 50 },
+        etank: { min: 0, max: 14 },
+        missile: { min: 0, max: 40 },
         powerbomb: { min: 0, max: 10 },
-        rtank: { min: 0, max: 11 },
-        super: { min: 0, max: 50 },
+        rtank: { min: 0, max: 4 },
+        super: { min: 0, max: 16 },
     };
     
     window.items = {

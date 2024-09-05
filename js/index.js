@@ -173,7 +173,7 @@ function launch_tracker() {
 		restreamingcode = "000000";
 	}
 	
-	var width = map === "M" ? 1340 : 448;
+	var width = map === "M" ? 889 : 448;
 
 	var height;
 	if (map === "V") {
@@ -185,13 +185,13 @@ function launch_tracker() {
 		if (sphere === "Y") {
 			height = 988;
 		} else {
-			height = 692;
+			height = autotracking === 'N' ? 992 : 1012;
 		}
 	} else {
 		if (sphere === "Y") {
 			height = 744;
 		} else {
-			height = 705;
+			height = autotracking === 'N' ? 882 : 899;
 		}
 	}
 		

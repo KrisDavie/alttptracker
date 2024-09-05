@@ -995,6 +995,13 @@
 		
 	}	
 
+	const sm_increment_items = {
+		"super": 5,
+		"etank": 1,
+		"rtank": 1,
+		"missile": 5,
+		"powerbomb": 5,
+	}
 
     // Event of clicking on the item tracker
     window.toggle = function(label) {
@@ -1162,6 +1169,10 @@
 					lastItem = label + " active-" + value;
 				} else {			
 					lastItem = null;
+				}
+				if (Object.keys(sm_increment_items).includes(label)) {
+					var valuediv = document.getElementById(`${label}text`);
+					valuediv.innerHTML = value === 0 ? "" : value * sm_increment_items[label];
 				}
 			}
 			// Initiate bunny graphics!
@@ -1417,7 +1428,7 @@
 	
     // event of clicking on a boss's pendant/crystal subsquare
     window.toggle_dungeon = function(n) {
-		var maxdungeon = (flags.wildmaps ? 6 : 5);
+		var maxdungeon = (flags.wildmaps ? 7 : 6);
 		document.getElementById('dungeonPrize'+n).classList.remove('prize-' + prizes[n]);
         prizes[n] += 1;
         if (prizes[n] === maxdungeon) prizes[n] = 0;
@@ -1438,7 +1449,7 @@
 	};
 	
     window.rightClickPrize = function(n) {
-		var mindungeon = (flags.wildmaps ? 5 : 4);
+		var mindungeon = (flags.wildmaps ? 6 : 5);
 		document.getElementById('dungeonPrize'+n).classList.remove('prize-' + prizes[n]);
         prizes[n] -= 1;
         if (prizes[n] === -1) prizes[n] = mindungeon;
@@ -2087,6 +2098,18 @@
 			}
 		}
     };
+
+	window.rightClickSM = function(label) {
+		var value = items.dec(label);
+		var valuediv = document.getElementById(`${label}text`);
+		valuediv.innerHTML = value === 0 ? "" : value * sm_increment_items[label];
+		var nodes = Array.from(document.getElementsByClassName(label));
+		nodes.forEach(node=>{node.className = node.className.replace(/ ?active-\w+/, '')});
+		if (value) {
+			nodes.forEach(node=>node.classList.add('active-' + value));
+		}
+		updateLocationAvailability();	
+	}
 
 	window.rightClickBottle = function(n) {
 		var curValue = items['bottle'+n];
