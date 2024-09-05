@@ -85,10 +85,10 @@ const noStupid = {
   "canHellRun": true,
   "canLavaDive": true,
   "canSuitlessMaridia": false,
-  "canGrappleJump": false,
+  "canGrappleJump": true,
   "canSnailClimb": false,
   "canDoubleSpringBallJump": false,
-  "canBombCrystalFlashClip": false,
+  "canBombCrystalFlashClip": true,
   "canSuitlessCrystalFlashClip": false,
   "canBootlessLavaDive": false,
   "canSuitlessLavaDive": false,
@@ -130,8 +130,8 @@ const basicLogic = {
   "canGateGlitch": true,
   "canSpringBallJump": true,
   "canMochtroidIceClip": true,
-  "canHellRun": true,
-  "canLavaDive": true,
+  "canHellRun": false,
+  "canLavaDive": false,
   "canSuitlessMaridia": false,
   "canGrappleJump": false,
   "canSnailClimb": false,
@@ -175,6 +175,7 @@ const setAlllogics = (preset) => {
       Object.keys(basicLogic).forEach((item) => {
         logicSettings[item] = false;
       });
+      logicSettings['canIBJ'] = true;
   }
   logicCheckboxes.forEach((item) => {
     item.checked = logicSettings[item.getAttribute("id")];
