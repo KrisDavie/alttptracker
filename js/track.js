@@ -336,6 +336,7 @@
 					"prize10":prizes[10],
 					"prize11":prizes[11],
 					"prize12":prizes[12],
+					"prize12":prizes[13],
 					"medallion0":medallions[0],
 					"medallion1":medallions[1],
 					"dungeon0":dungeons[0].is_beaten,
@@ -565,6 +566,7 @@
 					"prize10":prizes[10],
 					"prize11":prizes[11],
 					"prize12":prizes[12],
+					"prize12":prizes[13],
 					"medallion0":medallions[0],
 					"medallion1":medallions[1],
 					"dungeon0":dungeons[0].is_beaten,
@@ -884,6 +886,7 @@
 						prizes[10] = megapack.prize10;
 						prizes[11] = megapack.prize11;
 						prizes[12] = megapack.prize12;
+						prizes[13] = megapack.prize13;
 						medallions[0] = megapack.medallion0;
 						medallions[1] = megapack.medallion1;
 						dungeons[0].is_beaten = megapack.dungeon0;
@@ -3829,7 +3832,7 @@
 		}
 		
 		//Default the dungeon prizes and enemizer defaults
-        for (var k = 0; k < dungeons.length; k++) {
+        for (var k = 0; k < 14; k++) {
             prizes[k] = 0;
 			if (flags.bossshuffle === 'N') {
 				enemizer[k] = k + 1;

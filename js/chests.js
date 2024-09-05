@@ -226,7 +226,7 @@
 		if (requirement.includes('|')) {
 			const _item = requirement.split("|")[0];
 			const _count = parseInt(requirement.split("|")[1]);
-			if (_item === 'tanks') return items.etank + items.rtank >= _count;
+			if (_item === "tanks") return items.etank + items.rtank >= _count;
 			return items[_item] >= _count / 5;
 		}
 
@@ -317,8 +317,8 @@
 			case "canDoubleSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.hijump && items.spring);
 			case "canBombCrystalFlashClip": return userLogicSettings[requirement] && (items.morph && items.morphbombs && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
 			case "canSuitlessCrystalFlashClip": return userLogicSettings[requirement] && (items.morph && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
-			case "canBootlessLavaDive": return userLogicSettings[requirement] && (items.varia && (items.etank && items.rtank) >= 2);
-			case "canSuitlessLavaDive": return userLogicSettings[requirement] && (items.hijump && (items.etank && items.rtank) >= 8 && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
+			case "canBootlessLavaDive": return userLogicSettings[requirement] && (items.varia && (items.etank > 0 && (items.etank + items.rtank) >= 2));
+			case "canSuitlessLavaDive": return userLogicSettings[requirement] && (items.hijump && (items.etank + items.rtank) >= 8 && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
 			case "canUnderwaterWallJump": return userLogicSettings[requirement] && (items.hijump);
 			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
 
