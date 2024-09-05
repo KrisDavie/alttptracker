@@ -3658,7 +3658,7 @@
 				jQuery("#bossMapAgahnim").detach().appendTo('#mapItemDiv_light');
 				jQuery("#castle").detach().appendTo('#mapItemDiv_light');
 				
-				document.getElementById('bossMap10').style.left = "58.0%";
+				document.getElementById('bossMap10').style.left = "57.8%";
 				document.getElementById('bossMap10').style.top = flags.mapmode === 'C' ? "7.2%" : "5.5%";
 				document.getElementById('dungeon10').style.left = "58.0%";
 				document.getElementById('dungeon10').style.top = flags.mapmode === 'C' ? "7.2%" : "5.5%";

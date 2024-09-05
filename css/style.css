@@ -173,6 +173,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 90% 90%;
+  opacity: 1 !important;
   z-index: 2;
 }
 
@@ -185,6 +186,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 90% 90%;
+  opacity: 1 !important;
   z-index: 2;
 }
 
@@ -480,7 +482,7 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 #bossMap7, #dungeon7 { left: 79.80%; top: 86.8%; }
 #bossMap8, #dungeon8 { left: 10.00%; top: 82.9%; }
 #bossMap9, #dungeon9 { left: 93.80%; top: 7.0%; }
-#bossMap10, #dungeon10 { left: 58.00%; top: 5.5%; }
+#bossMap10, #dungeon10 { left: 57.8%; top: 5.5%; }
 #bossMap11, #dungeon11 { left: 50.00%; top: 39.5%; }
 #bossMapAgahnim, #castle, #bossMap12, #dungeon12 { left: 50.00%; top: 52.6%; }
 

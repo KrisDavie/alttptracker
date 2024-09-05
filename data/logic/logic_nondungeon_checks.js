@@ -1441,14 +1441,16 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canReach|Dark World - South",
+                    "canBreach|Dark World - South",
                     "bombs",
                     "moonpearl"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - South",
+                    "bombs",
+                    "moonpearl"
                 ]
             }
         },
@@ -1464,14 +1466,16 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canReach|Dark World - South",
+                    "canBreach|Dark World - South",
                     "bombs",
                     "moonpearl"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - South",
+                    "bombs",
+                    "moonpearl"
                 ]
             }
         },
@@ -1487,14 +1491,16 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canReach|Dark World - South",
+                    "canBreach|Dark World - South",
                     "bombs",
                     "moonpearl"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - South",
+                    "bombs",
+                    "moonpearl"
                 ]
             }
         },
@@ -1508,16 +1514,18 @@
     },
     "Hype Cave - Middle Right": {
         "Open": {
-            "always": {
+           "always": {
                 "allOf": [
-                    "canReach|Dark World - South",
+                    "canBreach|Dark World - South",
                     "bombs",
                     "moonpearl"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - South",
+                    "bombs",
+                    "moonpearl"
                 ]
             }
         },
@@ -1533,14 +1541,16 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canReach|Dark World - South",
+                    "canBreach|Dark World - South",
                     "bombs",
                     "moonpearl"
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Dark World - South"
+                    "canReach|Dark World - South",
+                    "bombs",
+                    "moonpearl"
                 ]
             }
         },
@@ -2383,7 +2393,8 @@
             "always": {
                 "anyOf": [
                     "flute",
-                    "glove"
+                    "glove",
+                    "canBreach|Super Metroid - Norfair Portal"
                 ]
             },
             "logical": {

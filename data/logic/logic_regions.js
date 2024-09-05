@@ -523,6 +523,17 @@
                     "canBreach|Super Metroid - Lower Norfair Portal"
                 ]
                 
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "flute",
+                            "mitts"
+                        ]
+                    },
+                    "canReach|Super Metroid - Lower Norfair Portal"
+                ]
             }
         },
         "Inverted": {
