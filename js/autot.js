@@ -21,10 +21,10 @@ var NATIVE_LTTP_SRAM = 0xF5F000;
 var FOREIGN_LTTP_SRAM = 0xE03B40;
 
 var NATIVE_SM_SRAM = 0xF509A4;
-var FOREIGN_SM_SRAM = 0xE03900;
+var FOREIGN_SM_SRAM = 0xE03902;
 
 var NATIVE_SM_BOSSES_KEYS = 0xF5D828;
-var FOREIGN_SM_BOSSES_KEYS = 0xE03970;
+var FOREIGN_SM_BOSSES_KEYS = 0xE03968;
 
 var NATIVE_SM_AMMO = 0xF509C0; // 0xF509C2
 var FOREIGN_SM_AMMO = 0xE0391E;
@@ -682,7 +682,6 @@ function autotrackReadMem() {
   snesreadsave(GAME_CHECK_LOC, 1, data, "currentgame", handleCurrentGame);
 
   function handleCurrentGame() {
-    console.log(data["currentgame"][0]);
     if (data["currentgame"][0] == 0x00) {
       autotrackSetStatus("[ALTTP] Connected to " + autotrackDeviceName);
       currentGame = "alttp";
@@ -784,80 +783,25 @@ function autotrackReadMem() {
       0x16,
       data,
       "sm_ammo",
-      handleAutoTrackData
+      addPrizeData
     );
   }
 
-  // function addEntranceData() {
-  //     snesreadsave(0x180211, 0x1, data, 'entrances', addPotData);
-  // }
+  function addPrizeData() {
+    if (currentGame === "sm") {
+      handleAutoTrackData();
+      return;
+    }
+    snesreadsave(PRIZES_LOC, 0xD, data, 'prizes', addPrize2Data);
+  }
 
-  // function addPotData() {
-  //     snesreadsave(POTDATA_START, 0x250, data, 'potdata', addSpriteDropData);
-  // }
+  function addPrize2Data() {
+      snesreadsave(PRIZES2_LOC, 0xD, data, 'prizes', handleAutoTrackData, merge = true);
+  }
 
-  // function addSpriteDropData() {
-  //     snesreadsave(SPRITEDATA_START, 0x250, data, 'spritedata', addPrizeData);
-  // }
-
-  // function addPrizeData() {
-  //     snesreadsave(PRIZES_LOC, 0xD, data, 'prizes', addPrize2Data);
-  // }
-
-  // function addPrize2Data() {
-  //     snesreadsave(PRIZES2_LOC, 0xD, data, 'prizes', addRandoVersion, merge = true);
-  // }
-
-  // function addRandoVersion() {
-  //     snesreadsave(RANDOVERSION_LOC, 0x21, data, 'version', parseRandoVersion);
-  // }
-
-  // function parseRandoVersion() {
-  //     data['fork'] = Array.from(data['version']).slice(0, 2).map(c => String.fromCharCode(c)).join('')
-  //     if (data['fork'] !== 'VT') {
-  //         data['version'] = Array.from(data['version']).slice(2, 5).map(c => String.fromCharCode(c)).join('')
-  //     } else {
-  //         data['version'] = 'VT';
-  //     }
-  //     addORVersion();
-  // }
-
-  // function addORVersion() {
-  //     if (data['fork'] === "OR") {
-  //         snesreadsave(ORVERSION_LOC, 0x21, data, 'orversion', parseORVersion);
-  //     } else {
-  //         data['orversion'] = [0, 0, 0, 0]
-  //         addMysteryFlag();
-  //     }
-  // }
-
-  // function parseORVersion() {
-  //     var orver = Array.from(data['orversion']).map(c => String.fromCharCode(c)).join('').split('\x00')[0]
-  //     data['orversion'] = orver.split('-')[0].split('.').map(Number)
-  //     addMysteryFlag();
-  // }
-
-  // function addMysteryFlag() {
-  //     snesreadsave(DRFLAGS_LOC, 0x2, data, 'mystery', addKeysanityFlags);
-  // }
-
-  // // We pull out keysanity flags to see if prizeShuffle is wild. If so, we do not auto-assign prizes to dungeons
-  // function addKeysanityFlags() {
-  //     snesreadsave(KEYSANITY_LOC, 0x1, data, 'keysanity', addPseudobootsFlag);
-  // }
-
-  // function addPseudobootsFlag() {
-  //     // Check if we're playing DR and that the mystery flag is not set
-  //     if (["DR", "OR"].includes(data['fork']) && (data['mystery'][1] & 0x1) === 0) {
-  //         snesreadsave(PSEUDOBOOTS_LOC, 0x1, data, 'pseudoboots', handleAutoTrackData);
-  //     } else {
-  //         handleAutoTrackData();
-  //     }
-  // }
 
   function handleAutoTrackData() {
     // If autotracking is set to "Old", we get the second half of lttp_rooms_inv data, else we're getting the pseudoboots flag
-    console.log(data);
     autotrackDoTracking(data);
     autotrackPrevData = data;
     autotrackStartTimer();
@@ -953,90 +897,66 @@ function autotrackDoTracking(data) {
     }
 
     dungeonPrizes = {}
-    if (currentGame === 'lttp' && !((data['fork'] === "OR") && (data['keysanity'][0] & 0x20) === 0x20)) {
-        Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
-            if ('prize' in dungeondata && dungeondata.prize > 0) {
-                const prizeType = data['prizes'][dungeondata.prize + 0xD] == 0x40 ? 'crystal' : 'pendant';
-                const prize = prizemap[prizeType][data['prizes'][dungeondata.prize]];
-                dungeonPrizes[`${prizeType}${prize}`] = dungeondata.dungeonprize;
-            }
-        })
-        Object.entries(prizemap).forEach(([prizeType, prizes]) => {
-            Object.entries(prizes).forEach(([mask, prize]) => {
-                if (
-                  !(
-                    // TEMP FIX: Don't track red and blue on the following conditions:
-                    // VT and ER is enabled
-                    // DR and version is less than 142
-                    // OR and ORversion is less than 4.0
-                    ["r", "b"].includes(prize) &&
-                    (
-                        (data["fork"] === "VT" && ((data["entrances"][0] & 0x02) != 0)) ||
-                        (data["fork"] === "DR" && (data['version'] < 142)) ||
-                        (data["fork"] === "OR" && ((data['orversion'][0] === 0) && (data['orversion'][1] < 4)))
-                    )
-                   )   
-                ) {
-                  if (
-                    newbit(
-                      prizeType === "pendant" ? 0x374 : 0x37a,
-                      mask,
-                      "lttp_rooms_inv"
-                    )
-                  ) {
-                    const dungeonNum = dungeonPrizes[`${prizeType}${prize}`];
-                    collect_prize(dungeonNum);
-                    let currentPrize = Array.from(
-                      document.getElementById(`dungeonPrize${dungeonNum}`)
-                        .classList
-                    ).filter((c) => c.startsWith("prize-"))[0];
-                    // Is the prize set correctly already?
-                    switch (currentPrize) {
-                      case "prize-1":
-                        if (prize === "g") {
-                          return;
-                        }
-                        break;
-                      case "prize-2":
-                        if (prize === "b" || prize === "r") {
-                          return;
-                        }
-                        break;
-                      // Not allowed to distiquish between normal and 4/5 crystals so we don't correct mistakes
-                      case "prize-3":
-                      case "prize-4":
-                        if (prizeType === "crystal") {
-                          return;
-                        }
-                        break;
-                      default:
-                        break;
-                    }
-                    switch (prize) {
-                      case "g":
-                        set_prize(dungeonNum, 1);
-                        break;
-                      case "b":
-                      case "r":
-                        set_prize(dungeonNum, 2);
-                        break;
-                      case "1":
-                      case "2":
-                      case "3":
-                      case "4":
-                      case "5":
-                      case "6":
-                      case "7":
-                        set_prize(dungeonNum, 3);
-                        break;
-                      default:
-                        set_prize(dungeonNum, 4);
-                        break;
-                    }
-                  }
+    if (currentGame === 'alttp' && false) {
+      Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
+        if ("prize" in dungeondata && dungeondata.prize > 0) {
+          const prizeType = data["prizes"][dungeondata.prize + 0xd] == 0x40 ? "crystal" : "pendant";
+          const prize = prizemap[prizeType][data["prizes"][dungeondata.prize]];
+          dungeonPrizes[`${prizeType}${prize}`] = dungeondata.dungeonprize;
+        }
+      });
+      Object.entries(prizemap).forEach(([prizeType, prizes]) => {
+        Object.entries(prizes).forEach(([mask, prize]) => {
+          if (newbit(prizeType === "pendant" ? 0x374 : 0x37a, mask, "lttp_rooms_inv")) {
+            const dungeonNum = dungeonPrizes[`${prizeType}${prize}`];
+            collect_prize(dungeonNum);
+            let currentPrize = Array.from(document.getElementById(`dungeonPrize${dungeonNum}`).classList).filter((c) => c.startsWith("prize-"))[0];
+            // Is the prize set correctly already?
+            switch (currentPrize) {
+              case "prize-1":
+                if (prize === "g") {
+                  return;
                 }
-            });
+                break;
+              case "prize-2":
+                if (prize === "b" || prize === "r") {
+                  return;
+                }
+                break;
+              // Not allowed to distiquish between normal and 4/5 crystals so we don't correct mistakes
+              case "prize-3":
+              case "prize-4":
+                if (prizeType === "crystal") {
+                  return;
+                }
+                break;
+              default:
+                break;
+            }
+            switch (prize) {
+              case "g":
+                set_prize(dungeonNum, 1);
+                break;
+              case "b":
+              case "r":
+                set_prize(dungeonNum, 2);
+                break;
+              case "1":
+              case "2":
+              case "3":
+              case "4":
+              case "5":
+              case "6":
+              case "7":
+                set_prize(dungeonNum, 3);
+                break;
+              default:
+                set_prize(dungeonNum, 4);
+                break;
+            }
+          }
         });
+      });
     }
 
     if (flags.entrancemode === 'N') {
@@ -1226,6 +1146,10 @@ function autotrackDoTracking(data) {
         if (newbit(offset, 0x08) && !items[boss]) {
             click_map();
             toggle(boss);
+            if (boss !== "agahnim2") {
+              collect_prize(boss[4]);
+            }
+            
         }
     };
     update_boss("boss0", 0x191); // Eastern Palace
@@ -1570,18 +1494,22 @@ function autotrackDoTracking(data) {
 
     if (newbit(0x01, 0x01, 'sm_bosses_keys')){
         setitem("kraid", false);
+        collect_prize(11)
     }
 
     if (newbit(0x02, 0x01, 'sm_bosses_keys')){
         setitem("ridley", false);
+        collect_prize(10)
     }
 
     if (newbit(0x03, 0x01, 'sm_bosses_keys')){
         setitem("phantoon", false);
+        collect_prize(12)
     }
 
     if (newbit(0x04, 0x01, 'sm_bosses_keys')){
         setitem("draygon", false);
+        collect_prize(13)
     }
 
 
