@@ -40,9 +40,12 @@ var PSEUDOBOOTS_LOC = 0x18008E;
 var RANDOVERSION_LOC = 0x7FC0; // Actually ROM name
 var ORVERSION_LOC = 0x150010
 var DRFLAGS_LOC = 0x138004; // Actually DRFlags
-var PRIZES_LOC = 0x1209B; // Pendant/Crystal number data
-var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
+
+var PRIZES_LOC = 0x42a09B; // Pendant/Crystal number data
+var PRIZES2_LOC = 0x400050; // Pendant/Crystal data
 var KEYSANITY_LOC = 0x18016A; // Keysanity flags
+
+var SM_PRIZES_LOC = 0xF26000
 
 var CONFIGURING = false;
 
@@ -197,7 +200,19 @@ const dungeondatamem = {
         "bigkey": [0x366, 0x04],
         "map": [0x368, 0x04],
         "smallkeys": 0x4ED
-    }
+    },
+    "kraid": {
+      "prize": 0x0,
+    },
+    "phantoon": {
+      "prize": 0x1,
+    },
+    "draygon": {
+      "prize": 0x2,
+    },
+    "ridley": {
+      "prize": 0x3,
+    },
 };
 
 const prizemap = {
@@ -215,6 +230,12 @@ const prizemap = {
         0x4: 'g',
         0x2: 'b',
         0x1: 'r'
+    },
+    'token': {
+        0x1: 't1',
+        0x2: 't2',
+        0x4: 't3',
+        0x8: 't4',
     }
 }
 
@@ -796,8 +817,27 @@ function autotrackReadMem() {
   }
 
   function addPrize2Data() {
-      snesreadsave(PRIZES2_LOC, 0xD, data, 'prizes', handleAutoTrackData, merge = true);
+      snesreadsave(PRIZES2_LOC, 0xD, data, 'prizes', addSMPrizeData, merge = true);
   }
+
+  function addSMPrizeData() {
+    snesreadsave(SM_PRIZES_LOC, 0x20, data, 'sm_prizes', handleSMPrizeData);
+  }
+
+  function handleSMPrizeData() {
+    let _sm = data['sm_prizes']
+    let _new = new Uint8Array(8)
+    _new[0] = _sm[0x02]
+    _new[1] = _sm[0x0A]
+    _new[2] = _sm[0x12]
+    _new[3] = _sm[0x1A]
+    _new[4] = _sm[0x00]
+    _new[5] = _sm[0x08]
+    _new[6] = _sm[0x10]
+    _new[7] = _sm[0x18]
+    data['sm_prizes'] = _new
+    handleAutoTrackData();
+  } 
 
 
   function handleAutoTrackData() {
@@ -897,10 +937,21 @@ function autotrackDoTracking(data) {
     }
 
     dungeonPrizes = {}
-    if (currentGame === 'alttp' && false) {
+    if (currentGame === 'alttp') {
       Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
         if ("prize" in dungeondata && dungeondata.prize > 0) {
-          const prizeType = data["prizes"][dungeondata.prize + 0xd] == 0x40 ? "crystal" : "pendant";
+          const prizeTypeValue = data["prizes"][dungeondata.prize + 0xd]
+          var prizeType
+          switch (prizeTypeValue) {
+            case 0x00:
+              prizeType = "pendant"
+              break;
+            case 0x40:
+              prizeType = "crystal"
+              break;
+            case 0x80:
+              prizeType = "token"
+          }
           const prize = prizemap[prizeType][data["prizes"][dungeondata.prize]];
           dungeonPrizes[`${prizeType}${prize}`] = dungeondata.dungeonprize;
         }
@@ -909,6 +960,9 @@ function autotrackDoTracking(data) {
         Object.entries(prizes).forEach(([mask, prize]) => {
           if (newbit(prizeType === "pendant" ? 0x374 : 0x37a, mask, "lttp_rooms_inv")) {
             const dungeonNum = dungeonPrizes[`${prizeType}${prize}`];
+            if (dungeonNum === undefined) {
+              return;
+            }
             collect_prize(dungeonNum);
             let currentPrize = Array.from(document.getElementById(`dungeonPrize${dungeonNum}`).classList).filter((c) => c.startsWith("prize-"))[0];
             // Is the prize set correctly already?
@@ -930,6 +984,10 @@ function autotrackDoTracking(data) {
                   return;
                 }
                 break;
+              case "prize-5":
+                if (prizeType === "token") {
+                  return;
+                }
               default:
                 break;
             }
@@ -950,8 +1008,14 @@ function autotrackDoTracking(data) {
               case "7":
                 set_prize(dungeonNum, 3);
                 break;
+              case "t1":
+              case "t2":
+              case "t3":
+              case "t4":
+                set_prize(dungeonNum, 5);
+                break;
               default:
-                set_prize(dungeonNum, 4);
+                set_prize(dungeonNum, 6);
                 break;
             }
           }
