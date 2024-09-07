@@ -66,21 +66,6 @@
 .available {
   background-color: var(--available-color);
 }
-.bonkable {
-  background-color: var(--available-color);
-  width: 12;
-  height: 12;
-}
-.darkbonkable {
-  background-color: var(--darkavailable-color);
-  width: 12;
-  height: 12;
-}
-.unbonkable {
-  background-color: var(--unavailable-color);
-  width: 12;
-  height: 12;
-}
 .possible {
   background-color: var(--possible-color);
 }

@@ -433,6 +433,11 @@ async function importflags(auto = false) {
 	});
 }
 
+function hideRestreaming() {
+	if (window.location.href.indexOf("dunka.net") === -1) {
+		document.getElementById("restreamingpresetdiv").style.display = "none";
+	}
+}
 			
 function showToast() {
   // Get the snackbar DIV
@@ -469,39 +474,4 @@ function togglereleasediv(x) {
 		d.style.display = "block";
 		a.innerHTML = "&#9650;";
 	}
-}
-
-function hideRestreaming() {
-	if (window.location.href.indexOf("dunka.net") === -1) {
-		document.getElementById("restreamingpresetdiv").style.display = "none";
-	}
-}
-
-function validateRestreamCode() {
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", "https://alttprtracker.dunka.net/api/v1/RestreamerAPI/ValidateCode?code=" + document.getElementById("restreamingcode").value, true);
-	xhr.responseType = 'text';
-	xhr.onload = function () {
-		if (xhr.readyState === xhr.DONE) {
-			if (xhr.status === 200) {
-				var resp = xhr.response;
-				coderesp = JSON.parse(resp);
-				if (coderesp.role === "T") {
-					document.getElementById("restreamingtrackerspan").style.display = "";
-					document.getElementById("restreamingtracker").disabled = false;
-					document.getElementById("restreamingtracker").checked = true;
-				} else if (coderesp.role === "R") {
-					document.getElementById("restreamingrestreamerspan").style.display = "";
-					document.getElementById("restreamingrestreamer").disabled = false;
-					document.getElementById("restreamingrestreamer").checked = true;
-					document.getElementById("restreamingusedelayspan").style.display = "";
-					document.getElementById("restreamingdelay").disabled = false;
-				}
-			} else {
-				alert("Restreamer code is invalid");
-			}
-		}
-	};
-
-	xhr.send(null);
 }

@@ -526,6 +526,8 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 #bossMap11, #dungeon11 { left: 50.00%; top: 39.5%; }
 #bossMapAgahnim, #castle, #bossMap12, #dungeon12 { left: 50.00%; top: 52.6%; }
 
+.bonkloc { width: 12 !important; height: 12 !important; border-width: 0.5px !important;}
+
 #locationMap0 { left: 61.60%; top: 29.6%; } /* King's Tomb */
 #locationMap1 { left: 46.80%; top: 93.4%; } /* Dam (2) */
 #locationMap2 { left: 54.80%; top: 67.9%; } /* Link's House */

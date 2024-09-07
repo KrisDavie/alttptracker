@@ -314,7 +314,7 @@
          "always": {
             "allOf": [
                "canBreach|Ganons Tower",
-               "canUseBombs",
+               "bombs",
                "canKillArmos"
             ],
             "anyOf": [
@@ -368,7 +368,7 @@
                "canReach|Ganons Tower",
                "keys|3",
                "canKillArmos",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "gtleft",
@@ -380,7 +380,7 @@
          "always": {
             "allOf": [
                "canBreach|Ganons Tower",
-               "canUseBombs",
+               "bombs",
                "canKillArmos"
             ],
             "anyOf": [
@@ -434,7 +434,7 @@
                "canReach|Ganons Tower",
                "keys|3",
                "canKillArmos",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "gtleft",
@@ -446,7 +446,7 @@
          "always": {
             "allOf": [
                "canBreach|Ganons Tower",
-               "canUseBombs",
+               "bombs",
                "canKillArmos"
             ],
             "anyOf": [
@@ -500,7 +500,7 @@
                "canReach|Ganons Tower",
                "keys|3",
                "canKillArmos",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "gtleft",
@@ -903,7 +903,7 @@
                "canBreach|Ganons Tower",
                "bigkey",
                "canLightFires",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "bow",
@@ -933,7 +933,7 @@
             "allOf": [
                "canBreach|Ganons Tower",
                "hammer",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "hookshot",
@@ -959,7 +959,7 @@
             "allOf": [
                "canBreach|Ganons Tower",
                "hammer",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "hookshot",
@@ -985,7 +985,7 @@
             "allOf": [
                "canBreach|Ganons Tower",
                "hammer",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "hookshot",
@@ -1011,7 +1011,7 @@
             "allOf": [
                "canBreach|Ganons Tower",
                "hammer",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "hookshot",
@@ -1052,7 +1052,7 @@
                "bigkey",
                "canLightFires",
                "melee",
-               "canUseBombs",
+               "bombs",
                {
                   "anyOf": [
                      "hookshot",
@@ -1091,7 +1091,7 @@
                "bigkey",
                "canFightAgahnim",
                "canLightFires",
-               "canUseBombs",
+               "bombs",
                {
                   "anyOf": [
                      {
@@ -1210,7 +1210,7 @@
          },
          "logical": {
             "allOf": [
-               "canDarkRoomNavigate"
+               "canTorchRoomNavigate"
             ],
             "anyOf": [
                "canReach|Hyrule Castle - Main",
@@ -1368,14 +1368,14 @@
                "bigkey"
             ],
             "anyOf": [
-               "canUseBombs",
+               "bombs",
                "canHover"
             ]
          },
          "logical": {
             "allOf": [
                "canReach|Skull Woods - Main",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -1401,20 +1401,28 @@
             "allOf": [
                "canBreach|Skull Woods - Back",
                "canKillBoss",
-               "canDefeatCurtains"
-            ],
-            "anyOf": [
-               "firerod",
+               "canDefeatCurtains",
                {
-                  "allOf": [
-                     "lantern",
+                  "anyOf": [
+                     "canBreach|Skull Woods - Middle",
+                     "keys|1"
+                  ]
+               },
+               {
+                  "anyOf": [
+                     "firerod",
                      {
-                        "anyOf": [
-                           "canUseBombs",
-                           "canHover"
+                        "allOf": [
+                           "lantern",
+                           {
+                              "anyOf": [
+                                 "canBombJump",
+                                 "canHover"
+                              ]
+                           }
                         ]
                      }
-                  ]
+                  ]      
                }
             ]
          },
@@ -1450,12 +1458,6 @@
                }
             ]
          },
-         "required": {
-            "anyOf": [
-               "canBreach|Skull Woods - Drops",
-               "keys|1"
-            ]
-         },
          "logical": {
             "anyOf": [
                "canReach|Skull Woods - Drops",
@@ -1475,10 +1477,26 @@
                "canBreach|Skull Woods - Main"
             ]
          },
+         "required": {
+            "anyOf": [
+               "canBreach|Skull Woods - Main",
+               {
+                  "allOf": [
+                     "canBreach|Skull Woods - Drops",
+                     "keys|1"
+                  ]
+               }
+            ]
+         },
          "logical": {
             "anyOf": [
-               "canReach|Skull Woods - Drops",
-               "canReach|Skull Woods - Main"
+               "canReach|Skull Woods - Main",
+               {
+                  "allOf": [
+                     "canReach|Skull Woods - Drops",
+                     "keys|1"
+                  ]
+               }
             ]
          }
       },
@@ -1734,7 +1752,7 @@
                "canBreach|Swamp Palace",
                "keys|1",
                "flippers",
-               "canUseBombs"
+               "bombs"
             ]
          },
          "logical": {
@@ -1831,7 +1849,7 @@
             ],
             "anyOf": [
                "canKillMostEnemies",
-               "canUseBombs",
+               "bombs",
                "glove"
             ]
          },
@@ -1847,7 +1865,7 @@
                "canBreach|Thieves Town",
                "bigkey",
                "canKillBoss",
-               "canUseBombs"
+               "bombs"
             ]
          },
          "logical": {
@@ -3133,7 +3151,7 @@
                "canDarkRoomNavigateBlind"
             ],
             "anyOf": [
-               "canUseBombs",
+               "bombs",
                "canFireSpooky"
             ]
          },
@@ -3146,7 +3164,7 @@
             "allOf": [
                "canReach|Misery Mire",
                "canDarkRoomNavigate",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3280,14 +3298,14 @@
          },
          "required": {
             "anyOf": [
-               "canUseBombs",
+               "bombs",
                "canIceBreak"
             ]
          },
          "logical": {
             "allOf": [
                "canReach|Ice Palace",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3299,7 +3317,7 @@
                "canBurnThings"
             ],
             "anyOf": [
-               "canUseBombs",
+               "bombs",
                {
                   "allOf": [
                      "canIceBreak",
@@ -3311,7 +3329,7 @@
          "logical": {
             "allOf": [
                "canReach|Ice Palace",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3325,7 +3343,7 @@
                "canIceBreak",
                {
                   "allOf": [
-                     "canUseBombs",
+                     "bombs",
                      {
                         "anyOf": [
                            "keys|1",
@@ -3340,7 +3358,7 @@
          "logical": {
             "allOf": [
                "canReach|Ice Palace",
-               "canUseBombs",
+               "bombs",
                "hookshot"
             ]
          }
@@ -3357,7 +3375,7 @@
                "canIceBreak",
                {
                   "allOf": [
-                     "canUseBombs",
+                     "bombs",
                      {
                         "anyOf": [
                            "hookshot",
@@ -3373,7 +3391,7 @@
             "allOf": [
                "canReach|Ice Palace",
                "hookshot",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3387,7 +3405,7 @@
                "canIceBreak",
                {
                   "allOf": [
-                     "canUseBombs",
+                     "bombs",
                      "glove",
                      "hammer",      
                      {
@@ -3405,7 +3423,7 @@
             "allOf": [
                "canReach|Ice Palace",
                "hookshot",
-               "canUseBombs",
+               "bombs",
                "glove",
                "hammer"
             ]
@@ -3418,14 +3436,14 @@
                "canBurnThings"
             ],
             "anyOf": [
-               "canUseBombs",
+               "bombs",
                "canIceBreak"
             ]
          },
          "logical": {
             "allOf": [
                "canReach|Ice Palace",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3442,7 +3460,7 @@
                "canIceBreak",
                {
                   "allOf": [
-                     "canUseBombs",
+                     "bombs",
                      {
                         "anyOf": [
                            "canBombJump",
@@ -3468,7 +3486,7 @@
                "canReach|Ice Palace",
                "bigkey",
                "keys|1",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "keys|2",
@@ -3495,7 +3513,7 @@
                {
                   "allOf": [
                      "keys|5",
-                     "canUseBombs",
+                     "bombs",
                      "canDarkRoomNavigateBlind"
                   ]
                }
@@ -3517,7 +3535,7 @@
                {
                   "allOf": [
                      "keys|5",
-                     "canUseBombs",
+                     "bombs",
                      "canDarkRoomNavigateBlind"
                   ]
                }
@@ -3528,7 +3546,7 @@
                "canReach|Palace of Darkness",
                "keys|6",
                "canDarkRoomNavigate",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3537,7 +3555,7 @@
             "allOf": [
                "canBreach|Palace of Darkness",
                "keys|1",
-               "canUseBombs"
+               "bombs"
             ],
             "anyOf": [
                "keys|2",
@@ -3562,7 +3580,7 @@
             "allOf": [
                "canReach|Palace of Darkness",
                "keys|6",
-               "canUseBombs"
+               "bombs"
             ]
          }
       },
@@ -3743,7 +3761,7 @@
                   "allOf": [
                      "keys|1",
                      "canHover",
-                     "canUseBombs"
+                     "bombs"
                   ]
                }
             ]
@@ -3836,7 +3854,7 @@
             "anyOf": [
                {
                   "allOf": [
-                     "canUseBombs",
+                     "bombs",
                      {
                         "anyOf": [
                            "bow",
@@ -3858,7 +3876,7 @@
             "allOf": [
                "canReach|Palace of Darkness",
                "bow",
-               "canUseBombs"
+               "bombs"
             ]
          }
       }

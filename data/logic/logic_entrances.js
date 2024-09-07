@@ -398,14 +398,8 @@
             ]
         },
         "Inverted": {
-            "anyOf": [
-                "canReach|Inverted Upper East Death Mountain",
-                {
-                    "allOf": [
-                        "canReach|Inverted Lower East Death Mountain",
-                        "mitts"
-                    ]
-                }
+            "allOf": [
+                "canReach|Inverted Upper East Death Mountain"
             ]
         }
     },
@@ -708,7 +702,7 @@
         },
         "Inverted": {
             "anyOf": [
-                "canReach|Upper East Death Mountain",
+                "canReach|Inverted Upper East Death Mountain",
                 "hasFoundEntrance|Spiral Cave"
             ]
         }
@@ -1362,7 +1356,6 @@
                 {
                     "allOf": [
                         "canReach|South West Dark World",
-                        "moonpearl",
                         "mirror"
                     ]
                 },

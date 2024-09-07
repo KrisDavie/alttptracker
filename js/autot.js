@@ -1240,20 +1240,6 @@ function autotrackDoTracking(data) {
             }
         }
     };
-    /*updatesmallkeys("0", 0x37E);
-    updatesmallkeys("1", 0x37F);
-    updatesmallkeys("2", 0x386);
-    updatesmallkeys("3", 0x382);
-    updatesmallkeys("4", 0x381);
-    updatesmallkeys("5", 0x384);
-    updatesmallkeys("6", 0x387);
-    updatesmallkeys("7", 0x385);
-    updatesmallkeys("8", 0x383);
-    updatesmallkeys("9", 0x388);
-    updatesmallkeys("10", 0x389); // GT
-    updatesmallkeys("half0", 0x37C); // Hyrule Castle
-    updatesmallkeys("half0", 0x37D); // Sewers
-    updatesmallkeys("half1", 0x380); // Castle Tower*/
     updatesmallkeys("0", 0x4E2);
     updatesmallkeys("1", 0x4E3);
     updatesmallkeys("2", 0x4EA);
