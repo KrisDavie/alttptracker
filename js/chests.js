@@ -89,8 +89,8 @@
 	
 	function crystalCheck() {
 		var crystal_count = 0;
-		for (var k = 0; k < 10; k++) {
-			if ((prizes[k] === 3 || prizes[k] === 4) && items['boss'+k]) {
+		for (var k = 0; k < 14; k++) {
+			if ((prizes[k] === 3 || prizes[k] === 4) && items['prize'+k]) {
 				crystal_count++;
 			}
 		}
@@ -98,8 +98,8 @@
 	};
 
 	function allDungeonCheck() {
-		for (var k = 0; k < 10; k++) {
-			if (!items['boss'+k]) {
+		for (var k = 0; k < 14; k++) {
+			if (!items['prize'+k]) {
 				return false;
 			}
 		}
@@ -153,11 +153,11 @@
 	function pendantCheck(type) {
 		let pendant_count = 0;
 		let green_pendant = false;
-		for (var k = 0; k < 10; k++) {
-			if ((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k]) {
+		for (var k = 0; k < 14; k++) {
+			if ((prizes[k] === 1 || prizes[k] === 2) && items['prize'+k]) {
 				pendant_count++;
 			};
-			if (prizes[k] === 1 && items['boss'+k]) {
+			if (prizes[k] === 1 && items['prize'+k]) {
 				green_pendant = true;
 			};
 		};
@@ -307,20 +307,20 @@
 				var unbeaten_red_crystals = 0;
 				var beaten_crystals = 0;
 				var unbeaten_crystals = 0;
-				for (var k = 0; k < 10; k++) {
-					if (prizes[k] === 4 && items['boss'+k]) {
+				for (var k = 0; k < 14; k++) {
+					if (prizes[k] === 4 && items['prize'+k]) {
 						beaten_red_crystals += 1;
 						continue;
 					}
-					if (prizes[k] === 4 && !items['boss'+k]) {
+					if (prizes[k] === 4 && !items['prize'+k]) {
 						unbeaten_red_crystals += 1;
 						continue;
 					}
-					if (prizes[k] === 3 && items['boss'+k]) {
+					if (prizes[k] === 3 && items['prize'+k]) {
 						beaten_crystals += 1;
 						continue;
 					}
-					if (prizes[k] === 3 && !items['boss'+k]) {
+					if (prizes[k] === 3 && !items['prize'+k]) {
 						unbeaten_crystals += 1;
 						continue;
 					}
@@ -334,12 +334,12 @@
 				// TODO: Change this to track prizes not bosses
 				var beaten_red_crystals = 0;
 				var beaten_crystals = 0;
-				for (var k = 0; k < 10; k++) {
-					if (prizes[k] === 4 && items['boss'+k]) {
+				for (var k = 0; k < 14; k++) {
+					if (prizes[k] === 4 && items['prize'+k]) {
 						beaten_red_crystals += 1;
 						beaten_crystals += 1;
 					}
-					if (prizes[k] === 3 && items['boss'+k]) {
+					if (prizes[k] === 3 && items['prize'+k]) {
 						beaten_crystals += 1;
 					}
 				}
@@ -349,7 +349,7 @@
 			case "canPullPedestal": {
 				var pendant_count = 0;
 				for (var k = 0; k < 10; k++) {
-					if ((prizes[k] === 1 || prizes[k] === 2) && items['boss'+k]) {
+					if ((prizes[k] === 1 || prizes[k] === 2) && items['prize'+k]) {
 						if (++pendant_count === 3) return true;
 					}
 				}

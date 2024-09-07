@@ -135,7 +135,7 @@ function launch_tracker() {
 	var shuffledbigkeys = (document.getElementById("shuffledbigkeys").checked === true ? "1" : "0");
 	var shopsanity = 'N';
 	var ambrosia = 'N';
-	var nonprogressivebows = 'N';
+	var nonprogressivebows = 'Y';
 	var activatedflute = 'N';
 	var bonkshuffle = 'N';
 	var goal = document.querySelector('input[name="goalgroup"]:checked').value;

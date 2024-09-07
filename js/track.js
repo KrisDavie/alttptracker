@@ -559,6 +559,7 @@
 			return;
 		} else {
 			document.getElementById('dungeonPrize'+n).classList.add('collected');
+			items['prize'+n] = true;
 		}
 		updateMapTracker();
 	};
@@ -567,8 +568,10 @@
 	window.toggle_prize = function(n) {
 		if (document.getElementById('dungeonPrize'+n).classList.contains('collected')) {
 			document.getElementById('dungeonPrize'+n).classList.remove('collected');
+			items['prize'+n] = false;
 		} else {
 			document.getElementById('dungeonPrize'+n).classList.add('collected');
+			items['prize'+n] = true;
 		}
 		updateMapTracker();
 	};
