@@ -365,6 +365,7 @@
 			case 'canOnlyReachTurtleRockMain': return flags.gametype != 'I' && flags.entrancemode === 'N';
 
 			case "never": return false;
+
 			default: throw new Error("Unknown requirement: " + requirement);
 
 		};
@@ -402,6 +403,13 @@
 			const state = canReachRegion(region);
 			return state != 'unavailable' && state != 'possible';
 		};
+
+		if (requirement.includes('|')) {
+			const _item = requirement.split("|")[0];
+			const _count = parseInt(requirement.split("|")[1]);
+			if (_item === "tanks") return items.etank + items.rtank >= _count;
+			return items[_item] >= _count / 5;
+		}
 
 		return bigRequirementSwitch(requirement);
 	};
