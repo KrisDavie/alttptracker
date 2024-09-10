@@ -45,7 +45,7 @@ var PRIZES_LOC = 0x42a09B; // Pendant/Crystal number data
 var PRIZES2_LOC = 0x400050; // Pendant/Crystal data
 var KEYSANITY_LOC = 0x18016A; // Keysanity flags
 
-var SM_PRIZES_LOC = 0xF26000
+var SM_PRIZES_LOC = 0x326000
 
 var CONFIGURING = false;
 
@@ -939,8 +939,13 @@ function autotrackDoTracking(data) {
     dungeonPrizes = {}
     if (currentGame === 'alttp') {
       Object.entries(dungeondatamem).forEach(([dungeon, dungeondata]) => {
-        if ("prize" in dungeondata && dungeondata.prize > 0) {
-          const prizeTypeValue = data["prizes"][dungeondata.prize + 0xd]
+        if ("prize" in dungeondata && dungeondata.prize >= 0) {
+          let prizeTypeValue;
+          if (['ridley', 'phantoon', 'draygon', 'kraid'].includes(dungeon)) {
+            prizeTypeValue = data["sm_prizes"][dungeondata.prize + 4];
+          } else {
+            prizeTypeValue = data["prizes"][dungeondata.prize + 0xd]
+          }
           var prizeType
           switch (prizeTypeValue) {
             case 0x00:
@@ -952,7 +957,12 @@ function autotrackDoTracking(data) {
             case 0x80:
               prizeType = "token"
           }
-          const prize = prizemap[prizeType][data["prizes"][dungeondata.prize]];
+          let prize;
+          if (['ridley', 'phantoon', 'draygon', 'kraid'].includes(dungeon)) {
+            prize = prizemap[prizeType][data["sm_prizes"][dungeondata.prize]]
+          } else {
+            prize = prizemap[prizeType][data["prizes"][dungeondata.prize]];
+          }          
           dungeonPrizes[`${prizeType}${prize}`] = dungeondata.dungeonprize;
         }
       });
