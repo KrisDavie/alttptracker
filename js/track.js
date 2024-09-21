@@ -1029,49 +1029,10 @@
 		document.getElementById('entranceID').value = n;
 		document.getElementById('entranceModalTitle').innerHTML = entrances[n].caption.replace(/\s?\{[^}]+\}/g, '');
 		document.getElementById('entranceModalNote').value = entrances[n].note;
-		document.getElementById('ConnectorListSpan').innerHTML = '';
-		var entrancecount = 0;
-		if (entrances[n].is_connector) {
-			for (var i = 0; i < connectorIndex.length; i++) {
-				if ((connectorOne[i] === n || connectorTwo[i] === n) && entrancecount < 3) {
-					var spantemplate = document.getElementById('connectTemplateSpan');
-					var spanclone = spantemplate.cloneNode(true);
-					spanclone.id = "disconnectEntrance" + connectorIndex[i];
-					spanclone.setAttribute('onClick','entranceDisconnect(' + connectorIndex[i] + ',' + n + ');');
-					spanclone.style.visibility = 'visible';
-					if (connectorOne[i] === n) {
-						spanclone.innerHTML = entrances[connectorTwo[i]].caption + '&nbsp;&nbsp;&nbsp;<img style="height: 15px;"src="./images/interface/cancel.png" />&nbsp;&nbsp;&nbsp;';
-					} else {
-						spanclone.innerHTML = entrances[connectorOne[i]].caption + '&nbsp;&nbsp;&nbsp;<img style="height: 15px;"src="./images/interface/cancel.png" />&nbsp;&nbsp;&nbsp;';
-					}
-					
-					var spanlist = document.getElementById('ConnectorListSpan');
-					spanlist.appendChild(spanclone);
-					entrancecount++;
-				}
-			}
-		}
-		
-		if (entrancecount > 2) {
-			document.getElementById('addConnectorSpan').style.visibility = 'collapse';
-		} else {
-			document.getElementById('addConnectorSpan').style.visibility = 'visible';
-		}
+
 		
 		document.getElementById('entranceModalNote').focus();
-		const curStyle = window.getComputedStyle(document.documentElement);
 
-		for (const [key, value] of Object.entries(window.customColours)) {
-			for (const v of value) {
-				document.getElementById(v).style.backgroundColor = curStyle.getPropertyValue(key);
-				document.getElementById(v).style.color = rgbToTextColour(curStyle.getPropertyValue(key));
-			}
-		}
-		
-		
-		if (entrances[n].known_location != '') {
-			document.getElementById(entrances[n].known_location).style.borderColor = curStyle.getPropertyValue('--available-color');
-		}
 	}
 
 	window.middleClickEntrance = function(n) {
@@ -1298,25 +1259,20 @@
 		$('#summaryModal').hide();
 	}
 	
-	window.tagEntrance = function(n, t) {
+	window.tagEntrance = function(n) {
 		const curStyle = window.getComputedStyle(document.documentElement);
 
-		for (const [tag, index] of Object.entries(entranceNameToIndex)) {
-			if (tag.length > 0) document.getElementById(tag).style.backgroundColor = '#000';
-		}
 
 		let entranceID = document.getElementById('entranceID').value
 		if (entrances[entranceID].known_location === n) { // Un-tagging
 			entrances[entranceID].known_location = '';
 			document.getElementById(n).style.borderColor = curStyle.getPropertyValue('#ffffff');
-			entrances[entranceID].type = 0;
 			var information = document.getElementById('informationdiv'+entranceID);
 			if (information != null) {
 				information.remove();
 			}
 		} else { // Tagging
 			entrances[entranceID].known_location = n;
-			entrances[entranceID].type = (t === true ? 2 : 3);
 			document.getElementById(n).style.borderColor = curStyle.getPropertyValue('--available-color');
 			
 			if (document.getElementById('informationdiv'+entranceID) != null) {

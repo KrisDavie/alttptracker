@@ -85,6 +85,9 @@
 			</div>
 		</div>
 	</template>
+	<template id="">
+
+	</template>
 	<!-- End: Template-->
 	<div id="app" class="row">
 		<div id="trackingoverlay">
@@ -810,100 +813,12 @@
 			<input id="entranceID" type="text" style="visibility: collapse; height: 0px;" /><br>
 			<span id="entranceModalTitle" style="vertical-align: 8px;"></span>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<span id="addConnectorSpan" style="margin-right: 20px; cursor: pointer;" onclick="StartAConnectorModal();">
-				<span style="vertical-align: 8px;">Add Connector:&nbsp;&nbsp;&nbsp;</span>
-				<img src="./images/interface/connect.png" />
-			</span>
+			<span id="addConnectorSpan"></span>
 			<label style="vertical-align: 8px; white-space: nowrap;">
 				Note: <input id="entranceModalNote" type="text" style="margin-top: 4px; width: 236px;" onkeypress="return checkReturn(event);" />
 			</label>
-			<span id="connectTemplateSpan" style="cursor: pointer; visibility: hidden;">
-				Title&nbsp;&nbsp;&nbsp;
-				<img id="connectTemplateImg" style="height: 15px;" src="./images/interface/cancel.png" />
-				&nbsp;&nbsp;&nbsp;
-			</span>
 			<hr>
-			<div>
-				Connected To: <span id="ConnectorListSpan"></span>
-			</div>
-			<hr>
-			<div id="modalTags" style="font-size: 16px;">
-				<div id="entranceModalLightWorld">
-					<div class="entranceModalGeneralInner">
-						Light World Dungeons<br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('hc_m', true)" id="hc_m">HC m</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('hc_w', true)" id="hc_w">HC w</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('hc_e', true)" id="hc_e">HC e</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('ct', true)" id="ct">CT</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('ep', true)" id="ep">EP</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('dp_m', true)" id="dp_m">DP m</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('dp_w', true)" id="dp_w">DP w</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('dp_e', true)" id="dp_e">DP e</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('dp_n', true)" id="dp_n">DP n</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('toh', true)" id="toh">ToH</div>
-					</div>
-					<div>
-						Light World Key Locations<br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('magic', false)" id="magic">Magic</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('kid', false)" id="kid">Kid</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('smith', false)" id="smith">Smith</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('bat', false)" id="bat">Bat</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('lib', false)" id="lib">Library</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('saha', false)" id="saha">Sahas</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('mimc', false)" id="mimc">Mimic</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('dam', false)" id="dam">Dam</div>
-					</div>
-				</div>
-				<div id="entranceModalGeneral">
-					<div class="entranceModalGeneralInnerSmall">
-						General Key Locations<br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('rupee', false)" id="rupee">Rupee</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('shop', false)" id="shop">Shop</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('dark', false)" id="dark">Dark</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('connector', false)" id="connector">Connect</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('item', true)" id="item">Item</div>
-						<!-- <div class="entrancelocationdiv" style="background-image: none;"></div> -->
-						<!-- <div class="entrancelocationdiv" onclick="tagEntrance('connector1', false)" id="connector1">1-Way</div> -->
-						<!-- <div class="entrancelocationdiv" onclick="tagEntrance('connector3', false)" id="connector3">3-Way</div> -->
-
-					</div>
-					<div>
-						Starting Locations<br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('link', true)" id="link">Link</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('sanc', true)" id="sanc">Sanc</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('mount', true)" id="mount">Mount</div>
-					</div>
-				</div>
-				<div id="entranceModalDarkWorld">
-					<div class="entranceModalGeneralInnerLarge">
-						Dark World Dungeons<br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('pod', true)" id="pod">PoD</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('sp', true)" id="sp">SP</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('sw_m', true)" id="sw_m">SW m</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('sw_w', true)" id="sw_w">SW w</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('sw_e', true)" id="sw_e">SW e</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('sw', true)" id="sw">SW</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('tt', true)" id="tt">TT</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('ip', true)" id="ip">IP</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('mm', true)" id="mm">MM</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('tr_m', true)" id="tr_m">TR m</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('tr_w', true)" id="tr_w">TR w</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('tr_e', true)" id="tr_e">TR e</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('tr_b', true)" id="tr_b">TR b</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('gt', true)" id="gt">GT</div>
-					</div>
-					<div>
-						Dark World Key Locations<br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('bomb', false)" id="bomb">Bomb</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('bump', false)" id="bump">Bumper</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('spike', false)" id="spike">Spike</div>
-						<div class="entrancelocationdiv" onclick="tagEntrance('hook', false)" id="hook">Hook</div>
-					</div>
-					<div>
-						<br><br>
-						<div class="entrancelocationdiv" onclick="tagEntrance('ganon', true)" id="ganon">Ganon</div>
-					</div>
-				</div>
+			<div id="modalTags">
 			</div>
 			<br>
 		</div>
@@ -948,7 +863,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="flagsModal" aria-hidden="true" style="width: 400px; height: 384px; background-color: rgba(255, 255, 255, 1); z-index: 100; position: absolute; top: 22px; left: 24px; display: none;">
+	<div class="modal fade" id="flagsModal" style="width: 400px; height: 384px; background-color: rgba(255, 255, 255, 1); z-index: 100; position: absolute; top: 22px; left: 24px; display: none;">
 		<div>
 			<div style="user-select: none;">
 				<h3 style="width: 190px; display: inline-block; margin-left: 12px;">Change Flags</h3>

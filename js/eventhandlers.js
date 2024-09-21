@@ -124,6 +124,21 @@ document.addEventListener('DOMContentLoaded', function () {
         itemContainer.appendChild(cellDiv);
     };
 
+    // Add entrance modal tags
+    const modalTags = document.getElementById('modalTags');
+    for (const tag of Object.keys(window.entranceModalTags)) {
+        const modalTag = document.createElement('div');
+        modalTag.classList.add('modal-entranceTag');
+        modalTag.classList.add('available' + tag);
+        modalTag.id = tag;
+        modalTag.setAttribute('data-action', 'tag_entrance');
+        modalTag.setAttribute('data-target', tag);
+        let innerText = tag.replace(/_/g, ' ').toUpperCase();
+        modalTag.innerText = innerText;
+        modalTags.appendChild(modalTag);
+    }
+
+
     // Handle click events
     document.body.addEventListener('click', function (event) {
         let target = event.target;
@@ -166,6 +181,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     changeFlags(); break;
                 case 'toggle_bottle':
                     toggle(target.dataset.target); break;
+                case 'tag_entrance':
+                    tagEntrance(target.dataset.target); break;
             }
         }
     });
@@ -201,15 +218,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle mouseover events
     document.body.addEventListener('mouseover', function (event) {
         let target = event.target;
-
     });
 
     // Handle mouseout events
     document.body.addEventListener('mouseout', function (event) {
         let target = event.target;
-
     });
 
+    // Handle entrance map events
     for (let i = 0; i < 140; i++) {
         const entranceMap = document.getElementById('entranceMap'+i);
         entranceMap.addEventListener('click', function() {
@@ -237,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // Handle chest map events
 
     start();
 });

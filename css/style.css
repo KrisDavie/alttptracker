@@ -591,7 +591,7 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .tab { padding: 4px; border: 2px solid white; color: blue; user-select: none; cursor: pointer; }
 .tab.active { border-color: black; color: black; background-color: #E0E0E0; cursor: default; }
 
-.entranceModal {
+#entranceModal {
   width: var(--app-width);
   height: var(--app-height);
   background-color: rgb(0,0,0,0.3);
@@ -602,18 +602,17 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
   display: none;
 }
 
-.entranceModalMain {
-  width: var(--app-width);
-  height: var(--app-height);
-  background-color: rgb(0,0,0,0.3);
+#entranceModalMain {
+  width: calc(var(--app-width) - 40px);
+  height: calc(var(--app-height) - 30px);
+  background-color: rgb(10,10,10,0.95);
   z-index: 4;
   position: absolute;
-  top: 36px;
-  left: 0px;
+  top: 15px;
+  left: 20px;
   border-style: solid;
   border-color: rgb(205, 205, 205);
   color: #FFF;
-  display: none;
 }
 
 .connectorLineDiv {
@@ -727,17 +726,22 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
   padding: 5px;
 }
 
-.entrancelocationdiv {
-	width: 50px;
+#modalTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.modal-entranceTag {
+	width: auto;
   height: 30px;
-	font-family: teko_light, Arial, Helvetica, sans-serif; 
-	font-variant: small-caps;	
-  border: 2px solid white;
-	cursor: pointer;
-  padding: 1px 0px 0px 3px;
-  font-size: 22px;
-	float: left;
-  margin-right: 3px;
+  padding: 5px 10px;
+  font-size: 16px;
+	font-family: 'Teko', Arial, Helvetica, sans-serif; 
+  text-transform: uppercase;
+  border: 1px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
 }
 
 
