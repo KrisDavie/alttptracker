@@ -12,7 +12,8 @@
                     "nameSuffix": "",
                     "tag": "ep",
                     "group": "lwdungeon",
-                    "style": "--ep-color"
+                    "style": "--ep-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -51,25 +52,29 @@
                     "nameSuffix": "Main",
                     "tag": "dp_m",
                     "group": "lwdungeon",
-                    "style": "--dp-color"
+                    "style": "--dp-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "West",
                     "tag": "dp_w",
                     "group": "lwdungeon",
-                    "style": "--dp-color"
+                    "style": "--dp-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "East",
                     "tag": "dp_e",
                     "group": "lwdungeon",
-                    "style": "--dp-color"
+                    "style": "--dp-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "North",
                     "tag": "dp_n",
                     "group": "lwdungeon",
-                    "style": "--dp_n-color"
+                    "style": "--dp_n-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -106,7 +111,8 @@
                     "nameSuffix": "",
                     "tag": "toh",
                     "group": "lwdungeon",
-                    "style": "--toh-color"
+                    "style": "--toh-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -143,7 +149,8 @@
                     "nameSuffix": "",
                     "tag": "pod",
                     "group": "dwdungeon",
-                    "style": "--pod-color"
+                    "style": "--pod-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -180,7 +187,8 @@
                     "nameSuffix": "",
                     "tag": "sp",
                     "group": "dwdungeon",
-                    "style": "--sp-color"
+                    "style": "--sp-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -217,25 +225,29 @@
                     "nameSuffix": "Back",
                     "tag": "sw",
                     "group": "dwdungeon",
-                    "style": "--sw-color"
+                    "style": "--sw-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "Main",
                     "tag": "sw_m",
                     "group": "dwdungeon",
-                    "style": "--sw-color"
+                    "style": "--sw-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "West",
                     "tag": "sw_w",
                     "group": "dwdungeon",
-                    "style": "--sw-color"
+                    "style": "--sw-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "East",
                     "tag": "sw_e",
                     "group": "dwdungeon",
-                    "style": "--sw-color"
+                    "style": "--sw-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -272,7 +284,8 @@
                     "nameSuffix": "",
                     "tag": "tt",
                     "group": "dwdungeon",
-                    "style": "--tt-color"
+                    "style": "--tt-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -309,7 +322,8 @@
                     "nameSuffix": "",
                     "tag": "ip",
                     "group": "dwdungeon",
-                    "style": "--ip-color"
+                    "style": "--ip-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -346,7 +360,8 @@
                     "nameSuffix": "",
                     "tag": "mm",
                     "group": "dwdungeon",
-                    "style": "--mm-color"
+                    "style": "--mm-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -383,25 +398,29 @@
                     "nameSuffix": "Main",
                     "tag": "tr_m",
                     "group": "dwdungeon",
-                    "style": "--tr-color"
+                    "style": "--tr-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "West",
                     "tag": "tr_w",
                     "group": "dwdungeon",
-                    "style": "--tr-color"
+                    "style": "--tr-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "East",
                     "tag": "tr_e",
                     "group": "dwdungeon",
-                    "style": "--tr-color"
+                    "style": "--tr-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "Back",
                     "tag": "tr_b",
                     "group": "dwdungeon",
-                    "style": "--tr-color"
+                    "style": "--tr-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -438,7 +457,8 @@
                     "nameSuffix": "",
                     "tag": "gt",
                     "group": "dwdungeon",
-                    "style": "--gt-color"
+                    "style": "--gt-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -473,25 +493,29 @@
                     "nameSuffix": "Main",
                     "tag": "hc_m",
                     "group": "lwdungeon",
-                    "style": "--hc-color"
+                    "style": "--hc-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "West",
                     "tag": "hc_w",
                     "group": "lwdungeon",
-                    "style": "--hc-color"
+                    "style": "--hc-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "East",
                     "tag": "hc_e",
                     "group": "lwdungeon",
-                    "style": "--hc-color"
+                    "style": "--hc-color",
+                    "showLabel": true
                 },
                 {
                     "nameSuffix": "Sanctuary",
                     "tag": "sanc",
                     "group": "start",
-                    "style": "--sanc-color"
+                    "style": "--sanc-color",
+                    "showLabel": false
                 }
             ],
             "totalLocations": {
@@ -526,7 +550,8 @@
                     "nameSuffix": "",
                     "tag": "ct",
                     "group": "lwdungeon",
-                    "style": "--ct-color"
+                    "style": "--ct-color",
+                    "showLabel": true
                 }
             ],
             "totalLocations": {
@@ -736,6 +761,7 @@
         }
     ];
 
+    // Create data object for custom coloring of dungeon squares
     window.customColours = {};
 
     for ( const modal of enstranceModalStyles ) {
@@ -751,6 +777,18 @@
                 window.customColours[modal.style] = []
             }
             window.customColours[modal.style].push(modal.tag)
+        }
+    }
+
+    // Create data object for entrance modal tags
+    window.entranceModalTags = {};
+    for ( const modal of enstranceModalStyles ) {
+        window.entranceModalTags[modal.tag] = modal
+    }
+
+    for ( const dungeon of bigDungeonData ) {
+        for ( const modal of dungeon.entranceModal ) {
+            window.entranceModalTags[modal.tag] = modal
         }
     }
 
@@ -859,5 +897,13 @@
 			default: return false;
 		}
 	}
+
+    window.mapVariables = {
+        "leftOffset": {
+            "dark": 221,
+            "light": 0
+        },
+        "connectorLineOffset": 5.5
+    }
 
 })(window);

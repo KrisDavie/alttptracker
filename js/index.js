@@ -158,7 +158,6 @@ function launch_tracker() {
 	var swords = document.querySelector('input[name="swordsgroup"]:checked').value;
 	var map = document.querySelector('input[name="mapgroup"]:checked').value;
 	var chestcolor = document.querySelector('input[name="chestcolorgroup"]:checked').value;
-	var spoiler = document.querySelector('input[name="spoilergroup"]:checked').value;
 	var sphere = document.querySelector('input[name="spheregroup"]:checked').value;
 	var autotracking = document.querySelector('input[name="autotrackinggroup"]:checked').value;
 	var trackingport = document.getElementById('autotrackingport').value;
@@ -166,27 +165,9 @@ function launch_tracker() {
 	var sprite = spritesel.options[spritesel.selectedIndex].value;
 	var mapStyle = document.querySelector('input[name="oldmapstyles"]:checked') === null ? "N" : "O";
 	
-	var width = map === "M" ? 1340 : 448;
+	var width = 473;
 
-	var height;
-	if (map === "V") {
-		height = 1330;
-		if (sphere === "Y") {
-			width = 892
-		}
-	} else if (map === "C") {
-		if (sphere === "Y") {
-			height = 988;
-		} else {
-			height = 692;
-		}
-	} else {
-		if (sphere === "Y") {
-			height = 744;
-		} else {
-			height = 448;
-		}
-	}
+	var height = 690;
 		
 	if (document.getElementById("remembersettings").checked == true) {
 		var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle;
@@ -200,45 +181,44 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{chestcolor}{spoiler}{sphere}{autotracking}{trackingport}{mapstyle}&s={startingitemstring}&p={sprite}&r={epoch}'
-			.replace('{world}', world)
-			.replace('{entrance}', entrance)
-			.replace('{door}', door)
-			.replace('{overworld}', overworld)
-			.replace('{boss}', boss)
-			.replace('{enemy}', enemy)
-			.replace('{pseudoboots}', pseudoboots)
-			.replace('{unknown}', unknown)
-			.replace('{glitches}', glitches)
-			.replace('{shuffledmaps}', shuffledmaps)
-			.replace('{shuffledcompasses}', shuffledcompasses)
-			.replace('{shuffledsmallkeys}', shuffledsmallkeys)
-			.replace('{shuffledbigkeys}', shuffledbigkeys)
-			.replace('{shopsanity}', shopsanity)
-			.replace('{ambrosia}', ambrosia)
-			.replace('{nonprogressivebows}', nonprogressivebows)
-			.replace('{activatedflute}', activatedflute)
-			.replace('{bonkshuffle}', bonkshuffle)
-			.replace('{goal}', goal)
-			.replace('{tower}', tower)
-			.replace('{towercrystals}', towercrystals)
-			.replace('{ganon}', ganon)
-			.replace('{ganoncrystals}', ganoncrystals)
-			.replace('{swords}', swords)
-			.replace('{map}', map)
-			.replace('{chestcolor}', chestcolor)
-			.replace('{spoiler}', spoiler)
-			.replace('{sphere}', sphere)
-			.replace('{autotracking}', autotracking)
-			.replace('{trackingport}', trackingport.padStart(5, '0'))
-			.replace('{mapstyle}', mapStyle)
-			.replace('{startingitemstring}', startingitemstring)
-			.replace('{sprite}', sprite)
-			.replace('{epoch}', Date.now()),
-			//.replace('{compact}', (map === "C" ? '&map=C' : '')),
-		'',
-		'width={width},height={height},titlebar=0,menubar=0,toolbar=0,scrollbars=0,resizable=0'
-			.replace('{width}', width).replace('{height}', height));
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{chestcolor}{sphere}{autotracking}{trackingport}{mapstyle}&s={startingitemstring}&p={sprite}&r={epoch}'
+		.replace('{world}', world)
+		.replace('{entrance}', entrance)
+		.replace('{door}', door)
+		.replace('{overworld}', overworld)
+		.replace('{boss}', boss)
+		.replace('{enemy}', enemy)
+		.replace('{pseudoboots}', pseudoboots)
+		.replace('{unknown}', unknown)
+		.replace('{glitches}', glitches)
+		.replace('{shuffledmaps}', shuffledmaps)
+		.replace('{shuffledcompasses}', shuffledcompasses)
+		.replace('{shuffledsmallkeys}', shuffledsmallkeys)
+		.replace('{shuffledbigkeys}', shuffledbigkeys)
+		.replace('{shopsanity}', shopsanity)
+		.replace('{ambrosia}', ambrosia)
+		.replace('{nonprogressivebows}', nonprogressivebows)
+		.replace('{activatedflute}', activatedflute)
+		.replace('{bonkshuffle}', bonkshuffle)
+		.replace('{goal}', goal)
+		.replace('{tower}', tower)
+		.replace('{towercrystals}', towercrystals)
+		.replace('{ganon}', ganon)
+		.replace('{ganoncrystals}', ganoncrystals)
+		.replace('{swords}', swords)
+		.replace('{map}', map)
+		.replace('{chestcolor}', chestcolor)
+		.replace('{sphere}', sphere)
+		.replace('{autotracking}', autotracking)
+		.replace('{trackingport}', trackingport.padStart(5, '0'))
+		.replace('{mapstyle}', mapStyle)
+		.replace('{startingitemstring}', startingitemstring)
+		.replace('{sprite}', sprite)
+		.replace('{epoch}', Date.now()),
+		//.replace('{compact}', (map === "C" ? '&map=C' : '')),
+	'',
+	'width={width},height={height},titlebar=0,menubar=0,toolbar=0,scrollbars=0,resizable=0'
+		.replace('{width}', width).replace('{height}', height));
 }
 
 function loadarchivepreset() {

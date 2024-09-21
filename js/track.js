@@ -85,15 +85,12 @@
 					document.getElementById(label).className = 'chest';
 				}
 				
-				document.getElementById(label).innerHTML = flags.doorshuffle === 'C' && !items['chestknown'+label.substring(5)] ? (value - 1) + '+' : value;
+				document.getElementById(label).innerHTML = flags.doorshuffle === 'C' && !items['compass'+label.substring(5)] ? (value - 1) + '+' : value;
 			}
 		}	
 
 		if (label.substring(0,6) === 'bigkey') {
 			let prefix = 'bigkey';
-			if (label === 'bigkey11' || label === 'bigkey12') {
-				prefix += 'half';
-			}
 			if (items[label]) {
 				document.getElementById(label).className = prefix + ' collected';
 			} else {
@@ -124,8 +121,299 @@
 		   document.getElementsByClassName('tunic')[0].classList[!items.moonpearl ? 'add' : 'remove']('bunny');
 		}
 		
-	}	
+	}
 
+	window.getNiceName = function(name)
+	{
+		switch(name)
+		{
+		case "hammer":
+			return "Hammer";
+		case "hookshot":
+			return "Hookshot";
+		case "mushroom":
+			return "Mushroom";
+		case "powder":
+			return "Powder";
+		case "bombos":
+			return "Bombos";
+		case "ether":
+			return "Ether";
+		case "quake":
+			return "Quake";
+		case "lantern":
+			return "Lamp";
+		case "shovel":
+			return "Shovel";
+		case "cape":
+			return "Cape";
+		case "flippers":
+			return "Flippers";
+		case "OneRupee":
+			return "Rupee";
+		case "FiveRupees":
+			return "5 Rupees";
+		case "TwentyRupees":
+		case "TwentyRupees2":
+			return "20 Rupees";
+		case "FiftyRupees":
+			return "50 Rupees";
+		case "OneHundredRupees":
+			return "100 Rupees";
+		case "ThreeHundredRupees":
+			return "300 Rupees";
+		case "bomb":
+		case "ThreeBombs":
+			return "3 Bombs";
+		case "TenBombs":
+			return "10 Bombs";
+		case "Arrow":
+			return "Arrow";
+		case "TenArrows":
+			return "10 Arrows";
+		case "PieceOfHeart":
+			return "Heart Piece";
+		case "BossHeartContainer":
+			return "Heart Container";
+		case "HeartContainer":
+			return "Sanctuary Heart";
+		case "sword":
+		case "UncleSword":
+		case "ProgressiveSword":
+			return "Sword";
+		case "shield":
+		case "ProgressiveShield":
+			return "Shield";
+		case "tunic":
+		case "ProgressiveArmor":
+			return "Armor";
+		case "glove":
+		case "ProgressiveGlove":
+			return "Gloves";
+		case "SilverArrowUpgrade":
+			return "Silver Arrows";
+        case "bow":
+        case "ProgressiveBow":
+        case "Bow":
+        case "BowAndArrows":
+            return "Bow";
+        case "BowAndSilverArrows":
+            return "Bow And Silver Arrows";
+		case "bottle":
+		case "bottle1":
+		case "bottle2":
+		case "bottle3":
+		case "bottle4":
+		case "Bottle":
+			return "Bottle";
+		case "BottleWithRedPotion":
+			return "Bottle (Red Potion)";
+		case "BottleWithGreenPotion":
+			return "Bottle (Green Potion)";
+		case "BottleWithBluePotion":
+			return "Bottle (Blue Potion)";
+		case "BottleWithFairy":
+			return "Bottle (Fairy)";
+		case "BottleWithBee":
+			return "Bottle (Bee)";
+		case "BottleWithGoldBee":
+			return "Bottle (Gold Bee)";
+		case "OcarinaActive":
+			return "Flute (active)";
+		case "flute":
+		case "OcarinaInactive":
+			return "Flute";
+		case "firerod":
+		case "FireRod":
+			return "Fire Rod";
+		case "icerod":
+		case "IceRod":
+			return "Ice Rod";
+		case "somaria":
+		case "CaneOfSomaria":
+			return "Cane of Somaria";
+		case "byrna":
+		case "CaneOfByrna":
+			return "Cane of Byrna";
+		case "mirror":
+		case "MagicMirror":
+			return "Mirror";
+		case "book":
+		case "BookOfMudora":
+			return "Book of Mudora";
+		case "moonpearl":
+		case "MoonPearl":
+			return "Moon Pearl";
+		case "net":
+		case "BugCatchingNet":
+			return "Bug Net";
+		case "boomerang":
+		case "Boomerang":
+			return "Blue Boomerang";
+		case "RedBoomerang":
+			return "Red Boomerang";
+		case "boots":
+		case "PegasusBoots":
+			return "Pegasus Boots";
+		case "magic":
+		case "HalfMagic":
+			return "Half Magic";
+		case "QuarterMagic":
+			return "Quarter Magic";
+		case "TriforcePiece":
+			return "Triforce Piece";
+		case "Rupoor":
+			return "Rupoor";
+		case "smallkey11":
+		case "KeyH1":
+		case "KeyH2":
+			return "HC Key";
+		case "smallkey0":
+		case "KeyP1":
+			return "EP Key";
+		case "smallkey1":
+		case "KeyP2":
+			return "DP Key";
+		case "smallkey2":
+		case "KeyP3":
+			return "ToH Key";
+		case "smallkey3":
+		case "KeyD1":
+			return "PoD Key";
+		case "smallkey4":
+		case "KeyD2":
+			return "SP Key";
+		case "smallkey5":
+		case "KeyD3":
+			return "SW Key";
+		case "smallkey6":
+		case "KeyD4":
+			return "TT Key";
+		case "smallkey7":
+		case "KeyD5":
+			return "IP Key";
+		case "smallkey8":
+		case "KeyD6":
+			return "MM Key";
+		case "smallkey9":
+		case "KeyD7":
+			return "TR Key";
+		case "smallkey12":
+		case "KeyA1":
+			return "CT Key";
+		case "smallkey10":
+		case "KeyA2":
+			return "GT Key";
+		case "Key":
+		case "KeyGK":
+			return "Key";
+		case "bigkey11":
+		case "BigKeyH1":
+		case "BigKeyH2":
+			return "HC Big Key";
+		case "bigkey0":
+		case "BigKeyP1":
+			return "EP Big Key";
+		case "bigkey1":
+		case "BigKeyP2":
+			return "DP Big Key";
+		case "bigkey2":
+		case "BigKeyP3":
+			return "ToH Big Key";
+		case "bigkey3":
+		case "BigKeyD1":
+			return "PoD Big Key";
+		case "bigkey4":
+		case "BigKeyD2":
+			return "SP Big Key";
+		case "bigkey5":
+		case "BigKeyD3":
+			return "SW Big Key";
+		case "bigkey6":
+		case "BigKeyD4":
+			return "TT Big Key";
+		case "bigkey7":
+		case "BigKeyD5":
+			return "IP Big Key";
+		case "bigkey8":
+		case "BigKeyD6":
+			return "MM Big Key";
+		case "bigkey9":
+		case "BigKeyD7":
+			return "TR Big Key";
+		case "bigkey12":
+		case "BigKeyA1":
+			return "CT Big Key";
+		case "bigkey10":
+		case "BigKeyA2":
+			return "GT Big Key";
+		case "BigKey":
+		case "BigKeyGK":
+			return "Big Key";
+		case "MapH1":
+		case "MapH2":
+			return "HC Map";
+		case "MapP1":
+			return "EP Map";
+		case "MapP2":
+			return "DP Map";
+		case "MapP3":
+			return "ToH Map";
+		case "MapD1":
+			return "PoD Map";
+		case "MapD2":
+			return "SP Map";
+		case "MapD3":
+			return "SW Map";
+		case "MapD4":
+			return "TT Map";
+		case "MapD5":
+			return "IP Map";
+		case "MapD6":
+			return "MM Map";
+		case "MapD7":
+			return "TR Map";
+		case "MapA1":
+			return "CT Map";
+		case "MapA2":
+			return "GT Map";
+		case "Map":
+		case "MapGK":
+			return "Map";
+		case "CompassH1":
+		case "CompassH2":
+			return "HC Compass";
+		case "CompassP1":
+			return "EP Compass";
+		case "CompassP2":
+			return "DP Compass";
+		case "CompassP3":
+			return "ToH Compass";
+		case "CompassD1":
+			return "PoD Compass";
+		case "CompassD2":
+			return "SP Compass";
+		case "CompassD3":
+			return "SW Compass";
+		case "CompassD4":
+			return "TT Compass";
+		case "CompassD5":
+			return "IP Compass";
+		case "CompassD6":
+			return "MM Compass";
+		case "CompassD7":
+			return "TR Compass";
+		case "CompassA1":
+			return "CT Compass";
+		case "CompassA2":
+			return "GT Compass";
+		case "Compass":
+		case "CompassGK":
+			return "Compass";
+		default:
+			return name;
+		}
+	}
 
     // Event of clicking on the item tracker
     window.toggle = function(label) {
@@ -184,7 +472,7 @@
 					document.getElementById(label).className = 'chest';
 				}
 				
-				document.getElementById(label).innerHTML = flags.doorshuffle === 'C' && !items['chestknown'+label.substring(5)] ? (value - 1) + '+' : value;
+				document.getElementById(label).innerHTML = flags.doorshuffle === 'C' && !items['compass'+label.substring(5)] ? (value - 1) + '+' : value;
 			}
 			
             if (flags.mapmode != 'N' && flags.entrancemode === 'N') {
@@ -205,16 +493,13 @@
             return;
         }
 		
-		var isKey = label.includes('key');
+		var isKey = label.includes('smallkey') || label.includes('bigkey') || label.includes('compass') || label.includes('dungeonmap');
 		
 		// If left clicked on a big key
 		if (label.substring(0,6) === 'bigkey') {
 			items[label] = !items[label];
 
 			let prefix = 'bigkey';
-			if (label === 'bigkey11' || label === 'bigkey12') {
-				prefix += 'half';
-			}
 
 			if (items[label]) {
 				document.getElementById(label).className = prefix + ' collected';
@@ -222,7 +507,25 @@
 				document.getElementById(label).className = prefix;
 			}
 		}
-		
+
+		if (label.substring(0,7) === 'compass') {
+			items[label] = !items[label];
+			if (items[label]) {
+				document.getElementById(label).className = 'compass collected';
+			} else {
+				document.getElementById(label).className = 'compass';
+			}
+		}
+
+		if (label.substring(0,10) === 'dungeonmap') {
+			items[label] = !items[label];
+			if (items[label]) {
+				document.getElementById(label).className = 'dungeonmap collected';
+			} else {
+				document.getElementById(label).className = 'dungeonmap';
+			}
+		}
+
 		if (label.substring(0,12) === 'smallkeyhalf' || label.substring(0,8) === 'smallkey') {
 			if (flags.gametype != 'R') {
 				var value = items.inc(label);
@@ -277,9 +580,9 @@
 				}
 			}
 			// Initiate bunny graphics!
-			if (label === 'moonpearl' || label === 'tunic') {
-			   document.getElementsByClassName('tunic')[0].classList[!items.moonpearl ? 'add' : 'remove']('bunny');
-			}
+			// if (label === 'moonpearl' || label === 'tunic') {
+			//    document.getElementsByClassName('tunic')[0].classList[!items.moonpearl ? 'add' : 'remove']('bunny');
+			// }
 		}
 		
 		updateLocationAvailability();
@@ -591,7 +894,7 @@
 		if (value === 0) {
 			className += '-0';
 		} else {
-			innerHTML = flags.doorshuffle === 'C' && !items['chestknown'+label.substring(5)] ? (value - 1) + '+' : value;
+			innerHTML = flags.doorshuffle === 'C' && !items['compass'+label.substring(5)] ? (value - 1) + '+' : value;
 		}
 		if (isLarge) className += ' large';
 		document.getElementById(label).className = className;
@@ -621,10 +924,12 @@
 		updateMapTracker();
 	};
 	
-	window.clickCompass = function(dungeonid) {
-		items['chestknown'+dungeonid] = !items['chestknown'+dungeonid];
-		document.getElementById('chest'+dungeonid).innerHTML = items['chest'+dungeonid] == 0 ? '' : (flags.doorshuffle === 'C' && !items['chestknown'+dungeonid] ? (items['chest'+dungeonid] - 1) + '+' : items['chest'+dungeonid]);
-		updateMapTracker();
+	window.toggle_compass = function(dungeonid) {
+		toggle('compass'+dungeonid);
+	};
+
+	window.toggle_map = function(dungeonid) {
+		toggle('dungeonmap'+dungeonid);
 	};
 
     window.toggle_bomb_floor = function() {
@@ -1001,7 +1306,7 @@
 		}
 
 		let entranceID = document.getElementById('entranceID').value
-		if (entrances[entranceID].known_location === n) {
+		if (entrances[entranceID].known_location === n) { // Un-tagging
 			entrances[entranceID].known_location = '';
 			document.getElementById(n).style.borderColor = curStyle.getPropertyValue('#ffffff');
 			entrances[entranceID].type = 0;
@@ -1009,17 +1314,17 @@
 			if (information != null) {
 				information.remove();
 			}
-		} else {
+		} else { // Tagging
 			entrances[entranceID].known_location = n;
 			entrances[entranceID].type = (t === true ? 2 : 3);
 			document.getElementById(n).style.borderColor = curStyle.getPropertyValue('--available-color');
 			
 			if (document.getElementById('informationdiv'+entranceID) != null) {
 				document.getElementById('informationdiv'+entranceID).innerHTML = n.replace('_','-').toUpperCase();
-			} else {
-				var divtoadd = document.createElement('div');
+			} else if (window.entranceModalTags[n] && window.entranceModalTags[n].showLabel) {
+				const divtoadd = document.createElement('div');
 				divtoadd.id = 'informationdiv' + entranceID;
-				var loc = document.getElementById('entranceMap' + entranceID);
+				const loc = document.getElementById('entranceMap' + entranceID);
 				
 				var topOffset = 0;
 				if (loc.offsetTop < 20) {
@@ -1028,19 +1333,10 @@
 					topOffset = loc.offsetTop - 11;
 				}	
 				
-				var leftOffset = 0;
-				if ( flags.mapmode === 'C') {
-					leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 221 : 0;
-					leftOffset += 1
-					topOffset += (flags.spheresmode === 'Y' ? 296 : 0)
-				} else if (flags.mapmode === 'M') {
-					leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 442 : 0;
-				} else if (flags.mapmode === 'V') {
-					leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? -5 : 0;
-					topOffset += (loc.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0)
-				}
+				const world = loc.parentElement.id === "mapEntranceDiv_dark" ? 'dark' : 'light';
+				var leftOffset = window.mapVariables.leftOffset[world];
 				
-				divtoadd.style.left = loc.offsetLeft - 5.5 + leftOffset;
+				divtoadd.style.left = loc.offsetLeft - 4.5 + leftOffset;
 				divtoadd.style.top = topOffset;
 				divtoadd.className = 'informationdiv';
 
@@ -1049,11 +1345,8 @@
 				divtoadd.style.position = 'absolute';
 				
 				divtoadd.innerHTML = n.replace('_','-').toUpperCase();
-				
-				// Only add text box for certain location tags
-				if (n != 'connector' && n != 'item' && n != 'dark' && n != 'sanc' && n != 'link' && n != 'mount') {
-					document.getElementById('informationDiv').appendChild(divtoadd);
-				}
+
+				document.getElementById('informationDiv').appendChild(divtoadd);
 			}		
 		}
 
@@ -1112,37 +1405,6 @@
         }
     };
 
-    // event of clicking on each dungeon's bigkey
-    window.toggle_bigkey = function(n) {
-		items['bigkey'+n] = !items['bigkey'+n];
-		
-		let prefix = 'bigkey' 
-		if (n > 10 ) {
-			prefix += 'half'
-		}
-
-		if (items['bigkey'+n]) {
-			document.getElementById('bigkey'+n).className = 'prefix collected';
-		} else {
-			document.getElementById('bigkey'+n).className = 'prefix';
-		}
-		
-        if (flags.mapmode != "N") {
-            // Update availability of dungeon boss AND chests
-            dungeons[8+n].is_beaten = !dungeons[8+n].is_beaten;
-            toggle_boss(8+n);
-            if (items['chest'+(8+n)] > 0)
-                document.getElementById('dungeon'+(8+n)).className = 'dungeon ' + dungeons[8+n].can_get_chest() + (dungeons[8+n].can_get_chest() != 'opened' && dungeons[8+n].content ? ' scouted' : '');
-            // TRock medallion affects Mimic Cave
-            if (n === 1) {
-                chests[4].is_opened = !chests[4].is_opened;
-                toggle_chest(4);
-            }
-            // Change the mouseover text on the map
-            dungeons[8+n].caption = dungeons[8+n].caption.replace(/\{medallion\d+\}/, '{medallion'+medallions[n]+'}');
-        }
-    };
-
 	// Event of clicking a chest on the map
 	window.toggle_chest = function(x) {
 		chests[x].is_opened = !chests[x].is_opened;
@@ -1177,78 +1439,42 @@
 				connectorOne.push(parseInt(document.getElementById('entranceID').value));
 				connectorTwo.push(x);
 				
-				var divtoadd = document.createElement('div');
+				const divtoadd = document.createElement('div');
 				divtoadd.id = 'connectordiv' + connectorid;
-				var connector1 = document.getElementById('entranceMap' + x);
-				var connector2 = document.getElementById('entranceMap' + document.getElementById('entranceID').value);
+				const connector1 = document.getElementById('entranceMap' + x);
+				const connector2 = document.getElementById('entranceMap' + document.getElementById('entranceID').value);
 
-				var c1offsetleft = connector1.offsetLeft + (connector1.parentElement.id === "mapEntranceDiv_dark" && flags.mapmode != "V" ? connector1.parentElement.offsetWidth : 0);
-				var c2offsetleft = connector2.offsetLeft + (connector2.parentElement.id === "mapEntranceDiv_dark" && flags.mapmode != "V" ? connector2.parentElement.offsetWidth : 0);
+				var c1offsetleft = connector1.offsetLeft + (connector1.parentElement.id === "mapEntranceDiv_dark" ? connector1.parentElement.offsetWidth : 0);
+				var c2offsetleft = connector2.offsetLeft + (connector2.parentElement.id === "mapEntranceDiv_dark" ? connector2.parentElement.offsetWidth : 0);
 				
-				if (flags.mapmode === "V" && (connector1.parentElement.id != connector2.parentElement.id)) {
-					if (connector2.parentElement.id === "mapEntranceDiv_light") {
-						divtoadd.style.top = connector2.offsetTop + 6;
+				if (connector1.offsetTop > connector2.offsetTop) {
+					divtoadd.style.top = connector2.offsetTop + window.mapVariables.connectorLineOffset;
+				} else {
+					divtoadd.style.top = connector1.offsetTop + window.mapVariables.connectorLineOffset;
+				}
+				
+				if (c1offsetleft > c2offsetleft) {
+					divtoadd.style.left = c2offsetleft + window.mapVariables.connectorLineOffset;
+				} else {
+					divtoadd.style.left = c1offsetleft + window.mapVariables.connectorLineOffset;
+				}
+				
+				if (c1offsetleft > c2offsetleft) {
+					if (connector1.offsetTop > connector2.offsetTop) {
+						divtoadd.className = 'crossedright';
 					} else {
-						divtoadd.style.top = connector1.offsetTop + 6;
-					}
-					
-					if (c1offsetleft > c2offsetleft) {
-						divtoadd.style.left = c2offsetleft + 6;
-					} else {
-						divtoadd.style.left = c1offsetleft + 6;
-					}
-					
-					if (connector2.parentElement.id === "mapEntranceDiv_light") {
-						if (c1offsetleft > c2offsetleft) {
-							divtoadd.className = 'crossedright';
-						} else {
-							divtoadd.className = 'crossedleft';
-						}
-					} else {
-						if (c1offsetleft < c2offsetleft) {
-							divtoadd.className = 'crossedright';
-						} else {
-							divtoadd.className = 'crossedleft';
-						}
-					}
-					
-					if (connector2.parentElement.id === "mapEntranceDiv_light") {
-						divtoadd.style.height = Math.abs(connector1.offsetTop + 448 - connector2.offsetTop);
-						divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft - 2);
-					} else {
-						divtoadd.style.height = Math.abs(connector2.offsetTop + 448 - connector1.offsetTop);
-						divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft + 2);
+						divtoadd.className = 'crossedleft';
 					}
 				} else {
 					if (connector1.offsetTop > connector2.offsetTop) {
-						divtoadd.style.top = connector2.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0);
+						divtoadd.className = 'crossedleft';
 					} else {
-						divtoadd.style.top = connector1.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0);
+						divtoadd.className = 'crossedright';
 					}
-					
-					if (c1offsetleft > c2offsetleft) {
-						divtoadd.style.left = c2offsetleft + (flags.mapmode === "C" ? 4.5 : 6);
-					} else {
-						divtoadd.style.left = c1offsetleft + (flags.mapmode === "C" ? 4.5 : 6);
-					}
-					
-					if (c1offsetleft > c2offsetleft) {
-						if (connector1.offsetTop > connector2.offsetTop) {
-							divtoadd.className = 'crossedright';
-						} else {
-							divtoadd.className = 'crossedleft';
-						}
-					} else {
-						if (connector1.offsetTop > connector2.offsetTop) {
-							divtoadd.className = 'crossedleft';
-						} else {
-							divtoadd.className = 'crossedright';
-						}
-					}
-					
-					divtoadd.style.height = Math.abs(connector1.offsetTop - connector2.offsetTop);
-					divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft);
 				}
+				
+				divtoadd.style.height = Math.abs(connector1.offsetTop - connector2.offsetTop);
+				divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft);
 
 				divtoadd.style.position = 'absolute';
 				
@@ -1387,136 +1613,13 @@
 		}
 	}	
 
-	window.requireItem = function(x) {
-		switch (x) {
-			case 'magic':
-			case 'kid':
-			case 'smith':
-			case 'bat':
-			case 'lib':
-			case 'saha':
-			case 'mimc':
-			case 'dam':
-			case 'bomb':
-			case 'bump':
-			case 'spike':
-			case 'hook':
-				return true
-			default: return false;
-		}
-	}
-
 	window.isUnknownConnector = function(x) {
 		switch (x) {
 			case 'connector': return true;
 			default: return false;
 		}
 	}	
-
-	window.findItems = function(items) {
-		if(/*spoilerLoaded && */flags.mapmode != "N")
-		{
-			var results = "";
-			for(var i = 0; i < chests.length; i++)
-			{
-				if(chests[i].content)
-				{
-					var hasItem = false,itemsInLocation = chests[i].content.split(", ");
-					for(var j = 0; j < items.length; j++)
-						if(itemsInLocation.includes(items[j]))
-						{
-							hasItem = true;
-							break;
-						}
-					if(hasItem)
-					{
-						if(flags.mapmode != 'N')
-							document.getElementById('locationMap'+i).classList.add('findhighlight');
-						var locationName = chests[i].caption;
-						results = results === "" ?locationName :results+", "+locationName;
-					}
-				}
-			}
-			for(var i = 0; i < dungeons.length; i++)
-			{
-				if(dungeons[i].content)
-				{
-					var hasItem = false,itemsInLocation = dungeons[i].content.split(", ");
-					for(var j = 0; j < items.length; j++)
-						if(itemsInLocation.includes(items[j]))
-						{
-							hasItem = true;
-							break;
-						}
-					if(hasItem)
-					{
-						if(flags.mapmode != 'N')
-							document.getElementById('dungeon'+i).classList.add('findhighlight');
-						var locationName = dungeons[i].caption;
-						results = results === "" ?locationName :results+", "+locationName;
-					}
-				}
-			}
-			for(var i = 0; i < dungeonContents.length; i++)
-			{
-				var dungeonHasItem = false,itemMap = dungeonContents[i];
-				for(var locationName in itemMap)
-				{
-					var hasItem = false,itemName = itemMap[locationName];
-					for(var j = 0; j < items.length; j++)
-						if(itemName === items[j])
-						{
-							dungeonHasItem = hasItem = true;
-							break;
-						}
-					if(hasItem)
-					{
-						results = results === "" ?dungeonNames[i]+" "+locationName :results+", "+dungeonNames[i]+" "+locationName;
-					}
-				}
-				if(dungeonHasItem)
-				{
-					if(flags.mapmode != 'N')
-						document.getElementById('dungeon'+i).classList.add('findhighlight');
-				}
-			}
-			if(results !== "")
-				document.getElementById('caption').innerHTML = caption_to_html(results);
-		}
-	};
-
-	window.unhighlightAll = function() {
-		if (flags.mapmode != 'N') {
-			for (var i = 0; i < chests.length; i++) {
-				document.getElementById('locationMap'+i).classList.remove('findhighlight');
-			}
-
-			if (flags.entrancemode != 'N') {
-				for (var i = 0; i < entrances.length; i++) {
-					document.getElementById('entranceMap'+i).classList.remove('findhighlight');
-				}
-			} else {
-				for (var i = 0; i < dungeons.length; i++) {
-					document.getElementById('dungeon'+i).classList.remove('findhighlight');
-				}
-			}
-		}
-
-		document.getElementById('caption').innerHTML = '&nbsp;';
-	};
 	
-	window.showNiceItems = function(x) {
-		if (flags.mapmode != "N") {
-			if(spoilerLoaded) {
-				document.getElementById('caption').innerHTML = caption_to_html(dungeons[x].niceContent);
-			}
-		}
-	};
-
-	window.clearCaption = function() {
-		document.getElementById('caption').innerHTML = '&nbsp;';
-	};
-
 	window.setSphereItem = function(label) {
 		if (lastItem === null) {
 			document.getElementById(label).className = "sphere noitem";
@@ -1553,7 +1656,7 @@
 		}
 	}
 	
-	window.setCrystalGoal = function(x) {
+	window.setCrystalGoal = function(x='') {
 		document.getElementById('crystalsdiv').classList.remove('crystals');
 		document.getElementById('crystalsdiv').classList.remove('crystals0');
 		document.getElementById('crystalsdiv').classList.remove('crystals1');
@@ -1961,7 +2064,7 @@
 
 			if (adjustForCrossed) {
 				for (var k = 0; k < 13; k++) {
-					items['chestknown' + k] = false;
+					items['compass' + k] = false;
 				}
 			}
 			
@@ -2147,67 +2250,14 @@
 			}
 			
 			if (!document.getElementById('shuffledkeys').checked && !document.getElementById('shuffledbigkeys').checked && flags.gametype != 'R' && document.getElementById('doorselect').value != 'C') {
-				document.getElementById('chest0').classList.add('large');
-				document.getElementById("c0bkdiv").classList.add('hidden');
-				document.getElementById("c0skdiv").classList.add('hidden');
-				document.getElementById('chest1').classList.add('large');
-				document.getElementById("c1bkdiv").classList.add('hidden');
-				document.getElementById("c1skdiv").classList.add('hidden');
-				document.getElementById('chest2').classList.add('large');
-				document.getElementById("c2bkdiv").classList.add('hidden');
-				document.getElementById("c2skdiv").classList.add('hidden');
-				document.getElementById('chest3').classList.add('large');
-				document.getElementById("c3bkdiv").classList.add('hidden');
-				document.getElementById("c3skdiv").classList.add('hidden');
-				document.getElementById('chest4').classList.add('large');
-				document.getElementById("c4bkdiv").classList.add('hidden');
-				document.getElementById("c4skdiv").classList.add('hidden');
-				document.getElementById('chest5').classList.add('large');
-				document.getElementById("c5bkdiv").classList.add('hidden');
-				document.getElementById("c5skdiv").classList.add('hidden');
-				document.getElementById('chest6').classList.add('large');
-				document.getElementById("c6bkdiv").classList.add('hidden');
-				document.getElementById("c6skdiv").classList.add('hidden');
-				document.getElementById('chest7').classList.add('large');
-				document.getElementById("c7bkdiv").classList.add('hidden');
-				document.getElementById("c7skdiv").classList.add('hidden');
-				document.getElementById('chest8').classList.add('large');
-				document.getElementById("c8bkdiv").classList.add('hidden');
-				document.getElementById("c8skdiv").classList.add('hidden');
-				document.getElementById('chest9').classList.add('large');
-				document.getElementById("c9bkdiv").classList.add('hidden');
-				document.getElementById("c9skdiv").classList.add('hidden');
+				document.getElementsByClassName('chest').classList.add('large');
+				document.getElementById("bigkey").classList.add('hidden');
+				document.getElementById("smallkey").classList.add('hidden');
 			} else {
-				document.getElementById('chest0').classList.remove('large');
-				document.getElementById("c0bkdiv").classList.remove('hidden');
-				document.getElementById("c0skdiv").classList.remove('hidden');
-				document.getElementById('chest1').classList.remove('large');
-				document.getElementById("c1bkdiv").classList.remove('hidden');
-				document.getElementById("c1skdiv").classList.remove('hidden');
-				document.getElementById('chest2').classList.remove('large');
-				document.getElementById("c2bkdiv").classList.remove('hidden');
-				document.getElementById("c2skdiv").classList.remove('hidden');
-				document.getElementById('chest3').classList.remove('large');
-				document.getElementById("c3bkdiv").classList.remove('hidden');
-				document.getElementById("c3skdiv").classList.remove('hidden');
-				document.getElementById('chest4').classList.remove('large');
-				document.getElementById("c4bkdiv").classList.remove('hidden');
-				document.getElementById("c4skdiv").classList.remove('hidden');
-				document.getElementById('chest5').classList.remove('large');
-				document.getElementById("c5bkdiv").classList.remove('hidden');
-				document.getElementById("c5skdiv").classList.remove('hidden');
-				document.getElementById('chest6').classList.remove('large');
-				document.getElementById("c6bkdiv").classList.remove('hidden');
-				document.getElementById("c6skdiv").classList.remove('hidden');
-				document.getElementById('chest7').classList.remove('large');
-				document.getElementById("c7bkdiv").classList.remove('hidden');
-				document.getElementById("c7skdiv").classList.remove('hidden');
-				document.getElementById('chest8').classList.remove('large');
-				document.getElementById("c8bkdiv").classList.remove('hidden');
-				document.getElementById("c8skdiv").classList.remove('hidden');
-				document.getElementById('chest9').classList.remove('large');
-				document.getElementById("c9bkdiv").classList.remove('hidden');
-				document.getElementById("c9skdiv").classList.remove('hidden');
+				document.getElementsByClassName('chest').classList.remove('large');
+				document.getElementById("bigkey").classList.remove('hidden');
+				document.getElementById("smallkey").classList.remove('hidden');
+
 			}
 			
 			flags.wildmaps = document.getElementById('shuffledmaps').checked;
@@ -2357,31 +2407,6 @@
 
     window.updateLayout = function() {
 		//Map layers
-		switch (flags.mapmode) {
-			case "N":
-				break;
-			case "M":
-				//document.getElementById("map").style.width = "1340px";
-				document.getElementById("map").style.width = "892px";
-				document.getElementById("map").style.position = "absolute";
-				document.getElementById("map").style.left = "448";
-				document.getElementById("map").style.top = "0";
-				break;
-			case "C":
-				document.getElementById("connectorLineDiv").style.height = "222px";
-				document.getElementById("connectorLineDiv").style.left = "0";
-				document.getElementById("connectorLineDiv").style.top = "448";
-				document.getElementById("informationDiv").style.height = "222px";
-				document.getElementById("informationDiv").style.left = "0";
-				document.getElementById("informationDiv").style.top = (flags.spheresmode === "N" ? "448" : "744");
-				break;
-			case "V":
-				document.getElementById("map").style.width = "448px";
-				document.getElementById("map").style.position = "absolute";
-				document.getElementById("map").style.left = "0";
-				document.getElementById("map").style.top = "448";
-				break;
-		}
 
 		document.getElementById("mapItemDiv_light").style.display = flags.entrancemode === 'N' ? "block" : "none";
 		document.getElementById("mapItemDiv_dark").style.display = flags.entrancemode === 'N' ? "block" : "none";
@@ -2389,14 +2414,14 @@
 		document.getElementById("mapEntranceDiv_dark").style.display = flags.entrancemode === 'N' ? "none" : "block";
 		
 		//Hide HC and CT big keys if not needed
-		document.getElementById('bigkey11').style.visibility = flags.wildbigkeys && flags.doorshuffle != 'N' ? 'visible' : 'hidden';
-		document.getElementById('bigkey12').style.visibility = flags.wildbigkeys && flags.doorshuffle === 'C' ? 'visible' : 'hidden';
+		// document.getElementById('bigkey11').style.visibility = flags.wildbigkeys && flags.doorshuffle != 'N' ? 'visible' : 'hidden';
+		// document.getElementById('bigkey12').style.visibility = flags.wildbigkeys && flags.doorshuffle === 'C' ? 'visible' : 'hidden';
 		
 		//Hide HC and CT chests if neither Entrance nor Door Shuffle is on
-		document.getElementById('agamagicsplitdiv').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'none' : 'block';
-		document.getElementById('hcctchests').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'none' : 'block';
-		document.getElementById('bighalfmagic').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'block' : 'none';
-		document.getElementById('agasplitdiv').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'block' : 'none';
+		// document.getElementById('agamagicsplitdiv').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'none' : 'block';
+		// document.getElementById('hcctchests').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'none' : 'block';
+		// document.getElementById('bighalfmagic').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'block' : 'none';
+		// document.getElementById('agasplitdiv').style.display = flags.entrancemode === 'N' && flags.doorshuffle === 'N' ? 'block' : 'none';
 		if (!(flags.entrancemode === 'N' && flags.doorshuffle === 'N') && items.maxchest12 === 0) {
 			rightClickChest('chest12');
 			toggle('chest12');
@@ -2406,17 +2431,17 @@
 		document.getElementById('informationDiv').style.visibility = (flags.entrancemode === 'N' ? 'hidden' : 'visible');
 		
 		//Show compasses for Crossed Door Shuffle
-		if (flags.doorshuffle === 'C') {
-			for(var k = 0; k < 10; k++)
-				document.getElementById('c'+k+'skdiv').classList.add('withcompass');
-			document.getElementById('gtdiv').classList.add('withcompass');
-			document.getElementById('hcctchests').classList.add('withcompass');
-		} else {
-			for(var k = 0; k < 10; k++)
-				document.getElementById('c'+k+'skdiv').classList.remove('withcompass');
-			document.getElementById('gtdiv').classList.remove('withcompass');
-			document.getElementById('hcctchests').classList.remove('withcompass');
-		}
+		// if (flags.doorshuffle === 'C') {
+		// 	for(var k = 0; k < 10; k++)
+		// 		document.getElementById('c'+k+'skdiv').classList.add('withcompass');
+		// 	document.getElementById('gtdiv').classList.add('withcompass');
+		// 	document.getElementById('hcctchests').classList.add('withcompass');
+		// } else {
+		// 	for(var k = 0; k < 10; k++)
+		// 		document.getElementById('c'+k+'skdiv').classList.remove('withcompass');
+		// 	document.getElementById('gtdiv').classList.remove('withcompass');
+		// 	document.getElementById('hcctchests').classList.remove('withcompass');
+		// }
 
 		//Moved locations in Inverted
 		if (flags.entrancemode === 'N') {
@@ -2505,8 +2530,6 @@
 			document.getElementById('locationMap'+k).style.visibility = flags.shopsanity === 'N' ? 'hidden' : 'visible';
 		}
 		document.getElementById('locationMap119').style.visibility = 'hidden';//Bomb Shop items not randomized yet
-		
-		document.getElementById('bombfloor').style.visibility = flags.doorshuffle != 'C' ? 'hidden' : 'visible';
 		
 		document.getElementById('mirrorscroll').style.visibility = (flags.doorshuffle === 'N' || flags.doorshuffle === 'P') ? 'hidden' : 'visible';
 
@@ -2608,10 +2631,14 @@
 
     window.loadStyleAndChests = function() {
 		//Load stylesheet and logic depending on Entrance mode
-		document.getElementById("mainstyle").href = "css/"+(flags.entrancemode === 'N' ? "" : "entrance")+"style.css?v="+buildString;
-		if (flags.mapmode === 'C') {
-			document.getElementById("maincompactstyle").href = "css/"+(flags.entrancemode === 'N' ? "" : "entrance")+"smallmap.css?v="+buildString;
-		} else if (flags.mapmode === 'V') {
+		const isCompact = flags.mapmode === 'C';
+		let styleName =  isCompact ? "map_compact" : "maps";
+		document.getElementById("style-nonentrance").href = "css/" + styleName + ".css?v=" + buildString;
+		if (flags.entrancemode != 'N') {
+			let styleName =  isCompact ? "map_compact_entrance" : "map_entrance";
+			document.getElementById("style-entrance").href = "css/" + styleName + ".css?v=" + buildString;
+		}
+		if (flags.mapmode === 'V') {
 			window.document.getElementById('map_light').style.marginLeft = "6px";
 			window.document.getElementById('map_dark').style.marginLeft = "2px";
 		}
@@ -2621,11 +2648,6 @@
     window.start = function() {
 		loadStyleAndChests();
 
-		//If spoiler mode, first show the modal to load the spoiler log
-		if (flags.spoilermode === 'Y') {
-			$('#spoilerModal').show();
-		}
-		
 		defineEntranceTypes();
 		document.getElementById('summaryFilter0').value = 'all';
 		document.getElementById('summaryFilter1').value = 'knownconnectors';
@@ -2637,12 +2659,7 @@
 			constantFunctionsEDC[a] = []
 			for (var k = 0; k < 13; k++) {
 				let chestName = 'chest' + k;
-				if (k === 11) {
-					chestName = 'smallhalfheader0';
-				}
-				if (k === 12) {
-					chestName = 'smallhalfheader1';
-				}
+
 				constantFunctionsEDC[a].push(function() {
 					let bgColor = '';
 					let color = 'black';
@@ -2658,38 +2675,6 @@
 					document.getElementById(chestName).style.color = color;
 				});
 			}
-		}
-
-		// Set up the event listeners for entrances
-		if (flags.mapmode != 'N' && flags.entrancemode != 'N') {
-			document.addEventListener('DOMContentLoaded', function() {
-				for (let i = 0; i < window.entrances.length; i++) {
-					const entranceMap = document.getElementById('entranceMap'+i);
-					entranceMap.addEventListener('click', function() {
-						toggle_location(i);
-					});
-
-					entranceMap.addEventListener('mouseover', function() {
-						highlight_entrance(i);
-					});
-				
-					entranceMap.addEventListener('mouseout', function() {
-						unhighlight_entrance(i);
-					});
-				
-					entranceMap.addEventListener('contextmenu', function(event) {
-						event.preventDefault();
-						rightClickEntrance(i);
-					});
-				
-					entranceMap.addEventListener('auxclick', function(event) {
-						if (event.button === 1) {
-							event.preventDefault();
-							middleClickEntrance(i);
-						}
-					});
-				};
-			});				
 		}
 
 		initializeSettings();
@@ -2740,15 +2725,9 @@
         }
 		
 		//Set the starting number of treasures
-		for (var k = 0; k < 13; k++) {
+		for (var k = 0; k < 11; k++) {
 			const innerHTML = flags.doorshuffle === 'C' ? (items['chest'+k]-1)+'+' : items['chest'+k];
 			document.getElementById('chest'+k).innerHTML = innerHTML;
-		}
-
-		//If not enemizer, hide the enemizer switches
-		let bossShuffleHidden = flags.bossshuffle === 'N' ? 'hidden' : '';
-		for (var k = 0; k < 10; k++) {
-			document.getElementById('dungeonEnemy'+k).style.visibility = bossShuffleHidden;
 		}
 
 		//Hide map if not using
@@ -2756,16 +2735,6 @@
 	        for (var k = 0; k < chests.length; k++) {
                 document.getElementById('locationMap'+k).className = 'location ' + (k >= chests.length || chests[k].is_opened ? ( k > 22 && k < 79 ? 'bonked' : 'opened') : chests[k].is_available());
             }
-			
-			if (flags.mapmode === 'C' || flags.mapmode === 'V') {
-				var modal = document.getElementById("entranceModal"),modalMain = document.getElementById("entranceModalMain");
-				modal.style.width = "448px";
-				modal.style.left = "0px";
-				modalMain.style.width = "408px";
-				modalMain.style.height = flags.mapmode === "C" ? "600px" : "624px";
-				modalMain.style.left = "20px";
-				modalMain.style.top = flags.mapmode === "V" ? "484px" : "36px";
-			}
         } else {
             document.getElementById('app').classList.add('mapless');
             document.getElementById('map').style.display = 'none';
@@ -2782,21 +2751,19 @@
 		for (var k = 0; k < 13; k++) {
 			document.getElementById('smallkey'+k).style.visibility = smallKeyHidden;
 		}
-		document.getElementById('smallhalfheader0').style.visibility = smallKeyHidden;
-		document.getElementById('smallhalfheader1').style.visibility = smallKeyHidden;
 		
 		//If all keys are not shuffled, change the chest styles
 		if (!flags.wildkeys && !flags.wildbigkeys && flags.gametype != 'R' && flags.doorshuffle != 'C') {
 			for (var k = 0; k < 10; k++) {
 				document.getElementById('chest'+k).classList.add('large');
-				document.getElementById('c'+k+'bkdiv').classList.add('hidden');
-				document.getElementById('c'+k+'skdiv').classList.add('hidden');
+				document.getElementById('bigkey'+k).classList.add('hidden');
+				document.getElementById('smallkey'+k).classList.add('hidden');
 			}
 		} else {
 			for (var k = 0; k < 10; k++) {
 				document.getElementById('chest'+k).classList.remove('large');
-				document.getElementById('c'+k+'bkdiv').classList.remove('hidden');
-				document.getElementById('c'+k+'skdiv').classList.remove('hidden');
+				document.getElementById('bigkey'+k).classList.remove('hidden');
+				document.getElementById('smallkey'+k).classList.remove('hidden');
 			}
 		}
 		
@@ -2821,7 +2788,7 @@
 			}
 		}
 		
-		document.getElementsByClassName('tunic')[0].classList.add(flags.sprite);
+		// document.getElementsByClassName('tunic')[0].classList.add(flags.sprite);
 		
 		// If mystery, add the settings flag to the tracker
 		if (flags.unknown === 'N') {

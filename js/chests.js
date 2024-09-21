@@ -66,10 +66,6 @@
 			color = rgbToTextColour(curStyle.getPropertyValue("--" + chestAvailability + "-color"));
 		};
 
-		if (dungeonID < 10) {
-			document.getElementById('entranceBoss' + dungeonID).style.visibility = bossvisibility;
-			document.getElementById('entranceBoss' + dungeonID).style.background = bosscolor;
-		};
 		document.getElementById('chest' + dungeonID).style.backgroundColor = bgcolor;
 		document.getElementById('chest' + dungeonID).style.color = color;
 	};
@@ -1569,8 +1565,8 @@
 				};
 			};
 
-			if (dungeon < 10 && flags.doorshuffle === 'C' && !items['boss' + dungeon] && bosscheck != 'available' && (items['chest' + dungeon] == 1 || (!items['chestknown' + dungeon] && items['chest' + dungeon] == 2))) {
-				if (bosscheck === 'unavailable' && items['chestknown' + dungeon] && (flags.ambrosia === 'Y' || (flags.wildmaps && flags.wildcompasses && wildsmallkeys && flags.wildbigkeys)))
+			if (dungeon < 10 && flags.doorshuffle === 'C' && !items['boss' + dungeon] && bosscheck != 'available' && (items['chest' + dungeon] == 1 || (!items['compass' + dungeon] && items['chest' + dungeon] == 2))) {
+				if (bosscheck === 'unavailable' && items['compass' + dungeon] && (flags.ambrosia === 'Y' || (flags.wildmaps && flags.wildcompasses && wildsmallkeys && flags.wildbigkeys)))
 					return 'unavailable';
 				doorcheck = 'possible';
 			}
@@ -1580,7 +1576,7 @@
 
 		if (doorcheck === 'available') {
 			if (onlyBunny) doorcheck = 'possible'; 
-			if (goal === 'item' && flags.doorshuffle === 'C' && items['chest' + dungeon] === 1 && !items['chestknown' + dungeon]) doorcheck = 'possible'; //Unknown if even one item is still in there
+			if (goal === 'item' && flags.doorshuffle === 'C' && items['chest' + dungeon] === 1 && !items['compass' + dungeon]) doorcheck = 'possible'; //Unknown if even one item is still in there
 			if (flags.wildkeys && flags.gametype != 'R' && items['smallkey' + dungeonAlt] < maxKeys(dungeon)) doorcheck = 'possible'; //Could need more small keys
 			if (flags.wildbigkeys && (dungeon <= 10 || flags.doorshuffle === 'C') && !items['bigkey' + dungeonAlt]) doorcheck = 'possible';	//Could need big key
 			if (goal != 'boss' && dungeon < 10 && bosscheck != 'available' && flags.ambrosia === 'N' && ((!wildsmallkeys && maxKeys(dungeon) > 0) || !flags.wildbigkeys)) doorcheck = 'possible';//Boss could have required key

@@ -1,91 +1,4 @@
 
-#app { width: 448px; height: 988px; }
-#app.sphereless { height: 692px; }
-
-#map_light {
-  width: 221px;
-  height: 221px;
-  margin-left: 2px;
-  background-image: url(../images/overlay/map_lw.png);
-  background-size: 99% 100%;
-  background-repeat: no-repeat;
-}
-
-#map_dark {
-  width: 221px;
-  height: 221px;
-  background-image: url(../images/overlay/map_dw.png);
-  background-size: 99% 100%;
-  background-position: right;
-  background-repeat: no-repeat;
-}
-
-#caption {
-    bottom: 2px;
-}
-
-#autotrackingstatus {
-  bottom: 2px;
-  right: 3px;
-}
-
-.location {
-  width: 12px;
-  height: 12px;
-  margin-left: -6px;
-  margin-top: -6px;
-}
-
-.entrance {
-  width: 9px;
-  height: 9px;
-  margin-left: -7px;
-  margin-top: -7px;
-}
-
-#map .boss {
-  width: 16px;
-  height: 16px;
-  margin-left: -8px;
-  margin-top: -8px;
-  position: absolute;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 75% 75%;
-  z-index: 2;
-}
-
-#bossMapAgahnim { background-color: transparent; }
-.castle {
-  width: 24px;
-  height: 24px;
-  margin-left: -12px;
-  margin-top: -12px;
-  position: absolute;
-  background-size: 100% 100%;
-}
-
-.dungeon {
-  width: 32px;
-  height: 32px;
-  margin-left: -16px;
-  margin-top: -16px;
-  position: absolute;
-  background-size: 100% 100%;
-}
-
-#bossMap0, #dungeon0 { left: 92.00%; top: 38.8%; }
-#bossMap1, #dungeon1 { left: 7.60%;  top: 78.4%; }
-#bossMap2, #dungeon2 { left: 62.00%; top: 7.2%; }
-#bossMap3, #dungeon3 { left: 92.80%; top: 40.0%; }
-#bossMap4, #dungeon4 { left: 47.00%; top: 91.0%; }
-#bossMap5, #dungeon5 { left: 8.00%; top: 7.2%; }
-#bossMap6, #dungeon6 { left: 12.80%; top: 47.9%; }
-#bossMap7, #dungeon7 { left: 79.60%; top: 85.8%; }
-#bossMap8, #dungeon8 { left: 11.60%; top: 82.9%; }
-#bossMap9, #dungeon9 { left: 92.80%; top: 7.2%; }
-#bossMap10, #dungeon10 { left: 58.00%; top: 7.2%; }
-#bossMapAgahnim, #castle { left: 50.00%; top: 52.6%; }
 #locationMap0 { left: 44.80%; top: 93.4%; z-index: 2; } /* Sunken Treasure */
 #locationMap1 { left: 54.80%; top: 67.9%; z-index: 2; } /* Link's House */
 #locationMap2 { left: 10.00%;  top: 46.8%; z-index: 2; } /* Bottle Vendor */
@@ -150,18 +63,8 @@
 #locationMap61 { left: 84.20%; top: 69.3%; z-index: 2;} /* Dark Tree Line Tree 4 */
 #locationMap62 { left: 55.80%; top: 83.5%; z-index: 2;} /* Hype Cave Area */
 
-#connectorStop { cursor: pointer; position: absolute; top: 89.6%; left: 81.6%; z-index: 2; width: 37.5px; }
-#connectorStop img { width: 100%; }
-#hideConnectorLines { cursor: pointer; position: absolute; top: 89.6%; left: 1.2%; z-index: 2; width: 37.5px; }
-#hideConnectorLinesImg { width: 100%; }
-#entranceSummary { cursor: pointer; position: absolute; top: 89.6%; left: 81.6%; z-index: 2; width: 37.5px; }
-#entranceSummary img { width: 100%; }
-#summaryModal { width: 442px; left: 0; }
-#summaryModalMain { width: 400px; height: 600px; left: 24px; top: 35px; }
 
-#entranceModalLightWorld { width: 372px; float: left; }
-#entranceModalGeneral { width: 372px; float: left; }
-#entranceModalDarkWorld { width: 372px; float: left; }
+
 
 #entranceMap0 { left: 56.00%; top: 72%; z-index: 2; }
 #entranceMap1 { left: 49.00%; top: 67%; z-index: 2; }
@@ -303,30 +206,3 @@
 #entranceMap137 { left: 83.40%; top: 13%; z-index: 2; }
 #entranceMap138 { left: 81.20%; top: 10%; z-index: 2; }
 #entranceMap139 { left: 85.80%; top: 10%; z-index: 2; }
-
-.grabbagtr {
-    border: 1px solid black;
-    cursor: pointer;
-    width: 140px;
-    height: 24px;
-    padding: 5px;
-}
-
-.entrancelocationdiv {
-	width: 50px;
-    height: 30px;
-  border: 2px solid white;
-	cursor: pointer;
-}
-
-.entranceModalGeneralInner { 
-	height: 84px; 
-}
-
-.entranceModalGeneralInnerSmall { 
-	height: 54px; 
-}
-
-.entranceModalGeneralInnerLarge { 
-	height: 84px; 
-}

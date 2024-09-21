@@ -30,11 +30,10 @@
         swordmode: query.f.charAt(23),
         mapmode: query.d.charAt(0),
         chestcolormode: query.d.charAt(1),
-        spoilermode: query.d.charAt(2),
-        spheresmode: query.d.charAt(3),
-        autotracking: query.d.charAt(4),
-        trackingport: query.d.charAt(5) + query.d.charAt(6) + query.d.charAt(7) + query.d.charAt(8) + query.d.charAt(9),
-        mapstyle: query.d.charAt(10),
+        spheresmode: query.d.charAt(2),
+        autotracking: query.d.charAt(3),
+        trackingport: query.d.charAt(4) + query.d.charAt(5) + query.d.charAt(6) + query.d.charAt(7) + query.d.charAt(8),
+        mapstyle: query.d.charAt(9),
         startingitems: query.s,
         sprite: query.p.replace('#','').replace('!',''),
     };
@@ -164,7 +163,8 @@
         }
         items['chest' + i] = chestCounts[i];
         items['maxchest' + i] = chestCounts[i];
-        items['chestknown' + i] = false;
+        items['compass' + i] = false;
+        items['map' + i] = false;
         items['bigkey' + i] = !flags.wildbigkeys;
         items['smallkey' + i] = (flags.wildkeys ? 0 : keyCounts[i]);
     };
