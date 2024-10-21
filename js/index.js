@@ -28,6 +28,16 @@ function load_cookie() {
 							break;
 					}
 					break;
+				case 'cc':
+					switch (setting[1]) {
+						case 'N':
+							document.getElementById("chestcolorno").checked = false;
+							break;
+						case 'Y':
+							document.getElementById("chestcoloryes").checked = true;
+							break;
+					}
+					break;
 				case 's':
 					if (setting[1] === 'Y') {
 						document.getElementById("sphereyes").checked = true;
@@ -165,32 +175,15 @@ function launch_tracker() {
 	var swords = document.querySelector('input[name="swordsgroup"]:checked').value;
 	var shuffledsmkeys = (document.getElementById("shuffledsmkeys").checked === true ? "1" : "0");
 	var map = document.querySelector('input[name="mapgroup"]:checked').value;
+	var chestcolor = document.querySelector('input[name="chestcolorgroup"]:checked').value;
 	var spoiler = 'N';
 	var sphere = 'N';
 	var autotracking = document.querySelector('input[name="autotrackinggroup"]:checked').value;
 	var trackingport = document.getElementById('autotrackingport').value;
-	var restreamingcode = document.getElementById('restreamingcode').value;
-	var restreamer = document.querySelector('input[name="restreamgroup"]:checked').value;
-	var restreamdelay = document.getElementById('restreamingdelay').value;
 	var spritesel = document.getElementById("spriteselect");
 	var sprite = spritesel.options[spritesel.selectedIndex].value;
 	var mapStyle = 'N';
 	var scale = document.querySelector('input[name="scalegroup"]:checked').value;
-	
-	if (restreamingcode != "") {
-		if (restreamingcode.length != 6) {
-			alert("Restreaming codes require exactly 6 characters");
-			return;
-		} else {
-			if (restreamer === "N") {
-				restreamingcode = "000000";
-			} else if (restreamer === "R") {
-				map = "N";
-			}
-		}
-	} else {
-		restreamingcode = "000000";
-	}
 	
 	var width = 576
 
@@ -236,7 +229,7 @@ function launch_tracker() {
 
 		
 	if (document.getElementById("remembersettings").checked == true) {
-		var settings = "m-" + map + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale;
+		var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale;
 		document.cookie = "settings=" + settings + "; expires=Sat, 3 Jan 2026 12:00:00 UTC";
 	} else {
 		document.cookie = "settings=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
@@ -247,7 +240,7 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{shuffledsmkeys}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}{mapstyle}{scale}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{shuffledsmkeys}&d={map}{chestcolor}{spoiler}{sphere}{autotracking}{trackingport}{mapstyle}{scale}&s={startingitemstring}&p={sprite}&r={epoch}'
 			.replace('{world}', world)
 			.replace('{entrance}', entrance)
 			.replace('{door}', door)
@@ -274,13 +267,11 @@ function launch_tracker() {
 			.replace('{swords}', swords)
 			.replace('{shuffledsmkeys}', shuffledsmkeys)
 			.replace('{map}', map)
+			.replace('{chestcolor}', chestcolor)
 			.replace('{spoiler}', spoiler)
 			.replace('{sphere}', sphere)
 			.replace('{autotracking}', autotracking)
 			.replace('{trackingport}', trackingport.padStart(5, '0'))
-			.replace('{restreamingcode}', restreamingcode)
-			.replace('{restreamer}', restreamer)
-			.replace('{restreamdelay}', restreamdelay)
 			.replace('{mapstyle}', mapStyle)
 			.replace('{scale}', scale)
 			.replace('{startingitemstring}', startingitemstring)
@@ -491,12 +482,6 @@ async function importflags(auto = false) {
 	});
 }
 
-function hideRestreaming() {
-	if (window.location.href.indexOf("dunka.net") === -1) {
-		document.getElementById("restreamingpresetdiv").style.display = "none";
-	}
-}
-			
 function showToast() {
   // Get the snackbar DIV
   var x = document.getElementById("snackbar");

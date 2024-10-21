@@ -20,7 +20,7 @@
    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
 </head>
 
-<body onload="load_cookie(); hideRestreaming();">
+<body onload="load_cookie();">
    <div class="outer-wrapper">
       <div>
          <div class="header-main-div">
@@ -211,37 +211,6 @@
                   <div id="startingglove" class="item glove0" onClick="toggle('glove',23)"></div>
                   <div id="startingflippers" class="item flippers" onClick="toggle('flippers',24)"></div>
                   <div id="startingmagic" class="item magic" onClick="toggle('magic',25)"></div>
-               </div>
-            </div>
-         </div>
-         <div id="restreamingpresetdiv" class="preset-div">
-            <div class="preset-header" onclick="togglediv('restream');">
-               <span id="restreamarrow">&#9660;</span> Restreaming
-            </div>
-            <div id="restreamdiv" style="display: none;">
-               <div>
-                  <span class="preset-span-double">
-                     Enter Code: <input style="width: 100px" id="restreamingcode" type="text" />
-                  </span>
-                  <span class="preset-btn-span">
-                     <input type="button" value="VALIDATE" class="preset-btn" onclick="validateRestreamCode()" />
-                  </span>
-                  <span class="preset-span" style="display: none;">
-                     <input id="restreamingno" value="N" type="radio" name="restreamgroup" checked />
-                     <label for="restreamingno">No</label>
-                  </span>
-                  <span class="preset-span" id="restreamingtrackerspan" style="display: none;">
-                     <input id="restreamingtracker" value="T" type="radio" name="restreamgroup" disabled />
-                     <label for="restreamingtracker">Racer/Tracker</label>
-                  </span>
-                  <span class="preset-span" id="restreamingrestreamerspan" style="display: none;">
-                     <input id="restreamingrestreamer" value="R" type="radio" name="restreamgroup" disabled />
-                     <label for="restreamingrestreamer">Restreamer</label>
-                  </span>
-                  <span class="preset-span" id="restreamingusedelayspan" style="display: none;">
-                     <input id="restreamingdelay" type="text" value="0" style="width: 40px" disabled />
-                     <label for="restreamingdelay">Delay</label>
-                  </span>
                </div>
             </div>
          </div>
@@ -795,6 +764,19 @@
                      <input id="mapvertical" value="V" type="radio" name="mapgroup" />
                      <label for="mapvertical">Vertical</label>
                   </span> -->
+               </div>
+               <div>
+                  <span class="preset-span-double">
+                     Colored Chests: <span class="south tooltop-character" title="Color the dungeon chests on the main tracker according to what is available.">[?]</span>
+                  </span>
+                  <span class="preset-span">
+                     <input id="chestcolorno" value="N" type="radio" name="chestcolorgroup" />
+                     <label for="chestcolorno">No</label>
+                  </span>
+                  <span class="preset-span">
+                     <input checked id="chestcoloryes" value="Y" type="radio" name="chestcolorgroup" />
+                     <label for="chestcoloryes">Yes</label>
+                  </span>
                </div>
                <div>
                   <span class="preset-span-double">

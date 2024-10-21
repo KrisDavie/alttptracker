@@ -23,6 +23,7 @@
                     {
                         "allOf": [
                             "moonpearl",
+                            "glove",
                             "hammer"
                         ]
                     },
@@ -64,6 +65,7 @@
                     {
                         "allOf": [
                             "moonpearl",
+                            "glove",
                             "hammer"
                         ]
                     }

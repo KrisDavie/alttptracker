@@ -46,6 +46,12 @@
 	};
 
 	function colorDungeonSquares(dungeonID, accessibility, chestAvailability, bossAvailability) {
+		if (flags.chestcolormode === 'N') {
+			accessibility = 'unavailable';
+			chestAvailability = 'unavailable';
+			bossAvailability = 'unavailable';
+		};
+
 		let bossvisibility = 'hidden';
 		let bosscolor = 'red';
 		let bgcolor = 'white';
@@ -234,8 +240,8 @@
 			case "canOWFairyRevive": return userLogicSettings[requirement] && (items.bottle && items.net);
 			case "canQirnJump": return userLogicSettings[requirement] && (items.bomb);
 			case "canMirrorSuperBunny": return userLogicSettings[requirement] && (items.mirror);
-			case "canDungeonBunnyRevive": return userLogicSettings[requirement] && (true);
-			case "canFakeFlipper": return userLogicSettings[requirement] && (true);
+			case "canDungeonBunnyRevive": return userLogicSettings[requirement];
+			case "canFakeFlipper": return userLogicSettings[requirement];
 			case "canFakePowder": return userLogicSettings[requirement] && (items.somaria && items.mushroom);
 			case "canWaterWalk": return userLogicSettings[requirement] && (items.boots && items.bomb);
 			case "canZoraSplashDelete": return userLogicSettings[requirement] && ((items.bomb && items.bow > 0) || (items.somaria && items.bomb && items.boomerang > 1) || (items.bomb && items.icerod) || (items.bottle && items.net && items.bomb));
@@ -255,7 +261,7 @@
 			case 'canBombSpooky': return userLogicSettings[requirement] && (items.bomb);
 			case 'canHeraPot': return userLogicSettings[requirement] && (items.hookshot && (items.boots || items.bomb));
 			case 'canFireSpooky': return userLogicSettings[requirement] && (items.firerod && items.somaria);
-			case 'canMimicClip': return userLogicSettings[requirement] && (true);
+			case 'canMimicClip': return userLogicSettings[requirement];
 			case 'canPotionCameraUnlock': return userLogicSettings[requirement] && (items.bottle > 0);
 			case 'canMoldormBounce': return userLogicSettings[requirement] && (items.bomb && items.sword > 0);
 
@@ -1008,100 +1014,6 @@
 
 	// #endregion
 
-	const dungeonCheckMap = [
-		{
-			"id": 0,
-			"dungeon": "Eastern Palace",
-			"regions": ["Eastern Palace"],
-			"mapTrackerNames": ["ep"],
-			"abbreviation": "ep"
-		},
-		{
-			"id": 1,
-			"dungeon": "Desert Palace",
-			"regions": ["Desert Palace - Main", "Desert Palace - North"],
-			"mapTrackerNames": ["dp_m","dp_w","dp_e","dp_n"],
-			"abbreviation": "dp"
-		},
-		{
-			"id": 2,
-			"dungeon": "Tower of Hera",
-			"regions": ["Tower of Hera"],
-			"mapTrackerNames": ["toh"],
-			"abbreviation": "toh"
-		},
-		{
-			"id": 3,
-			"dungeon": "Palace of Darkness",
-			"regions": ["Palace of Darkness"],
-			"mapTrackerNames": ["pod"],
-			"abbreviation": "pod"
-		},
-		{
-			"id": 4,
-			"dungeon": "Swamp Palace",
-			"regions": ["Swamp Palace"],
-			"mapTrackerNames": ["sp"],
-			"abbreviation": "sp"
-		},
-		{
-			"id": 5,
-			"dungeon": "Skull Woods",
-			"regions": ["Skull Woods - Main", "Skull Woods - Middle", "Skull Woods - Back", "Skull Woods - Drops"],
-			"mapTrackerNames": ["sw","sw_m","sw_w","sw_e"],
-			"abbreviation": "sw"
-		},
-		{
-			"id": 6,
-			"dungeon": "Thieves Town",
-			"regions": ["Thieves Town"],
-			"mapTrackerNames": ["tt"],
-			"abbreviation": "tt"
-		},
-		{
-			"id": 7,
-			"dungeon": "Ice Palace",
-			"regions": ["Ice Palace"],
-			"mapTrackerNames": ["ip"],
-			"abbreviation": "ip"
-		},
-		{
-			"id": 8,
-			"dungeon": "Misery Mire",
-			"regions": ["Misery Mire"],
-			"mapTrackerNames": ["mm"],
-			"abbreviation": "mm"
-		},
-		{
-			"id": 9,
-			"dungeon": "Turtle Rock",
-			"regions": ["Turtle Rock - Main", "Turtle Rock - West", "Turtle Rock - East", "Turtle Rock - Back"],
-			"mapTrackerNames": ["tr_m","tr_w","tr_e","tr_b"],
-			"abbreviation": "tr"
-		},
-		{
-			"id": 10,
-			"dungeon": "Ganons Tower",
-			"regions": ["Ganons Tower"],
-			"mapTrackerNames": ["gt"],
-			"abbreviation": "gt"
-		},
-		{
-			"id": 11,
-			"dungeon": "Hyrule Castle",
-			"regions": ["Hyrule Castle - Main", "Hyrule Castle - Sewers Dropdown", "Sanctuary"],
-			"mapTrackerNames": ["hc_m","hc_w","hc_e", "sanc"],
-			"abbreviation": "hc"
-		},
-		{
-			"id": 12,
-			"dungeon": "Castle Tower",
-			"regions": ["Castle Tower"],
-			"mapTrackerNames": ["ct"],
-			"abbreviation": "at"
-		}
-	]
-
 	function checkAvailabilityEntrance(location) {
 		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
 		const requirements = window.checkLogic[location][category];
@@ -1216,16 +1128,12 @@
 		if (requirement.startsWith('keys')) {
 			if (flags.gametype === 'R' || !flags.wildkeys) return true;
 			const count = requirement.split('|')[1];
-			switch (dungeonId) {
-				case 11: var keyname = 'smallkeyhalf0'; break; // HC
-				case 12: var keyname = 'smallkeyhalf1'; break; // CT
-				default: var keyname = 'smallkey' + dungeonId;
-			};
+			const keyname = 'smallkey' + dungeonId;
 			return items[keyname] >= count;
 		};
 
-		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkeyhalf0; // HC
-		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkeyhalf1; // CT
+		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkey11; // HC
+		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkey12; // CT
 
 		if (requirement.startsWith('canReach|')) {
 			const region = requirement.split('|')[1];
@@ -1251,7 +1159,7 @@
 
 		// Stupid exceptions
 		if (dungeonName === 'Swamp Palace') {
-			if (flags.entrancemode != 'N' && !hasFoundLocation('dam')) return 'unavailable';
+			if (flags.entrancemode != 'N' && !hasFoundLocation('dam') && flags.mapmode != 'N') return 'unavailable';
 			if (flags.entrancemode === 'N' && !items.mirror) return 'unavailable';
 		};
 
@@ -1329,6 +1237,8 @@
 	window.loadChestFlagsItem = function() {
 		window.dungeonChecks = [];
 		for (var i = 0; i < dungeonCheckMap.length; i++) {
+			// Don't process SM "dungeons"
+			if (i > 12) continue;
 			const dungeon = dungeonCheckMap[i];
 			dungeonChecks.push({
 				can_get_chest: function() {
@@ -1345,6 +1255,8 @@
 
 		window.dungeons = []
 		for (var i = 0; i < dungeonCheckMap.length; i++) {
+			// Don't process SM "dungeons"
+			if (i > 12) continue;
 			const dungeon = dungeonCheckMap[i];
 			dungeons.push({
 				caption: dungeon.dungeon,

@@ -326,7 +326,7 @@
 			return "Triforce Piece";
 		case "Rupoor":
 			return "Rupoor";
-		case "smallkeyhalf0":
+		case "smallkey11":
 		case "KeyH1":
 		case "KeyH2":
 			return "HC Key";
@@ -360,7 +360,7 @@
 		case "smallkey9":
 		case "KeyD7":
 			return "TR Key";
-		case "smallkeyhalf1":
+		case "smallkey12":
 		case "KeyA1":
 			return "CT Key";
 		case "smallkey10":
@@ -369,7 +369,7 @@
 		case "Key":
 		case "KeyGK":
 			return "Key";
-		case "bigkeyhalf0":
+		case "bigkey11":
 		case "BigKeyH1":
 		case "BigKeyH2":
 			return "HC Big Key";
@@ -403,7 +403,7 @@
 		case "bigkey9":
 		case "BigKeyD7":
 			return "TR Big Key";
-		case "bigkeyhalf1":
+		case "bigkey12":
 		case "BigKeyA1":
 			return "CT Big Key";
 		case "bigkey10":

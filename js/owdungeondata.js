@@ -2552,7 +2552,7 @@
 				if(front !== "unavailable" && (items.bomb || items.boots) && (items.bomb || items.sword || items.bow > 1 || items.hammer || items.firerod || items.somaria || items.byrna))
 				{
 					if(retro || (items.flags && items.flags.wildkeys))
-						data.items[96] = bestAvailability(data.items[96],retro || items.smallkeyhalf0 ?(items.lantern ?front :(front.startsWith("dark") ?front :"dark"+front)) :"unavailable");
+						data.items[96] = bestAvailability(data.items[96],retro || items.smallkey11 ?(items.lantern ?front :(front.startsWith("dark") ?front :"dark"+front)) :"unavailable");
 					else
 						data.items[96] = bestAvailability(data.items[96],items.lantern ?"possible" :"darkpossible");
 				}
@@ -2560,7 +2560,7 @@
 			if(front !== "available" && back !== "unavailable" && (items.bomb || items.sword || items.bow > 1 || items.hammer || items.firerod || items.somaria || items.byrna))
 			{
 				if(retro || (items.flags && items.flags.wildkeys))
-					data.items[104] = bestAvailability(data.items[104],retro || items.smallkeyhalf0 ?(items.lantern ?back :(back.startsWith("dark") ?back :"dark"+back)) :"unavailable");
+					data.items[104] = bestAvailability(data.items[104],retro || items.smallkey11 ?(items.lantern ?back :(back.startsWith("dark") ?back :"dark"+back)) :"unavailable");
 				else
 					data.items[104] = bestAvailability(data.items[104],items.lantern ?"possible" :"darkpossible");
 			}
@@ -2573,7 +2573,7 @@
 				if(items.sword || items.bow > 1 || items.hammer || items.firerod || items.somaria || items.byrna)
 					{
 						data.items[106] = data.items[107];
-						data.items[107] = retro || items.smallkeyhalf1 || !items.flags || !items.flags.wildkeys ?(items.lantern ?data.items[106] :(data.items[106].startsWith("dark") ?data.items[106] :"dark"+data.items[106])) :"unavailable";
+						data.items[107] = retro || items.smallkey12 || !items.flags || !items.flags.wildkeys ?(items.lantern ?data.items[106] :(data.items[106].startsWith("dark") ?data.items[106] :"dark"+data.items[106])) :"unavailable";
 					}
 			}
 			//Desert Ledge
