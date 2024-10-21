@@ -146,6 +146,7 @@ function launch_tracker() {
 	var ganonsel = document.getElementById("ganonselect");
 	var ganoncrystals = ganonsel.options[ganonsel.selectedIndex].value;
 	var swords = document.querySelector('input[name="swordsgroup"]:checked').value;
+	var shuffledsmkeys = (document.getElementById("shuffledsmkeys").checked === true ? "1" : "0");
 	var map = document.querySelector('input[name="mapgroup"]:checked').value;
 	var spoiler = 'N';
 	var sphere = 'N';
@@ -173,15 +174,10 @@ function launch_tracker() {
 		restreamingcode = "000000";
 	}
 	
-	var width = map === "C" ? 448 : 889
+	var width = 576
 
 	var height;
-	if (map === "V") {
-		height = 1330;
-		if (sphere === "Y") {
-			width = 892
-		}
-	} else if (map === "C") {
+	if (map === "C") {
 		if (sphere === "Y") {
 			height = 988;
 		} else {
@@ -191,13 +187,14 @@ function launch_tracker() {
 		if (sphere === "Y") {
 			height = 744;
 		} else {
-			height = 899;
+			height = 1152
+			width = 1152;
 		}
 	} else {
 		if (sphere === "Y") {
 			height = 744;
 		} else {
-			height = 448;
+			height = 576;
 		}
 	}
 		
@@ -213,7 +210,7 @@ function launch_tracker() {
 		glitches = 'M';
 	}
 	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}{mapstyle}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{shuffledsmkeys}&d={map}{spoiler}{sphere}{autotracking}{trackingport}{restreamingcode}{restreamer}{restreamdelay}{mapstyle}&s={startingitemstring}&p={sprite}&r={epoch}'
 			.replace('{world}', world)
 			.replace('{entrance}', entrance)
 			.replace('{door}', door)
@@ -238,6 +235,7 @@ function launch_tracker() {
 			.replace('{ganon}', ganon)
 			.replace('{ganoncrystals}', ganoncrystals)
 			.replace('{swords}', swords)
+			.replace('{shuffledsmkeys}', shuffledsmkeys)
 			.replace('{map}', map)
 			.replace('{spoiler}', spoiler)
 			.replace('{sphere}', sphere)
@@ -267,6 +265,22 @@ function loadopenpreset() {
 	document.getElementById("shuffledcompasses").checked = false;
 	document.getElementById("shuffledsmallkeys").checked = false;
 	document.getElementById("shuffledbigkeys").checked = false;
+	window.scrollTo(0,document.body.scrollHeight);
+	// showToast();
+}
+
+function loadkeysanitypreset() {
+	document.getElementById("goalganon").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("shuffledmaps").checked = true;
+	document.getElementById("shuffledcompasses").checked = true;
+	document.getElementById("shuffledsmallkeys").checked = true;
+	document.getElementById("shuffledbigkeys").checked = true;
+	document.getElementById("shuffledsmkeys").checked = true;
 	window.scrollTo(0,document.body.scrollHeight);
 	// showToast();
 }

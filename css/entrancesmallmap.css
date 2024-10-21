@@ -1,10 +1,10 @@
 
-#app { width: 448px; height: 988px; }
-#app.sphereless { height: 692px; }
+#app { width: 576px; height: 988px; }
+#app.sphereless { height: 576px; }
 
 #map_light {
-  width: 221px;
-  height: 221px;
+  width: 286px;
+  height: 286px;
   margin-left: 2px;
   background-image: url(../images/overlay/map_lw.png);
   background-size: 99% 100%;
@@ -12,8 +12,8 @@
 }
 
 #map_dark {
-  width: 221px;
-  height: 221px;
+  width: 286px;
+  height: 286px;
   background-image: url(../images/overlay/map_dw.png);
   background-size: 99% 100%;
   background-position: right;
@@ -156,7 +156,7 @@
 #hideConnectorLinesImg { width: 100%; }
 #entranceSummary { cursor: pointer; position: absolute; top: 89.6%; left: 81.6%; z-index: 2; width: 37.5px; }
 #entranceSummary img { width: 100%; }
-#summaryModal { width: 442px; left: 0; }
+#summaryModal { width: 572px; left: 0; }
 #summaryModalMain { width: 400px; height: 600px; left: 24px; top: 35px; }
 
 #entranceModalLightWorld { width: 372px; float: left; }

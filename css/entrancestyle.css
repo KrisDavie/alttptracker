@@ -17,8 +17,8 @@ body {
 .cell.quarter { height: 64px; width: 64px; position: relative; float: left; }
 
 #app { width: 1340px; height: 744px; overflow: hidden; display: block!important; }
-#app.mapless { width: 448px; }
-#app.sphereless { height: 448px; }
+#app.mapless { width: 576px; }
+#app.sphereless { height: 576px; }
 
 #tracker .item,
 #tracker .boss,
@@ -130,8 +130,8 @@ body {
 }
 
 #map_light {
-  width: 442px;
-  height: 448px;
+  width: 572px;
+  height: 576px;
   margin-left: 8px;
   background-image: url(../images/overlay/map_lw.png);
   background-size: 99% 100%;
@@ -139,8 +139,8 @@ body {
 }
 
 #map_dark {
-  width: 442px;
-  height: 448px;
+  width: 572px;
+  height: 576px;
   background-image: url(../images/overlay/map_dw.png);
   background-size: 99% 100%;
   background-position: right;

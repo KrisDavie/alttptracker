@@ -2141,8 +2141,8 @@
 		let door = items.flags && items.flags.doorshuffle ?items.flags.doorshuffle !== 'N' :doorshuffle !== 'N';
 		let data = {};
 		data.logic = true;
-		data.items = new Array(120);
-		for(let k = 0; k < 120; k++)
+		data.items = new Array(125);
+		for(let k = 0; k < 125; k++)
 			data.items[k] = "unavailable";
 		data.entranceitems = [];
 		data.dungeons = new Array(104);

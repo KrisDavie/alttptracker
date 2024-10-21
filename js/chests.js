@@ -494,8 +494,9 @@
 		let information = 0;
 		for (var i = 0; i < locations.length; i++) {
 			const location = locations[i];
-			const requirements = window.checkLogic[location][category];
 			let availability = 'unavailable';
+			if (!(location in window.checkLogic)) return 'available';
+			const requirements = window.checkLogic[location][category];
 			if (!("always" in requirements) || stateOfAll(requirements["always"])) {
 				availability = 'possible';
 				if (!("logical" in requirements) || stateOfAll(requirements["logical"])) {

@@ -1308,7 +1308,7 @@ function autotrackDoTracking(data) {
     }
 
     if (changed(0x38C)) {
-        setitem("mushroom", (data['lttp_rooms_inv'][0x38C] & 0x28) == 0x28 ? 1 : ((data['lttp_rooms_inv'][0x38C] & 0x28) == 0x08 ? 2 : 0));
+        setitem("mushroom", (data['lttp_rooms_inv'][0x38C] & 0x20) == 0x20 ? 1 : ((data['lttp_rooms_inv'][0x421] & 0x08) == 0x08 ? 2 : 0));
         setitem("flute", (data['lttp_rooms_inv'][0x38C] & 0x03) == 0x01 ? 2 : ((data['lttp_rooms_inv'][0x38C] & 0x03) == 0x02 ? 1 : 0));
     }
     if (newbit(0x38C, 0x10))

@@ -28,6 +28,7 @@
         ganonvuln: query.f.charAt(21),
         ganonvulncount: query.f.charAt(22),
         swordmode: query.f.charAt(23),
+        wildsmkeys: query.f.charAt(24),
         mapmode: query.d.charAt(0),
         spoilermode: query.d.charAt(1),
         spheresmode: query.d.charAt(2),
@@ -313,6 +314,9 @@
         ridley: true,
         phantoon: true,
         draygon: true,
+
+        ganon: false,
+        motherbrain: true,
 
         // SM
         charge: false,

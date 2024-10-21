@@ -955,6 +955,41 @@
         ]
     },
     {
+        "open_idx": 120,
+        "caption": "Gauntlet E-Tank",
+        "checks": [
+            "Gauntlet E-Tank"
+        ]
+    },
+    {
+        "open_idx": 121,
+        "caption": "Back of Gauntlet - Left",
+        "checks": [
+            "Back of Gauntlet - Left"
+        ]
+    },
+    {
+        "open_idx": 122,
+        "caption": "Back of Gauntlet - Right",
+        "checks": [
+            "Back of Gauntlet - Right"
+        ]
+    },
+    {
+        "open_idx": 123,
+        "caption": "Terminator E-Tank",
+        "checks": [
+            "Terminator E-Tank"
+        ]
+    },
+    {
+        "open_idx": 124,
+        "caption": "Crateria Power Bomb",
+        "checks": [
+            "Crateria Power Bomb"
+        ]
+    },
+    {
         "entrance_idx": 0,
         "caption": "Sunken Treasure",
         "checks": [

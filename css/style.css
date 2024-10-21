@@ -17,8 +17,8 @@ body {
 .cell.quarter { height: 64px; width: 64px; position: relative; float: left; }
 
 #app { width: 1340px; height: 744px; overflow: hidden; display: block!important; }
-#app.mapless { width: 448px; }
-#app.sphereless { height: 448px; }
+#app.mapless { width: 576px; }
+#app.sphereless { height: 576px; }
 
 #tracker .item,
 #tracker .boss,
@@ -127,9 +127,18 @@ body {
   background-size: 100% 100%;
 }
 
+#smmap {
+  width: 576px;
+  height: 576px;
+  margin-left: 8px;
+  background-image: url(../images/overlay/SuperMetroidMapZebes.png);
+  background-size: 99% 100%;
+  background-repeat: no-repeat;
+}
+
 #map_light {
-  width: 442px;
-  height: 448px;
+  width: 572px;
+  height: 576px;
   margin-left: 8px;
   background-image: url(../images/overlay/map_lw.png);
   background-size: 99% 100%;
@@ -137,8 +146,8 @@ body {
 }
 
 #map_dark {
-  width: 442px;
-  height: 448px;
+  width: 572px;
+  height: 576px;
   background-image: url(../images/overlay/map_dw.png);
   background-size: 99% 100%;
   background-position: right;
@@ -146,21 +155,10 @@ body {
 }
 
 #map {
-  position: absolute;
-  left: -5px !important;
-  top: 448px !important;
+  position: absolute !important;
+  left: -4px !important;
+  top: 576px !important;
 }
-
-#smtracker {
-  position: absolute;
-  left: 448px !important;
-  top: 0px !important;
-  width: 448px;
-  margin-left: 64px;
-  margin-top: 64px;
-
-}
-
 
 .location {
   border-color:#000;
@@ -172,6 +170,11 @@ body {
   margin-top: -8px;
   position: absolute;
   background-size: 100% 100%;
+}
+
+.smloc {
+  width: 14 !important;
+  height: 14 !important;
 }
 
 .lowerchest {
@@ -471,7 +474,9 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .super { background-image: url(../images/items/super.png); }
 .varia { background-image: url(../images/items/varia.png); }
 .wave { background-image: url(../images/items/wave.png); }
-.xray { background-image: url(../images/items/xray.png); }
+.xray { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/items/xray.png); }
+.motherbrain { background-image: url(../images/items/motherbrain.png); }
+.ganon { background-image: url(../images/items/ganon.png); }
 
 .kraid { background-image: url(../images/dungeons/kraid.png); filter: grayscale(1);}
 .phantoon { background-image: url(../images/dungeons/phantoon.png); filter: grayscale(1);}
@@ -648,6 +653,11 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 #locationMap117 { left: 82.00%; top: 29.7%; } /* Potion Shop (3) */
 #locationMap118 { left: 79.40%; top: 84.7%; } /* Pond of Happiness Shop (3) */
 #locationMap119 { left: 54.80%; top: 67.9%; } /* Bomb Shop (2) */
+#locationMap120 { left: 22.45%; top: 3.49%; } 
+#locationMap121 { left: 12.39%; top: 5.53%; } 
+#locationMap122 { left: 14.86%; top: 5.53%; } 
+#locationMap123 { left: 15.42%; top: 10.73%; } 
+#locationMap124 { left: 47.17%; top: 1.77%; } 
 
 .instructionsDiv {
     width: 1200px;
@@ -682,9 +692,4 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
     width: 140px;
     height: 24px;
     padding: 5px;
-}
-
-.restreamingoverlay {
-	z-index: 10;
-    position: absolute;
 }

@@ -315,6 +315,9 @@
 					if ((23 <= k) && (k <= 63)) {
 						document.getElementById('locationMap'+k).classList.add('bonkloc');
 					}
+					if ((k >= 120)) {
+						document.getElementById('locationMap'+k).classList.add('smloc');
+					}
 				}
             }
 
@@ -867,10 +870,10 @@
 						leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 221 : 0;
 						topOffset += (flags.spheresmode === 'Y' ? 296 : 0)
 					} else if (flags.mapmode === 'M') {
-						leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 442 : 0;
+						leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 572 : 0;
 					} else if (flags.mapmode === 'V') {
 						leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? -5 : 0;
-						topOffset += (loc.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0)
+						topOffset += (loc.parentElement.id === "mapEntranceDiv_dark" ? 576 : 0)
 					}
 					
 					divtoadd.style.left = loc.offsetLeft + 10 + leftOffset;
@@ -1101,10 +1104,10 @@
 					leftOffset += 1
 					topOffset += (flags.spheresmode === 'Y' ? 296 : 0)
 				} else if (flags.mapmode === 'M') {
-					leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 442 : 0;
+					leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 572 : 0;
 				} else if (flags.mapmode === 'V') {
 					leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? -5 : 0;
-					topOffset += (loc.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0)
+					topOffset += (loc.parentElement.id === "mapEntranceDiv_dark" ? 576 : 0)
 				}
 				
 				divtoadd.style.left = loc.offsetLeft - 5.5 + leftOffset;
@@ -1226,7 +1229,9 @@
 		document.getElementById('locationMap'+x).className = 'location ' +
 			(chests[x].is_opened ? checkedType : chests[x].is_available()) +
 			(highlight ? ' highlight' : '') +
-			(scouted && !chests[x].is_opened ? ' scouted' : '');
+			(scouted && !chests[x].is_opened ? ' scouted' : '') + 
+			(x >= 120 ? ' smloc' : '');
+
 	};
 
 	// Event of clicking on an entrance on the map
@@ -1286,17 +1291,17 @@
 					}
 					
 					if (connector2.parentElement.id === "mapEntranceDiv_light") {
-						divtoadd.style.height = Math.abs(connector1.offsetTop + 448 - connector2.offsetTop);
+						divtoadd.style.height = Math.abs(connector1.offsetTop + 576 - connector2.offsetTop);
 						divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft - 2);
 					} else {
-						divtoadd.style.height = Math.abs(connector2.offsetTop + 448 - connector1.offsetTop);
+						divtoadd.style.height = Math.abs(connector2.offsetTop + 576 - connector1.offsetTop);
 						divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft + 2);
 					}
 				} else {
 					if (connector1.offsetTop > connector2.offsetTop) {
-						divtoadd.style.top = connector2.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0);
+						divtoadd.style.top = connector2.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 576 : 0);
 					} else {
-						divtoadd.style.top = connector1.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0);
+						divtoadd.style.top = connector1.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 576 : 0);
 					}
 					
 					if (c1offsetleft > c2offsetleft) {
@@ -2492,24 +2497,24 @@
 				break;
 			case "M":
 				//document.getElementById("map").style.width = "1340px";
-				document.getElementById("map").style.width = "892px";
+				document.getElementById("map").style.width = "1152px";
 				document.getElementById("map").style.position = "absolute";
-				document.getElementById("map").style.left = "448";
+				document.getElementById("map").style.left = "576";
 				document.getElementById("map").style.top = "0";
 				break;
 			case "C":
 				document.getElementById("connectorLineDiv").style.height = "222px";
 				document.getElementById("connectorLineDiv").style.left = "0";
-				document.getElementById("connectorLineDiv").style.top = "448";
+				document.getElementById("connectorLineDiv").style.top = "576";
 				document.getElementById("informationDiv").style.height = "222px";
 				document.getElementById("informationDiv").style.left = "0";
-				document.getElementById("informationDiv").style.top = (flags.spheresmode === "N" ? "448" : "744");
+				document.getElementById("informationDiv").style.top = (flags.spheresmode === "N" ? "576" : "744");
 				break;
 			case "V":
-				document.getElementById("map").style.width = "448px";
+				document.getElementById("map").style.width = "576px";
 				document.getElementById("map").style.position = "absolute";
 				document.getElementById("map").style.left = "0";
-				document.getElementById("map").style.top = "448";
+				document.getElementById("map").style.top = "576";
 				break;
 		}
 
@@ -2517,6 +2522,9 @@
 		document.getElementById("mapItemDiv_dark").style.display = flags.entrancemode === 'N' ? "block" : "none";
 		document.getElementById("mapEntranceDiv_light").style.display = flags.entrancemode === 'N' ? "none" : "block";
 		document.getElementById("mapEntranceDiv_dark").style.display = flags.entrancemode === 'N' ? "none" : "block";
+
+		// Display correct Xray/Grapple/WS Keys
+
 		
 		//Hide HC and CT big keys if not needed
 		document.getElementById('bigkeyhalf0').style.visibility = !flags.wildbigkeys || flags.doorshuffle === 'N' ? 'hidden' : 'visible';
@@ -2891,7 +2899,7 @@
 			
 			if (flags.mapmode === 'C' || flags.mapmode === 'V') {
 				var modal = document.getElementById("entranceModal"),modalMain = document.getElementById("entranceModalMain");
-				modal.style.width = "448px";
+				modal.style.width = "576px";
 				modal.style.left = "0px";
 				modalMain.style.width = "408px";
 				modalMain.style.height = flags.mapmode === "C" ? "600px" : "624px";
