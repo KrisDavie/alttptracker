@@ -20,6 +20,11 @@ body {
 #app.mapless { width: 576px; }
 #app.sphereless { height: 576px; }
 
+.scale100 { zoom: 1;}
+.scale75 { zoom: 0.75;}
+.scale50 { zoom: 0.5;}
+.scale25 { zoom: 0.25;}
+
 #tracker .item,
 #tracker .boss,
 #tracker [id^="item"] { width: 64px; height: 64px; }

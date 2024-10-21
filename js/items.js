@@ -38,6 +38,7 @@
         restreamer: query.d.charAt(15),
         restreamdelay: query.d.substr(16),
         mapstyle: query.d.charAt(17),
+        scale: query.d.charAt(18),
         startingitems: query.s,
         sprite: query.p.replace('#','').replace('!',''),
     };
