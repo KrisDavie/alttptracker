@@ -191,6 +191,28 @@
         varia: false,
         wave: false,
         xray: false,
+
+        crkey1: false,
+        crkey2: false,
+        crkeyb: false,
+
+        brkey1: false,
+        brkey2: false,
+        brkeyb: false,
+
+        mdkey1: false,
+        mdkey2: false,
+        mdkeyb: false,
+
+        wskey1: false,
+        wskeyb: false,
+
+        unkey1: false,
+        unkey2: false,
+        unkeyb: false,
+
+        lnkey1: false,
+        lnkeyb: false,
         
         range: range,
         inc: limit(1, range),

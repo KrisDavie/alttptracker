@@ -182,6 +182,11 @@ body {
   height: 14 !important;
 }
 
+.smbossloc {
+  width: 32 !important;
+  height: 32 !important;
+}
+
 .lowerchest {
   width: 64px;
   height: 64px;
@@ -479,7 +484,7 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .super { background-image: url(../images/items/super.png); }
 .varia { background-image: url(../images/items/varia.png); }
 .wave { background-image: url(../images/items/wave.png); }
-.xray { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/items/xray.png); }
+.xray { background-image: url(../images/items/xray.png); }
 .motherbrain { background-image: url(../images/items/motherbrain.png); }
 .ganon { background-image: url(../images/items/ganon.png); }
 
@@ -488,6 +493,16 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .draygon { background-image: url(../images/dungeons/draygon.png); filter: grayscale(1);}
 .ridley { background-image: url(../images/dungeons/ridley.png); filter: grayscale(1);}
 
+.smkey1 { width: 32px; height: 32px; background-size: 32px; top: 0; left: 1; background-image: url(../images/dungeons/sm_keycard_level1.png); }
+.smkey2 { width: 32px; height: 32px; background-size: 32px; top: 0; left: 31; background-image: url(../images/dungeons/sm_keycard_level2.png); }
+.smkeyb { width: 32px; height: 32px; background-size: 32px; top: 32; left: 1; background-image: url(../images/dungeons/sm_keycard_boss.png); }
+
+.smabvmd { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/dungeons/MD.png); opacity: 0.9;}
+.smabvun { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/dungeons/UN.png); opacity: 0.9;}
+.smabvws { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/dungeons/WS.png); opacity: 0.9;}
+.smabvbr { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/dungeons/BR.png); opacity: 0.9;}
+.smabvcr { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/dungeons/CR.png); opacity: 0.9;}
+.smabvln { width: 32px; height: 32px; background-size: 32px; top: 32; left: 32; background-image: url(../images/dungeons/LN.png); opacity: 0.9;}
 .smboss.active { filter: none; }
 
 .smtext { 
@@ -658,11 +673,107 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 #locationMap117 { left: 82.00%; top: 29.7%; } /* Potion Shop (3) */
 #locationMap118 { left: 79.40%; top: 84.7%; } /* Pond of Happiness Shop (3) */
 #locationMap119 { left: 54.80%; top: 67.9%; } /* Bomb Shop (2) */
-#locationMap120 { left: 22.45%; top: 3.49%; } 
-#locationMap121 { left: 12.39%; top: 5.53%; } 
-#locationMap122 { left: 14.86%; top: 5.53%; } 
-#locationMap123 { left: 15.42%; top: 10.73%; } 
-#locationMap124 { left: 47.17%; top: 1.77%; } 
+#locationMap120 { left: 23.63%; top: 4.89%; } /* Gauntlet E-Tank */
+#locationMap121 { left: 13.27%; top: 6.98%; } /* Back of Gauntlet - Left */
+#locationMap122 { left: 15.67%; top: 6.98%; } /* Back of Gauntlet - Right */
+#locationMap123 { left: 16.61%; top: 12.12%; } /* Terminator E-Tank */
+#locationMap124 { left: 48.35%; top: 3.17%; } /* Crateria Power Bomb */
+#locationMap125 { left: 36.14%; top: 12.12%; } /* Bomb Torizo */
+#locationMap126 { left: 22.29%; top: 13.88%; } /* 230 Missile */
+#locationMap127 { left: 34.55%; top: 17.34%; } /* Climb Super */
+#locationMap128 { left: 28.14%; top: 33.64%; } /* Old Mother Brain Missile */
+#locationMap129 { left: 53.33%; top: 8.44%; } /* Moat Missile */
+#locationMap130 { left: 57.75%; top: 1.40%; } /* Sky Missile */
+#locationMap131 { left: 55.76%; top: 5.43%; } /* Maze Missile */
+#locationMap132 { left: 55.76%; top: 10.39%; } /* Ocean Missile */
+#locationMap133 { left: 10.20%; top: 40.57%; } /* Early Super Bridge Missile */
+#locationMap134 { left: 12.64%; top: 40.57%; } /* Brinstar Reserve */
+#locationMap135 { left: 15.14%; top: 39.47%; } /* Brinstar Reserve Front Missile */
+#locationMap136 { left: 15.14%; top: 41.80%; } /* Brinstar Reserve Back Missile */
+#locationMap137 { left: 8.02%; top: 38.77%; } /* Early Super */
+#locationMap138 { left: 3.58%; top: 51.40%; } /* Etecoons E-Tank */
+#locationMap139 { left: 1.24%; top: 51.40%; } /* Etecoons Super */
+#locationMap140 { left: 11.85%; top: 46.07%; } /* Etecoons Power Bomb */
+#locationMap141 { left: 19.28%; top: 46.12%; } /* Mission Impossible Missile */
+#locationMap142 { left: 16.37%; top: 47.91%; } /* Mission Impossible Power Bomb */
+#locationMap143 { left: 25.41%; top: 47.91%; } /* Wave Gate E-Tank */
+#locationMap144 { left: 30.00%; top: 49.61%; } /* Spore Spawn Super */
+#locationMap145 { left: 19.28%; top: 50.64%; } /* Charge Missile */
+#locationMap146 { left: 19.28%; top: 53.13%; } /* Charge Beam */
+#locationMap147 { left: 5.50%; top: 56.84%; } /* Waterway E-Tank */
+#locationMap148 { left: 26.20%; top: 53.65%; } /* Pipe Missile */
+#locationMap149 { left: 28.80%; top: 52.05%; } /* Behind Morph Power Bomb */
+#locationMap150 { left: 31.25%; top: 52.05%; } /* Morph Ball Pedestal */
+#locationMap151 { left: 35.74%; top: 53.31%; } /* Alpha Missile */
+#locationMap152 { left: 39.68%; top: 51.45%; } /* Blue Brinstar Ceiling E-Tank */
+#locationMap153 { left: 42.34%; top: 51.45%; } /* Beta Missile */
+#locationMap154 { left: 37.23%; top: 47.91%; } /* Billy Mays Front Missile */
+#locationMap155 { left: 47.70%; top: 53.31%; } /* Alpha Power Bomb */
+#locationMap156 { left: 45.07%; top: 53.31%; } /* Alpha Power Bomb Missile */
+#locationMap157 { left: 46.61%; top: 47.91%; } /* Beta Power Bomb */
+#locationMap158 { left: 27.62%; top: 60.25%; } /* X-Ray Scope */
+#locationMap159 { left: 51.09%; top: 63.78%; } /* Spazer */
+#locationMap160 { left: 65.51%; top: 65.74%; } /* Kraid Missile */
+#locationMap161 { left: 81.30%; top: 67.52%; } /* Varia Suit */
+#locationMap162 { left: 58.68%; top: 67.52%; } /* Kraid E-Tank */
+#locationMap163 { left: 67.86%; top: 12.09%; } /* Spooky Missile */
+#locationMap164 { left: 72.26%; top: 13.93%; } /* Wrecked Ship Left Supers */
+#locationMap165 { left: 81.50%; top: 13.93%; } /* Wrecked Ship Right Supers */
+#locationMap166 { left: 76.95%; top: 6.70%; } /* Wrecked Ship E-Tank */
+#locationMap167 { left: 81.50%; top: 1.40%; } /* Attic Missile */
+#locationMap168 { left: 69.79%; top: 6.70%; } /* Bowling Missile */
+#locationMap169 { left: 72.36%; top: 3.50%; } /* Wrecked Ship Reserve */
+#locationMap170 { left: 64.74%; top: 6.70%; } /* Gravity Suit */
+#locationMap171 { left: 50.59%; top: 55.29%; } /* Main Street Missile */
+#locationMap172 { left: 52.95%; top: 53.11%; } /* Crab Super */
+#locationMap173 { left: 62.27%; top: 54.29%; } /* Mama Turtle E-Tank */
+#locationMap174 { left: 64.84%; top: 55.96%; } /* Mama Turtle Missile */
+#locationMap175 { left: 66.32%; top: 44.23%; } /* Beach Missile */
+#locationMap176 { left: 54.20%; top: 44.26%; } /* Watering Hole - Left */
+#locationMap177 { left: 66.34%; top: 58.57%; } /* Left Sand Pit Missile */
+#locationMap178 { left: 70.88%; top: 58.57%; } /* Right Sand Pit Missile */
+#locationMap179 { left: 72.43%; top: 60.87%; } /* Right Sand Pit Power Bomb */
+#locationMap180 { left: 71.61%; top: 49.58%; } /* Aqueduct Missile */
+#locationMap181 { left: 73.95%; top: 49.58%; } /* Aqueduct Super */
+#locationMap182 { left: 79.33%; top: 47.82%; } /* Botwoon E-Tank */
+#locationMap183 { left: 97.37%; top: 46.04%; } /* Precious Missile */
+#locationMap184 { left: 92.01%; top: 51.40%; } /* Space Jump */
+#locationMap185 { left: 78.47%; top: 37.12%; } /* Plasma Beam */
+#locationMap186 { left: 86.03%; top: 62.11%; } /* Spring Ball */
+#locationMap187 { left: 54.81%; top: 78.19%; } /* Hi-Jump Boots E-Tank */
+#locationMap188 { left: 49.97%; top: 80.11%; } /* Hi-Jump Boots */
+#locationMap189 { left: 52.35%; top: 78.19%; } /* Hi-Jump Boots Missile */
+#locationMap190 { left: 48.15%; top: 72.83%; } /* Ice Beam */
+#locationMap191 { left: 43.59%; top: 76.42%; } /* Crumble Shaft Missile */
+#locationMap192 { left: 65.11%; top: 76.40%; } /* Cathedral Missile */
+#locationMap193 { left: 75.43%; top: 78.17%; } /* Bubble Mountain Corner Missile */
+#locationMap194 { left: 72.39%; top: 72.82%; } /* Norfair Reserve Front Missile */
+#locationMap195 { left: 68.80%; top: 72.82%; } /* Norfair Reserve Hidden Missile */
+#locationMap196 { left: 66.40%; top: 72.82%; } /* Norfair Reserve */
+#locationMap197 { left: 94.28%; top: 72.82%; } /* Speed Missile */
+#locationMap198 { left: 96.69%; top: 72.82%; } /* Speed Booster */
+#locationMap199 { left: 80.75%; top: 76.40%; } /* Wave Missile */
+#locationMap200 { left: 84.51%; top: 76.20%; } /* Wave Beam */
+#locationMap201 { left: 69.37%; top: 87.11%; } /* Crocomire E-Tank */
+#locationMap202 { left: 54.20%; top: 87.11%; } /* Croc Power Bomb */
+#locationMap203 { left: 61.70%; top: 96.04%; } /* Cosine Missile */
+#locationMap204 { left: 52.45%; top: 96.04%; } /* Indiana Jones Missile */
+#locationMap205 { left: 45.12%; top: 97.15%; } /* Grapple Beam */
+#locationMap206 { left: 57.25%; top: 80.11%; } /* Croc Escape Missile */
+#locationMap207 { left: 66.76%; top: 96.04%; } /* Gold Torizo Missile */
+#locationMap208 { left: 69.26%; top: 96.04%; } /* Gold Torizo Super */
+#locationMap209 { left: 71.86%; top: 97.93%; } /* Screw Attack */
+#locationMap210 { left: 82.90%; top: 87.11%; } /* Mickey Mouse Missile */
+#locationMap211 { left: 96.64%; top: 88.55%; } /* Firefleas E-Tank */
+#locationMap212 { left: 93.51%; top: 78.40%; } /* Hotarubi Missile */
+#locationMap213 { left: 96.64%; top: 79.97%; } /* Jail Power Bomb */
+#locationMap214 { left: 84.51%; top: 78.60%; } /* FrankerZ Missile */
+#locationMap215 { left: 89.06%; top: 94.36%; } /* Power Bombs of Shame */
+#locationMap216 { left: 74.31%; top: 98.61%; } /* Ridley E-Tank */
+#locationMap217 { left: 75.64%; top: 65.74%; } /* Kraid */
+#locationMap218 { left: 77.68%; top: 16.54%; } /* Phantoon */
+#locationMap219 { left: 94.41%; top: 49.61%; } /* Draygon */
+#locationMap220 { left: 76.70%; top: 95.52%; } /* Ridley */
 
 .instructionsDiv {
     width: 1200px;

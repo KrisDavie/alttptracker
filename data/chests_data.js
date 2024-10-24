@@ -955,40 +955,338 @@
         ]
     },
     {
-        "open_idx": 120,
-        "caption": "Gauntlet E-Tank",
-        "checks": [
-            "Gauntlet E-Tank"
-        ]
+        'open_idx': 120,
+        'caption': 'Gauntlet E-Tank',
+        'checks': ['Gauntlet E-Tank']
     },
     {
-        "open_idx": 121,
-        "caption": "Back of Gauntlet - Left",
-        "checks": [
-            "Back of Gauntlet - Left"
-        ]
+        'open_idx': 121,
+        'caption': 'Back of Gauntlet - Left',
+        'checks': ['Back of Gauntlet - Left']
     },
     {
-        "open_idx": 122,
-        "caption": "Back of Gauntlet - Right",
-        "checks": [
-            "Back of Gauntlet - Right"
-        ]
+        'open_idx': 122,
+        'caption': 'Back of Gauntlet - Right',
+        'checks': ['Back of Gauntlet - Right']
     },
     {
-        "open_idx": 123,
-        "caption": "Terminator E-Tank",
-        "checks": [
-            "Terminator E-Tank"
-        ]
+        'open_idx': 123,
+        'caption': 'Terminator E-Tank',
+        'checks': ['Terminator E-Tank']
     },
     {
-        "open_idx": 124,
-        "caption": "Crateria Power Bomb",
-        "checks": [
-            "Crateria Power Bomb"
-        ]
+        'open_idx': 124,
+        'caption': 'Crateria Power Bomb',
+        'checks': ['Crateria Power Bomb']
     },
+    { 'open_idx': 125, 'caption': 'Bomb Torizo', 'checks': ['Bomb Torizo'] },
+    { 'open_idx': 126, 'caption': '230 Missile', 'checks': ['230 Missile'] },
+    { 'open_idx': 127, 'caption': 'Climb Super', 'checks': ['Climb Super'] },
+    {
+        'open_idx': 128,
+        'caption': 'Old Mother Brain Missile',
+        'checks': ['Old Mother Brain Missile']
+    },
+    { 'open_idx': 129, 'caption': 'Moat Missile', 'checks': ['Moat Missile'] },
+    { 'open_idx': 130, 'caption': 'Sky Missile', 'checks': ['Sky Missile'] },
+    { 'open_idx': 131, 'caption': 'Maze Missile', 'checks': ['Maze Missile'] },
+    { 'open_idx': 132, 'caption': 'Ocean Missile', 'checks': ['Ocean Missile'] },
+    {
+        'open_idx': 133,
+        'caption': 'Early Super Bridge Missile',
+        'checks': ['Early Super Bridge Missile']
+    },
+    {
+        'open_idx': 134,
+        'caption': 'Brinstar Reserve',
+        'checks': ['Brinstar Reserve']
+    },
+    {
+        'open_idx': 135,
+        'caption': 'Brinstar Reserve Front Missile',
+        'checks': ['Brinstar Reserve Front Missile']
+    },
+    {
+        'open_idx': 136,
+        'caption': 'Brinstar Reserve Back Missile',
+        'checks': ['Brinstar Reserve Back Missile']
+    },
+    { 'open_idx': 137, 'caption': 'Early Super', 'checks': ['Early Super'] },
+    {
+        'open_idx': 138,
+        'caption': 'Etecoons E-Tank',
+        'checks': ['Etecoons E-Tank']
+    },
+    { 'open_idx': 139, 'caption': 'Etecoons Super', 'checks': ['Etecoons Super'] },
+    {
+        'open_idx': 140,
+        'caption': 'Etecoons Power Bomb',
+        'checks': ['Etecoons Power Bomb']
+    },
+    {
+        'open_idx': 141,
+        'caption': 'Mission Impossible Missile',
+        'checks': ['Mission Impossible Missile']
+    },
+    {
+        'open_idx': 142,
+        'caption': 'Mission Impossible Power Bomb',
+        'checks': ['Mission Impossible Power Bomb']
+    },
+    {
+        'open_idx': 143,
+        'caption': 'Wave Gate E-Tank',
+        'checks': ['Wave Gate E-Tank']
+    },
+    {
+        'open_idx': 144,
+        'caption': 'Spore Spawn Super',
+        'checks': ['Spore Spawn Super']
+    },
+    { 'open_idx': 145, 'caption': 'Charge Missile', 'checks': ['Charge Missile'] },
+    { 'open_idx': 146, 'caption': 'Charge Beam', 'checks': ['Charge Beam'] },
+    {
+        'open_idx': 147,
+        'caption': 'Waterway E-Tank',
+        'checks': ['Waterway E-Tank']
+    },
+    { 'open_idx': 148, 'caption': 'Pipe Missile', 'checks': ['Pipe Missile'] },
+    {
+        'open_idx': 149,
+        'caption': 'Behind Morph Power Bomb',
+        'checks': ['Behind Morph Power Bomb']
+    },
+    {
+        'open_idx': 150,
+        'caption': 'Morph Ball Pedestal',
+        'checks': ['Morph Ball Pedestal']
+    },
+    { 'open_idx': 151, 'caption': 'Alpha Missile', 'checks': ['Alpha Missile'] },
+    {
+        'open_idx': 152,
+        'caption': 'Blue Brinstar Ceiling E-Tank',
+        'checks': ['Blue Brinstar Ceiling E-Tank']
+    },
+    { 'open_idx': 153, 'caption': 'Beta Missile', 'checks': ['Beta Missile'] },
+    {
+        'open_idx': 154,
+        'caption': 'Billy Mays Front Missile',
+        'checks': ['Billy Mays Front Missile', 'Billy Mays Hidden Missile']
+    },
+    {
+        'open_idx': 155,
+        'caption': 'Alpha Power Bomb',
+        'checks': ['Alpha Power Bomb']
+    },
+    {
+        'open_idx': 156,
+        'caption': 'Alpha Power Bomb Missile',
+        'checks': ['Alpha Power Bomb Missile']
+    },
+    {
+        'open_idx': 157,
+        'caption': 'Beta Power Bomb',
+        'checks': ['Beta Power Bomb']
+    },
+    { 'open_idx': 158, 'caption': 'X-Ray Scope', 'checks': ['X-Ray Scope'] },
+    { 'open_idx': 159, 'caption': 'Spazer', 'checks': ['Spazer'] },
+    { 'open_idx': 160, 'caption': 'Kraid Missile', 'checks': ['Kraid Missile'] },
+    { 'open_idx': 161, 'caption': 'Varia Suit', 'checks': ['Varia Suit'] },
+    { 'open_idx': 162, 'caption': 'Kraid E-Tank', 'checks': ['Kraid E-Tank'] },
+    { 'open_idx': 163, 'caption': 'Spooky Missile', 'checks': ['Spooky Missile'] },
+    {
+        'open_idx': 164,
+        'caption': 'Wrecked Ship Left Supers',
+        'checks': ['Wrecked Ship Left Supers']
+    },
+    {
+        'open_idx': 165,
+        'caption': 'Wrecked Ship Right Supers',
+        'checks': ['Wrecked Ship Right Supers']
+    },
+    {
+        'open_idx': 166,
+        'caption': 'Wrecked Ship E-Tank',
+        'checks': ['Wrecked Ship E-Tank']
+    },
+    { 'open_idx': 167, 'caption': 'Attic Missile', 'checks': ['Attic Missile'] },
+    {
+        'open_idx': 168,
+        'caption': 'Bowling Missile',
+        'checks': ['Bowling Missile']
+    },
+    {
+        'open_idx': 169,
+        'caption': 'Wrecked Ship Reserve',
+        'checks': ['Wrecked Ship Reserve']
+    },
+    { 'open_idx': 170, 'caption': 'Gravity Suit', 'checks': ['Gravity Suit'] },
+    {
+        'open_idx': 171,
+        'caption': 'Main Street Missile',
+        'checks': ['Main Street Missile']
+    },
+    { 'open_idx': 172, 'caption': 'Crab Super', 'checks': ['Crab Super'] },
+    {
+        'open_idx': 173,
+        'caption': 'Mama Turtle E-Tank',
+        'checks': ['Mama Turtle E-Tank']
+    },
+    {
+        'open_idx': 174,
+        'caption': 'Mama Turtle Missile',
+        'checks': ['Mama Turtle Missile']
+    },
+    { 'open_idx': 175, 'caption': 'Beach Missile', 'checks': ['Beach Missile'] },
+    {
+        'open_idx': 176,
+        'caption': 'Watering Hole - Left',
+        'checks': ['Watering Hole - Left', 'Watering Hole - Right']
+    },
+    {
+        'open_idx': 177,
+        'caption': 'Left Sand Pit Missile',
+        'checks': ['Left Sand Pit Missile', 'Maridia Reserve']
+    },
+    {
+        'open_idx': 178,
+        'caption': 'Right Sand Pit Missile',
+        'checks': ['Right Sand Pit Missile']
+    },
+    {
+        'open_idx': 179,
+        'caption': 'Right Sand Pit Power Bomb',
+        'checks': ['Right Sand Pit Power Bomb']
+    },
+    {
+        'open_idx': 180,
+        'caption': 'Aqueduct Missile',
+        'checks': ['Aqueduct Missile']
+    },
+    { 'open_idx': 181, 'caption': 'Aqueduct Super', 'checks': ['Aqueduct Super'] },
+    { 'open_idx': 182, 'caption': 'Botwoon E-Tank', 'checks': ['Botwoon E-Tank'] },
+    {
+        'open_idx': 183,
+        'caption': 'Precious Missile',
+        'checks': ['Precious Missile']
+    },
+    { 'open_idx': 184, 'caption': 'Space Jump', 'checks': ['Space Jump'] },
+    { 'open_idx': 185, 'caption': 'Plasma Beam', 'checks': ['Plasma Beam'] },
+    { 'open_idx': 186, 'caption': 'Spring Ball', 'checks': ['Spring Ball'] },
+    {
+        'open_idx': 187,
+        'caption': 'Hi-Jump Boots E-Tank',
+        'checks': ['Hi-Jump Boots E-Tank']
+    },
+    { 'open_idx': 188, 'caption': 'Hi-Jump Boots', 'checks': ['Hi-Jump Boots'] },
+    {
+        'open_idx': 189,
+        'caption': 'Hi-Jump Boots Missile',
+        'checks': ['Hi-Jump Boots Missile']
+    },
+    { 'open_idx': 190, 'caption': 'Ice Beam', 'checks': ['Ice Beam'] },
+    {
+        'open_idx': 191,
+        'caption': 'Crumble Shaft Missile',
+        'checks': ['Crumble Shaft Missile']
+    },
+    {
+        'open_idx': 192,
+        'caption': 'Cathedral Missile',
+        'checks': ['Cathedral Missile']
+    },
+    {
+        'open_idx': 193,
+        'caption': 'Bubble Mountain Corner Missile',
+        'checks': ['Bubble Mountain Corner Missile']
+    },
+    {
+        'open_idx': 194,
+        'caption': 'Norfair Reserve Front Missile',
+        'checks': ['Norfair Reserve Front Missile']
+    },
+    {
+        'open_idx': 195,
+        'caption': 'Norfair Reserve Hidden Missile',
+        'checks': ['Norfair Reserve Hidden Missile']
+    },
+    {
+        'open_idx': 196,
+        'caption': 'Norfair Reserve',
+        'checks': ['Norfair Reserve']
+    },
+    { 'open_idx': 197, 'caption': 'Speed Missile', 'checks': ['Speed Missile'] },
+    { 'open_idx': 198, 'caption': 'Speed Booster', 'checks': ['Speed Booster'] },
+    { 'open_idx': 199, 'caption': 'Wave Missile', 'checks': ['Wave Missile'] },
+    { 'open_idx': 200, 'caption': 'Wave Beam', 'checks': ['Wave Beam'] },
+    {
+        'open_idx': 201,
+        'caption': 'Crocomire E-Tank',
+        'checks': ['Crocomire E-Tank']
+    },
+    {
+        'open_idx': 202,
+        'caption': 'Croc Power Bomb',
+        'checks': ['Croc Power Bomb']
+    },
+    { 'open_idx': 203, 'caption': 'Cosine Missile', 'checks': ['Cosine Missile'] },
+    {
+        'open_idx': 204,
+        'caption': 'Indiana Jones Missile',
+        'checks': ['Indiana Jones Missile']
+    },
+    { 'open_idx': 205, 'caption': 'Grapple Beam', 'checks': ['Grapple Beam'] },
+    {
+        'open_idx': 206,
+        'caption': 'Croc Escape Missile',
+        'checks': ['Croc Escape Missile']
+    },
+    {
+        'open_idx': 207,
+        'caption': 'Gold Torizo Missile',
+        'checks': ['Gold Torizo Missile']
+    },
+    {
+        'open_idx': 208,
+        'caption': 'Gold Torizo Super',
+        'checks': ['Gold Torizo Super']
+    },
+    { 'open_idx': 209, 'caption': 'Screw Attack', 'checks': ['Screw Attack'] },
+    {
+        'open_idx': 210,
+        'caption': 'Mickey Mouse Missile',
+        'checks': ['Mickey Mouse Missile']
+    },
+    {
+        'open_idx': 211,
+        'caption': 'Firefleas E-Tank',
+        'checks': ['Firefleas E-Tank']
+    },
+    {
+        'open_idx': 212,
+        'caption': 'Hotarubi Missile',
+        'checks': ['Hotarubi Missile']
+    },
+    {
+        'open_idx': 213,
+        'caption': 'Jail Power Bomb',
+        'checks': ['Jail Power Bomb']
+    },
+    {
+        'open_idx': 214,
+        'caption': 'FrankerZ Missile',
+        'checks': ['FrankerZ Missile']
+    },
+    {
+        'open_idx': 215,
+        'caption': 'Power Bombs of Shame',
+        'checks': ['Power Bombs of Shame']
+    },
+    { 'open_idx': 216, 'caption': 'Ridley E-Tank', 'checks': ['Ridley E-Tank'] },
+    { 'open_idx': 217, 'caption': 'Kraid', 'checks': ['Kraid'] },
+    { 'open_idx': 218, 'caption': 'Phantoon', 'checks': ['Phantoon'] },
+    { 'open_idx': 219, 'caption': 'Draygon', 'checks': ['Draygon'] },
+    { 'open_idx': 220, 'caption': 'Ridley', 'checks': ['Ridley'] },
     {
         "entrance_idx": 0,
         "caption": "Sunken Treasure",
@@ -1023,7 +1321,8 @@
         "checks": [
             "Desert Ledge"
         ]
-    }
+    },
+    
 ];
 
 })(window);

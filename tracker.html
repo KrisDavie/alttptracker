@@ -588,9 +588,12 @@
                         <div id="smallkey9" class="smallkeyfull" onClick="toggle('smallkey9')" onMouseover="findItems(['TR Key'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('smallkey9');return false;">0</div>
                       </div>
                     </div>
+                    <div id="grappleonlydiv" class="cell">
+                      <div class="item smitem grapple" onClick="toggle('grapple')" onMouseover="findItems(['Grapple'])" onMouseout="unhighlightAll()"></div>
+                    </div>
                     <div id="xraysplitdiv" class="cell split">
                       <div class="item half smitem grapple" onClick="toggle('grapple')" onMouseover="findItems(['Grapple'])" onMouseout="unhighlightAll()"></div>
-                      <div class="item half smitem xray" onClick="toggle('xray')" onMouseover="findItems(['Xray Beam'])" onMouseout="unhighlightAll()"></div>
+                      <div class="item half smitem xray" id='xrayhalfdiv' onClick="toggle('xray')" onMouseover="findItems(['Xray Beam'])" onMouseout="unhighlightAll()"></div>
                     </div>
                     <div class="cell">
                       <div class="item smitem spazer" onClick="toggle('spazer')" onMouseover="findItems(['Spazer'])" onMouseout="unhighlightAll()"></div>
@@ -624,19 +627,42 @@
                     </div>
                   </div>
                   <div class="cell">
-                    <div class="item">
+                    <div class="cell quarter" id="smkeysdivcr">
+                      <div class="item half smitem smkey1 crkey1" onClick="toggle('crkey1')" onMouseover="findItems(['CR Key 1'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('crkey1');return false;"></div>
+                      <div class="item half smitem smkey2 crkey2" onClick="toggle('crkey2')" onMouseover="findItems(['CR Key 2'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('crkey2');return false;"></div>
+                      <div class="item half smitem smkeyb crkeyb" onClick="toggle('crkeyb')" onMouseover="findItems(['CR Key Boss'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('crkeyb');return false;"></div>
+                      <div class="half smtext smabvcr"></div>
+                    </div>
+                    <div class="item" id="emptycellcr">
                     </div>
                   </div>
                   <div class="cell">
-                    <div class="item">
+                    <div class="cell quarter" id="smkeysdivbr">
+                      <div class="item half smitem smkey1 brkey1" onClick="toggle('brkey1')" onMouseover="findItems(['BR Key 1'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('brmkey1');return false;"></div>
+                      <div class="item half smitem smkey2 brkey2" onClick="toggle('brkey2')" onMouseover="findItems(['BR Key 2'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('brmkey2');return false;"></div>
+                      <div class="item half smitem smkeyb brkeyb" onClick="toggle('brkeyb')" onMouseover="findItems(['BR Key Boss'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('brmkeyb');return false;"></div>
+                      <div class="half smtext smabvbr"></div>
+                    </div>
+                    <div class="item" id="emptycellbr">
                     </div>
                   </div>
                   <div class="cell">
-                    <div class="item">
+                    <div class="cell quarter" id="smkeysdivmd">
+                      <div class="item half smitem smkey1 mdkey1" onClick="toggle('mdkey1')" onMouseover="findItems(['MD Key 1'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('mdkey1');return false;"></div>
+                      <div class="item half smitem smkey2 mdkey2" onClick="toggle('mdkey2')" onMouseover="findItems(['MD Key 2'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('mdkey2');return false;"></div>
+                      <div class="item half smitem smkeyb mdkeyb" onClick="toggle('mdkeyb')" onMouseover="findItems(['MD Key Boss'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('mdkeyb');return false;"></div>
+                      <div class="half smtext smabvmd"></div>
+                    </div>
+                    <div class="item" id="emptycellmd">
                     </div>
                   </div>
                   <div class="cell">
-                    <div class="item smitem xray" onClick="toggle('xray')" onMouseover="findItems(['Xray Beam'])" onMouseout="unhighlightAll()"></div>
+                    <div class="cell quarter" id="smkeysdivws">
+                      <div class="item half smitem smkey1 wskey1" onClick="toggle('wskey1')" onMouseover="findItems(['WS Key 1'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('wskey1');return false;"></div>
+                      <div class="item half smitem smkeyb wskeyb" onClick="toggle('wskeyb')" onMouseover="findItems(['WS Key Boss'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('wskeyb');return false;"></div>
+                      <div class="half smtext smabvws"></div>
+                    </div>
+                    <div class="item smitem xray" id="xrayonlydiv" onClick="toggle('xray')" onMouseover="findItems(['Xray Beam'])" onMouseout="unhighlightAll()"></div>
                   </div>
                   <div class="cell">
                     <div class="item smitem plasma" onClick="toggle('plasma')" onMouseover="findItems(['Plasma Beam'])" onMouseout="unhighlightAll()"></div>
@@ -671,11 +697,22 @@
                     </div>
                   </div>
                   <div class="cell">
-                    <div class="item">
+                    <div class="cell quarter" id="smkeysdivun">
+                      <div class="item half smitem smkey1 unkey1" onClick="toggle('unkey1')" onMouseover="findItems(['UN Key 1'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('unkey1');return false;"></div>
+                      <div class="item half smitem smkey2 unkey2" onClick="toggle('unkey2')" onMouseover="findItems(['UN Key 2'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('unkey2');return false;"></div>
+                      <div class="item half smitem smkeyb unkeyb" onClick="toggle('unkeyb')" onMouseover="findItems(['UN Key Boss'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('unkeyb');return false;"></div>
+                      <div class="half smtext smabvun"></div>
+                    </div>
+                    <div class="item" id="emptycellun">
                     </div>
                   </div>
                   <div class="cell">
-                    <div class="item">
+                    <div class="cell quarter" id="smkeysdivln">
+                      <div class="item half smitem smkey1 lnkey1" onClick="toggle('lnkey1')" onMouseover="findItems(['LN Key 1'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('lnkey1');return false;"></div>
+                      <div class="item half smitem smkeyb lnkeyb" onClick="toggle('lnkeyb')" onMouseover="findItems(['LN Key Boss'])" onMouseout="unhighlightAll()" oncontextmenu="javascript:rightClickKey('lnkeyb');return false;"></div>
+                      <div class="half smtext smabvln"></div>
+                    </div>
+                    <div class="item" id="emptycellln">
                     </div>
                   </div>
                   <div class="cell">
@@ -692,10 +729,108 @@
         </div>
         <div id="smmap" class="cell">
           <div id="locationMap120" onClick="toggle_chest(120)" onMouseover="highlight(120)" onMouseout="unhighlight(120)" oncontextmenu="rightClickLocation(120); return false;"></div>
+          <div id="locationMap120" onClick="toggle_chest(120)" onMouseover="highlight(120)" onMouseout="unhighlight(120)" oncontextmenu="rightClickLocation(120); return false;"></div>
           <div id="locationMap121" onClick="toggle_chest(121)" onMouseover="highlight(121)" onMouseout="unhighlight(121)" oncontextmenu="rightClickLocation(121); return false;"></div>
           <div id="locationMap122" onClick="toggle_chest(122)" onMouseover="highlight(122)" onMouseout="unhighlight(122)" oncontextmenu="rightClickLocation(122); return false;"></div>
           <div id="locationMap123" onClick="toggle_chest(123)" onMouseover="highlight(123)" onMouseout="unhighlight(123)" oncontextmenu="rightClickLocation(123); return false;"></div>
           <div id="locationMap124" onClick="toggle_chest(124)" onMouseover="highlight(124)" onMouseout="unhighlight(124)" oncontextmenu="rightClickLocation(124); return false;"></div>
+          <div id="locationMap125" onClick="toggle_chest(125)" onMouseover="highlight(125)" onMouseout="unhighlight(125)" oncontextmenu="rightClickLocation(125); return false;"></div>
+          <div id="locationMap126" onClick="toggle_chest(126)" onMouseover="highlight(126)" onMouseout="unhighlight(126)" oncontextmenu="rightClickLocation(126); return false;"></div>
+          <div id="locationMap127" onClick="toggle_chest(127)" onMouseover="highlight(127)" onMouseout="unhighlight(127)" oncontextmenu="rightClickLocation(127); return false;"></div>
+          <div id="locationMap128" onClick="toggle_chest(128)" onMouseover="highlight(128)" onMouseout="unhighlight(128)" oncontextmenu="rightClickLocation(128); return false;"></div>
+          <div id="locationMap129" onClick="toggle_chest(129)" onMouseover="highlight(129)" onMouseout="unhighlight(129)" oncontextmenu="rightClickLocation(129); return false;"></div>
+          <div id="locationMap130" onClick="toggle_chest(130)" onMouseover="highlight(130)" onMouseout="unhighlight(130)" oncontextmenu="rightClickLocation(130); return false;"></div>
+          <div id="locationMap131" onClick="toggle_chest(131)" onMouseover="highlight(131)" onMouseout="unhighlight(131)" oncontextmenu="rightClickLocation(131); return false;"></div>
+          <div id="locationMap132" onClick="toggle_chest(132)" onMouseover="highlight(132)" onMouseout="unhighlight(132)" oncontextmenu="rightClickLocation(132); return false;"></div>
+          <div id="locationMap133" onClick="toggle_chest(133)" onMouseover="highlight(133)" onMouseout="unhighlight(133)" oncontextmenu="rightClickLocation(133); return false;"></div>
+          <div id="locationMap134" onClick="toggle_chest(134)" onMouseover="highlight(134)" onMouseout="unhighlight(134)" oncontextmenu="rightClickLocation(134); return false;"></div>
+          <div id="locationMap135" onClick="toggle_chest(135)" onMouseover="highlight(135)" onMouseout="unhighlight(135)" oncontextmenu="rightClickLocation(135); return false;"></div>
+          <div id="locationMap136" onClick="toggle_chest(136)" onMouseover="highlight(136)" onMouseout="unhighlight(136)" oncontextmenu="rightClickLocation(136); return false;"></div>
+          <div id="locationMap137" onClick="toggle_chest(137)" onMouseover="highlight(137)" onMouseout="unhighlight(137)" oncontextmenu="rightClickLocation(137); return false;"></div>
+          <div id="locationMap138" onClick="toggle_chest(138)" onMouseover="highlight(138)" onMouseout="unhighlight(138)" oncontextmenu="rightClickLocation(138); return false;"></div>
+          <div id="locationMap139" onClick="toggle_chest(139)" onMouseover="highlight(139)" onMouseout="unhighlight(139)" oncontextmenu="rightClickLocation(139); return false;"></div>
+          <div id="locationMap140" onClick="toggle_chest(140)" onMouseover="highlight(140)" onMouseout="unhighlight(140)" oncontextmenu="rightClickLocation(140); return false;"></div>
+          <div id="locationMap141" onClick="toggle_chest(141)" onMouseover="highlight(141)" onMouseout="unhighlight(141)" oncontextmenu="rightClickLocation(141); return false;"></div>
+          <div id="locationMap142" onClick="toggle_chest(142)" onMouseover="highlight(142)" onMouseout="unhighlight(142)" oncontextmenu="rightClickLocation(142); return false;"></div>
+          <div id="locationMap143" onClick="toggle_chest(143)" onMouseover="highlight(143)" onMouseout="unhighlight(143)" oncontextmenu="rightClickLocation(143); return false;"></div>
+          <div id="locationMap144" onClick="toggle_chest(144)" onMouseover="highlight(144)" onMouseout="unhighlight(144)" oncontextmenu="rightClickLocation(144); return false;"></div>
+          <div id="locationMap145" onClick="toggle_chest(145)" onMouseover="highlight(145)" onMouseout="unhighlight(145)" oncontextmenu="rightClickLocation(145); return false;"></div>
+          <div id="locationMap146" onClick="toggle_chest(146)" onMouseover="highlight(146)" onMouseout="unhighlight(146)" oncontextmenu="rightClickLocation(146); return false;"></div>
+          <div id="locationMap147" onClick="toggle_chest(147)" onMouseover="highlight(147)" onMouseout="unhighlight(147)" oncontextmenu="rightClickLocation(147); return false;"></div>
+          <div id="locationMap148" onClick="toggle_chest(148)" onMouseover="highlight(148)" onMouseout="unhighlight(148)" oncontextmenu="rightClickLocation(148); return false;"></div>
+          <div id="locationMap149" onClick="toggle_chest(149)" onMouseover="highlight(149)" onMouseout="unhighlight(149)" oncontextmenu="rightClickLocation(149); return false;"></div>
+          <div id="locationMap150" onClick="toggle_chest(150)" onMouseover="highlight(150)" onMouseout="unhighlight(150)" oncontextmenu="rightClickLocation(150); return false;"></div>
+          <div id="locationMap151" onClick="toggle_chest(151)" onMouseover="highlight(151)" onMouseout="unhighlight(151)" oncontextmenu="rightClickLocation(151); return false;"></div>
+          <div id="locationMap152" onClick="toggle_chest(152)" onMouseover="highlight(152)" onMouseout="unhighlight(152)" oncontextmenu="rightClickLocation(152); return false;"></div>
+          <div id="locationMap153" onClick="toggle_chest(153)" onMouseover="highlight(153)" onMouseout="unhighlight(153)" oncontextmenu="rightClickLocation(153); return false;"></div>
+          <div id="locationMap154" onClick="toggle_chest(154)" onMouseover="highlight(154)" onMouseout="unhighlight(154)" oncontextmenu="rightClickLocation(154); return false;"></div>
+          <div id="locationMap155" onClick="toggle_chest(155)" onMouseover="highlight(155)" onMouseout="unhighlight(155)" oncontextmenu="rightClickLocation(155); return false;"></div>
+          <div id="locationMap156" onClick="toggle_chest(156)" onMouseover="highlight(156)" onMouseout="unhighlight(156)" oncontextmenu="rightClickLocation(156); return false;"></div>
+          <div id="locationMap157" onClick="toggle_chest(157)" onMouseover="highlight(157)" onMouseout="unhighlight(157)" oncontextmenu="rightClickLocation(157); return false;"></div>
+          <div id="locationMap158" onClick="toggle_chest(158)" onMouseover="highlight(158)" onMouseout="unhighlight(158)" oncontextmenu="rightClickLocation(158); return false;"></div>
+          <div id="locationMap159" onClick="toggle_chest(159)" onMouseover="highlight(159)" onMouseout="unhighlight(159)" oncontextmenu="rightClickLocation(159); return false;"></div>
+          <div id="locationMap160" onClick="toggle_chest(160)" onMouseover="highlight(160)" onMouseout="unhighlight(160)" oncontextmenu="rightClickLocation(160); return false;"></div>
+          <div id="locationMap161" onClick="toggle_chest(161)" onMouseover="highlight(161)" onMouseout="unhighlight(161)" oncontextmenu="rightClickLocation(161); return false;"></div>
+          <div id="locationMap162" onClick="toggle_chest(162)" onMouseover="highlight(162)" onMouseout="unhighlight(162)" oncontextmenu="rightClickLocation(162); return false;"></div>
+          <div id="locationMap163" onClick="toggle_chest(163)" onMouseover="highlight(163)" onMouseout="unhighlight(163)" oncontextmenu="rightClickLocation(163); return false;"></div>
+          <div id="locationMap164" onClick="toggle_chest(164)" onMouseover="highlight(164)" onMouseout="unhighlight(164)" oncontextmenu="rightClickLocation(164); return false;"></div>
+          <div id="locationMap165" onClick="toggle_chest(165)" onMouseover="highlight(165)" onMouseout="unhighlight(165)" oncontextmenu="rightClickLocation(165); return false;"></div>
+          <div id="locationMap166" onClick="toggle_chest(166)" onMouseover="highlight(166)" onMouseout="unhighlight(166)" oncontextmenu="rightClickLocation(166); return false;"></div>
+          <div id="locationMap167" onClick="toggle_chest(167)" onMouseover="highlight(167)" onMouseout="unhighlight(167)" oncontextmenu="rightClickLocation(167); return false;"></div>
+          <div id="locationMap168" onClick="toggle_chest(168)" onMouseover="highlight(168)" onMouseout="unhighlight(168)" oncontextmenu="rightClickLocation(168); return false;"></div>
+          <div id="locationMap169" onClick="toggle_chest(169)" onMouseover="highlight(169)" onMouseout="unhighlight(169)" oncontextmenu="rightClickLocation(169); return false;"></div>
+          <div id="locationMap170" onClick="toggle_chest(170)" onMouseover="highlight(170)" onMouseout="unhighlight(170)" oncontextmenu="rightClickLocation(170); return false;"></div>
+          <div id="locationMap171" onClick="toggle_chest(171)" onMouseover="highlight(171)" onMouseout="unhighlight(171)" oncontextmenu="rightClickLocation(171); return false;"></div>
+          <div id="locationMap172" onClick="toggle_chest(172)" onMouseover="highlight(172)" onMouseout="unhighlight(172)" oncontextmenu="rightClickLocation(172); return false;"></div>
+          <div id="locationMap173" onClick="toggle_chest(173)" onMouseover="highlight(173)" onMouseout="unhighlight(173)" oncontextmenu="rightClickLocation(173); return false;"></div>
+          <div id="locationMap174" onClick="toggle_chest(174)" onMouseover="highlight(174)" onMouseout="unhighlight(174)" oncontextmenu="rightClickLocation(174); return false;"></div>
+          <div id="locationMap175" onClick="toggle_chest(175)" onMouseover="highlight(175)" onMouseout="unhighlight(175)" oncontextmenu="rightClickLocation(175); return false;"></div>
+          <div id="locationMap176" onClick="toggle_chest(176)" onMouseover="highlight(176)" onMouseout="unhighlight(176)" oncontextmenu="rightClickLocation(176); return false;"></div>
+          <div id="locationMap177" onClick="toggle_chest(177)" onMouseover="highlight(177)" onMouseout="unhighlight(177)" oncontextmenu="rightClickLocation(177); return false;"></div>
+          <div id="locationMap178" onClick="toggle_chest(178)" onMouseover="highlight(178)" onMouseout="unhighlight(178)" oncontextmenu="rightClickLocation(178); return false;"></div>
+          <div id="locationMap179" onClick="toggle_chest(179)" onMouseover="highlight(179)" onMouseout="unhighlight(179)" oncontextmenu="rightClickLocation(179); return false;"></div>
+          <div id="locationMap180" onClick="toggle_chest(180)" onMouseover="highlight(180)" onMouseout="unhighlight(180)" oncontextmenu="rightClickLocation(180); return false;"></div>
+          <div id="locationMap181" onClick="toggle_chest(181)" onMouseover="highlight(181)" onMouseout="unhighlight(181)" oncontextmenu="rightClickLocation(181); return false;"></div>
+          <div id="locationMap182" onClick="toggle_chest(182)" onMouseover="highlight(182)" onMouseout="unhighlight(182)" oncontextmenu="rightClickLocation(182); return false;"></div>
+          <div id="locationMap183" onClick="toggle_chest(183)" onMouseover="highlight(183)" onMouseout="unhighlight(183)" oncontextmenu="rightClickLocation(183); return false;"></div>
+          <div id="locationMap184" onClick="toggle_chest(184)" onMouseover="highlight(184)" onMouseout="unhighlight(184)" oncontextmenu="rightClickLocation(184); return false;"></div>
+          <div id="locationMap185" onClick="toggle_chest(185)" onMouseover="highlight(185)" onMouseout="unhighlight(185)" oncontextmenu="rightClickLocation(185); return false;"></div>
+          <div id="locationMap186" onClick="toggle_chest(186)" onMouseover="highlight(186)" onMouseout="unhighlight(186)" oncontextmenu="rightClickLocation(186); return false;"></div>
+          <div id="locationMap187" onClick="toggle_chest(187)" onMouseover="highlight(187)" onMouseout="unhighlight(187)" oncontextmenu="rightClickLocation(187); return false;"></div>
+          <div id="locationMap188" onClick="toggle_chest(188)" onMouseover="highlight(188)" onMouseout="unhighlight(188)" oncontextmenu="rightClickLocation(188); return false;"></div>
+          <div id="locationMap189" onClick="toggle_chest(189)" onMouseover="highlight(189)" onMouseout="unhighlight(189)" oncontextmenu="rightClickLocation(189); return false;"></div>
+          <div id="locationMap190" onClick="toggle_chest(190)" onMouseover="highlight(190)" onMouseout="unhighlight(190)" oncontextmenu="rightClickLocation(190); return false;"></div>
+          <div id="locationMap191" onClick="toggle_chest(191)" onMouseover="highlight(191)" onMouseout="unhighlight(191)" oncontextmenu="rightClickLocation(191); return false;"></div>
+          <div id="locationMap192" onClick="toggle_chest(192)" onMouseover="highlight(192)" onMouseout="unhighlight(192)" oncontextmenu="rightClickLocation(192); return false;"></div>
+          <div id="locationMap193" onClick="toggle_chest(193)" onMouseover="highlight(193)" onMouseout="unhighlight(193)" oncontextmenu="rightClickLocation(193); return false;"></div>
+          <div id="locationMap194" onClick="toggle_chest(194)" onMouseover="highlight(194)" onMouseout="unhighlight(194)" oncontextmenu="rightClickLocation(194); return false;"></div>
+          <div id="locationMap195" onClick="toggle_chest(195)" onMouseover="highlight(195)" onMouseout="unhighlight(195)" oncontextmenu="rightClickLocation(195); return false;"></div>
+          <div id="locationMap196" onClick="toggle_chest(196)" onMouseover="highlight(196)" onMouseout="unhighlight(196)" oncontextmenu="rightClickLocation(196); return false;"></div>
+          <div id="locationMap197" onClick="toggle_chest(197)" onMouseover="highlight(197)" onMouseout="unhighlight(197)" oncontextmenu="rightClickLocation(197); return false;"></div>
+          <div id="locationMap198" onClick="toggle_chest(198)" onMouseover="highlight(198)" onMouseout="unhighlight(198)" oncontextmenu="rightClickLocation(198); return false;"></div>
+          <div id="locationMap199" onClick="toggle_chest(199)" onMouseover="highlight(199)" onMouseout="unhighlight(199)" oncontextmenu="rightClickLocation(199); return false;"></div>
+          <div id="locationMap200" onClick="toggle_chest(200)" onMouseover="highlight(200)" onMouseout="unhighlight(200)" oncontextmenu="rightClickLocation(200); return false;"></div>
+          <div id="locationMap201" onClick="toggle_chest(201)" onMouseover="highlight(201)" onMouseout="unhighlight(201)" oncontextmenu="rightClickLocation(201); return false;"></div>
+          <div id="locationMap202" onClick="toggle_chest(202)" onMouseover="highlight(202)" onMouseout="unhighlight(202)" oncontextmenu="rightClickLocation(202); return false;"></div>
+          <div id="locationMap203" onClick="toggle_chest(203)" onMouseover="highlight(203)" onMouseout="unhighlight(203)" oncontextmenu="rightClickLocation(203); return false;"></div>
+          <div id="locationMap204" onClick="toggle_chest(204)" onMouseover="highlight(204)" onMouseout="unhighlight(204)" oncontextmenu="rightClickLocation(204); return false;"></div>
+          <div id="locationMap205" onClick="toggle_chest(205)" onMouseover="highlight(205)" onMouseout="unhighlight(205)" oncontextmenu="rightClickLocation(205); return false;"></div>
+          <div id="locationMap206" onClick="toggle_chest(206)" onMouseover="highlight(206)" onMouseout="unhighlight(206)" oncontextmenu="rightClickLocation(206); return false;"></div>
+          <div id="locationMap207" onClick="toggle_chest(207)" onMouseover="highlight(207)" onMouseout="unhighlight(207)" oncontextmenu="rightClickLocation(207); return false;"></div>
+          <div id="locationMap208" onClick="toggle_chest(208)" onMouseover="highlight(208)" onMouseout="unhighlight(208)" oncontextmenu="rightClickLocation(208); return false;"></div>
+          <div id="locationMap209" onClick="toggle_chest(209)" onMouseover="highlight(209)" onMouseout="unhighlight(209)" oncontextmenu="rightClickLocation(209); return false;"></div>
+          <div id="locationMap210" onClick="toggle_chest(210)" onMouseover="highlight(210)" onMouseout="unhighlight(210)" oncontextmenu="rightClickLocation(210); return false;"></div>
+          <div id="locationMap211" onClick="toggle_chest(211)" onMouseover="highlight(211)" onMouseout="unhighlight(211)" oncontextmenu="rightClickLocation(211); return false;"></div>
+          <div id="locationMap212" onClick="toggle_chest(212)" onMouseover="highlight(212)" onMouseout="unhighlight(212)" oncontextmenu="rightClickLocation(212); return false;"></div>
+          <div id="locationMap213" onClick="toggle_chest(213)" onMouseover="highlight(213)" onMouseout="unhighlight(213)" oncontextmenu="rightClickLocation(213); return false;"></div>
+          <div id="locationMap214" onClick="toggle_chest(214)" onMouseover="highlight(214)" onMouseout="unhighlight(214)" oncontextmenu="rightClickLocation(214); return false;"></div>
+          <div id="locationMap215" onClick="toggle_chest(215)" onMouseover="highlight(215)" onMouseout="unhighlight(215)" oncontextmenu="rightClickLocation(215); return false;"></div>
+          <div id="locationMap216" onClick="toggle_chest(216)" onMouseover="highlight(216)" onMouseout="unhighlight(216)" oncontextmenu="rightClickLocation(216); return false;"></div>
+          <div id="locationMap217" onClick="toggle_chest(217)" onMouseover="highlight(217)" onMouseout="unhighlight(217)" oncontextmenu="rightClickLocation(217); return false;"></div>
+          <div id="locationMap218" onClick="toggle_chest(218)" onMouseover="highlight(218)" onMouseout="unhighlight(218)" oncontextmenu="rightClickLocation(218); return false;"></div>
+          <div id="locationMap219" onClick="toggle_chest(219)" onMouseover="highlight(219)" onMouseout="unhighlight(219)" oncontextmenu="rightClickLocation(219); return false;"></div>
+          <div id="locationMap220" onClick="toggle_chest(220)" onMouseover="highlight(220)" onMouseout="unhighlight(220)" oncontextmenu="rightClickLocation(220); return false;"></div>
+
         </div>
         <div id="spheres" class="row">
           <div class="row">

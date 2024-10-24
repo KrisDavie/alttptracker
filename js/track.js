@@ -211,7 +211,7 @@
             return;
         }
 		
-		var isKey = label.includes('key');
+		var isKey = label.includes('smallkey') || label.includes('bigkey');
 		
 		// If left clicked on a big key
 		if (label.substring(0,6) === 'bigkey') {
@@ -320,8 +320,11 @@
 					if ((23 <= k) && (k <= 63)) {
 						document.getElementById('locationMap'+k).classList.add('bonkloc');
 					}
-					if ((k >= 120)) {
+					if ((k >= 120) && (k <= 216)) {
 						document.getElementById('locationMap'+k).classList.add('smloc');
+					}
+					if ((k >= 217)) {
+						document.getElementById('locationMap'+k).classList.add('smbossloc');
 					}
 				}
             }
@@ -1181,7 +1184,8 @@
 			(chests[x].is_opened ? checkedType : chests[x].is_available()) +
 			(highlight ? ' highlight' : '') +
 			(scouted && !chests[x].is_opened ? ' scouted' : '') + 
-			(x >= 120 ? ' smloc' : '');
+			(x >= 120 && x <= 216 ? ' smloc' : '') + 
+			(x >= 217 ? ' smbossloc' : '');
 
 	};
 
@@ -2440,8 +2444,18 @@
 		document.getElementById("mapEntranceDiv_dark").style.display = flags.entrancemode === 'N' ? "none" : "block";
 
 		// Display correct Xray/Grapple/WS Keys
+		document.getElementById("xrayhalfdiv").style.top = flags.wildsmkeys === '0' ? '0': '32'
+		document.getElementById("xrayhalfdiv").style.left = flags.wildsmkeys === '0' ? '0': '32'
+		document.getElementById("xrayonlydiv").style.display = flags.wildsmkeys === '0' ? "block" : "none";
+		document.getElementById("xraysplitdiv").style.display = flags.wildsmkeys === '1' ? "block" : "none";
+		document.getElementById("grappleonlydiv").style.display = flags.wildsmkeys === '0' ? "block" : "none";
 
-		
+		['cr', 'br', 'md', 'ws', 'un', 'ln'].forEach(function (area) {	
+			document.getElementById("smkeysdiv" + area).style.display = flags.wildsmkeys === '1' ? "block" : "none";
+			if (area === 'ws') return
+			document.getElementById("emptycell" + area).style.display = flags.wildsmkeys === '0' ? "block" : "none";
+		})
+
 		//Hide HC and CT big keys if not needed
 		document.getElementById('bigkey11').style.visibility = flags.wildbigkeys && flags.doorshuffle != 'N' ? 'visible' : 'hidden';
 		document.getElementById('bigkey12').style.visibility = flags.wildbigkeys && flags.doorshuffle === 'C' ? 'visible' : 'hidden';
