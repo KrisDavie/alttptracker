@@ -2394,7 +2394,7 @@
                 "anyOf": [
                     "flute",
                     "glove",
-                    "canBreach|Super Metroid - Norfair Portal"
+                    "canBreach|Lower Norfair - Portal"
                 ]
             },
             "logical": {

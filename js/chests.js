@@ -240,8 +240,8 @@
 			case "canOWFairyRevive": return userLogicSettings[requirement] && (items.bottle && items.net);
 			case "canQirnJump": return userLogicSettings[requirement] && (items.bomb);
 			case "canMirrorSuperBunny": return userLogicSettings[requirement] && (items.mirror);
-			case "canDungeonBunnyRevive": return userLogicSettings[requirement];
-			case "canFakeFlipper": return userLogicSettings[requirement];
+			case "canDungeonBunnyRevive": return userLogicSettings[requirement] && (true);
+			case "canFakeFlipper": return userLogicSettings[requirement] && (true);
 			case "canFakePowder": return userLogicSettings[requirement] && (items.somaria && items.mushroom);
 			case "canWaterWalk": return userLogicSettings[requirement] && (items.boots && items.bomb);
 			case "canZoraSplashDelete": return userLogicSettings[requirement] && ((items.bomb && items.bow > 0) || (items.somaria && items.bomb && items.boomerang > 1) || (items.bomb && items.icerod) || (items.bottle && items.net && items.bomb));
@@ -261,7 +261,7 @@
 			case 'canBombSpooky': return userLogicSettings[requirement] && (items.bomb);
 			case 'canHeraPot': return userLogicSettings[requirement] && (items.hookshot && (items.boots || items.bomb));
 			case 'canFireSpooky': return userLogicSettings[requirement] && (items.firerod && items.somaria);
-			case 'canMimicClip': return userLogicSettings[requirement];
+			case 'canMimicClip': return userLogicSettings[requirement] && (true);
 			case 'canPotionCameraUnlock': return userLogicSettings[requirement] && (items.bottle > 0);
 			case 'canMoldormBounce': return userLogicSettings[requirement] && (items.bomb && items.sword > 0);
 
@@ -286,23 +286,52 @@
 			case "wave": return items.wave;
 			case "xray": return items.xray;
 
+			case "canDestroyBombWalls": return ((items.morph && (items.morphbombs || items.powerbomb)) || items.screw);
+			case "canUsePowerBombs": return (items.morph && items.powerbomb);
+			case "canPassBombPassages": return (items.morph && (items.morphbombs || items.powerbomb));
+			case "canOpenRedDoors": return (items.missile || items.super);
+			case "canEscapeDraygon": return ((items.space) || (bigRequirementSwitch("canIBJ")) || (items.speed && (bigRequirementSwitch("canShortCharge") || items.hijump)) || (bigRequirementSwitch("canGravityJump")) || (bigRequirementSwitch("canSuitlessMaridia") && (bigRequirementSwitch("canDoubleSpringBallJump") || (bigRequirementSwitch("canCFSuitAndAmmoKillDraygon" && bigRequirementSwitch("canXrayClimb")) || ((bigRequirementSwitch("canGrappleEscapeDraygon") || bigRequirementSwitch("canHijumplessGrappleEscapeDraygon"))) && ("canBlueSuitDraygon" || "canXrayClimb"))))) // assumes access to dray's room and dray is dead already
+			case "canTraverseGravitron": return ((items.varia && (items.gravity && (items.space || (bigRequirementSwitch("canGravityJump")))) || (bigRequirementSwitch("canLavaDive")) || (bigRequirementSwitch("canBootlessLavaDive"))) || ((bigRequirementSwitch("canHellRun")) && (((items.etank + items.rtank >= 6) && (bigRequirementSwitch("canCrystalFlash")) && ((bigRequirementSwitch("canGravityJump")) || (items.gravity && items.space))) || (bigRequirementSwitch("canSuitlessLavaDive"))))); // lava dive in the forwards direction
+			case "canClimbWRITG": return ((items.space && (bigRequirementSwitch("canDestroyBombWalls"))) || (bigRequirementSwitch("canIBJ")) || (items.morph && items.powerbomb && (items.hijump || bigRequirementSwitch("canSpringBallJump") || bigRequirementSwitch("canWRITGPirateFreeze") || bigRequirementSwitch("canHypoJump")))); // assumes varia FOR NOW :)
+
 			case "canIBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
 			case "canGravityJump": return userLogicSettings[requirement] && (items.gravity);
-			case "canGateGlitch": return userLogicSettings[requirement] && (items.super >= 1);
+			case "canGateGlitch": return userLogicSettings[requirement] && (items.super >= 1 || items.missile >= 1);
 			case "canSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.spring);
 			case "canMochtroidIceClip": return userLogicSettings[requirement] && (items.ice);
-			case "canHellRun": return userLogicSettings[requirement] && (true);
+			case "canHellRun": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to hellrun
 			case "canLavaDive": return userLogicSettings[requirement] && (items.varia && items.hijump);
-			case "canSuitlessMaridia": return userLogicSettings[requirement] && (true);
+			case "canSuitlessMaridia": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to do suitless maridia
+			case "canBootlessSuitless": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to do bootless suitless maridia
 			case "canGrappleJump": return userLogicSettings[requirement] && (items.morph && items.grapple);
 			case "canSnailClimb": return userLogicSettings[requirement] && (true);
 			case "canDoubleSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.hijump && items.spring);
-			case "canBombCrystalFlashClip": return userLogicSettings[requirement] && (items.morph && items.morphbombs && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
-			case "canSuitlessCrystalFlashClip": return userLogicSettings[requirement] && (items.morph && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
+			case "canBombCrystalFlashClip": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash") && items.morphbombs);
+			case "canSuitlessCrystalFlashClip": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
 			case "canBootlessLavaDive": return userLogicSettings[requirement] && (items.varia && (items.etank > 0 && (items.etank + items.rtank) >= 2));
 			case "canSuitlessLavaDive": return userLogicSettings[requirement] && (items.hijump && (items.etank + items.rtank) >= 8 && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
 			case "canUnderwaterWallJump": return userLogicSettings[requirement] && (items.hijump);
 			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
+
+			case "canCrystalFlash": return userLogicSettings[requirement] && (items.morph && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3); // tech should be always enabled
+			case "canClimbRedTower": return userLogicSettings[requirement] && (true); // red tower mid to top of red tower with nothing
+			case "canMoatCWJ": return userLogicSettings[requirement] && (true);
+			case "canMoatHBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
+			case "canHijumpSpeedScrewAttackRoomClimb": return userLogicSettings[requirement] && (items.hijump && items.speed);
+			case "canWRITGPirateFreeze": return userLogicSettings[requirement] && (items.charge && items.ice);
+			case "canHypoJump": return userLogicSettings[requirement] && (true); // might cover all three hypo jumps? currently only used for writg hypo, but might extend to the other two
+			case "canReverseAcidDive": return userLogicSettings[requirement] && (items.varia && (items.etanks + items.rtanks > 5)); // add suitless reverse acid dive stuff later?
+			case "canHijumpIceMainStreetClimb": return userLogicSettings[requirement] && (items.hijump && items.ice);
+			case "canCrabClimb": return userLogicSettings[requirement] && (items.hijump && items.ice); // not adding bootless version because if you're doing that in smz3, get a life
+			case "canGrappleEscapeDraygon": return userLogicSettings[requirement] && (items.morph && items.grapple && items.hijump && items.tanks >= 3);
+			case "canHijumplessGrappleEscapeDraygon": return userLogicSettings[requirement] && (items.morph && items.grapple && items.tanks >= 3);
+			case "canBlueSuitDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash")); // tech for rbo grapple kill blue suit dray
+			case "canCFSuitAndAmmoKillDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
+			case "canXrayClimb": return userLogicSettings[requirement] && (items.xray); // current xray climbs in logic: precious
+			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb));
+
+			case "canShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: draygon
+			case "canStupidShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: bottom of red tower
 
 
 			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
@@ -379,48 +408,70 @@
 	// #endregion
 
 	// #region Non-entrance reach and check logic
-	// Location object contains "anyOf" or "allOf" arrays of conditions
-	function stateOfAll(requirements) {
+	// chain is an object that keeps track of the state of each condition to prevent infinite recursion
+	function stateOfAll(requirements, chain = {}) {
 		if (requirements.allOf) {
 			for (const requirement of requirements.allOf) {
-				if (!stateOf(requirement)) return false;
+				if (!stateOf(requirement, chain)) return false;
 			}
 		}
 		if (requirements.anyOf) {
 			for (const requirement of requirements.anyOf) {
-				if (stateOf(requirement)) return true;
+				if (stateOf(requirement, chain)) return true;
 			}
 			return false;
 		}
 		return true;
 	};
 
-	function stateOf(requirement) {
+	function stateOf(requirement, chain = {}) {
+		if (flags.glitches === 'Z') return true;
 		// If requirement is not a string call inLogic recursively
-		if (typeof requirement === 'object') return stateOfAll(requirement);
+		let res;
+
+		if (typeof requirement === 'object') {
+			const reqstring = JSON.stringify(requirement);
+			if (reqstring in chain) {
+				return chain[reqstring] === true;
+			} else {
+				chain[reqstring] = null;
+			}
+			res = stateOfAll(requirement, chain);
+			chain[reqstring] = res;
+			return res;
+		}
+
+		if (requirement in chain) {
+			return chain[requirement] === true;
+		} else {
+			chain[requirement] = null;
+		}
 
 		if (requirement.startsWith("canReach|")) {
 			const region = requirement.split("|")[1];
-			return canReachRegion(region) === 'available';
-		};
-
-		if (requirement.startsWith("canBreach|")) {
+			res = canReachRegion(region, chain) === 'available';
+		} else if (requirement.startsWith("canBreach|")) {
 			const region = requirement.split("|")[1];
-			const state = canReachRegion(region);
-			return state != 'unavailable' && state != 'possible';
-		};
-
-		if (requirement.includes('|')) {
+			const state = canReachRegion(region, chain);
+			res = state != 'unavailable' && state != 'possible';
+		} else if (requirement.includes('|')) {
 			const _item = requirement.split("|")[0];
 			const _count = parseInt(requirement.split("|")[1]);
 			if (_item === "tanks") return items.etank + items.rtank >= _count;
+			if (_item === "ammoDamage") return (items.missile * 100 + items.super * 300) >= _count;
 			return items[_item] >= _count / 5;
+		} else {
+			return bigRequirementSwitch(requirement);
 		}
-
-		return bigRequirementSwitch(requirement);
+		chain[requirement] = res;
+		return res;
 	};
 
-	function canReachRegion(region) {
+	function canReachRegion(region, chain = {}) {
+		// This is needed because at some point this function is used in a map which passes index as the second argument
+		if (typeof chain !== 'object') {
+			chain = {};
+		}
 		if (flags.entrancemode != 'N') {
 			if (flags.mapmode === 'N') return 'available';
 			const mapTrackerNames = window.regionReachLogic[region]["Entrance"];
@@ -477,11 +528,11 @@
 		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
 		const requirements = window.regionReachLogic[region][category];
 		let availability = 'unavailable';
-		if (!("always" in requirements) || stateOfAll(requirements["always"])) {
+		if (!("always" in requirements) || stateOfAll(requirements["always"], chain)) {
 			availability = 'possible';
-			if (!("logical" in requirements) || stateOfAll(requirements["logical"])) {
+			if (!("logical" in requirements) || stateOfAll(requirements["logical"], chain)) {
 				availability = 'available';
-			} else if (!("required" in requirements) || stateOfAll(requirements["required"])) {
+			} else if (!("required" in requirements) || stateOfAll(requirements["required"], chain)) {
 				availability = 'darkavailable';
 			};
 		};
@@ -1104,49 +1155,65 @@
 
 	// #region Dungeon Check Logic
 	// Location object contains "anyOf" or "allOf" arrays of conditions that need to be met
-	function inLogic(dungeonId, requirements) {
+	function inLogic(dungeonId, requirements, chain = {}) {
+		if (flags.glitches === 'Z') return true;
 		if (requirements.allOf) {
 			for (const requirement of requirements.allOf) {
-				if (!logicSwitch(dungeonId, requirement)) return false;
+				if (!logicSwitch(dungeonId, requirement, chain)) return false;
 			}
 		}
 		if (requirements.anyOf) {
 			for (const requirement of requirements.anyOf) {
-				if (logicSwitch(dungeonId, requirement)) return true;
+				if (logicSwitch(dungeonId, requirement, chain)) return true;
 			}
 			return false;
 		}
 		return true;
 	};
 
-	function logicSwitch(dungeonId, requirement) {
+	function logicSwitch(dungeonId, requirement, chain = {}) {
 		// If requirement is not a string call inLogic recursively
-		if (typeof requirement === 'object') return inLogic(dungeonId, requirement);
-		
-		if (requirement === 'bigkey' && !flags.wildbigkeys) return true;
+		let res;
 
-		if (requirement.startsWith('keys')) {
-			if (flags.gametype === 'R' || !flags.wildkeys) return true;
+		if (typeof requirement === 'object') {
+			const reqstring = JSON.stringify(requirement);
+			if (reqstring in chain) {
+				return chain[reqstring] === true;
+			} else {
+				chain[reqstring] = null;
+			}
+			res = inLogic(dungeonId, requirement, chain);
+			chain[reqstring] = res;
+			return res;
+		};
+
+		if (requirement in chain) {
+			return chain[requirement];
+		}
+		
+		if (requirement === 'bigkey' && !flags.wildbigkeys) {
+			res = true;
+		} else if (requirement.startsWith('keys')) {
+			if (flags.gametype === 'R' || !flags.wildkeys) res = true;
 			const count = requirement.split('|')[1];
 			const keyname = 'smallkey' + dungeonId;
-			return items[keyname] >= count;
-		};
-
-		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkey11; // HC
-		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkey12; // CT
-
-		if (requirement.startsWith('canReach|')) {
+			res = items[keyname] >= count;
+		} else if (dungeonId === 11 && requirement === 'bigkey') {
+			res = items.bigkey11; // HC
+		} else if (dungeonId === 12 && requirement === 'bigkey') {
+			res = items.bigkey12; // CT
+		} else if (requirement.startsWith('canReach|')) {
 			const region = requirement.split('|')[1];
-			return canReachRegion(region) === 'available';
-		};
-
-		if (requirement.startsWith('canBreach|')) {
+			res = canReachRegion(region) === 'available';
+		} else if (requirement.startsWith('canBreach|')) {
 			const region = requirement.split('|')[1];
 			let state = canReachRegion(region);
-			return state != 'unavailable' && state != 'possible';
-		};
-
-		return bigRequirementSwitch(requirement, dungeonId);
+			res = state != 'unavailable' && state != 'possible';
+		} else {
+			res = bigRequirementSwitch(requirement, dungeonId);
+		}
+		chain[requirement] = res;
+		return res;
 	};
 
 	function dungeonAvailability(dungeonId, dungeonName) {

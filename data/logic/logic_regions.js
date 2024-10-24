@@ -23,7 +23,6 @@
                     {
                         "allOf": [
                             "moonpearl",
-                            "glove",
                             "hammer"
                         ]
                     },
@@ -65,7 +64,6 @@
                     {
                         "allOf": [
                             "moonpearl",
-                            "glove",
                             "hammer"
                         ]
                     }
@@ -102,7 +100,7 @@
                     {
                         "allOf": [
                             "moonpearl",
-                            "canBreach|Super Metroid - Maridia Portal",
+                            "canBreach|Maridia - Portal",
                             {
                                 "anyOf": [
                                     "flippers",
@@ -137,7 +135,7 @@
                     },
                     {
                         "allOf": [
-                            "canReach|Super Metroid - Maridia Portal",
+                            "canReach|Maridia - Portal",
                             "moonpearl",
                             "flippers"
                         ]
@@ -207,7 +205,7 @@
                     },
                     {
                         "allOf": [
-                            "canBreach|Super Metroid - Maridia Portal",
+                            "canBreach|Maridia - Portal",
                             "hookshot",
                             {
                                 "anyOf": [
@@ -244,7 +242,7 @@
                     },
                     {
                         "allOf": [
-                            "canReach|Super Metroid - Maridia Portal",
+                            "canReach|Maridia - Portal",
                             "hookshot",
                             "flippers"
                         ]
@@ -268,7 +266,7 @@
                     },
                     {
                         "allOf": [
-                            "canBreach|Super Metroid - Maridia Portal",
+                            "canBreach|Maridia - Portal",
                             "moonpearl",
                             "hammer",
                             {
@@ -294,7 +292,7 @@
                     },
                     {
                         "allOf": [
-                            "canReach|Super Metroid - Maridia Portal",
+                            "canReach|Maridia - Portal",
                             "moonpearl",
                             "hammer",
                             "flippers"
@@ -321,7 +319,7 @@
                             }
                         ]
                     },
-                    "canBreach|Super Metroid - Norfair Portal"
+                    "canBreach|Norfair - Business Center"
                 ]
             },
             "logical": {
@@ -333,7 +331,7 @@
                             "lantern"
                         ]
                     },
-                    "canReach|Super Metroid - Norfair Portal"
+                    "canReach|Norfair - Business Center"
                 ]
             }
         },
@@ -523,7 +521,7 @@
                             "mitts"
                         ]
                     },
-                    "canBreach|Super Metroid - Lower Norfair Portal"
+                    "canBreach|Lower Norfair - Portal"
                 ]
                 
             },
@@ -535,7 +533,7 @@
                             "mitts"
                         ]
                     },
-                    "canReach|Super Metroid - Lower Norfair Portal"
+                    "canReach|Lower Norfair - Portal"
                 ]
             }
         },
@@ -1255,32 +1253,172 @@
             "ct"
         ]
     },
-    "Super Metroid - Norfair Portal": {
+    "Crateria - Terminator": { // terminator
+        "Open": {
+            "logical": {
+                "anyOf": [
+                    "canDestroyBombWalls",
+                    "speed"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Crateria - Ship": { // ship
+        "Open": {},
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Crateria - Moat": { // moat (LEFT SIDE)
         "Open": {
             "always": {
-                "allOf": [
-                    "morph",
-                    "super",
+                "anyOf": [
                     {
-                        "anyOf": [
-                            "powerbomb",
-                            "screw",
-                            "speed",
-                            "morphbombs"
+                        "allOf": [
+                            "SMKeys|Crateria2|canUsePowerBombs",
+                            "super"
+                        ]
+                    },
+                    {
+                        "allOf": [ // norfair portal and up red tower
+                            "canBreach|Norfair - Business Center",
+                            "SMKeys|Crateria2|canUsePowerBombs",
+                            {
+                                "anyOf": [ // red tower bottom to red tower mid
+                                    "ice",
+                                    "hijump",
+                                    "space",
+                                    "canIBJ",
+                                    "canSpringBallJump",
+                                    "canStupidShortCharge", // red tower bottom
+                                ]
+                            },
+                            {
+                                "anyOf": [ // red tower mid to red tower top
+                                    "ice",
+                                    "space",
+                                    "canClimbRedTower"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [ // through forgotten highway from maridia portal
+                            // i'm not writing suitless logic for a niche scenario while sphere 1 supers/pbs exists
+                            "canBreach|Maridia - Portal",
+                            "super",
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            "gravity",
+                                            {
+                                                "anyOf": [
+                                                    {
+                                                        "allOf": [ // go to portal, down sand pits, up toilet, through FH
+                                                            "SMKeys|Maridia2",
+                                                            "canDestroyBombWalls"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "allOf": [
+                                                            "SMKeys|MaridiaB",
+                                                            "canEscapeDraygon"
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                    // future mm2 will put suitless logic here
+                                ]
+                            }
+                            
+                        ]
+                    },
+                    {
+                        "allOf": [ // through forgotten highway from tube, redundant check for non-keys but it's relevant for keys because of crat 2
+                            "canUsePowerBombs",
+                            "super",
+                            {
+                                "anyOf": [
+                                    "gravity",
+                                    {
+                                        "allOf": [
+                                            "hijump",
+                                            "canSuitlessMaridia",
+                                            "canWestSandHallBombJump" // double check for hijump because readability
+                                        ]
+                                    }
+                                ]
+                            }
                         ]
                     }
                 ]
             },
             "logical": {
-                "allOf": [
-                    "morph",
-                    "super",
+                "anyOf": [
                     {
-                        "anyOf": [
-                            "powerbomb",
-                            "screw",
-                            "speed",
-                            "morphbombs"
+                        "allOf": [ 
+                            "SMKeys|Crateria2|canUsePowerBombs",
+                            "super"
+                        ]
+                    },
+                    {
+                        "allOf": [ // norfair portal and up red tower
+                            "SMKeys|Crateria2|canUsePowerBombs",
+                            "canReach|Norfair - Business Center",
+                            {
+                                "anyOf": [
+                                    "ice",
+                                    "hijump",
+                                    "space"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [ // through forgotten highway from maridia portal
+                            "canReach|Maridia - Portal",
+                            "gravity",
+                            "super",
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [ // go to portal, down sand pits, up toilet, through FH
+                                            "SMKeys|Maridia2",
+                                            "canDestroyBombWalls"
+                                        ]
+                                    },
+                                    { 
+                                        "anyOf": [ // kill draygon, logic requires a way out because grav jump 2 hard
+                                            "space",
+                                            "SMKeys|MaridiaB",
+                                            "canIBJ",
+                                            {
+                                                "allOf": [ 
+                                                    "speed",
+                                                    "hijump"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [ // through forgotten highway from tube, redundant check for non-keys but it's relevant for keys because of crat 2
+                            "canUsePowerBombs",
+                            "super",
+                            "gravity"
                         ]
                     }
                 ]
@@ -1290,118 +1428,520 @@
             "logical": {
                 "allOf": []
             }
-        },
+        }
     },
-    "Super Metroid - Lower Norfair Portal": {
+
+    "Wrecked Ship": { // main shaft
         "Open": {
             "always": {
                 "allOf": [
-                    "morph",
                     "super",
-                    "powerbomb",
                     {
                         "anyOf": [
-                            "speed",
+                            {
+                                "allOf": [
+                                    "SMKeys|Crateria2|canUsePowerBombs",
+                                    {
+                                        "anyOf": [ // can cross moat
+                                            "speed",
+                                            "grapple",
+                                            "space",
+                                            "canGravityJump",
+                                            "canMoatCWJ",
+                                            "canMoatHBJ",
+                                            {
+                                                "allOf": [
+                                                    "gravity",
+                                                    "canIBJ"
+                                                ]
+                                            },
+                                            {
+                                                "allOf": [
+                                                    "gravity",
+                                                    "hijump"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [ // through forgotten highway from tube, redundant check for non-keys but it's relevant for keys because of crat 2
+                                    "canUsePowerBombs",
+                                    {
+                                        "anyOf": [
+                                            "gravity",
+                                            {
+                                                "allOf": [
+                                                    "hijump",
+                                                    "canSuitlessMaridia",
+                                                    "canWestSandHallBombJump" // double check for hijump because readability
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [ // forgotten highway from maridia portal
+                                    "canBreach|Maridia - Portal",
+                                    "gravity",
+                                    {
+                                        "anyOf": [
+                                            {
+                                                "allOf": [ // go to portal, down sand pits, up toilet, through FH
+                                                    "SMKeys|Maridia2",
+                                                    "canDestroyBombWalls"
+                                                ]
+                                            },
+                                            { 
+                                                "allOf": [
+                                                    "SMKeys|MaridiaB",
+                                                    "canEscapeDraygon"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "super",
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "SMKeys|Crateria2|canUsePowerBombs",
+                                    {
+                                        "anyOf": [ // can cross moat
+                                            "speed",
+                                            "grapple",
+                                            "space",
+                                            {
+                                                "allOf": [
+                                                    "gravity",
+                                                    "canIBJ"
+                                                ]
+                                            },
+                                            {
+                                                "allOf": [
+                                                    "gravity",
+                                                    "hijump"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [ // forgotten highway from tube
+                                    "canUsePowerBombs",
+                                    "gravity"
+                                ]
+                            },
+                            {
+                                "allOf": [ // forgotten highway from maridia portal
+                                    "canReach|Maridia - Portal",
+                                    "gravity",
+                                    {
+                                        "anyOf": [
+                                            {
+                                                "allOf": [ // go to portal, down sand pits, up toilet, through FH
+                                                    "SMKeys|Maridia2",
+                                                    "canDestroyBombWalls"
+                                                ]
+                                            },
+                                            { 
+                                                "allOf": [
+                                                    "SMKeys|MaridiaB",
+                                                    {
+                                                        "anyOf": [ // kill draygon, logic requires a way out because grav jump 2 hard
+                                                            "space",
+                                                            "canIBJ",
+                                                            {
+                                                                "allOf": [ 
+                                                                    "speed",
+                                                                    "hijump"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                    
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+
+    "Brinstar - Green Elevator": {
+        "Open": {
+            "logical": {
+                "anyOf": [
+                    "canDestroyBombWalls",
+                    "speed"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Brinstar - Big Pink": { // big pink
+        "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canBreach|Brinstar - Green Elevator",
+                            "canOpenRedDoors"
+                        ]
+                    },
+                    "canUsePowerBombs",
+                    {
+                        "allOf": [
+                            "canBreach|Norfair - Business Center",
+                            "morph",
+                            {
+                                "anyOf": [
+                                    "wave",
+                                    "canGateGlitch",
+                                ]
+                            },
+                            {
+                                "anyOf": [
+                                    "ice",
+                                    "hijump",
+                                    "space",
+                                    "canIBJ",
+                                    "canSpringBallJump",
+                                    "canStupidShortCharge" // red tower bottom
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canReach|Brinstar - Green Elevator",
+                            "canOpenRedDoors"
+                        ]
+                    },
+                    "canUsePowerBombs",
+                    {
+                        "allOf": [
+                            "canReach|Norfair - Business Center",
+                            "morph",
+                            "wave",
+                            {
+                                "anyOf": [
+                                    "ice",
+                                    "hijump",
+                                    "space"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },    
+    "Brinstar - Blue": { // retro brin elevator
+        "Open": {
+            "logical": {}
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Brinstar - Red Tower": { // red tower middle
+        "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canBreach|Brinstar - Big Pink",
+                            "super",
+                            "morph"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Norfair - Business Center",
+                            {
+                                "anyOf": [
+                                    "ice",
+                                    "hijump",
+                                    "space",
+                                    "canIBJ",
+                                    "canSpringBallJump",
+                                    "canStupidShortCharge" // red tower bottom
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canReach|Brinstar - Big Pink",
+                            "super",
+                            "morph"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Norfair - Business Center",
+                            {
+                                "anyOf": [
+                                    "ice",
+                                    "hijump",
+                                    "space"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Brinstar - Kraid": { // kraid kihunter room - past morph tunnel
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Norfair - Business Center",
+                    "super",
+                    "canPassBombPassages"
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+
+    "Maridia - Main Street": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "canBreach|Norfair - Business Center",
+                                    "canUsePowerBombs"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canBreach|Maridia - Portal",
+                                    "gravity", // not writing powerbombless suitless logic until it actually becomes relevant
+                                    "morph",
+                                    {
+                                        "anyOf": [
+                                            "morphbombs",
+                                            "powerbomb",
+                                            "screw"
+                                        ]
+                                    }
+                                ]                  
+                            }
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "gravity",
+                            "canSuitlessMaridia"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "gravity",
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "canReach|Norfair - Business Center",
+                                    "canUsePowerBombs"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canReach|Maridia - Portal",
+                                    {
+                                        "anyOf": [
+                                            "canPassBombPassages",
+                                            "screw" // i think this should need morph too but whatevs
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Maridia - Pre-Aqueduct": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Maridia - Main Street", // canSuitlessMaridia is already checked in here
+                    { // can climb main street
+                        "anyOf": [
+                            "gravity",
+                            "canHijumpIceMainStreetClimb",
                             {
                                 "allOf": [
                                     "hijump",
-                                    {
-                                        "anyOf": [
-                                            "varia",
-                                            {
-                                                "allOf": [
-                                                    "tanks|3",
-                                                    "canHellRun"
-                                                ]
-                                            }
-                                        ]
-                                    }
+                                    "canSpringBallJump"
                                 ]
                             },
-                            {
-                                "allOf": [
-                                    "canIBJ",
-                                    {
-                                        "anyOf": [
-                                            "varia",
-                                            {
-                                                "allOf": [
-                                                    "tanks|5",
-                                                    "canHellRun"
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "allOf": [
-                                    "canSpringBallJump",
-                                    {
-                                        "anyOf": [
-                                            "varia",
-                                            {
-                                                "allOf": [
-                                                    "tanks|5",
-                                                    "canHellRun"
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "allOf": [
-                                    "ice",
-                                    "varia"
-                                ]
-                            },
-                            {
-                                "allOf": [
-                                    "canNovaBoost"
-                                ]
-                            },
+                            "canUnderwaterWallJump"
                         ]
                     },
-                    {
+                    { // can cross everest
                         "anyOf": [
+                            "canGravityJump",
+                            "grapple",
                             {
                                 "allOf": [
-                                    "varia",
                                     "gravity",
-                                    "space"
+                                    {
+                                        "anyOf": [
+                                            "speed",
+                                            "space",
+                                            "canIBJ"
+                                        ]
+                                    }
                                 ]
                             },
+                            "canCrabClimb",
+                            "canDoubleSpringBallJump"
+                        ]
+                    },
+                    "SMKeys|Maridia1"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "gravity",
+                    "SMKeys|Maridia1",
+                    {
+                        "anyOf": [
+                            "canReach|Maridia - Portal",
                             {
                                 "allOf": [
-                                    "varia",
-                                    "canGravityJump"
+                                    "canReach|Maridia - Main Street",
+                                    {
+                                        "anyOf": [
+                                            "space",
+                                            "canIBJ",
+                                            "speed",
+                                            "grapple"
+                                        ]
+                                    }
                                 ]
-                            },
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Maridia - Portal": {
+        "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canBreach|Dark World - East",
                             {
-                                "allOf": [
-                                    "canLavaDive"
+                                "anyOf": [
+                                    "flippers",
+                                    "canWaterWalk",
+                                    "canZoraSplashDelete",
+                                    "canQirnJump"
                                 ]
                             },
+                            "morph",
                             {
-                                "allOf": [
-                                    "canBootlessLavaDive"
+                                "anyOf": [
+                                    "gravity",
+                                    {
+                                        "allOf": [
+                                            "canSuitlessMaridia",
+                                            "hijump",
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "canBootlessSuitless",
+                                            "canSpringBallJump"
+                                        ]
+                                    }
                                 ]
-                            },
-                            {
-                                "allOf": [
-                                    "canSuitlessLavaDive"
-                                ]
-                            },
+                            }
                         ]
                     },
                     {
-                        "anyOf": [
-                            "canGateGlitch",
+                        "allOf": [
+                            "canBreach|Maridia - Pre-Aqueduct",
+                            "SMKeys|Maridia2",
+                            "speed",
                             {
-                                "allOf": [
-                                    "space",
-                                    "varia"
+                                "anyOf": [ // can kill botwoon
+                                    "charge",
+                                    "ammoDamage|5000" // make this dependent on user logic
                                 ]
                             }
                         ]
@@ -1410,12 +1950,54 @@
             },
             "logical": {
                 "allOf": [
-                    "morph",
-                    "super",
-                    "powerbomb",
-                    "gravity",
-                    "varia",
-                    "space"
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "canReach|Dark World - East",
+                                    "flippers",
+                                    "morph",
+                                    "gravity"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canReach|Maridia - Pre-Aqueduct",
+                                    "SMKeys|Maridia2",
+                                    "speed", // logic assumes you have gravity here
+                                    // {
+                                    //     "anyOf": [ // can kill botwoon
+                                    //         "charge",
+                                    //         "ammoDamage|5000" // make this dependent on user logic?
+                                    //     ]
+                                    // }
+                                    // logic doesn't actually check if you can kill botwoon :)
+                                ]
+                            }
+                        ]
+                    }
+                ]    
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    
+    "Norfair - Business Center": {
+        "Open": {
+            "always": {
+                "anyOf": [
+                    "canBreach|Light World - Lower West Death Mountain",
+                    "canBreach|Brinstar - Red Tower"
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    "canReach|Light World - Lower West Death Mountain",
+                    "canReach|Brinstar - Red Tower"
                 ]
             }
         },
@@ -1423,115 +2005,57 @@
             "logical": {
                 "allOf": []
             }
-        },
+        }
     },
-    "Super Metroid - Maridia Portal": {
+    "Norfair - Bubble Mountain": {
         "Open": {
             "always": {
                 "allOf": [
-                    {
-                        "allOf": [
-                            "morph",
-                            "super",
-                            "powerbomb"
-                        ]
-                    },
+                    "canReach|Norfair - Business Center",
                     {
                         "anyOf": [
+                            // figure out how speed/frog speedway plays into this?????????
+                            "varia",
                             {
                                 "allOf": [
-                                    "gravity",
-                                    "speed"
+                                    "canHellRun",
+                                    "tanks|5" // UPDATE THIS WHEN MUFFINS AND I FINISH DISCUSSING HELLRUN LOGIC
                                 ]
-                            },
+                            }
+                        ]
+                    },
+                    "super",
+                    "SMKeys|Norfair2",
+                    {
+                        "anyOf": [
+                            "space",
+                            "canIBJ",
+                            "hijump",
+                            "speed",
+                            "canSpringBallJump",
+                            "canNovaBoost",
                             {
                                 "allOf": [
-                                    "gravity",
-                                    {
-                                        "anyOf": [
-                                            "canGravityJump",
-                                            "space",
-                                            "grapple",
-                                            "speed"
-                                        ]
-                                    },
-                                    "canMochtroidIceClip"
+                                    "ice",
+                                    "varia" // THIS WILL INCREASE TANK REQS ?
                                 ]
-                            },
-                            {
-                                "allOf": [
-                                    "gravity",
-                                    {
-                                        "anyOf": [
-                                            "canGravityJump",
-                                            "space",
-                                            "grapple",
-                                            "speed"
-                                        ]
-                                    },
-                                    "canBombCrystalFlashClip"
-                                ]
-                            },
-                            {
-                                "allOf": [
-                                    "gravity",
-                                    {
-                                        "anyOf": [
-                                            "canGravityJump",
-                                            "space",
-                                            "grapple",
-                                            "speed"
-                                        ]
-                                    },
-                                    "canSuitlessCrystalFlashClip"
-                                ]
-                            },
-                            {
-                                "allOf": [
-                                    "canSuitlessMaridia",
-                                    "hijump",
-                                    {
-                                        "anyOf": [
-                                            "ice",
-                                            "canSpringBallJump",
-                                            "canUnderwaterWallJump"
-                                        ]
-                                    },
-                                    {
-                                        "anyOf": [
-                                            "grapple",
-                                            "canDoubleSpringBallJump"
-                                        ]
-                                    },
-                                    {
-                                        "anyOf": [
-                                            "canGrappleJump",
-                                            "canSnailClimb"
-                                        ]
-                                    },
-                                    {
-                                        "anyOf": [
-                                            "canMochtroidIceClip",
-                                            "canSuitlessCrystalFlashClip"
-                                        ]
-                                    },
-                                ]
-                            },
+                            }
                         ]
                     }
                 ]
             },
             "logical": {
                 "allOf": [
-                    "morph",
+                    "canReach|Norfair - Business Center",
+                    "varia",
                     "super",
-                    "powerbomb",
-                    "gravity",
-                    "speed",
+                    "SMKeys|Norfair2",
                     {
                         "anyOf": [
-                            "super|10",
-                            "charge"
+                            "space",
+                            "canIBJ",
+                            "hijump",
+                            "speed"
                         ]
                     }
                 ]
@@ -1541,19 +2065,358 @@
             "logical": {
                 "allOf": []
             }
-        },
+        }
     },
-    "Placeholder": {
+    "Norfair - Crocomire": {
         "Open": {
             "logical": {
-                "allOf": []
+                "anyOf": [
+                    { // the normal way
+                        "allOf": [
+                            "canReach|Norfair - Business Center",
+                            "varia",
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [ // croc speedway via ice gates
+                                            "super",
+                                            "canUsePowerBombs",
+                                            "speed"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [ // frog speedway & croc gate
+                                            "speed",
+                                            "wave"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "super",
+                                            "morph",
+                                            "wave",
+                                            {
+                                                "anyOf": [
+                                                    "space",
+                                                    "canIBJ",
+                                                    "hijump",
+                                                    "speed",
+                                                ]
+                                            },
+                                            {
+                                                "anyOf": [
+                                                    "morphbombs",
+                                                    "powerbomb",
+                                                    "gravity" // remembered highway????!?!!!?!?
+                                                ]
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    { // hit LN portal from zelda, go up WRITG, go down mickey mouse, reverse lava dive, go up purple shaft and down croc gate to croc... without morph or speed :)
+                        "allOf": [
+                            "canReach|Lower Norfair - Portal",
+                            "varia",
+                            "gravity",
+                            "space",
+                            "screw",
+                            "super",
+                            "wave"
+                        ]
+                    }
+                ]
             }
         },
         "Inverted": {
             "logical": {
                 "allOf": []
             }
+        }
+    },
+
+    "Lower Norfair - Elevator": { // TODO add LN hellrun logic - my body is not ready
+        "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canBreach|Lower Norfair - Portal",
+                            "super",
+                            "varia", // todo remove this and add in hellrun logic
+                            {
+                                "anyOf": [
+                                    "canIBJ",
+                                    {
+                                        "allOf": [
+                                            "space",
+                                            "canDestroyBombWalls"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "canSpringBallJump",
+                                            "canUsePowerBombs",
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "canHijumpSpeedScrewAttackRoomClimb",
+                                            "canDestroyBombWalls"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "speed",
+                                            {
+                                                "anyOf": [
+                                                    "charge",
+                                                    "super"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            { // can get from bottom of prepillars to elevator
+                                "anyOf": [
+                                    "canUsePowerBombs",
+                                    {
+                                        "allOf": [ // the long way round - varia will be hard req'd for this
+                                            "screw",
+                                            "space",
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Norfair - Bubble Mountain",
+                            "canTraverseGravitron"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canReach|Lower Norfair - Portal",
+                            "varia",
+                            "canDestroyBombWalls",
+                            "super",
+                            {
+                                "anyOf": [
+                                    "space",
+                                    "canIBJ"
+                                ]
+                            },
+                            {
+                                "anyOf": [
+                                    "canUsePowerBombs",
+                                    {
+                                        "allOf": [
+                                            "space",
+                                            "screw"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "varia",
+                            "canReach|Norfair - Bubble Mountain",
+                            "canUsePowerBombs",
+                            "space",
+                            "gravity",
+                            "super" // sj assured so picky chozo -> 5 super gt fight :)
+                        ]
+                    }
+                ]
+            }
         },
-        "Entrance": []
-    }
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Lower Norfair - Portal": { // really "can get to screw loc"
+        "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canDestroyBombWalls",
+                            "canBreach|Dark World - Mire",
+                            "canTraverseGravitron"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Lower Norfair - Elevator",
+                            "canUsePowerBombs",
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            "super",
+                                            "canGateGlitch"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [ // gt fight without charge/plasma = need varia (maybe model varialess ammo gt later)
+                                            "space",
+                                            "varia",
+                                            "super"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [ // gt fight varialess with charge plasma, surely 8 tanks will be fine Clueless
+                                            "super",
+                                            "space",
+                                            "charge",
+                                            "plasma"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "varia",
+                            "canDestroyBombWalls",
+                            "canReach|Dark World - Mire"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "varia",
+                            "canReach|Lower Norfair - Elevator",
+                            "canUsePowerBombs",
+                            "space",
+                            "gravity",
+                            "super" // sj assured so picky chozo -> 5 super gt fight :)
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
+    "Lower Norfair - Amphitheatre": {
+        "Open": {
+            "always": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canBreach|Lower Norfair - Elevator",
+                            "varia", // add hellrun logic later
+                            "canUsePowerBombs",
+                            "canClimbWRITG"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canBreach|Lower Norfair - Portal",
+                            "varia", // add hellrun logic later
+                            "super",
+                            { // can climb screw attack room
+                                "anyOf": [
+                                    "canIBJ",
+                                    {
+                                        "allOf": [
+                                            "space",
+                                            "canDestroyBombWalls"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "canSpringBallJump",
+                                            "canUsePowerBombs",
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "canHijumpSpeedScrewAttackRoomClimb",
+                                            "canDestroyBombWalls"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "speed",
+                                            {
+                                                "anyOf": [
+                                                    "charge",
+                                                    "super"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "canClimbWRITG",
+                            { // exit logic
+                                "anyOf": [
+                                    "morph",
+                                    "canReverseAcidDive"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "canReach|Lower Norfair - Elevator",
+                                    "morph", // see below comment
+                                    "varia",
+                                    "canUsePowerBombs"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canReach|Lower Norfair - Portal",
+                                    "morph", // logic requires CanExit on normal for all LN items, which is just morph, so i'm putting it in here
+                                    // LN Portal assures canDestroyBombWalls
+                                    "varia",
+                                    "super"
+                                ]
+                            }
+                        ]
+                    },
+                    { // can logically climb writg
+                        "anyOf": [
+                            "space",
+                            "canIBJ"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {
+            "logical": {
+                "allOf": []
+            }
+        }
+    },
 }})(window);
