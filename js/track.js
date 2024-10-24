@@ -2444,16 +2444,16 @@
 		document.getElementById("mapEntranceDiv_dark").style.display = flags.entrancemode === 'N' ? "none" : "block";
 
 		// Display correct Xray/Grapple/WS Keys
-		document.getElementById("xrayhalfdiv").style.top = flags.wildsmkeys === '0' ? '0': '32'
-		document.getElementById("xrayhalfdiv").style.left = flags.wildsmkeys === '0' ? '0': '32'
-		document.getElementById("xrayonlydiv").style.display = flags.wildsmkeys === '0' ? "block" : "none";
-		document.getElementById("xraysplitdiv").style.display = flags.wildsmkeys === '1' ? "block" : "none";
-		document.getElementById("grappleonlydiv").style.display = flags.wildsmkeys === '0' ? "block" : "none";
+		document.getElementById("xrayhalfdiv").style.top = flags.wildsmkeys ? '32' : '0';
+		document.getElementById("xrayhalfdiv").style.left = flags.wildsmkeys ? '32' : '0';
+		document.getElementById("xrayonlydiv").style.display = flags.wildsmkeys ? "none" : "block";
+		document.getElementById("xraysplitdiv").style.display = flags.wildsmkeys ? "block" : "none";
+		document.getElementById("grappleonlydiv").style.display = flags.wildsmkeys ? "none" : "block";
 
 		['cr', 'br', 'md', 'ws', 'un', 'ln'].forEach(function (area) {	
-			document.getElementById("smkeysdiv" + area).style.display = flags.wildsmkeys === '1' ? "block" : "none";
+			document.getElementById("smkeysdiv" + area).style.display = flags.wildsmkeys ? "block" : "none";
 			if (area === 'ws') return
-			document.getElementById("emptycell" + area).style.display = flags.wildsmkeys === '0' ? "block" : "none";
+			document.getElementById("emptycell" + area).style.display = flags.wildsmkeys ? "none" : "block";
 		})
 
 		//Hide HC and CT big keys if not needed

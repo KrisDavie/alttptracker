@@ -28,7 +28,7 @@
         ganonvuln: query.f.charAt(21),
         ganonvulncount: query.f.charAt(22),
         swordmode: query.f.charAt(23),
-        wildsmkeys: query.f.charAt(24),
+        wildsmkeys: (query.f.charAt(24) === '1' ? true : false),
         mapmode: query.d.charAt(0),
         chestcolormode: query.d.charAt(1),
         spoilermode: query.d.charAt(2),

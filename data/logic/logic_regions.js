@@ -1256,10 +1256,16 @@
     "Crateria - Terminator": { // terminator
         "Open": {
             "logical": {
-                "anyOf": [
-                    "canDestroyBombWalls",
-                    "speed"
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    {
+                        "anyOf": [
+                            "canDestroyBombWalls",
+                            "speed"
+                        ]
+                    }
                 ]
+                
             }
         },
         "Inverted": {
@@ -1282,6 +1288,7 @@
                 "anyOf": [
                     {
                         "allOf": [
+                            "canBreach|Crateria - Ship",
                             "SMKeys|Crateria2|canUsePowerBombs",
                             "super"
                         ]
@@ -1345,6 +1352,7 @@
                     },
                     {
                         "allOf": [ // through forgotten highway from tube, redundant check for non-keys but it's relevant for keys because of crat 2
+                            "canBreach|Brinstar - Red Tower",
                             "canUsePowerBombs",
                             "super",
                             {
@@ -1367,14 +1375,15 @@
                 "anyOf": [
                     {
                         "allOf": [ 
+                            "canReach|Crateria - Ship",
                             "SMKeys|Crateria2|canUsePowerBombs",
                             "super"
                         ]
                     },
                     {
                         "allOf": [ // norfair portal and up red tower
-                            "SMKeys|Crateria2|canUsePowerBombs",
                             "canReach|Norfair - Business Center",
+                            "SMKeys|Crateria2|canUsePowerBombs",
                             {
                                 "anyOf": [
                                     "ice",
@@ -1416,6 +1425,7 @@
                     },
                     {
                         "allOf": [ // through forgotten highway from tube, redundant check for non-keys but it's relevant for keys because of crat 2
+                            "canReach|Brinstar - Red Tower",
                             "canUsePowerBombs",
                             "super",
                             "gravity"
@@ -1440,6 +1450,7 @@
                         "anyOf": [
                             {
                                 "allOf": [
+                                    "canBreach|Crateria - Ship",
                                     "SMKeys|Crateria2|canUsePowerBombs",
                                     {
                                         "anyOf": [ // can cross moat
@@ -1467,6 +1478,7 @@
                             },
                             {
                                 "allOf": [ // through forgotten highway from tube, redundant check for non-keys but it's relevant for keys because of crat 2
+                                    "canBreach|Brinstar - Red Tower",
                                     "canUsePowerBombs",
                                     {
                                         "anyOf": [
@@ -1516,6 +1528,7 @@
                         "anyOf": [
                             {
                                 "allOf": [
+                                    "canReach|Crateria - Ship",
                                     "SMKeys|Crateria2|canUsePowerBombs",
                                     {
                                         "anyOf": [ // can cross moat
@@ -1540,6 +1553,7 @@
                             },
                             {
                                 "allOf": [ // forgotten highway from tube
+                                    "canReach|Brinstar - Red Tower",
                                     "canUsePowerBombs",
                                     "gravity"
                                 ]
@@ -1593,9 +1607,8 @@
     "Brinstar - Green Elevator": {
         "Open": {
             "logical": {
-                "anyOf": [
-                    "canDestroyBombWalls",
-                    "speed"
+                "allOf": [
+                    "canReach|Crateria - Terminator"
                 ]
             }
         },
@@ -1615,7 +1628,12 @@
                             "canOpenRedDoors"
                         ]
                     },
-                    "canUsePowerBombs",
+                    {
+                        "allOf": [
+                            "canBreach|Brinstar - Blue",
+                            "canUsePowerBombs"
+                        ]
+                    },
                     {
                         "allOf": [
                             "canBreach|Norfair - Business Center",
@@ -1648,7 +1666,12 @@
                             "canOpenRedDoors"
                         ]
                     },
-                    "canUsePowerBombs",
+                    {
+                        "allOf": [
+                            "canReach|Brinstar - Blue",
+                            "canUsePowerBombs"
+                        ]
+                    },
                     {
                         "allOf": [
                             "canReach|Norfair - Business Center",
@@ -1674,7 +1697,11 @@
     },    
     "Brinstar - Blue": { // retro brin elevator
         "Open": {
-            "logical": {}
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship"
+                ]
+            }
         },
         "Inverted": {
             "logical": {
