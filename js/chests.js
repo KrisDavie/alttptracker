@@ -286,13 +286,13 @@
 			case "wave": return items.wave;
 			case "xray": return items.xray;
 
-			case "canDestroyBombWalls": return ((items.morph && (items.morphbombs || items.powerbomb)) || items.screw);
-			case "canUsePowerBombs": return (items.morph && items.powerbomb);
-			case "canPassBombPassages": return (items.morph && (items.morphbombs || items.powerbomb));
+			case "canDestroyBombWalls": return ((items.morph && (items.morphbombs  || items.powerbomb > 0)) || items.screw);
+			case "canUsePowerBombs": return (items.morph && items.powerbomb > 0);
+			case "canPassBombPassages": return (items.morph && (items.morphbombs || items.powerbomb > 0));
 			case "canOpenRedDoors": return (items.missile || items.super);
 			case "canEscapeDraygon": return ((items.space) || (bigRequirementSwitch("canIBJ")) || (items.speed && (bigRequirementSwitch("canShortCharge") || items.hijump)) || (bigRequirementSwitch("canGravityJump")) || (bigRequirementSwitch("canSuitlessMaridia") && (bigRequirementSwitch("canDoubleSpringBallJump") || (bigRequirementSwitch("canCFSuitAndAmmoKillDraygon" && bigRequirementSwitch("canXrayClimb")) || ((bigRequirementSwitch("canGrappleEscapeDraygon") || bigRequirementSwitch("canHijumplessGrappleEscapeDraygon"))) && ("canBlueSuitDraygon" || "canXrayClimb"))))) // assumes access to dray's room and dray is dead already
 			case "canTraverseGravitron": return ((items.varia && (items.gravity && (items.space || (bigRequirementSwitch("canGravityJump")))) || (bigRequirementSwitch("canLavaDive")) || (bigRequirementSwitch("canBootlessLavaDive"))) || ((bigRequirementSwitch("canHellRun")) && (((items.etank + items.rtank >= 6) && (bigRequirementSwitch("canCrystalFlash")) && ((bigRequirementSwitch("canGravityJump")) || (items.gravity && items.space))) || (bigRequirementSwitch("canSuitlessLavaDive"))))); // lava dive in the forwards direction
-			case "canClimbWRITG": return ((items.space && (bigRequirementSwitch("canDestroyBombWalls"))) || (bigRequirementSwitch("canIBJ")) || (items.morph && items.powerbomb && (items.hijump || bigRequirementSwitch("canSpringBallJump") || bigRequirementSwitch("canWRITGPirateFreeze") || bigRequirementSwitch("canHypoJump")))); // assumes varia FOR NOW :)
+			case "canClimbWRITG": return ((items.space && (bigRequirementSwitch("canDestroyBombWalls"))) || (bigRequirementSwitch("canIBJ")) || (items.morph && items.powerbomb > 0 && (items.hijump || bigRequirementSwitch("canSpringBallJump") || bigRequirementSwitch("canWRITGPirateFreeze") || bigRequirementSwitch("canHypoJump")))); // assumes varia FOR NOW :)
 
 			case "canIBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
 			case "canGravityJump": return userLogicSettings[requirement] && (items.gravity);
@@ -459,9 +459,9 @@
 			const _count = parseInt(requirement.split("|")[1]);
 			if (_item === "tanks") return items.etank + items.rtank >= _count;
 			if (_item === "ammoDamage") return (items.missile * 100 + items.super * 300) >= _count;
-			return items[_item] >= _count / 5;
+			res = items[_item] >= _count / 5;
 		} else {
-			return bigRequirementSwitch(requirement);
+			res = bigRequirementSwitch(requirement);
 		}
 		chain[requirement] = res;
 		return res;
