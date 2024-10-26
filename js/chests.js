@@ -289,9 +289,9 @@
 			case "canDestroyBombWalls": return ((items.morph && (items.morphbombs  || items.powerbomb > 0)) || items.screw);
 			case "canUsePowerBombs": return (items.morph && items.powerbomb > 0);
 			case "canPassBombPassages": return (items.morph && (items.morphbombs || items.powerbomb > 0));
-			case "canOpenRedDoors": return (items.missile || items.super);
+			case "canOpenRedDoors": return (items.missile >= 1 || items.super >= 1);
 			case "canEscapeDraygon": return ((items.space) || (bigRequirementSwitch("canIBJ")) || (items.speed && (bigRequirementSwitch("canShortCharge") || items.hijump)) || (bigRequirementSwitch("canGravityJump")) || (bigRequirementSwitch("canSuitlessMaridia") && (bigRequirementSwitch("canDoubleSpringBallJump") || (bigRequirementSwitch("canCFSuitAndAmmoKillDraygon" && bigRequirementSwitch("canXrayClimb")) || ((bigRequirementSwitch("canGrappleEscapeDraygon") || bigRequirementSwitch("canHijumplessGrappleEscapeDraygon"))) && ("canBlueSuitDraygon" || "canXrayClimb"))))) // assumes access to dray's room and dray is dead already
-			case "canTraverseGravitron": return ((items.varia && (items.gravity && (items.space || (bigRequirementSwitch("canGravityJump")))) || (bigRequirementSwitch("canLavaDive")) || (bigRequirementSwitch("canBootlessLavaDive"))) || ((bigRequirementSwitch("canHellRun")) && (((items.etank + items.rtank >= 6) && (bigRequirementSwitch("canCrystalFlash")) && ((bigRequirementSwitch("canGravityJump")) || (items.gravity && items.space))) || (bigRequirementSwitch("canSuitlessLavaDive"))))); // lava dive in the forwards direction
+			case "canTraverseGravitron": return ((items.varia && (items.gravity && (items.space || (bigRequirementSwitch("canGravityJump")))) || (bigRequirementSwitch("canLavaDive")) || (bigRequirementSwitch("canBootlessLavaDive"))) || ((bigRequirementSwitch("canHellRun")) && ((((items.etank + items.rtank) >= 6) && (bigRequirementSwitch("canCrystalFlash")) && ((bigRequirementSwitch("canGravityJump")) || (items.gravity && items.space))) || (bigRequirementSwitch("canSuitlessLavaDive"))))); // lava dive in the forwards direction
 			case "canClimbWRITG": return ((items.space && (bigRequirementSwitch("canDestroyBombWalls"))) || (bigRequirementSwitch("canIBJ")) || (items.morph && items.powerbomb > 0 && (items.hijump || bigRequirementSwitch("canSpringBallJump") || bigRequirementSwitch("canWRITGPirateFreeze") || bigRequirementSwitch("canHypoJump")))); // assumes varia FOR NOW :)
 
 			case "canIBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
@@ -328,7 +328,7 @@
 			case "canBlueSuitDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash")); // tech for rbo grapple kill blue suit dray
 			case "canCFSuitAndAmmoKillDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
 			case "canXrayClimb": return userLogicSettings[requirement] && (items.xray); // current xray climbs in logic: precious
-			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb));
+			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb >= 1));
 
 			case "canShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: draygon
 			case "canStupidShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: bottom of red tower
@@ -430,22 +430,10 @@
 		let res;
 
 		if (typeof requirement === 'object') {
-			const reqstring = JSON.stringify(requirement);
-			if (reqstring in chain) {
-				return chain[reqstring] === true;
-			} else {
-				chain[reqstring] = null;
-			}
 			res = stateOfAll(requirement, chain);
-			chain[reqstring] = res;
 			return res;
 		}
 
-		if (requirement in chain) {
-			return chain[requirement] === true;
-		} else {
-			chain[requirement] = null;
-		}
 
 		if (requirement.startsWith("canReach|")) {
 			const region = requirement.split("|")[1];
@@ -467,13 +455,16 @@
 		} else if (requirement.includes('|')) {
 			const _item = requirement.split("|")[0];
 			const _count = parseInt(requirement.split("|")[1]);
-			if (_item === "tanks") return items.etank + items.rtank >= _count;
-			if (_item === "ammoDamage") return (items.missile * 100 + items.super * 300) >= _count;
-			res = items[_item] >= _count / 5;
+			if (_item === "tanks") {
+				res = items.etank + items.rtank >= _count;
+			} else if (_item === "ammoDamage") {
+				res = (items.missile * 100 + items.super * 300) >= _count;
+			} else {
+				res = items[_item] >= _count / 5;
+			}
 		} else {
 			res = bigRequirementSwitch(requirement);
 		}
-		chain[requirement] = res;
 		return res;
 	};
 
@@ -524,6 +515,13 @@
 			return 'unavailable';
 		};
 
+
+		if (region in chain) {
+			return chain[region];
+		} else {
+			chain[region] = null;
+		}
+
 		// Not entrance
 		if (region === "Misery Mire") {
 			var medcheck = medallionCheck(0)
@@ -546,10 +544,14 @@
 				availability = 'darkavailable';
 			};
 		};
-		if (availability === 'unavailable') return 'unavailable';
-		if (availability === 'possible') return 'possible';
-		if (availability === 'available') return medcheck === 'available' ? 'available' : medcheck;
-		if (availability === 'darkavailable') return medcheck === 'available' ? 'darkavailable' : medcheck;
+		let res
+		if (availability === 'unavailable') res = 'unavailable';
+		if (availability === 'possible') res = 'possible';
+		if (availability === 'available') res = medcheck === 'available' ? 'available' : medcheck;
+		if (availability === 'darkavailable') res = medcheck === 'available' ? 'darkavailable' : medcheck;
+
+		chain[region] = res;
+		return res;
 	};
 
 	function checkAvailability(locations) {
@@ -1188,7 +1190,7 @@
 		if (typeof requirement === 'object') {
 			const reqstring = JSON.stringify(requirement);
 			if (reqstring in chain) {
-				return chain[reqstring] === true;
+				return chain[reqstring];
 			} else {
 				chain[reqstring] = null;
 			}

@@ -515,25 +515,25 @@
         "Open": {
             "always": {
                 "anyOf": [
+                    "canBreach|Lower Norfair - Portal",
                     {
                         "allOf": [
                             "flute",
                             "mitts"
                         ]
-                    },
-                    "canBreach|Lower Norfair - Portal"
+                    }
                 ]
                 
             },
             "logical": {
                 "anyOf": [
+                    "canReach|Lower Norfair - Portal",
                     {
                         "allOf": [
                             "flute",
                             "mitts"
                         ]
-                    },
-                    "canReach|Lower Norfair - Portal"
+                    }
                 ]
             }
         },
@@ -1265,7 +1265,6 @@
                         ]
                     }
                 ]
-                
             }
         },
         "Inverted": {
@@ -1625,7 +1624,8 @@
                     {
                         "allOf": [
                             "canBreach|Brinstar - Green Elevator",
-                            "canOpenRedDoors"
+                            "canOpenRedDoors",
+                            "canDestroyBombWalls"
                         ]
                     },
                     {
@@ -1663,7 +1663,8 @@
                     {
                         "allOf": [
                             "canReach|Brinstar - Green Elevator",
-                            "canOpenRedDoors"
+                            "canOpenRedDoors",
+                            "canDestroyBombWalls"
                         ]
                     },
                     {
@@ -1722,6 +1723,13 @@
                     },
                     {
                         "allOf": [
+                            "canBreach|Brinstar - Blue",
+                            "super",
+                            "canUsePowerBombs"
+                        ]
+                    },
+                    {
+                        "allOf": [
                             "canBreach|Norfair - Business Center",
                             {
                                 "anyOf": [
@@ -1744,6 +1752,13 @@
                             "canReach|Brinstar - Big Pink",
                             "super",
                             "morph"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Brinstar - Blue",
+                            "super",
+                            "canUsePowerBombs"
                         ]
                     },
                     {
@@ -2038,7 +2053,7 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canReach|Norfair - Business Center",
+                    "canBreach|Norfair - Business Center",
                     {
                         "anyOf": [
                             // figure out how speed/frog speedway plays into this?????????
@@ -2282,7 +2297,7 @@
                         "allOf": [
                             "canDestroyBombWalls",
                             "canBreach|Dark World - Mire",
-                            "canTraverseGravitron"
+                            "varia"
                         ]
                     },
                     {
@@ -2319,24 +2334,13 @@
                 ]
             },
             "logical": {
-                "anyOf": [
-                    {
-                        "allOf": [
-                            "varia",
-                            "canDestroyBombWalls",
-                            "canReach|Dark World - Mire"
-                        ]
-                    },
-                    {
-                        "allOf": [
-                            "varia",
-                            "canReach|Lower Norfair - Elevator",
-                            "canUsePowerBombs",
-                            "space",
-                            "gravity",
-                            "super" // sj assured so picky chozo -> 5 super gt fight :)
-                        ]
-                    }
+                "allOf": [
+                    "canReach|Lower Norfair - Elevator",
+                    "varia",
+                    "space",
+                    "gravity",
+                    "canUsePowerBombs",
+                    "super"
                 ]
             }
         },
@@ -2353,6 +2357,7 @@
                     {
                         "allOf": [
                             "canBreach|Lower Norfair - Elevator",
+                            "SMKeys|LowerNorfair1",
                             "varia", // add hellrun logic later
                             "canUsePowerBombs",
                             "canClimbWRITG"
@@ -2361,6 +2366,7 @@
                     {
                         "allOf": [
                             "canBreach|Lower Norfair - Portal",
+                            "SMKeys|LowerNorfair1",
                             "varia", // add hellrun logic later
                             "super",
                             { // can climb screw attack room
@@ -2410,6 +2416,7 @@
             },
             "logical": {
                 "allOf": [
+                    "SMKeys|LowerNorfair1",
                     {
                         "anyOf": [
                             {
