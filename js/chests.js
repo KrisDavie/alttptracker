@@ -314,9 +314,22 @@
 			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
 
 			case "canCrystalFlash": return userLogicSettings[requirement] && (items.morph && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3); // tech should be always enabled
+			case "canGauntletWalljumps": return userLogicSettings[requirement] && (true);
+			case "canAlcatrazEscape": return userLogicSettings[requirement] && (items.morph);
+			case "canOldMBWithSpeed": return userLogicSettings[requirement] && (items.speed);
+			case "canEarlySupersBridgeQuickdrop": return userLogicSettings[requirement] && (true);
+			case "canTrivialMockball": return userLogicSettings[requirement] && (items.morph); // early supers, ice gates forward
+			case "canHoleInOne": return userLogicSettings[requirement] && (items.morph && items.screw);
+			case "canHiJumpWaveGateGlitch": return userLogicSettings[requirement] && (items.hijump && items.super > 0);
+			case "canHiJumplessWaveGateGlitch": return userLogicSettings[requirement] && (items.super > 0);
+			case "canSporeSpawnSkip": return userLogicSettings[requirement] && (items.morph && items.super > 0 && (items.morphbombs || items.powerbomb > 0));
+			case "canCeilingDboost": return userLogicSettings[requirement] && (true);
 			case "canClimbRedTower": return userLogicSettings[requirement] && (true); // red tower mid to top of red tower with nothing
+			case "canSpongeBathBombJump": return userLogicSettings[requirement] && (items.morph && (items.morphbombs || items.powerbomb > 0));
+			case "canBowlingSkip": return userLogicSettings[requirement] && (items.grapple && items.xray && bigRequirementSwitch("canCrystalFlash"));
 			case "canMoatCWJ": return userLogicSettings[requirement] && (true);
 			case "canMoatHBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
+			case "canXrayDboost": return userLogicSettings[requirement] && (items.morph); // not putting a tank requirement in here, if you're xray dboosting you can figure it out
 			case "canHijumpSpeedScrewAttackRoomClimb": return userLogicSettings[requirement] && (items.hijump && items.speed);
 			case "canWRITGPirateFreeze": return userLogicSettings[requirement] && (items.charge && items.ice);
 			case "canHypoJump": return userLogicSettings[requirement] && (true); // might cover all three hypo jumps? currently only used for writg hypo, but might extend to the other two
@@ -327,8 +340,8 @@
 			case "canHijumplessGrappleEscapeDraygon": return userLogicSettings[requirement] && (items.morph && items.grapple && items.tanks >= 3);
 			case "canBlueSuitDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash")); // tech for rbo grapple kill blue suit dray
 			case "canCFSuitAndAmmoKillDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
-			case "canXrayClimb": return userLogicSettings[requirement] && (items.xray); // current xray climbs in logic: precious
-			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb >= 1));
+			case "canXrayClimb": return userLogicSettings[requirement] && (items.xray); // current xray climbs in logic: precious (bowling skip too, but not with this tech)
+			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb));
 
 			case "canShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: draygon
 			case "canStupidShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: bottom of red tower

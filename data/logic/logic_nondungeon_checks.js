@@ -4878,5 +4878,1379 @@
                 ]
             }
         }
+    },
+    // super metroid locations
+    "Gauntlet E-Tank": { // TODO: add gauntlet health reqs for user preference?
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "SMKeys|Crateria1",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "space",
+                            "canIBJ",
+                            "canGauntletWalljumps"
+                        ]
+                    },
+                    { // screw or morph + morph bombs or morph + 10 pbs
+                        "anyOf": [
+                            "screw",
+                            "morphbombs",
+                            "powerbomb|10"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "screw",
+                            "morph"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    "tanks|1",
+                    "morph",
+                    "SMKeys|Crateria1",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "space",
+                            "canIBJ"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "canIBJ",
+                            "powerbomb|10", // should be two packs
+                            "screw"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Back of Gauntlet - Left": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "canPassBombPassages",
+                    "SMKeys|Crateria1",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "space",
+                            "canIBJ",
+                            "canGauntletWalljumps"
+                        ]
+                    },
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Crateria - Terminator",
+                    "canUsePowerBombs"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    "tanks|2",
+                    "morph",
+                    "canPassBombPassages",
+                    "SMKeys|Crateria1",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "space",
+                            "canIBJ"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "canIBJ",
+                            "powerbomb|10", // should be two packs
+                            "screw"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Back of Gauntlet - Right": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "canPassBombPassages",
+                    "SMKeys|Crateria1",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "space",
+                            "canIBJ",
+                            "canGauntletWalljumps"
+                        ]
+                    },
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Crateria - Terminator",
+                    "canUsePowerBombs"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    "tanks|2",
+                    "morph",
+                    "canPassBombPassages",
+                    "SMKeys|Crateria1",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "space",
+                            "canIBJ"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "canIBJ",
+                            "powerbomb|10", // should be two packs
+                            "screw"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Terminator E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Terminator"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Terminator"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Crateria Power Bomb": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "SMKeys|Crateria1|canUsePowerBombs",
+                    {
+                        "anyOf": [
+                            "space",
+                            "speed",
+                            "canIBJ"
+                        ]
+                    }
+                ]
+                
+            }
+        },
+        "Inverted": {}
+    },
+    "Bomb Torizo": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "SMKeys|CrateriaB|canOpenRedDoors",
+                    {
+                        "anyOf": [
+                            "canAlcatrazEscape", // checks morph
+                            "canPassBombPassages"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    "SMKeys|CrateriaB|canOpenRedDoors",
+                    "canPassBombPassages"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "230 Missile": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    "canPassBombPassages"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Climb Super": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "canUsePowerBombs",
+                    "speed",
+                    "tanks|1"
+                    // maybe put in xray climb?
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "canUsePowerBombs"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    "canUsePowerBombs",
+                    "speed",
+                    "tanks|2"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Old Mother Brain Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    {
+                        "anyOf": [
+                            "canDestroyBombWalls",
+                            "canOldMBWithSpeed"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Ship",
+                    "canDestroyBombWalls"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Moat Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Moat"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Crateria - Moat"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Sky Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Maze Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Ocean Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "morph",
+                    "canBreach|Crateria - Moat",
+                    {
+                        "anyOf": [ // can cross moat
+                            "speed",
+                            "grapple",
+                            "space",
+                            "canGravityJump",
+                            "canMoatCWJ",
+                            "canMoatHBJ",
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    "canIBJ"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    "hijump"
+                                ]
+                            },
+                            "canBreach|Wrecked Ship"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "morph",
+                    "canReach|Crateria - Moat",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "grapple",
+                            "space",
+                            "canReach|Wrecked Ship",
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    "canIBJ",
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "gravity",
+                                    "hijump"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Early Super Bridge Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    {
+                        "anyOf": [
+                            "canEarlySupersBridgeQuickdrop",
+                            "canPassBombPassages"
+                        ]
+                    }
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "canOpenRedDoors"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "canPassBombPassages"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Brinstar Reserve": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "canTrivialMockball"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "speed"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Brinstar Reserve Front Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "morph",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "canTrivialMockball"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "morph",
+                    "speed"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Brinstar Reserve Back Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "morph",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "canTrivialMockball"
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            "canHoleInOne",
+                            "canPassBombPassages"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "speed",
+                    "canPassBombPassages"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Early Super": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    {
+                        "anyOf": [
+                            "speed",
+                            "canTrivialMockball"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "canOpenRedDoors",
+                    "speed"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Etecoons E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                   "canBreach|Brinstar - Green Elevator",
+                   "SMKeys|Brinstar2",
+                   "canUsePowerBombs" 
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "SMKeys|Brinstar2",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Etecoons Super": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "SMKeys|Brinstar2",
+                    "canUsePowerBombs",
+                    "super"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "SMKeys|Brinstar2",
+                    "canUsePowerBombs",
+                    "super"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Etecoons Power Bomb": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Green Elevator",
+                    "SMKeys|Brinstar2",
+                    "canUsePowerBombs" 
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Green Elevator",
+                    "SMKeys|Brinstar2",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Mission Impossible Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Mission Impossible Power Bomb": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink",
+                    "canUsePowerBombs",
+                    "super"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink",
+                    "canUsePowerBombs",
+                    "super"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Wave Gate E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink",
+                    "canUsePowerBombs",
+                    "SMKeys|Brinstar2",
+                    {
+                        "anyOf": [
+                            "wave",
+                            "canHiJumpWaveGateGlitch",
+                            "canHiJumplessWaveGateGlitch"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink",
+                    "canUsePowerBombs",
+                    "SMKeys|Brinstar2",
+                    "wave"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Spore Spawn Super": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink",
+                    "canPassBombPassages",
+                    "super",
+                    {
+                        "anyOf": [
+                            "SMKeys|BrinstarB",
+                            {
+                                "allOf": [
+                                    "SMKeys|Brinstar2",
+                                    "canSporeSpawnSkip"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink",
+                    "canPassBombPassages",
+                    "super",
+                    "SMKeys|BrinstarB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Charge Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Charge Beam": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink",
+                    "canPassBombPassages"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink",
+                    "canPassBombPassages"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Waterway E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Big Pink",
+                    "canUsePowerBombs",
+                    "speed"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Big Pink",
+                    "canUsePowerBombs",
+                    "speed",
+                    {
+                        "anyOf": [
+                            "tanks|1",
+                            "gravity"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Pipe Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "morph",
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "canBreach|Brinstar - Big Pink",
+                                    "super"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canBreach|Brinstar - Blue",
+                                    "powerbomb"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canBreach|Brinstar - Red Tower",
+                                    {
+                                        "anyOf": [
+                                            "wave",
+                                            "canGateGlitch"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "morph",
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    "canReach|Brinstar - Big Pink",
+                                    "super"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canReach|Brinstar - Blue",
+                                    "powerbomb"
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canReach|Brinstar - Red Tower",
+                                    "wave"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Behind Morph Power Bomb": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Morph Ball Pedestal": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Alpha Missile": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue",
+                    "morph"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Blue Brinstar Ceiling E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Blue",
+                    "SMKeys|Brinstar1",
+                    {
+                        "anyOf": [
+                            "canCeilingDboost",
+                            "canIBJ",
+                            "hijump",
+                            "speed",
+                            "ice",
+                            "space",
+                            "canSpringBallJump"
+                        ]
+                    }
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Brinstar - Blue",
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue",
+                    "SMKeys|Brinstar1",
+                    {
+                        "anyOf": [
+                            "canIBJ",
+                            "hijump",
+                            "speed",
+                            "ice",
+                            "space",
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Beta Missile": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue",
+                    "morph",
+                    "SMKeys|Brinstar 1"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Billy Mays Front Missile": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue",
+                    "SMKeys|Brinstar 1",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Billy Mays Back Missile": {
+        "Open": {
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Blue",
+                    "SMKeys|Brinstar 1",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Alpha Power Bomb": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Red Tower",
+                    "super",
+                    {
+                        "anyOf": [
+                            "canUsePowerBombs",
+                            "ice",
+                            "canClimbRedTower"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Red Tower",
+                    "super",
+                    {
+                        "anyOf": [
+                            "canUsePowerBombs",
+                            "ice"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Alpha Power Bomb Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Red Tower",
+                    "super",
+                    "canUsePowerBombs"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Red Tower",
+                    "super",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Beta Power Bomb": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Red Tower",
+                    "super",
+                    "canUsePowerBombs"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Red Tower",
+                    "super",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "X-Ray Scope": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Red Tower",
+                    "canUsePowerBombs",
+                    "canOpenRedDoors",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space",
+                            "canXrayDboost",
+                            { // methods with a tank requirement
+                                "allOf": [
+                                    {
+                                        "anyOf": [
+                                            "tanks|5",
+                                            {
+                                                "allOf": [
+                                                    "tanks|3",
+                                                    "varia"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "anyOf": [
+                                            "canSpringBallJump",
+                                            "canIBJ",
+                                            {
+                                                "allOf": [
+                                                    "hijump",
+                                                    "speed"
+                                                ]
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Red Tower",
+                    "canUsePowerBombs",
+                    "canOpenRedDoors",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Spazer": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Red Tower",
+                    "canPassBombPassages",
+                    "super"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Red Tower",
+                    "canPassBombPassages",
+                    "super"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Kraid Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Kraid",
+                    "canUsePowerBombs"
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Brinstar - Kraid",
+                    {
+                        "anyOf": [
+                            "wave",
+                            "xray",
+                            "canUsePowerBombs"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Kraid",
+                    "canUsePowerBombs"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Varia Suit": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Kraid",
+                    "SMKeys|BrinstarB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Kraid",
+                    "SMKeys|BrinstarB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Kraid E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Brinstar - Kraid",
+                    "SMKeys|BrinstarB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Brinstar - Kraid",
+                    "SMKeys|BrinstarB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Spooky Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Wrecked Ship Left Supers": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Wrecked Ship Right Supers": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Wrecked Ship E-Tank": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    {
+                        "anyOf": [ // can pass sponge bath
+                            "hijump",
+                            "speed",
+                            "space",
+                            "gravity",
+                            "canSpringBallJump",
+                            "canSpongeBathBombJump"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    {
+                        "anyOf": [ // can pass sponge bath
+                            "hijump",
+                            "speed",
+                            "space",
+                            "gravity"
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Attic Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB"
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Bowling Missile": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    "SMKeys|WreckedShip1",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space",
+                            "tanks|1",
+                            "varia"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    "SMKeys|WreckedShip1",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space",
+                            "tanks|3",
+                            {
+                                "allOf": [
+                                    "varia",
+                                    "tanks|2"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Wrecked Ship Reserve": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "canUsePowerBombs",
+                    "SMKeys|WreckedShipB",
+                    "SMKeys|WreckedShip1",
+                    "speed",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space",
+                            "tanks|1",
+                            "varia"
+                        ]
+                    }
+                ]
+            },
+            "scout": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    "SMKeys|WreckedShip1",
+                    {
+                        "anyOf": [
+                            "canUsePowerBombs",
+                            "wave",
+                            "xray"
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "canUsePowerBombs",
+                    "SMKeys|WreckedShipB",
+                    "SMKeys|WreckedShip1",
+                    "speed",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space",
+                            "tanks|3",
+                            {
+                                "allOf": [
+                                    "varia",
+                                    "tanks|2"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
+    },
+    "Gravity Suit": {
+        "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    {
+                        "anyOf": [
+                            "canBowlingSkip",
+                            {
+                                "allOf": [
+                                    "SMKeys|WreckedShip1",
+                                    {
+                                        "anyOf": [
+                                            "grapple",
+                                            "space",
+                                            "tanks|1",
+                                            "varia"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "canReach|Wrecked Ship",
+                    "canPassBombPassages",
+                    "SMKeys|WreckedShipB",
+                    "SMKeys|WreckedShip1",
+                    {
+                        "anyOf": [
+                            "grapple",
+                            "space",
+                            "tanks|3",
+                            {
+                                "allOf": [
+                                    "varia",
+                                    "tanks|2"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "Inverted": {}
     }
 }})(window);
