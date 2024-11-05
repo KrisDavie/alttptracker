@@ -1096,13 +1096,13 @@
     { 'open_idx': 163, 'caption': 'Spooky Missile', 'checks': ['Spooky Missile'] },
     {
         'open_idx': 164,
-        'caption': 'Wrecked Ship Left Supers',
-        'checks': ['Wrecked Ship Left Supers']
+        'caption': 'Wrecked Ship Left Super',
+        'checks': ['Wrecked Ship Left Super']
     },
     {
         'open_idx': 165,
-        'caption': 'Wrecked Ship Right Supers',
-        'checks': ['Wrecked Ship Right Supers']
+        'caption': 'Wrecked Ship Right Super',
+        'checks': ['Wrecked Ship Right Super']
     },
     {
         'open_idx': 166,

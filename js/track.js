@@ -133,6 +133,13 @@
 		"powerbomb": 5,
 	}
 
+	window.setItemValue = function(label, value) {
+		if (Object.keys(sm_increment_items).includes(label)) {
+			var valuediv = document.getElementById(`${label}text`);
+			valuediv.innerHTML = value === 0 ? "" : value * sm_increment_items[label];
+		}
+	}
+
     // Event of clicking on the item tracker
     window.toggle = function(label) {
 		if(rightClickedLocation != -1) {

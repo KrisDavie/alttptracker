@@ -29,6 +29,9 @@ var FOREIGN_SM_BOSSES_KEYS = 0xE03968;
 var NATIVE_SM_AMMO = 0xF509C0; // 0xF509C2
 var FOREIGN_SM_AMMO = 0xE0391E;
 
+var NATIVE_SM_ROOMS = 0xF5D870
+var FOREIGN_SM_ROOMS = 0xE107CE // Likely very wrong
+
 var LTTP_GAME_MODE = 0xF50010;
 var SM_GAME_MODE = 0xF50998;
 
@@ -590,7 +593,7 @@ function autotrackReadMem() {
     for (var i = 0; i < 0x50; i++) {
       data["lttp_rooms_inv"][i + 0x340] = data["lttp_rooms_inv_sm"][i];
     }
-    addSMItemData();
+    addSMRoomData();
   }
 
   function addMainAutoTrackData1() {
@@ -609,9 +612,24 @@ function autotrackReadMem() {
       0x280,
       data,
       "lttp_rooms_inv",
-      addSMItemData,
+      addSMRoomData,
       (merge = true)
     );
+  }
+
+  function addSMRoomData() {
+    if (currentGame === "sm") {
+        snesreadsave(
+        NATIVE_SM_ROOMS,
+        0x16,
+        data,
+        "sm_rooms",
+        addSMItemData
+        );
+    } else {
+        data["sm_rooms"] = new Uint8Array(0x16);
+        addSMItemData();
+    }
   }
 
   function addSMItemData() {
@@ -870,6 +888,7 @@ function autotrackDoTracking(data) {
     }
 
     if (flags.entrancemode === 'N') {
+        // Z3 location
         updatechest(0, 0x226, 0x10); // King's Tomb
         updatechest_group(1, [[0x2BB, 0x40], [0x216, 0x10]]); // Sunken Treasure + Flooded Chest
         updatechest(2, 0x208, 0x10); // Link's House
@@ -978,8 +997,105 @@ function autotrackDoTracking(data) {
         updatechest(104, 0x064, 0x10); // Hyrule Castle - Dark Cross
         updatechest(106, 0x1C0, 0x10); // Castle Tower - Room 03
         updatechest(107, 0x1A0, 0x10); // Castle Tower - Dark Maze
-        
 
+        // SM locations
+        updatechest(120, 0x0, 0x20, data_loc = "sm_rooms") // Gauntlet E-Tank
+        updatechest(121, 0x1, 0x04, data_loc = "sm_rooms") // Back of Gauntlet - Left
+        updatechest(122, 0x1, 0x02, data_loc = "sm_rooms") // Back of Gauntlet - Right
+        updatechest(123, 0x1, 0x01, data_loc = "sm_rooms") // Terminator E-Tank
+        updatechest(124, 0x0, 0x01, data_loc = "sm_rooms") // Crateria Power Bomb
+        updatechest(125, 0x0, 0x80, data_loc = "sm_rooms") // Bomb Torizo
+        updatechest(126, 0x1, 0x10, data_loc = "sm_rooms") // 230 Missile
+        updatechest(127, 0x1, 0x08, data_loc = "sm_rooms") // Climb Super
+        updatechest(128, 0x0, 0x40, data_loc = "sm_rooms") // Old Mother Brain Missile
+        updatechest(129, 0x0, 0x10, data_loc = "sm_rooms") // Moat Missile
+        updatechest(130, 0x0, 0x04, data_loc = "sm_rooms") // Sky Missile
+        updatechest(131, 0x0, 0x08, data_loc = "sm_rooms") // Maze Missile
+        updatechest(132, 0x0, 0x02, data_loc = "sm_rooms") // Ocean Missile
+        updatechest(133, 0x1, 0x80, data_loc = "sm_rooms") // Early Super Bridge Missile
+        updatechest(134, 0x2, 0x02, data_loc = "sm_rooms") // Brinstar Reserve
+        updatechest(135, 0x2, 0x08, data_loc = "sm_rooms") // Brinstar Reserve Front Missile
+        updatechest(136, 0x2, 0x04, data_loc = "sm_rooms") // Brinstar Reserve Back Missile
+        updatechest(137, 0x2, 0x01, data_loc = "sm_rooms") // Early Super
+        updatechest(138, 0x3, 0x40, data_loc = "sm_rooms") // Etecoons E-Tank
+        updatechest(139, 0x3, 0x80, data_loc = "sm_rooms") // Etecoons Super
+        updatechest(140, 0x1, 0x20, data_loc = "sm_rooms") // Etecoons Power Bomb
+        updatechest(141, 0x2, 0x20, data_loc = "sm_rooms") // Mission Impossible Missile
+        updatechest(142, 0x3, 0x01, data_loc = "sm_rooms") // Mission Impossible Power Bomb
+        updatechest(143, 0x4, 0x08, data_loc = "sm_rooms") // Wave Gate E-Tank
+        updatechest(144, 0x1, 0x40, data_loc = "sm_rooms") // Spore Spawn Super
+        updatechest(145, 0x2, 0x40, data_loc = "sm_rooms") // Charge Missile
+        updatechest(146, 0x2, 0x80, data_loc = "sm_rooms") // Charge Beam
+        updatechest(147, 0x4, 0x02, data_loc = "sm_rooms") // Waterway E-Tank
+        updatechest(148, 0x3, 0x02, data_loc = "sm_rooms") // Pipe Missile
+        updatechest(149, 0x3, 0x08, data_loc = "sm_rooms") // Behind Morph Power Bomb
+        updatechest(150, 0x3, 0x04, data_loc = "sm_rooms") // Morph Ball Pedestal
+        updatechest(151, 0x4, 0x04, data_loc = "sm_rooms") // Alpha Missile
+        updatechest(152, 0x3, 0x20, data_loc = "sm_rooms") // Blue Brinstar Ceiling E-Tank
+        updatechest(153, 0x3, 0x10, data_loc = "sm_rooms") // Beta Missile
+        updatechest_group(154, [[0x4, 0x10], [0x4, 0x20]], data_loc = "sm_rooms") // Billy Mays Front Missile
+        updatechest(155, 0x5, 0x01, data_loc = "sm_rooms") // Alpha Power Bomb
+        updatechest(156, 0x5, 0x02, data_loc = "sm_rooms") // Alpha Power Bomb Missile
+        updatechest(157, 0x4, 0x80, data_loc = "sm_rooms") // Beta Power Bomb
+        updatechest(158, 0x4, 0x40, data_loc = "sm_rooms") // X-Ray Scope
+        updatechest(159, 0x5, 0x04, data_loc = "sm_rooms") // Spazer
+        updatechest(160, 0x5, 0x10, data_loc = "sm_rooms") // Kraid Missile
+        updatechest(161, 0x6, 0x01, data_loc = "sm_rooms") // Varia Suit
+        updatechest(162, 0x5, 0x08, data_loc = "sm_rooms") // Kraid E-Tank
+        updatechest(163, 0x10, 0x01, data_loc = "sm_rooms") // Spooky Missile
+        updatechest(164, 0x10, 0x20, data_loc = "sm_rooms") // Wrecked Ship Left Super
+        updatechest(165, 0x10, 0x40, data_loc = "sm_rooms") // Wrecked Ship Right Super
+        updatechest(166, 0x10, 0x10, data_loc = "sm_rooms") // Wrecked Ship E-Tank
+        updatechest(167, 0x10, 0x08, data_loc = "sm_rooms") // Attic Missile
+        updatechest(168, 0x10, 0x04, data_loc = "sm_rooms") // Bowling Missile
+        updatechest(169, 0x10, 0x02, data_loc = "sm_rooms") // Wrecked Ship Reserve
+        updatechest(170, 0x10, 0x80, data_loc = "sm_rooms") // Gravity Suit
+        updatechest(171, 0x11, 0x01, data_loc = "sm_rooms") // Main Street Missile
+        updatechest(172, 0x11, 0x02, data_loc = "sm_rooms") // Crab Super
+        updatechest(173, 0x11, 0x04, data_loc = "sm_rooms") // Mama Turtle E-Tank
+        updatechest(174, 0x11, 0x08, data_loc = "sm_rooms") // Mama Turtle Missile
+        updatechest(175, 0x11, 0x40, data_loc = "sm_rooms") // Beach Missile
+        updatechest_group(176, [[0x11, 0x10], [0x11, 0x20]], data_loc = "sm_rooms") // Watering Hole - Left
+        updatechest_group(177, [[0x12, 0x01], [0x12, 0x02]], data_loc = "sm_rooms") // Left Sand Pit Missile
+        updatechest(178, 0x12, 0x04, data_loc = "sm_rooms") // Right Sand Pit Missile
+        updatechest(179, 0x12, 0x08, data_loc = "sm_rooms") // Right Sand Pit Power Bomb
+        updatechest(180, 0x12, 0x10, data_loc = "sm_rooms") // Aqueduct Missile
+        updatechest(181, 0x12, 0x20, data_loc = "sm_rooms") // Aqueduct Super
+        updatechest(182, 0x13, 0x01, data_loc = "sm_rooms") // Botwoon E-Tank
+        updatechest(183, 0x12, 0x80, data_loc = "sm_rooms") // Precious Missile
+        updatechest(184, 0x13, 0x04, data_loc = "sm_rooms") // Space Jump
+        updatechest(185, 0x11, 0x80, data_loc = "sm_rooms") // Plasma Beam
+        updatechest(186, 0x12, 0x40, data_loc = "sm_rooms") // Spring Ball
+        updatechest(187, 0x7, 0x01, data_loc = "sm_rooms") // Hi-Jump Boots E-Tank
+        updatechest(188, 0x6, 0x20, data_loc = "sm_rooms") // Hi-Jump Boots
+        updatechest(189, 0x6, 0x80, data_loc = "sm_rooms") // Hi-Jump Boots Missile
+        updatechest(190, 0x6, 0x04, data_loc = "sm_rooms") // Ice Beam
+        updatechest(191, 0x6, 0x08, data_loc = "sm_rooms") // Crumble Shaft Missile
+        updatechest(192, 0x6, 0x02, data_loc = "sm_rooms") // Cathedral Missile
+        updatechest(193, 0x8, 0x01, data_loc = "sm_rooms") // Bubble Mountain Corner Missile
+        updatechest(194, 0x7, 0x80, data_loc = "sm_rooms") // Norfair Reserve Front Missile
+        updatechest(195, 0x7, 0x40, data_loc = "sm_rooms") // Norfair Reserve Hidden Missile
+        updatechest(196, 0x7, 0x20, data_loc = "sm_rooms") // Norfair Reserve
+        updatechest(197, 0x8, 0x02, data_loc = "sm_rooms") // Speed Missile
+        updatechest(198, 0x8, 0x04, data_loc = "sm_rooms") // Speed Booster
+        updatechest(199, 0x8, 0x08, data_loc = "sm_rooms") // Wave Missile
+        updatechest(200, 0x8, 0x10, data_loc = "sm_rooms") // Wave Beam
+        updatechest(201, 0x6, 0x10, data_loc = "sm_rooms") // Crocomire E-Tank
+        updatechest(202, 0x7, 0x02, data_loc = "sm_rooms") // Croc Power Bomb
+        updatechest(203, 0x7, 0x04, data_loc = "sm_rooms") // Cosine Missile
+        updatechest(204, 0x7, 0x08, data_loc = "sm_rooms") // Indiana Jones Missile
+        updatechest(205, 0x7, 0x10, data_loc = "sm_rooms") // Grapple Beam
+        updatechest(206, 0x6, 0x40, data_loc = "sm_rooms") // Croc Escape Missile
+        updatechest(207, 0x8, 0x40, data_loc = "sm_rooms") // Gold Torizo Missile
+        updatechest(208, 0x8, 0x80, data_loc = "sm_rooms") // Gold Torizo Super
+        updatechest(209, 0x9, 0x80, data_loc = "sm_rooms") // Screw Attack
+        updatechest(210, 0x9, 0x02, data_loc = "sm_rooms") // Mickey Mouse Missile
+        updatechest(211, 0xa, 0x01, data_loc = "sm_rooms") // Firefleas E-Tank
+        updatechest(212, 0x9, 0x04, data_loc = "sm_rooms") // Hotarubi Missile
+        updatechest(213, 0x9, 0x08, data_loc = "sm_rooms") // Jail Power Bomb
+        updatechest(214, 0x9, 0x20, data_loc = "sm_rooms") // FrankerZ Missile
+        updatechest(215, 0x9, 0x10, data_loc = "sm_rooms") // Power Bombs of Shame
+        updatechest(216, 0x9, 0x40, data_loc = "sm_rooms") // Ridley E-Tank
     } else {
         updatechest(0, 0x2BB, 0x40); // Sunken Treasure
         updatechest(1, 0x208, 0x10); // Link's House
@@ -1320,7 +1436,7 @@ function autotrackDoTracking(data) {
                     newval /= 5;
                     break;
             } 
-            setitem(ammo, newval);
+            setItemValue(ammo, newval);
         }
     }
 
@@ -1391,21 +1507,25 @@ function autotrackDoTracking(data) {
     if (newbit(0x01, 0x01, 'sm_bosses_keys')){
         setitem("kraid", false);
         collect_prize(11)
+        toggle_chest(217)
     }
 
     if (newbit(0x02, 0x01, 'sm_bosses_keys')){
         setitem("ridley", false);
         collect_prize(10)
+        toggle_chest(220)
     }
 
     if (newbit(0x03, 0x01, 'sm_bosses_keys')){
         setitem("phantoon", false);
         collect_prize(12)
+        toggle_chest(218)
     }
 
     if (newbit(0x04, 0x01, 'sm_bosses_keys')){
         setitem("draygon", false);
         collect_prize(13)
+        toggle_chest(219)
     }
 
 
