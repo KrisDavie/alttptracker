@@ -2,34 +2,38 @@
 
 <head>
 	<title>ALTTP Randomizer Community Tracker - Tracker</title>
-	<script src="js/jquery-3.7.1.min.js?v=21013"></script>
-	<script src="js/bootstrap.min.js?v=21013"></script>
-	<link rel="stylesheet" type="text/css" href="css/sprites.css?v=21013">
-	<link rel="stylesheet" type="text/css" href="css/fonts.css?v=21013">
-	<link rel="stylesheet" type="text/css" href="css/colors.css?v=21013">
-	<link rel="stylesheet" type="text/css" href="css/style.css?v=21013">
-	<link rel="stylesheet" type="text/css" id="style-nonentrance">
-	<link rel="stylesheet" type="text/css" id="style-entrance">
-	
-	<script src="js/util.js?v=21013"></script>
-	<script src="js/logicsettings.js?v=21013"></script>
+	<script src="js/jquery-3.7.1.min.js?v=20241103"></script>
+	<script src="js/bootstrap.min.js?v=20241103"></script>
+	<link rel="stylesheet" type="text/css" href="css/sprites.css?v=20241103">
+	<link rel="stylesheet" type="text/css" href="css/fonts.css?v=20241103">
+	<link rel="stylesheet" type="text/css" href="css/colors.css?v=20241103">
+	<link rel="stylesheet" type="text/css" id="mainstyle">
+	<link rel="stylesheet" type="text/css" id="maincompactstyle">
+	<script src="js/util.js?v=20241103"></script>
+	<script src="js/logicsettings.js?v=20241103"></script>
 
-	<script src="data/entrance_to_array_id.js?v=21013"></script>
-	<script src="data/entrances_data.js?v=21013"></script>
-	<script src="data/chests_data.js?v=21013"></script>
-	<script src="data/data_objects.js?v=21013"></script>
-	<script src="data/logic/logic_dungeon_keydrop.js?v=21013"></script>
-	<script src="data/logic/logic_dungeon.js?v=21013"></script>
-	<script src="data/logic/logic_entrances.js?v=21013"></script>
-	<script src="data/logic/logic_nondungeon_checks_entrance.js?v=21013"></script>
-	<script src="data/logic/logic_nondungeon_checks.js?v=21013"></script>
-	<script src="data/logic/logic_regions.js?v=21013"></script>
+	<script src="data/entrance_to_array_id.js?v=20241103"></script>
+	<script src="data/entrances_data.js?v=20241103"></script>
+	<script src="data/chests_data.js?v=20241103"></script>
+	<script src="data/data_objects.js?v=20241103"></script>
+	<script src="data/logic/logic_dungeon_keydrop.js?v=20241103"></script>
+	<script src="data/logic/logic_dungeon.js?v=20241103"></script>
+	<script src="data/logic/logic_entrances.js?v=20241103"></script>
+	<script src="data/logic/logic_nondungeon_checks_entrance.js?v=20241103"></script>
+	<script src="data/logic/logic_nondungeon_checks.js?v=20241103"></script>
+	<script src="data/logic/logic_regions.js?v=20241103"></script>
 
-	<script src="js/eventhandlers.js?v=21013"></script>
-	<script src="js/items.js?v=21013"></script>
-	<script src="js/chests.js?v=21013"></script>
-	<script src="js/track.js?v=21013"></script>
-	<script src="js/autot.js?v=21013"></script>
+	<script src="data/logic/owg/logic_entrances.js?v=20241103"></script>
+	<script src="data/logic/owg/logic_nondungeon_checks_entrance.js?v=20241103"></script>
+	<script src="data/logic/owg/logic_nondungeon_checks.js?v=20241103"></script>
+	<script src="data/logic/owg/logic_regions.js?v=20241103"></script>
+
+	<script src="js/eventhandlers.js?v=20241103"></script>
+	<script src="js/items.js?v=20241103"></script>
+	<script src="js/chests.js?v=20241103"></script>
+	<script src="js/track.js?v=20241103"></script>
+	<script src="js/autot.js?v=20241103"></script>
+
 	<script>
 		var colorSettings = JSON.parse(localStorage.getItem('colorSettings'));
 		for (var key in colorSettings) {
@@ -843,8 +847,8 @@
 					<div id="summaryDiv0" style="overflow-y: auto; text-align: left; height: 246px;">
 					</div>
 				</div>
-				<div>
-					<div onclick="event.stopPropagation()">
+				<div style="float: left; width: 380px; height: 300px; text-align: center; margin-left: 10px;">
+					<div style="margin: 10px 0 8px 0;" onclick="event.stopPropagation()">
 						<select id="summaryFilter1" onchange="LoadEntranceSummary(1); this.blur()">
 							<option value="all">All Locations</option>
 							<option value="dungeons">Dungeons</option>

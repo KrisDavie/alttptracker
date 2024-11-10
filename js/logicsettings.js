@@ -1,36 +1,5 @@
 const logicCheckboxes = document.querySelectorAll("input.logiccheckbox");
 
-const allLogic = {
-  "canIceBreak": true,
-  "canHookClip": true,
-  "canBombJump": true,
-  "canBombOrBonkCameraUnlock": true,
-  "canHover": true,
-  "canHoverAlot": true,
-  "canSpeckyClip": true,
-  "canFireSpooky": true,
-  "canBombSpooky": true,
-  "canHeraPot": true,
-  "canMimicClip": true,
-  "canPotionCameraUnlock": true,
-  "canMoldormBounce": true,
-  "canDarkRoomNavigateBlind": true,
-  "canTorchRoomNavigateBlind": true,
-  "canFairyReviveHover": true,
-  "canFakeFlipper": true,
-  "canOWFairyRevive": true,
-  "canQirnJump": true,
-  "canMirrorSuperBunny": true,
-  "canDungeonBunnyRevive": true,
-  "canFakePowder": true,
-  "canWaterWalk": true,
-  "canZoraSplashDelete": true,
-  "canBunnyPocket": true,
-  "canFairyBarrierRevive": true,
-  "canShockBlock": true,
-  "canTombRaider": true
-};
-
 const noStupid = {
   "canIceBreak": true,
   "canHookClip": true,
@@ -59,7 +28,10 @@ const noStupid = {
   "canBunnyPocket": true,
   "canFairyBarrierRevive": false,
   "canShockBlock": false,
-  "canTombRaider": true
+  "canTombRaider": true,
+  "canTamSwam": true,
+  "canBunnyCitrus": true,
+  "canMirrorWrap": true,
 };
 
 const basicLogic = {
@@ -90,7 +62,10 @@ const basicLogic = {
   "canBunnyPocket": false,
   "canFairyBarrierRevive": false,
   "canShockBlock": false,
-  "canTombRaider": true
+  "canTombRaider": true,
+  "canTamSwam": true,
+  "canBunnyCitrus": false,
+  "canMirrorWrap": false,
 };
 
 // Save logic settings to local storage
@@ -111,7 +86,10 @@ const setAlllogics = (preset) => {
   let logicSettings;
   switch (preset) {
     case "all":
-      logicSettings = allLogic;
+      logicSettings = {};
+      Object.keys(basicLogic).forEach((item) => {
+        logicSettings[item] = true;
+      });
       break;
     case "nostupid":
       logicSettings = noStupid;

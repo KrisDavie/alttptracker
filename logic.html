@@ -1,18 +1,18 @@
 <html>
 	<head>
 		<title>ALTTP Randomizer Community Tracker - Logic Settings</title>
-		<script type="text/javascript" src="js/index.js?v=21013"></script>
-		<script type="text/javascript" src="js/jquery-3.3.1.js?v=21013"></script>
-		<script type="text/javascript" src="js/jquery.powertip.js?v=21013"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js?v=21013"></script>
-		<script type="text/javascript" src="js/logicsettings.js?v=21013" defer></script>
-		<link href="css/jquery.powertip.css?v=21013" rel="stylesheet" />
-		<link href="css/launcher.css?v=21013" rel="stylesheet">
-		<link href="css/fonts.css?v=21013" rel="stylesheet">
-		<link href="css/sprites.css?v=21013" rel="stylesheet">
-		<link href="css/toast.css?v=21013" rel="stylesheet">
-		<link href="css/style.css?v=21013" rel="stylesheet">
-		<link href="css/logicsettings.css?v=21013" rel="stylesheet">
+		<script type="text/javascript" src="js/index.js?v=20241103"></script>
+		<script type="text/javascript" src="js/jquery-3.3.1.js?v=20241103"></script>
+		<script type="text/javascript" src="js/jquery.powertip.js?v=20241103"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js?v=20241103"></script>
+		<script type="text/javascript" src="js/logicsettings.js?v=20241103" defer></script>
+		<link href="css/jquery.powertip.css?v=20241103" rel="stylesheet" />
+		<link href="css/launcher.css?v=20241103" rel="stylesheet">
+		<link href="css/fonts.css?v=20241103" rel="stylesheet">
+		<link href="css/sprites.css?v=20241103" rel="stylesheet">
+		<link href="css/toast.css?v=20241103" rel="stylesheet">
+		<link href="css/style.css?v=20241103" rel="stylesheet">
+		<link href="css/logicsettings.css?v=20241103" rel="stylesheet">
 		<style>
 			a { color: red; }
 		</style>
@@ -185,9 +185,27 @@
                             <div>
                                 <input type="checkbox" class="logiccheckbox" id="canTombRaider" checked>
                                 <label for="canTombRaider" class="logiclabel">Tomb Raider</label><span class="south tooltop-character" title="Use hookshot to access King's Tomb from Graveyard Ledge"> [?]</span>
+                            </div>
+                        </div>
+                        <div class="logiccol">
+                            <span class="preset-header-text" style="text-decoration: underline;">Glitch Logic</span><span class="south tooltop-character" title="Only applicable in glitched modes"> [?]</span>
+                            <div>
+                                <input type="checkbox" class="logiccheckbox" id="canTamSwam" checked>
+                                <label for="canTamSwam" class="logiclabel">Swim Clip</label><span class="south tooltop-character" title="Clip through terrain while swimming"> [?]</span>
+                            </div>
+                            <div>
+                                <input type="checkbox" class="logiccheckbox" id="canBunnyCitrus" checked>
+                                <label for="canBunnyCitrus" class="logiclabel">Bunny Citrus</label><span class="south tooltop-character" title="Can citrus clip as a bunny"> [?]</span>
+                            </div>
+                            <div>
+                                <input type="checkbox" class="logiccheckbox" id="canMirrorWrap" checked>
+                                <label for="canMirrorWrap" class="logiclabel:">Mirror Wrap</label><span class="south tooltop-character" title="Wrap the screen using the mirror"> [?]</span>
+                            </div>
+
+
                         </div>
                     </div>
-					<button onclick=handleSaveBack()>Save & Back</button>
+                    <button onclick=handleSaveBack()>Save & Back</button>
 				</div>
 			</div>
 		</div>

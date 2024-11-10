@@ -69,6 +69,23 @@ function load_cookie() {
 						document.getElementById("oldmapstyles").checked = true;
 					}
 					break;
+				case 'sc':
+					switch (setting[1]) {
+						case 'F':
+							document.getElementById("scale100").checked = true;
+							break;
+						case 'T':
+							document.getElementById("scale75").checked = true;
+							break;
+						case 'H':
+							document.getElementById("scale50").checked = true;
+							break;
+						case 'Q':
+							document.getElementById("scale25").checked = true;
+							break;
+					}
+					break;
+
 			}
 		})
 
@@ -129,11 +146,49 @@ function resetallstartingitems() {
 	setstartingitem("magic",25,"0");
 }
 
+function resetallsettings() {
+	var settings = {
+		"gametypeopen": true,
+		"entrancenone": true,
+		"doornone": true,
+		"overworldno": true,
+		"prizeshuffleno": true,
+		"bossnone": true,
+		"enemynone": true,
+		"glitchesnone": true,
+		"goalganon": true,
+		"goalcrystal": true,
+		"towerselect": 7,
+		"ganoncrystal": true,
+		"ganonselect": 7,
+		"swordsrandomized": true,
+		"unknownnone": true,
+		"shopsanityno": true,
+		"ambrosiano": true,
+		"pseudobootsno": true,
+		"shuffledmaps": false,
+		"shuffledcompasses": false,
+		"shuffledsmallkeys": false,
+		"shuffledbigkeys": false,
+		"nonprogressivebowsno": true,
+		"activatedfluteno": true,
+		"bonkshuffleno": true
+	}
+	for (const [key, value] of Object.entries(settings)) {
+		if (typeof(value) === "boolean") {
+			document.getElementById(key).checked = value;
+		} else {
+			document.getElementById(key).value = value;
+		}
+	}
+}
+
 function launch_tracker() {
 	var world = document.querySelector('input[name="gametypegroup"]:checked').value;
 	var entrance = document.querySelector('input[name="entrancegroup"]:checked').value;
 	var door = document.querySelector('input[name="doorgroup"]:checked').value;	
 	var overworld = document.querySelector('input[name="overworldgroup"]:checked').value;
+	var prizeshuffle = document.querySelector('input[name="prizeshufflegroup"]:checked').value;
 	var boss = document.querySelector('input[name="bossgroup"]:checked').value;
 	var enemy = document.querySelector('input[name="enemygroup"]:checked').value;
 	var pseudoboots = document.querySelector('input[name="pseudobootsgroup"]:checked').value;
@@ -164,24 +219,39 @@ function launch_tracker() {
 	var spritesel = document.getElementById("spriteselect");
 	var sprite = spritesel.options[spritesel.selectedIndex].value;
 	var mapStyle = document.querySelector('input[name="oldmapstyles"]:checked') === null ? "N" : "O";
+	var scale = document.querySelector('input[name="scalegroup"]:checked').value;
 	
 	var width = 473;
 
 	var height = 690;
+
+	switch (scale) {
+		case 'F':
+			break;
+		case 'T':
+			width = width * 0.75;
+			height = height * 0.75;
+			break;
+		case 'H':
+			width = width * 0.5;
+			height = height * 0.5;
+			break;
+		case 'Q':
+			width = width * 0.25;
+			height = height * 0.25;
+			break;
+	}
+
+
 		
 	if (document.getElementById("remembersettings").checked == true) {
-		var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle;
+		var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale;
 		document.cookie = "settings=" + settings + "; expires=Sat, 3 Jan 2026 12:00:00 UTC";
 	} else {
 		document.cookie = "settings=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 	}
 	
-	if (glitches === 'O' && world === "I") {
-		alert('NOTICE: Inverted OWG is currently not supported for logic, all locations will be flagged as available.');
-		glitches = 'M';
-	}
-	
-	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}&d={map}{chestcolor}{sphere}{autotracking}{trackingport}{mapstyle}&s={startingitemstring}&p={sprite}&r={epoch}'
+	var trackerWindow = window.open('tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{prizeshuffle}&d={map}{chestcolor}{sphere}{autotracking}{trackingport}{mapstyle}{scale}&s={startingitemstring}&p={sprite}&r={epoch}'
 		.replace('{world}', world)
 		.replace('{entrance}', entrance)
 		.replace('{door}', door)
@@ -206,12 +276,14 @@ function launch_tracker() {
 		.replace('{ganon}', ganon)
 		.replace('{ganoncrystals}', ganoncrystals)
 		.replace('{swords}', swords)
+		.replace('{prizeshuffle}', prizeshuffle)
 		.replace('{map}', map)
 		.replace('{chestcolor}', chestcolor)
 		.replace('{sphere}', sphere)
 		.replace('{autotracking}', autotracking)
 		.replace('{trackingport}', trackingport.padStart(5, '0'))
 		.replace('{mapstyle}', mapStyle)
+		.replace('{scale}', scale)
 		.replace('{startingitemstring}', startingitemstring)
 		.replace('{sprite}', sprite)
 		.replace('{epoch}', Date.now()),
@@ -319,6 +391,7 @@ function loadarchivepreset() {
 
 function loadPreset(settings) {
 	resetallstartingitems();
+	resetallsettings();
 
 	for (const [key, value] of Object.entries(settings)) {
 		if (typeof(value) === "boolean") {
@@ -421,7 +494,6 @@ function loadadpreset() {
 }
 
 function loadganonhuntpreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -448,10 +520,10 @@ function loadganonhuntpreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadenemizerbootspreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -478,6 +550,7 @@ function loadenemizerbootspreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadopenpreset() {
@@ -486,6 +559,7 @@ function loadopenpreset() {
 		"entrancenone": true,
 		"doornone": true,
 		"overworldno": true,
+		"prizeshuffleno": true,
 		"bossnone": true,
 		"enemynone": true,
 		"glitchesnone": true,
@@ -510,7 +584,6 @@ function loadopenpreset() {
 }
 
 function loadowgpreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -537,10 +610,10 @@ function loadowgpreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadhmgpreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -567,10 +640,10 @@ function loadhmgpreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadnologicpreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -597,10 +670,10 @@ function loadnologicpreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadopenbootspreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -627,6 +700,7 @@ function loadopenbootspreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadambrosiapreset() {
@@ -831,7 +905,6 @@ function loaddoubledownpreset() {
 }
 
 function loadbootspreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypestandard": true,
 		"entrancenone": true,
@@ -858,6 +931,7 @@ function loadbootspreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadopenkeyspreset() {
@@ -1035,9 +1109,6 @@ function loadmcshufflepreset() {
 }
 
 function loadpotpourripreset() {
-	setstartingitem("hookshot",3,"1");
-	setstartingitem("icerod",7,"1");
-	setstartingitem("flute",14,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -1064,6 +1135,9 @@ function loadpotpourripreset() {
 		"activatedfluteyes": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("hookshot",3,"1");
+	setstartingitem("icerod",7,"1");
+	setstartingitem("flute",14,"1");
 }
 
 function loadretrancepreset() {
@@ -1153,7 +1227,6 @@ function loadinvertedadkeyspreset() {
 }
 
 function loadgoldrushspreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -1180,6 +1253,7 @@ function loadgoldrushspreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadludicrouspreset() {
@@ -1299,7 +1373,6 @@ function loadmcbosspreset() {
 }
 
 function loadtinvertedkeyspreset() {
-	setstartingitem("flute",14,"1");
 	loadPreset({
 		"gametypeinverted": true,
 		"entrancenone": true,
@@ -1326,6 +1399,7 @@ function loadtinvertedkeyspreset() {
 		"activatedfluteyes": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("flute",14,"1");
 }
 
 function loadambroz1apreset() {
@@ -1387,7 +1461,6 @@ function loadinvertedcrosskeyspreset() {
 }
 
 function loadchuntpreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -1414,10 +1487,10 @@ function loadchuntpreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadstandardbootspreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypestandard": true,
 		"entrancenone": true,
@@ -1443,12 +1516,10 @@ function loadstandardbootspreset() {
 		"nonprogressivebowsno": true,
 		"activatedfluteno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadpatronpreset() {
-	setstartingitem("hookshot",3,"1");
-	setstartingitem("glove",23,"1");
-	setstartingitem("flute",14,"1");
 	loadPreset({
 		"gametypeinverted": true,
 		"entrancenone": true,
@@ -1474,6 +1545,9 @@ function loadpatronpreset() {
 		"nonprogressivebowsno": true,
 		"activatedfluteyes": true,
 	});
+	setstartingitem("hookshot",3,"1");
+	setstartingitem("glove",23,"1");
+	setstartingitem("flute",14,"1");
 }
 
 function loadopen76preset() {
@@ -1506,7 +1580,6 @@ function loadopen76preset() {
 }
 
 function loadinflukeyspreset() {
-	setstartingitem("flute",14,"1");
 	loadPreset({
 		"gametypeinverted": true,
 		"entrancenone": true,
@@ -1532,6 +1605,7 @@ function loadinflukeyspreset() {
 		"activatedfluteyes": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("flute",14,"1");
 }
 
 function loadbosshuntpreset() {
@@ -1564,7 +1638,6 @@ function loadbosshuntpreset() {
 }
 
 function loadadkeydropshoppreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -1591,10 +1664,10 @@ function loadadkeydropshoppreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadshoptillyoudroppreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametyperetro": true,
 		"entrancesimple": true,
@@ -1621,10 +1694,10 @@ function loadshoptillyoudroppreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});	
+	setstartingitem("boots",22,"1");
 }
 
 function loadadkeydroppreset() {
-	setstartingitem("boots",22,"1");
 	loadPreset({
 		"gametypeopen": true,
 		"entrancenone": true,
@@ -1651,6 +1724,7 @@ function loadadkeydroppreset() {
 		"activatedfluteno": true,
 		"bonkshuffleno": true,
 	});
+	setstartingitem("boots",22,"1");
 }
 
 function loadcrosskeys2024preset() {
@@ -1691,7 +1765,7 @@ function loadcrosshuntpreset() {
 		"bossnone": true,
 		"enemynone": true,
 		"glitchesnone": true,
-		"goalfast": true,
+		"goalganonhunt": true,
 		"goalcrystal": true,
 		"towerselect": 0,
 		"ganoncrystal": true,
@@ -1701,6 +1775,36 @@ function loadcrosshuntpreset() {
 		"shopsanityno": true,
 		"ambrosiano": true,
 		"pseudobootsno": true,
+		"shuffledmaps": true,
+		"shuffledcompasses": true,
+		"shuffledsmallkeys": true,
+		"shuffledbigkeys": true,
+		"nonprogressivebowsno": true,
+		"activatedfluteno": true,
+		"bonkshuffleno": true,
+	});
+}
+
+function loadxdhuntpreset() {
+	loadPreset({
+		"gametypeopen": true,
+		"entrancesimple": true,
+		"doorpots": true,
+		"overworldno": true,
+		"prizeshufflewild": true,
+		"bossnone": true,
+		"enemynone": true,
+		"glitchesnone": true,
+		"goalganonhunt": true,
+		"goalcrystal": true,
+		"towerselect": 4,
+		"ganoncrystal": true,
+		"ganonselect": 7,
+		"swordsrandomized": true,
+		"unknownnone": true,
+		"shopsanityno": true,
+		"ambrosiano": true,
+		"pseudobootsyes": true,
 		"shuffledmaps": true,
 		"shuffledcompasses": true,
 		"shuffledsmallkeys": true,

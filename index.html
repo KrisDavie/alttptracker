@@ -2,16 +2,16 @@
 
 <head>
    <title>ALTTP Randomizer Community Tracker - Launcher</title>
-   <script type="text/javascript" src="js/index.js?v=21013"></script>
-   <script type="text/javascript" src="js/autot.js?v=21013"></script>
-   <script type="text/javascript" src="js/jquery-3.3.1.js?v=21013"></script>
-   <script type="text/javascript" src="js/jquery.powertip.js?v=21013"></script>
-   <script type="text/javascript" src="js/bootstrap.min.js?v=21013"></script>
-   <link href="css/jquery.powertip.css?v=21013" rel="stylesheet" />
-   <link href="css/launcher.css?v=21013" rel="stylesheet">
-   <link href="css/fonts.css?v=21013" rel="stylesheet">
-   <link href="css/sprites.css?v=21013" rel="stylesheet">
-   <link href="css/toast.css?v=21013" rel="stylesheet">
+   <script type="text/javascript" src="js/index.js?v=20241103"></script>
+   <script type="text/javascript" src="js/autot.js?v=20241103"></script>
+   <script type="text/javascript" src="js/jquery-3.3.1.js?v=20241103"></script>
+   <script type="text/javascript" src="js/jquery.powertip.js?v=20241103"></script>
+   <script type="text/javascript" src="js/bootstrap.min.js?v=20241103"></script>
+   <link href="css/jquery.powertip.css?v=20241103" rel="stylesheet" />
+   <link href="css/launcher.css?v=20241103" rel="stylesheet">
+   <link href="css/fonts.css?v=20241103" rel="stylesheet">
+   <link href="css/sprites.css?v=20241103" rel="stylesheet">
+   <link href="css/toast.css?v=20241103" rel="stylesheet">
    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
    <meta http-equiv="Pragma" content="no-cache" />
    <meta http-equiv="Expires" content="0" />
@@ -63,6 +63,9 @@
                   <input type="button" value="CROSSKEYS" class="preset-btn" onclick="loadcrosskeyspreset()" />
                </span>
                <span class="preset-btn-span">
+                  <input type="button" value="XDHUNT" class="preset-btn" onclick="loadxdhuntpreset()" />
+               </span>
+               <span class="preset-btn-span">
                   <input type="button" value="MYSTERY" class="preset-btn" onclick="loadmysterypreset()" />
                </span>
                <span class="preset-btn-span">
@@ -94,6 +97,9 @@
                   <input type="button" value="CROSSHUNT" class="preset-btn" onclick="loadcrosshuntpreset()" />
                </span>
                <span class="preset-btn-span">
+                  <input type="button" value="AD KEYDROP BOOTS" class="preset-btn" onclick="loadadkeydroppreset()" />
+               </span>
+               <span class="preset-btn-span">
                   <input type="button" value="AD KEYDROP SHOP" class="preset-btn" onclick="loadadkeydropshoppreset()" />
                </span>
                <span class="preset-btn-span">
@@ -101,9 +107,6 @@
                </span>
                <span class="preset-btn-span">
                   <input type="button" value="INFLUKEYS" class="preset-btn" onclick="loadinflukeyspreset()" />
-               </span>
-               <span class="preset-btn-span">
-                  <input type="button" value="AD ENEMIZER" class="preset-btn" onclick="loadadenemizerpreset()" />
                </span>
             </div>
             <div class="preset-header" style="cursor: default;">
@@ -114,10 +117,10 @@
                   <input type="button" value="DOORS" class="preset-btn" onclick="loaddoorssotwpreset()" />
                </span>
                <span class="preset-btn-span">
-                  <input type="button" value="AD KEYDROP BOOTS" class="preset-btn" onclick="loadadkeydroppreset()" />
+                  <input type="button" value="CROSSKEYS 2024" class="preset-btn" onclick="loadcrosskeys2024preset()" />
                </span>
                <span class="preset-btn-span">
-                  <input type="button" value="CROSSKEYS 2024" class="preset-btn" onclick="loadcrosskeys2024preset()" />
+                  <input type="button" value="AD ENEMIZER" class="preset-btn" onclick="loadadenemizerpreset()" />
                </span>
             </div>
             <div class="preset-header" style="cursor: default;">
@@ -253,6 +256,23 @@
                   <span class="preset-span-double">
                      <input id="overworldyes" value="Y" type="radio" name="overworldgroup" />
                      <label for="overworldyes">Yes (Layout/Crossed/Mixed/Flute) <span class="south tooltop-character" title="Detailed settings to be specified in the Overworld Tracker window. All combinations of Parallel/Full Layout Shuffle, Crossed, Mixed and Flute Shuffle are supported.">[?]</span></label>
+                  </span>
+               </div>
+               <div>
+                  <span class="preset-span-double">
+                     Prize Shuffle: <span class="south tooltop-character" title="BETA! Expect improvements in the future.">[?]</span>
+                  </span>
+                  <span class="preset-span">
+                     <input id="prizeshuffleno" value="N" type="radio" name="prizeshufflegroup" checked />
+                     <label for="prizeshuffleno">No</label>
+                  </span>
+                  <span class="preset-span-double">
+                     <input id="prizeshuffledungeon" value="D" type="radio" name="prizeshufflegroup" />
+                     <label for="prizeshuffledungeon">In Dungeon<span class="south tooltop-character" title="Prizes can be anywhere in their own dungeon.">[?]</span></label>
+                  </span>
+                  <span class="preset-span-double">
+                     <input id="prizeshufflewild" value="W" type="radio" name="prizeshufflegroup" />
+                     <label for="prizeshufflewild">Wild<span class="south tooltop-character" title="Prizes are shuffled throughout the whole world.">[?]</span></label>
                   </span>
                </div>
                <div>
@@ -1136,6 +1156,39 @@
                   <span class="preset-span">
                      <input checked id="chestcoloryes" value="Y" type="radio" name="chestcolorgroup" />
                      <label for="chestcoloryes">Yes</label>
+                  </span>
+               </div>
+               <div>
+                  <span class="preset-span-double">
+                     Tracker Scale: <span class="south tooltop-character" title="Set the scale for the tracker to fit on smaller screens.">[?]</span>
+                  </span>
+                  <span class="preset-span">
+                     <input id="scale100" value="F" type="radio" name="scalegroup" checked />
+                     <label for="scale100">100%</label>
+                  </span>
+                  <span class="preset-span">
+                     <input id="scale75" value="T" type="radio" name="scalegroup"/>
+                     <label for="scale75">75%</label>
+                  </span>
+                  <span class="preset-span">
+                     <input id="scale50" value="H" type="radio" name="scalegroup"/>
+                     <label for="scale50">50%</label>
+                  </span>
+                  <span class="preset-span">
+                     <input id="scale25" value="Q" type="radio" name="scalegroup"/>
+                     <label for="scale25">Ant%</label>
+                  </span>
+               </div>
+                  <span class="preset-span-double">
+                     Spoiler Log: <span class="south tooltop-character" title="This will allow you to post a spoiler log after loading to populate items into the map<br>This feature is generally NOT allowed for tournaments! You must use spoiler logs generated from the ALTTPR Site, spoiler logs provided by bots will not be parsed properly (intentionally).">[?]</span>
+                  </span>
+                  <span class="preset-span">
+                     <input id="spoilerno" value="N" type="radio" name="spoilergroup" checked />
+                     <label for="spoilerno">No</label>
+                  </span>
+                  <span class="preset-span">
+                     <input id="spoileryes" value="Y" type="radio" name="spoilergroup" />
+                     <label for="spoileryes">Yes</label>
                   </span>
                </div>
                <div>

@@ -91,6 +91,11 @@ body {
   height: var(--dungeon-size); 
 }
 
+.scale100 { zoom: 1;}
+.scale75 { zoom: 0.75;}
+.scale50 { zoom: 0.5;}
+.scale25 { zoom: 0.25;}
+
 #tracker [id^="dungeon-hc"] { 
   display: grid;
   grid-template-columns: repeat(3, auto);

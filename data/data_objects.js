@@ -27,7 +27,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest0",
@@ -39,7 +40,8 @@
                 "map": [0x369, 0x20],
                 "smallkeys": 0x4E2,
                 "prize": 0x2,
-                "dungeonprize": 0
+                "dungeonprize": 0,
+                "prizemask": 0x2000
             }
         },
         {
@@ -86,7 +88,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest1",
@@ -98,7 +101,8 @@
                 "map": [0x369, 0x10],
                 "smallkeys": 0x4E3,
                 "prize": 0x3,
-                "dungeonprize": 1
+                "dungeonprize": 1,
+                "prizemask": 0x1000
             }
         },
         {
@@ -124,7 +128,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest2",
@@ -136,7 +141,8 @@
                 "map": [0x368, 0x20],
                 "smallkeys": 0x4EA,
                 "prize": 0xA,
-                "dungeonprize": 2
+                "dungeonprize": 2,
+                "prizemask": 0x0020
             }
         },
         {
@@ -162,7 +168,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest3",
@@ -174,7 +181,8 @@
                 "map": [0x369, 0x02],
                 "smallkeys": 0x4E6,
                 "prize": 0x6,
-                "dungeonprize": 3
+                "dungeonprize": 3,
+                "prizemask": 0x0200
             }
         },
         {
@@ -200,7 +208,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest4",
@@ -212,7 +221,8 @@
                 "map": [0x369, 0x04],
                 "smallkeys": 0x4E5,
                 "prize": 0x5,
-                "dungeonprize": 4
+                "dungeonprize": 4,
+                "prizemask": 0x0400
             }
         },
         {
@@ -259,7 +269,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest5",
@@ -271,7 +282,8 @@
                 "map": [0x368, 0x80],
                 "smallkeys": 0x4E8,
                 "prize": 0x8,
-                "dungeonprize": 5
+                "dungeonprize": 5,
+                "prizemask": 0x0080
             }                
         },
         {
@@ -297,7 +309,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest6",
@@ -309,7 +322,8 @@
                 "map": [0x368, 0x10],
                 "smallkeys": 0x4EB,
                 "prize": 0xB,
-                "dungeonprize": 6
+                "dungeonprize": 6,
+                "prizemask": 0x0010
             }
         },
         {
@@ -335,7 +349,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest7",
@@ -347,7 +362,8 @@
                 "map": [0x368, 0x40],
                 "smallkeys": 0x4E9,
                 "prize": 0x9,
-                "dungeonprize": 7
+                "dungeonprize": 7,
+                "prizemask": 0x0040
             }
         },
         {
@@ -373,7 +389,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest8",
@@ -385,7 +402,8 @@
                 "map": [0x369, 0x01],
                 "smallkeys": 0x4E7,
                 "prize": 0x7,
-                "dungeonprize": 8
+                "dungeonprize": 8,
+                "prizemask": 0x0100
             }
         },
         {
@@ -432,7 +450,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": true
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest9",
@@ -444,7 +463,8 @@
                 "map": [0x368, 0x08],
                 "smallkeys": 0x4EC,
                 "prize": 0xC,
-                "dungeonprize": 9
+                "dungeonprize": 9,
+                "prizemask": 0x0008
             }
         },
         {
@@ -470,7 +490,8 @@
                 "bigkeydrop": false,
                 "bigkey": true,
                 "map": true,
-                "compass": true
+                "compass": true,
+                "prize": false
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest10",
@@ -527,7 +548,8 @@
                 "bigkeydrop": true,
                 "bigkey": false,
                 "map": true,
-                "compass": false
+                "compass": false,
+                "prize": false
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest11",
@@ -563,7 +585,8 @@
                 "bigkeydrop": false,
                 "bigkey": false,
                 "map": false,
-                "compass": false
+                "compass": false,
+                "prize": false
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest12",
