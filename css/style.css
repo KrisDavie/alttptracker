@@ -169,12 +169,12 @@ body {
   border-color:#000;
   border-style: solid;
   border-width: 1px;
-  width: 16;
-  height: 16;
+  width: 16 !important;
+  height: 16 !important;
   margin-left: -8px;
   margin-top: -8px;
   position: absolute;
-  background-size: 100% 100%;
+  background-size: 100% 100% !important;
 }
 
 .smloc {
@@ -299,6 +299,11 @@ body {
 .sphereshield.active-2 { background-image: url(../images/items/shield2.png); }
 .sphereshield.active-3 { background-image: url(../images/items/shield3.png); }
 .spheremoonpearl { background-image: url(../images/items/moonpearl.png); }
+
+.smallkeyscout { background-image: url(../images/dungeons/smallkey.png); }
+.swordscout { background-image: url(../images/items/sword1.png); }
+.armor { background-image: url(../images/items/bluemail.png); }
+.bottle { background-image: url(../images/items/bottle_empty.png); }
 
 .sword.active-0 { background-image: url(../images/items/sword1.png); opacity: .25; background-size:100%; float:left; }
 .sword.active-1 { background-image: url(../images/items/sword1.png); background-size:100%; }

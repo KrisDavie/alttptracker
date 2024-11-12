@@ -158,6 +158,7 @@
 						chests[rightClickedLocation].content += ", "+name;
 					document.getElementById('caption').innerHTML = caption_to_html(name+' placed at '+chests[rightClickedLocation].caption);
 					document.getElementById('locationMap'+rightClickedLocation).classList.add('scouted')
+					document.getElementById('locationMap'+rightClickedLocation).classList.add(itemNameToCSSName(name))
 				}
 				document.getElementById('locationMap'+rightClickedLocation).classList.remove('rightclick');
 			}
@@ -324,11 +325,12 @@
 
 	window.updateLocationAvailability = function() {
 		if(flags.mapmode != 'N') {
-            for (var k = 0; k < chests.length; k++) {
+            for (k in chests) {
                 if (!chests[k].is_opened) {
                     document.getElementById('locationMap'+k).className = 'location ' + chests[k].is_available()
 					if (chests[k].content) {
 						document.getElementById('locationMap'+k).classList.add('scouted');
+						document.getElementById('locationMap'+k).classList.add(itemNameToCSSName(chests[k].content));
 					}
 					if ((23 <= k) && (k <= 63)) {
 						document.getElementById('locationMap'+k).classList.add('bonkloc');
@@ -1199,6 +1201,10 @@
 			(scouted && !chests[x].is_opened ? ' scouted' : '') + 
 			(x >= 120 && x <= 216 ? ' smloc' : '') + 
 			(x >= 217 ? ' smbossloc' : '');
+			(scouted && !chests[x].is_opened ? ' scouted' : '');
+		if (!chests[x].is_opened && scouted) {
+			document.getElementById('locationMap'+x).classList.add(itemNameToCSSName(chests[x].content));
+		}
 
 	};
 
@@ -1464,8 +1470,7 @@
 		if(/*spoilerLoaded && */flags.mapmode != "N")
 		{
 			var results = "";
-			for(var i = 0; i < chests.length; i++)
-			{
+			for (i in chests) {
 				if(chests[i].content)
 				{
 					var hasItem = false,itemsInLocation = chests[i].content.split(", ");
@@ -2345,6 +2350,9 @@
 			document.getElementById('informationDiv').innerHTML = '';
 			flags.entrancemode = document.getElementById('entranceselect').value;
 			loadStyleAndChests();
+			if (flags.entrancemode !== 'N') {
+				initializeEntranceEventHandlers(false);
+			}
 			resetChestFlags = resetLogic = false;
 		}
 
@@ -2418,11 +2426,10 @@
 				break;
 		}
 
-		document.getElementById('app').classList.add(scaleClass);
-		document.getElementById('entranceModal').classList.add(scaleClass);
-		document.getElementById('summaryModal').classList.add(scaleClass);
-		document.getElementById('spoilerModal').classList.add(scaleClass);
-		document.getElementById('flagsModal').classList.add(scaleClass);
+		const updateElements = ['app', 'entranceModal', 'summaryModal', 'spoilerModal', 'flagsModal'];
+		for (const element of updateElements) {
+			document.getElementById(element).classList.add(scaleClass);
+		}
 
 		//Map layers
 		switch (flags.mapmode) {
@@ -2687,6 +2694,44 @@
 		}
 	};
 
+	window.initializeEntranceEventHandlers = function(init) {
+		function addListeners() {
+			for (let i = 0; i < window.entrances.length; i++) {
+				const entranceMap = document.getElementById('entranceMap' + i);
+				entranceMap.addEventListener('click', function () {
+					toggle_location(i);
+				});
+
+				entranceMap.addEventListener('mouseover', function () {
+					highlight_entrance(i);
+				});
+
+				entranceMap.addEventListener('mouseout', function () {
+					unhighlight_entrance(i);
+				});
+
+				entranceMap.addEventListener('contextmenu', function (event) {
+					event.preventDefault();
+					rightClickEntrance(i);
+				});
+
+				entranceMap.addEventListener('auxclick', function (event) {
+					if (event.button === 1) {
+						event.preventDefault();
+						middleClickEntrance(i);
+					}
+				});
+			};
+		}
+		if (flags.mapmode != 'N' && flags.entrancemode != 'N') {
+			if (init) {
+				document.addEventListener('DOMContentLoaded', addListeners);
+			} else {
+				addListeners();
+			}
+		}
+	}
+
     window.loadStyleAndChests = function() {
 		//Load stylesheet and logic depending on Entrance mode
 		document.getElementById("mainstyle").href = "css/"+(flags.entrancemode === 'N' ? "" : "entrance")+"style.css?v="+buildString;
@@ -2742,38 +2787,9 @@
 		}
 
 		// Set up the event listeners for entrances
-		if (flags.mapmode != 'N' && flags.entrancemode != 'N') {
-			document.addEventListener('DOMContentLoaded', function() {
-				for (let i = 0; i < window.entrances.length; i++) {
-					const entranceMap = document.getElementById('entranceMap'+i);
-					entranceMap.addEventListener('click', function() {
-						toggle_location(i);
-					});
-
-					entranceMap.addEventListener('mouseover', function() {
-						highlight_entrance(i);
-					});
-				
-					entranceMap.addEventListener('mouseout', function() {
-						unhighlight_entrance(i);
-					});
-				
-					entranceMap.addEventListener('contextmenu', function(event) {
-						event.preventDefault();
-						rightClickEntrance(i);
-					});
-				
-					entranceMap.addEventListener('auxclick', function(event) {
-						if (event.button === 1) {
-							event.preventDefault();
-							middleClickEntrance(i);
-						}
-					});
-				};
-			});				
-		}
-
+		initializeEntranceEventHandlers(true);
 		initializeSettings();
+
     };
 	
 	window.setPrimer = function() {

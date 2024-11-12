@@ -2184,7 +2184,13 @@
             "always": {
                 "allOf": [
                     "hammer",
-                    "mirror"
+                    "canBreach|Light World - East Death Mountain"
+                ]
+            },
+            "logical": {
+                "allOf": [
+                    "hammer",
+                    "canReach|Light World - East Death Mountain"
                 ]
             }
         }

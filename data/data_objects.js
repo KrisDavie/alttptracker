@@ -927,6 +927,92 @@
 	window.entranceNameToFriendlyName = {};
 	window.entranceNameToGroup = {};
 
+    window.itemNameToCSSName = function(x) {
+        if (x.includes('Big Key')) {
+            return 'bigkey';
+        }
+        if (x.includes('Key')) {
+            return 'smallkeyscout';
+        }
+        if (x.includes('Bottle')) {
+            return 'bottle';
+        }
+        if (x.includes('Sword')) {
+            return 'swordscout';
+        }
+        if (x.includes('Bombs') && !x.includes('Morph Ball') && !x.includes('Power')) {
+            return 'bomb';
+        }
+        switch (x) {
+            case "Bow and Silver Arrows":
+            case "Silver Arrows":
+                return 'bow';
+            case "Red Boomerang":
+            case "Blue Boomerang":
+                return 'boomerang';
+            case "Lamp":
+                return 'lantern';
+            case "Bug Net":
+                return 'net';
+            case "Book of Mudora":
+                return 'book';
+            case "Cane of Somaria":
+                return 'somaria';
+            case "Cane of Byrna":
+                return 'byrna';
+            case "Pegasus Boots":
+                return 'boots';
+            case "Gloves":
+                return 'glove';
+            case "Half Magic":
+                return 'magic';
+            case "High Jump Boots":
+                return "hijump";
+            case "Morph Ball":
+                return "morph";
+            case "Speed Booster":
+                return "speed";
+            case "Varia Suit":
+                return "varia";
+            case "Space Jump":
+                return "space";
+            case "Gravity Suit":
+                return "gravity";
+            case "Screw Attack":
+                return "screw";
+            case "Charge Beam":
+                return "charge";
+            case "Morph Ball Bombs":
+                return "morphbombs";
+            case "Ice Beam":
+                return "ice";
+            case "Spring Ball":
+                return "spring";
+            case "Wave Beam":
+                return "wave";
+            case "Grapple":
+                return "grapple";
+            case "X-Ray Scope":
+                return "xray";
+            case "Spazer":
+                return "spazer";
+            case "Plasma Beam":
+                return "plasma";
+            case "Missiles":
+                return "missile";
+            case "Super Missiles":
+                return "super";
+            case "Power Bombs":
+                return "powerbomb";
+            case "Energy Tank":
+                return "etank";
+            case "Reserve Tank":
+                return "rtank";
+            default:
+                return x.toLowerCase().replace(/ /g, '');
+        }
+    }
+
 	window.defineEntranceType = function(index, group, name, friendlyName) {
 		entranceNameToIndex[name] = index;
 		entranceNameToFriendlyName[name] = friendlyName;

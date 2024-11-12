@@ -472,6 +472,48 @@
 		case "Compass":
 		case "CompassGK":
 			return "Compass";
+		case "hijump":
+			return "High Jump Boots";
+		case "morph":
+			return "Morph Ball";
+		case "speed":
+			return "Speed Booster";
+		case "varia":
+			return "Varia Suit";
+		case "space":
+			return "Space Jump";
+		case "gravity":
+			return "Gravity Suit";
+		case "screw":
+			return "Screw Attack";
+		case "charge":
+			return "Charge Beam";
+		case "morphbombs":
+			return "Morph Ball Bombs";
+		case "ice":
+			return "Ice Beam";
+		case "spring":
+			return "Spring Ball";
+		case "wave":
+			return "Wave Beam";
+		case "grapple":
+			return "Grapple";
+		case "xray":
+			return "X-Ray Scope";
+		case "spazer":
+			return "Spazer";
+		case "plasma":
+			return "Plasma Beam";
+		case "missile":
+			return "Missiles";
+		case "super":
+			return "Super Missiles";
+		case "powerbomb":
+			return "Power Bombs";
+		case "etank":
+			return "Energy Tank";
+		case "rtank":
+			return "Reserve Tank";
 		default:
 			return name;
 		}
