@@ -580,9 +580,9 @@
 				}
 			}
 			// Initiate bunny graphics!
-			// if (label === 'moonpearl' || label === 'tunic') {
-			//    document.getElementsByClassName('tunic')[0].classList[!items.moonpearl ? 'add' : 'remove']('bunny');
-			// }
+			if (label === 'moonpearl' || label === 'tunic') {
+			   document.getElementsByClassName('tunic')[0].classList[!items.moonpearl ? 'add' : 'remove']('bunny');
+			}
 		}
 		
 		updateLocationAvailability();
@@ -2744,7 +2744,7 @@
 			}
 		}
 		
-		// document.getElementsByClassName('tunic')[0].classList.add(flags.sprite);
+		document.getElementsByClassName('tunic')[0].classList.add(flags.sprite);
 		
 		// If mystery, add the settings flag to the tracker
 		if (flags.unknown === 'N') {

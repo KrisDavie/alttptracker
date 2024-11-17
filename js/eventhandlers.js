@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Create dungeon tracker
     addDungeonTracking('dungeon-container-column-lw', 'dungeon-template-left', 0, 3);
-    addDungeonTracking('dungeon-container-column-dw', 'dungeon-template-right', 3, 10);
+    addDungeonTracking('dungeon-container-row-dw', 'dungeon-template-bottom', 3, 10);
 
     function shuffleArray(array) {
         for (var i = array.length - 1; i >= 0; i--) {
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         "firerod", "icerod", "bombos", "ether", "quake",
         "lantern", "hammer", "shovel|empty|empty|flute", "net", "book",
         "bottle1|bottle2|bottle3|bottle4", "somaria", "byrna", "cape", "mirror|mirrorscroll",
-        "boots|pseudoboots", "glove", "flippers", "moonpearl", "magic|sword|heartpiece|shield",
+        "boots|pseudoboots", "glove", "flippers", "moonpearl", "magic|agahnim|agahnim2|heartpiece",
     ]
     // Shuffle the items
     // trackerItems = shuffleArray(trackerItems);

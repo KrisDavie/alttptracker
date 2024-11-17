@@ -49,44 +49,45 @@
 	<!-- Start: Template-->
 	<template id="dungeon-template-left">
 		<div class="row">
-			<div class="cell">
-				<div id="dungeonBoss" class="boss boss" data-action="toggle_boss" data-target=""></div>
-			</div>
-			<div class="cell" id="dungeon-prize">
+			<div id="dungeonbosscell" class="dungeonbosscell boss" data-action="toggle_boss" data-target="">
+				<div id="enemizer" class="enemizer enemizer" data-action="toggle_enemizer" data-target=""></div>
+				<div id="empty" class="empty"></div>
+				<div id="empty" class="empty"></div>
 				<div id="dungeonPrize" class="prize prize-" data-action="toggle_dungeon" data-target=""></div>
 			</div>
 			<div class="dungeonitemcell">
-				<div id="compass" class="compass" data-action="toggle_compass" data-target=""></div>
-				<div id="bigkey" class="bigkey" data-action="toggle_bigkey" data-target=""></div>
-				<div id="dungeonmap" class="dungeonmap" data-action="toggle_map" data-target=""></div>
-				<div id="smallkey" class="smallkeyfull" data-action="toggle_smallkey" data-target="">0</div>
-			</div>
-			<div class="cell">
 				<div id="chest" class="chest" data-action="toggle_chest" data-target="">0</div>
+				<div class="dungeonkeycell">
+					<div id="smallkey" class="smallkeyfull" data-action="toggle_smallkey" data-target="">0</div>
+					<div id="bigkey" class="bigkey" data-action="toggle_bigkey" data-target=""></div>
+				</div>
+				<div class="dungeonhalfitemcell">
+					<div id="compass" class="compass" data-action="toggle_compass" data-target=""></div>
+					<div id="dungeonmap" class="dungeonmap" data-action="toggle_map" data-target=""></div>
+				</div>
 			</div>
 		</div>
 	</template>
-	<template id="dungeon-template-right">
-		<div class="row">
-			<div class="cell">
-				<div id="chest" class="chest" data-action="toggle_chest" data-target="">0</div>
-			</div>
-			<div class="dungeonitemcell">
-				<div id="bigkey" class="bigkey" data-action="toggle_bigkey" data-target=""></div>
-				<div id="compass" class="compass" data-action="toggle_compass" data-target=""></div>
-				<div id="smallkey" class="smallkeyfull" data-action="toggle_smallkey" data-target="">0</div>
-				<div id="dungeonmap" class="dungeonmap" data-action="toggle_map" data-target=""></div>
-			</div>
-			<div class="cell" id="dungeon-prize">
+	<template id="dungeon-template-bottom">
+		<div class="dungeon-container-row-dw-cell">
+			<div id="dungeonbosscell" class="dungeonbosscell boss" data-action="toggle_boss" data-target="">
+				<div id="enemizer" class="enemizer enemizer" data-action="toggle_enemizer" data-target=""></div>
+				<div id="empty" class="empty"></div>
+				<div id="empty" class="empty"></div>
 				<div id="dungeonPrize" class="prize prize-" data-action="toggle_dungeon" data-target=""></div>
 			</div>
-			<div class="cell">
-				<div id="dungeonBoss" class="boss boss" data-action="toggle_boss" data-target=""></div>
+			<div class="dungeonitemcell">
+				<div id="chest" class="chest" data-action="toggle_chest" data-target="">0</div>
+				<div class="dungeonkeycell">
+					<div id="smallkey" class="smallkeyfull" data-action="toggle_smallkey" data-target="">0</div>
+					<div id="bigkey" class="bigkey" data-action="toggle_bigkey" data-target=""></div>
+				</div>
+				<div class="dungeonhalfitemcell">
+					<div id="compass" class="compass" data-action="toggle_compass" data-target=""></div>
+					<div id="dungeonmap" class="dungeonmap" data-action="toggle_map" data-target=""></div>
+				</div>
 			</div>
 		</div>
-	</template>
-	<template id="">
-
 	</template>
 	<!-- End: Template-->
 	<div id="app" class="row">
@@ -98,9 +99,6 @@
 						<!-- Start: Top Left Corner -->
 						<div class="row">
 							<div class="cell" id="config-cell">
-								<!-- <div class="item tunic tunic active-1 bunny" data-action="toggle_item" data-target="tunic"></div> -->
-								<div id="changeflagsdiv" class="changeflags" data-action="change_flags"></div>
-								<div id="showpathsdiv" class="showpaths" onClick="showDoorWindow()"></div>
 								<div id="crystalsdiv" class="item active crystalgoal" data-action="toggle_crystal_goal">
 									<div id="crystalsselectdiv" class="crystalgoalselect">
 										<img class="goalselect" src="./images/dungeons/crystal.png" data-action="set_crystal_goal" data-target=""/>
@@ -127,47 +125,44 @@
 										<img class="goalselect" src="./images/dungeons/ganon7.png" data-action="set_ganon_goal" data-target="7"/>
 									</div>
 								</div>
+								<div id="changeflagsdiv" class="changeflags" data-action="change_flags"></div>
+								<div id="showpathsdiv" class="showpaths" onClick="showDoorWindow()"></div>
 							</div>
 						</div>
 						<div class="row">
-							<div class="cell" id="dungeon-hc">
-								<div class="cell ballandchain"></div>
-								<div class="dungeonitemcell">
-									<div id="compass11" class="compass" data-action="toggle_compass" data-target="11"></div>
-									<div id="bigkey11" class="bigkey" data-action="toggle_bigkey" data-target="11"></div>
-									<div id="dungeonmap11" class="dungeonmap" data-action="toggle_map" data-target="11"></div>					
-									<div id="smallkey11" class="smallkeyhalf" data-action="toggle_smallkey" data-target="11">0</div>
+							<div class="dungeon-container-top-left-cell">
+								<div class="dungeon-container-special-trio">
+									<div class="cell" id="dungeon-hc">
+										<div id="chest11" class="chest" data-action="toggle_chest" data-target="11">8</div>
+										<div class="dungeonkeycell">
+											<div id="smallkey11" class="smallkeyfull" data-action="toggle_smallkey" data-target="11">0</div>
+											<div id="bigkey11" class="bigkey" data-action="toggle_bigkey" data-target="11"></div>
+										</div>
+									</div>
+								<div class="row">
+									<div class="cell" id="dungeon-ct">
+										<div id="chest12" class="chest" data-action="toggle_chest" data-target="12">2</div>
+										<div class="dungeonkeycell">
+											<div id="smallkey12" class="smallkeyfull" data-action="toggle_smallkey" data-target="12">0</div>
+											<div id="bigkey12" class="bigkey" data-action="toggle_bigkey" data-target="12"></div>
+										</div>
+									</div>
 								</div>
-								<div class="cell">
-									<div id="chest11" class="chest" data-action="toggle_chest" data-target="11">8</div>
+								<div class="row">
+									<div class="cell" id="dungeon-gt">
+										<div id="chest10" class="chest" data-action="toggle_chest" data-target="10">27</div>
+										<div class="dungeonkeycell">
+											<div id="smallkey10" class="smallkeyfull" data-action="toggle_smallkey" data-target="10">0</div>
+											<div id="bigkey10" class="bigkey" data-action="toggle_bigkey" data-target="10"></div>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="cell" id="dungeon-ct">
-								<div id="dungeon-agahnim" class="cell agahnim"></div>
-								<div class="dungeonitemcell">
-									<div id="compass12" class="compass" data-action="toggle_compass" data-target="12"></div>
-									<div id="bigkey12" class="bigkey" data-action="toggle_bigkey" data-target="12"></div>
-									<div id="dungeonmap12" class="dungeonmap" data-action="toggle_map" data-target="12"></div>					
-									<div id="smallkey12" class="smallkeyhalf" data-action="toggle_smallkey" data-target="12">0</div>
+		
 								</div>
-								<div class="cell">
-									<div id="chest12" class="chest" data-action="toggle_chest" data-target="12">2</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="cell" id="dungeon-gt">
-								<div id="dungeon-agahnim" class="cell agahnim2"></div>
-								<div class="dungeonitemcell">
-									<div id="compass10" class="compass" data-action="toggle_compass" data-target="10"></div>
-									<div id="bigkey10" class="bigkey" data-action="toggle_bigkey" data-target="10"></div>
-									<div id="dungeonmap10" class="dungeonmap" data-action="toggle_map" data-target="10"></div>					
-									<div id="smallkey10" class="smallkeyhalf" data-action="toggle_smallkey" data-target="10">0</div>
-								</div>
-								<div class="cell">
-									<div id="chest10" class="chest" data-action="toggle_chest" data-target="10">27</div>
+								<div class="bunny-container">
+									<div class="tunic tunic active-1 bunny" data-action="toggle_item" data-target="tunic"></div>
+									<div class="sword active-0" data-action="toggle_item" data-target="sword"></div>
+									<div class="shield active-0" data-action="toggle_item" data-target="shield"></div>
 								</div>
 							</div>
 						</div>
@@ -178,11 +173,11 @@
 					<div class="cell mainitemcell" id="griditem-container">
 					</div>
 					<!-- End: Main Items -->
-					<!-- Start: Dungeon column -->
-					<div class="cell" id="dungeon-container-column-dw">
-					</div>
-					<!-- End: Dungeon column -->
 				</div>
+				<!-- Start: Dungeon row -->
+				<div class="row" id="dungeon-container-row-dw">
+				</div>
+				<!-- End: Dungeon row -->
 				<div id="spheres" class="row">
 					<div class="row">
 						<div class="cell">

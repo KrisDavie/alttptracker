@@ -9,23 +9,24 @@
   --size-8x: 128px;
   --size-10x: 160px;
 
-  --item-halfsize: 22.5px;
+  --item-halfsize: 32px;
   --dungeon-halfsize: var(--size-1x);
 
   --item-size: calc(2 * var(--item-halfsize));
   --dungeon-size: calc(2 * var(--dungeon-halfsize));
-  --dungeon-width: calc(4 * var(--dungeon-size));
+  --dungeon-size-2x: calc(4 * var(--dungeon-halfsize));
+  --dungeon-width: calc(2 * var(--dungeon-size-2x));
   --dungeon-width-alt: calc(3 * var(--dungeon-size));
 
   --tracker-item-width: calc(5 * var(--item-size));
   --tracker-item-height: calc(5 * var(--item-size));
 
-  --tracker-width: calc(var(--tracker-item-width) + 2 * var(--dungeon-width));
-  --tracker-height: calc(var(--tracker-item-height));
+  --tracker-width: calc(var(--tracker-item-width) + 2 * var(--dungeon-size-2x));
+  --tracker-height: calc(var(--tracker-item-height) + 2 * var(--dungeon-size-2x));
 
   --map-size: calc(var(--tracker-width) / 2 - 1px);
 
-  --app-width: calc(var(--tracker-width));
+  --app-width: calc(var(--tracker-width) + 1px);
   --app-height: calc(var(--tracker-height) + var(--map-size));
 
   --location-size: 12px;
@@ -53,7 +54,37 @@ body {
 .row:after { clear: both; }
 .cell { position: relative; float: left; }
 
+.dungeonbosscell {
+  position: relative;
+  float: left;
+  height: var(--dungeon-size-2x);
+  width: var(--dungeon-size-2x);
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0px;
+}
 .dungeonitemcell {
+  position: relative;
+  float: left;
+  height: var(--dungeon-size-2x);
+  width: var(--dungeon-size-2x);
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0px;
+}
+
+.dungeonkeycell {
+  position: relative;
+  float: left;
+  height: var(--dungeon-size);
+  width: var(--dungeon-size);
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0px;
+  overflow: visible;
+}
+
+.dungeonhalfitemcell {
   position: relative;
   float: left;
   height: var(--dungeon-size);
@@ -63,11 +94,43 @@ body {
   gap: 0px;
 }
 
+.dungeon-container-row-dw-cell {
+  position: relative;
+  float: left;
+  display: grid;
+  grid-template-columns: repeat(1, auto);
+  gap: 0px;
+}
+
 .mainitemcell {
   height: var(--tracker-item-height);
   width: var(--tracker-item-width);
   display: grid;
   grid-template-columns: repeat(5, auto);
+  gap: 0px;
+}
+
+.dungeon-container-top-left-cell {
+  position: relative;
+  float: left;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0px;
+}
+
+.dungeon-container-special-trio {
+  position: relative;
+  float: left;
+  height: calc(var(--dungeon-size) * 3);
+  width: var(--dungeon-size-2x);
+  display: grid;
+  grid-template-columns: repeat(1, auto);
+  gap: 0px;
+}
+
+.bunny-container {
+  position: relative;
+  float: left;
   gap: 0px;
 }
 
@@ -93,51 +156,49 @@ body {
 
 #tracker [id^="dungeon-hc"] { 
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  width: var(--dungeon-width-alt); 
+  grid-template-columns: repeat(2, auto);
+  width: calc(var(--dungeon-size) * 2); 
   height: var(--dungeon-size); 
 }
 
 #tracker [id^="dungeon-ct"] { 
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  width: var(--dungeon-width-alt); 
+  grid-template-columns: repeat(2, auto);
+  width: calc(var(--dungeon-size) * 2); 
   height: var(--dungeon-size); 
 }
 
 #tracker [id^="dungeon-gt"] { 
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  width: var(--dungeon-width-alt); 
+  grid-template-columns: repeat(2, auto);
+  width: calc(var(--dungeon-size) * 2); 
   height: var(--dungeon-size); 
 }
 
-#tracker [id^="dungeon-prize"] { width: var(--dungeon-size); height: var(--dungeon-size); }
-#tracker [id^="dungeon-agahnim"] { width: var(--dungeon-size); height: var(--dungeon-size); }
+#tracker [id^="dungeon-prize"] { width: var(--dungeon-halfsize); height: var(--dungeon-halfsize); }
+#tracker [id^="dungeon-agahnim"] { width: var(--dungeon-halfsize); height: var(--dungeon-halfsize); }
 #tracker .boss { width: var(--dungeon-size); height: var(--dungeon-size); }
-#tracker .item,
-#tracker [id^="item"] { width: var(--item-size); height: var(--item-size); }
+#tracker .item { width: var(--item-size); height: var(--item-size); opacity: 0.66 }
 #tracker [id^="chest"] { width: var(--dungeon-size); height: var(--dungeon-size); font-size: 15px; text-align: center; font-family: roboto_condensedregular, "Arial Black", Gadget, sans-serif; font-weight: bold; padding-top: 6px; -moz-user-select: -moz-none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none; user-select: none; }
-#tracker [class^="bigkey"] { width: var(--dungeon-halfsize); height: var(--dungeon-halfsize); }
-#tracker [class^="smallkey"] { width: var(--dungeon-halfsize); height: var(--dungeon-halfsize); color: #FFF; font-size: 10px; line-height: 22px; text-align: right; padding-left: 8px; font-family: "Arial Black", Gadget, sans-serif; -moz-user-select: -moz-none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none; user-select: none;  }
+#tracker [class^="bigkey"] { width: calc(var(--dungeon-size) * 0.65); height: var(--dungeon-size);}
+#tracker [class^="smallkey"] { width: calc(var(--dungeon-size) * 0.35); height: var(--dungeon-size); color: #FFF; font-size: 16px; padding-left: 2px; line-height: 48px; font-family: "Arial Black", Gadget, sans-serif; -moz-user-select: -moz-none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none; user-select: none;  }
 #tracker [id^="smallhalfheader"] { width: var(--dungeon-size); height: var(--dungeon-size); color: #FFF; font-size: 9px; text-align: center; font-family: "Arial Black", Gadget, sans-serif; padding-top: 2px; -moz-user-select: -moz-none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none; user-select: none;  }
-#tracker .compass { width: var(--dungeon-halfsize); height: var(--dungeon-halfsize); }
-#tracker .dungeonmap { width: var(--dungeon-halfsize); height: var(--dungeon-halfsize); }
+#tracker .compass { width: var(--dungeon-size); height: var(--dungeon-size); }
+#tracker .dungeonmap { width: var(--dungeon-size); height: var(--dungeon-size); }
 
 #tracker .item.half { width: var(--item-halfsize); height: var(--item-halfsize); }
-
+#tracker .tunic { width: var(--dungeon-size-2x); height: calc(var(--dungeon-size) * 3); background-position-x: center; background-position-y: center; }
 #tracker .crystalgoal { height: var(--dungeon-size); width: var(--dungeon-size); }
 #tracker .ganongoal { height: var(--dungeon-size); width: var(--dungeon-size); }
 
-#tracker .item,
-#tracker .boss { opacity: .25; }
 #tracker .prize { 
-  opacity: .66; 
+  opacity: 0.66;
   border: 2px solid;
   border-radius: 100%;
   background-color: #000;
   background-position: right -2px bottom -2px;  
 }
+
 #tracker .item[class*="active"],
 #tracker .boss.defeated { opacity: 1; }
 #tracker .dungeonmap,
@@ -288,11 +349,13 @@ body {
 .sphereshield.active-3 { background-image: url(../images/items/shield3.png); }
 .spheremoonpearl { background-image: url(../images/items/moonpearl.png); }
 
+.sword { position: absolute; top: 7px; right: -10px; height: 42px; width: 42px; }
 .sword.active-0 { background-image: url(../images/items/sword1.png); opacity: .25; background-size:100%; }
 .sword.active-1 { background-image: url(../images/items/sword1.png); background-size:100%; }
 .sword.active-2 { background-image: url(../images/items/sword2.png); background-size:100%; }
 .sword.active-3 { background-image: url(../images/items/sword3.png); background-size:100%; }
 .sword.active-4 { background-image: url(../images/items/sword4.png); background-size:100%; }
+.shield { position: absolute; bottom: 9px; left: -6px; height: 32px; width: 32px; }
 .shield.active-0 { background-image: url(../images/items/shield1.png); opacity: .25; background-size:100%; }
 .shield.active-1 { background-image: url(../images/items/shield1.png); background-size:100%; }
 .shield.active-2 { background-image: url(../images/items/shield2.png); background-size:100%; }
@@ -395,17 +458,17 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .agahnim.active { width: var(--size-2x); height: var(--size-2x); background-size: var(--size-2x); background-image:url(../images/dungeons/agahnim1.png); }
 .agahnim2 { width: var(--size-2x); height: var(--size-2x); background-size: var(--size-2x); background-image:url(../images/dungeons/agahnim20.png); }
 .agahnim2.active { width: var(--size-2x); height: var(--size-2x); background-size: var(--size-2x); background-image:url(../images/dungeons/agahnim1.png); }
-.boss0 { background-image: url(../images/dungeons/boss0.png); background-size: 30px; background-repeat: no-repeat; background-position: center }
-.boss1 { background-image: url(../images/dungeons/boss1.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss2 { background-image: url(../images/dungeons/boss2.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss3 { background-image: url(../images/dungeons/boss3.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss4 { background-image: url(../images/dungeons/boss4.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss5 { background-image: url(../images/dungeons/boss5.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss6 { background-image: url(../images/dungeons/boss6.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss7 { background-image: url(../images/dungeons/boss7.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss8 { background-image: url(../images/dungeons/boss8.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss9 { background-image: url(../images/dungeons/boss9.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
-.boss10, #bossmap10 { background-image: url(../images/dungeons/boss10.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
+.boss0 { background-image: url(../images/dungeons/boss0.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss1 { background-image: url(../images/dungeons/boss1.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss2 { background-image: url(../images/dungeons/boss2.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss3 { background-image: url(../images/dungeons/boss3.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss4 { background-image: url(../images/dungeons/boss4.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss5 { background-image: url(../images/dungeons/boss5.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss6 { background-image: url(../images/dungeons/boss6.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss7 { background-image: url(../images/dungeons/boss7.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss8 { background-image: url(../images/dungeons/boss8.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss9 { background-image: url(../images/dungeons/boss9.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
+.boss10, #bossmap10 { background-image: url(../images/dungeons/boss10.png); background-size: 60px; background-repeat: no-repeat; background-position: center; }
 #bossmap11 { background-image: url(../images/dungeons/ballnchain.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
 #bossmap12 { background-image: url(../images/dungeons/agahnim0.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
 .bossprize-0 { background-image: url(../images/dungeons/bossicon0.png); background-size: 30px; background-repeat: no-repeat; background-position: center; }
@@ -439,11 +502,11 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .medallion-3 { background-image: url(../images/dungeons/medallion3.png); }
 .chest-0 { background-image: url(../images/dungeons/keychest0.png); }
 .chest { background-image: url(../images/dungeons/keychest.png); }
-.bigkey { background-image: url(../images/dungeons/bigkey.png); background-size: 100%; }
-.smallkeyfull { background-image: url(../images/dungeons/smallkey.png); background-size: var(--dungeon-halfsize); position: relative; background-repeat: no-repeat; background-position-x: -3px; }
+.bigkey { background-image: url(../images/dungeons/bigkey.png); background-size: 118%; background-repeat: no-repeat; background-position: left; background-position-x: -2px;}
+.smallkeyfull { background-image: url(../images/dungeons/smallkey.png); background-size: var(--dungeon-halfsize); position: relative; background-repeat: no-repeat; background-position-x: -1px; background-position-y: 1px; }
 .smallkeyhalf { background-image: url(../images/dungeons/smallkey.png); background-size: var(--dungeon-halfsize); position: relative; background-repeat: no-repeat; background-position-x: -3px; }
-.compass { background-image: url(../images/dungeons/compass.png); background-size: calc( var(--dungeon-halfsize) * 0.875); background-repeat: no-repeat; background-position: center;}
-.dungeonmap { background-image: url(../images/dungeons/prize5.png); background-size: calc( var(--dungeon-halfsize) * 0.875); background-repeat: no-repeat; background-position: center;}
+.compass { background-image: url(../images/dungeons/compass.png); background-size: calc( var(--dungeon-size) * 0.875); background-repeat: no-repeat; background-position: center;}
+.dungeonmap { background-image: url(../images/dungeons/prize5.png); background-size: calc( var(--dungeon-size) * 0.875); background-repeat: no-repeat; background-position: center;}
 .bombfloor-0 { background-image: url(../images/dungeons/bombablefloor0.png); }
 .bombfloor-1 { background-image: url(../images/dungeons/bombablefloor1.png); }
 
