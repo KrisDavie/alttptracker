@@ -302,6 +302,7 @@ body {
 
 .smallkeyscout { background-image: url(../images/dungeons/smallkey.png); }
 .swordscout { background-image: url(../images/items/sword1.png); }
+.shieldscout { background-image: url(../images/items/shieldcentered.png); }
 .armor { background-image: url(../images/items/bluemail.png); }
 .bottle { background-image: url(../images/items/bottle_empty.png); }
 
