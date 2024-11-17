@@ -2362,27 +2362,6 @@
     }
 
     window.updateLayout = function() {
-		let scaleClass = 'scale100';
-		switch (flags.scale) {
-			case "F":
-				break;
-			case "T":
-				scaleClass = 'scale75';
-				break;
-			case "H":
-				scaleClass = 'scale50';
-				break;
-			case "Q":
-				scaleClass = 'scale25';
-				break;
-		}
-
-		document.getElementById('app').classList.add(scaleClass);
-		document.getElementById('entranceModal').classList.add(scaleClass);
-		document.getElementById('summaryModal').classList.add(scaleClass);
-		document.getElementById('spoilerModal').classList.add(scaleClass);
-		document.getElementById('flagsModal').classList.add(scaleClass);
-
 		//Map layers
 
 		document.getElementById("mapItemDiv_light").style.display = flags.entrancemode === 'N' ? "block" : "none";

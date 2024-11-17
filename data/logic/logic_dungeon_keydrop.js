@@ -79,29 +79,6 @@
             ]
          }
       },
-      "Desert Palace - Prize": {
-         "always": {
-            "allOf": [
-               "canBreach|Desert Palace - North",
-               "bigkey",
-               "keys|3",
-               "canKillBoss",
-               "canLightFires",
-               "canKillOrExplodeMostEnemies"
-            ]
-         },
-         "required": {
-            "allOf": [
-               "keys|3"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Desert Palace - North",
-               "keys|4"
-            ]
-         }
-      },
       "Desert Palace - Compass Chest": {
          "always": {
             "allOf": [
@@ -298,30 +275,6 @@
          }
       },
       "Eastern Palace - Boss": {
-         "always": {
-            "allOf": [
-               "canBreach|Eastern Palace",
-               "bigkey",
-               "keys|1",
-               "canKillBoss",
-               "bow",
-               "canTorchRoomNavigateBlind"
-            ]
-         },
-         "required": {
-            "allOf": [
-               "keys|1"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Eastern Palace",
-               "keys|2",
-               "canTorchRoomNavigate"
-            ]
-         }
-      },
-      "Eastern Palace - Prize": {
          "always": {
             "allOf": [
                "canBreach|Eastern Palace",
@@ -1805,42 +1758,6 @@
             ]
          }
       },
-      "Skull Woods - Prize": {
-         "always": {
-            "allOf": [
-               "canBreach|Skull Woods - Back",
-               "canKillBoss",
-               "canDefeatCurtains",
-               "keys|2"
-            ],
-            "anyOf": [
-               "firerod",
-               {
-                  "allOf": [
-                     "lantern",
-                     {
-                        "anyOf": [
-                           "bombs",
-                           "canHover"
-                        ]
-                     }
-                  ]
-               }
-            ]
-         },
-         "required": {
-            "allOf": [
-               "keys|2"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Skull Woods - Back",
-               "keys|5",
-               "firerod"
-            ]
-         }
-      },
       "Skull Woods - Bridge Room": {
          "always": {
             "allOf": [
@@ -2185,39 +2102,6 @@
          }
       },
       "Swamp Palace - Boss": {
-         "always": {
-            "allOf": [
-               "canBreach|Swamp Palace",
-               "flippers",
-               "canKillBoss",
-               "hookshot",
-               "keys|4"
-            ],
-            "anyOf": [
-               "canSpeckyClip",
-               {
-                  "allOf": [
-                     "keys|5",
-                     "hammer"
-                  ]
-               }
-            ]
-         },
-         "required": {
-            "anyOf": [
-               "canSpeckyClip",
-               "keys|5"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Swamp Palace",
-               "keys|6",
-               "hammer"
-            ]
-         }
-      },
-      "Swamp Palace - Prize": {
          "always": {
             "allOf": [
                "canBreach|Swamp Palace",
@@ -2632,28 +2516,6 @@
             ]
          }
       },
-      "Thieves Town - Prize": {
-         "always": {
-            "allOf": [
-               "canBreach|Thieves Town",
-               "keys|2",
-               "bigkey",
-               "canKillBoss",
-               "bombs"
-            ]
-         },
-         "required": {
-            "allOf": [
-               "keys|2"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Thieves Town",
-               "keys|3"
-            ]
-         }
-      },
       "Thieves Town - Compass Chest": {
          "always": {
             "allOf": [
@@ -2755,31 +2617,6 @@
          }
       },
       "Tower of Hera - Boss": {
-         "always": {
-            "allOf": [
-               "canBreach|Tower of Hera",
-               "canHitSwitch",
-               "canKillBoss"
-            ],
-            "anyOf": [
-               "canHeraPot",
-               {
-                  "allOf": [
-                     "bigkey",
-                     "canKillOrExplodeMostEnemies"
-                  ]
-               }
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Tower of Hera",
-               "bigkey",
-               "canKillOrExplodeMostEnemies"
-            ]
-         }
-      },
-      "Tower of Hera - Prize": {
          "always": {
             "allOf": [
                "canBreach|Tower of Hera",
@@ -3018,104 +2855,6 @@
          }
       },
       "Turtle Rock - Boss": {
-         "always": {
-            "allOf": [
-               "bigkey",
-               "canKillBoss",
-               {
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
-                  ]
-               }
-            ],
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canBreachTurtleRockMainMaybe",
-                     "keys|5",
-                     "canOpenBonkWalls",
-                     "canHitRangedSwitch",
-                     "canDarkRoomNavigateBlind"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canBreachTurtleRockMiddle",
-                     "keys|2",
-                     "canOpenBonkWalls",
-                     "canHitRangedSwitch",
-                     "canDarkRoomNavigateBlind"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canBreach|Turtle Rock - Back",
-                     "keys|1"
-                  ]
-               }
-            ]
-         },
-         "required": {
-            "allOf": [
-               {
-                  "anyOf": [
-                     "canHoverAlot",
-                     "somaria"
-                  ]
-               }
-            ],
-            "anyOf": [
-               {
-                  "allOf": [
-                     "canBreach|Turtle Rock - Main",
-                     "keys|5",
-                     "canOpenBonkWalls",
-                     "canHitRangedSwitch",
-                     "canDarkRoomNavigateBlind"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canBreachTurtleRockMiddle",
-                     "keys|3",
-                     "canOpenBonkWalls",
-                     "canHitRangedSwitch",
-                     "canDarkRoomNavigateBlind"
-                  ]
-               },
-               {
-                  "allOf": [
-                     "canBreach|Turtle Rock - Back",
-                     "keys|1"
-                  ]
-               }
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "keys|6",
-               "somaria"
-            ],
-            "anyOf": [
-               "canReach|Turtle Rock - Back",
-               {
-                  "allOf": [
-                     {
-                        "anyOf": [
-                           "canReach|Turtle Rock - Main",
-                           "canReachTurtleRockMiddle"
-                        ]
-                     },                     
-                     "canOpenBonkWalls",
-                     "canHitRangedSwitch",
-                     "canDarkRoomNavigate"
-                  ]
-               }
-            ]
-         }
-      },
-      "Turtle Rock - Prize": {
          "always": {
             "allOf": [
                "bigkey",
@@ -4327,35 +4066,6 @@
             ]
          }
       },
-      "Misery Mire - Prize": {
-         "always": {
-            "allOf": [
-               "canBreachMiseryMireMaybe",
-               "canCrossMireGap",
-               "canKillWizzrobes",
-               "bigkey",
-               "somaria",
-               "canKillBoss",
-               "canDarkRoomNavigateBlind"
-            ],
-            "anyOf": [
-               "bombs",
-               "canFireSpooky"
-            ]
-         },
-         "required": {
-            "allOf": [
-               "canBreach|Misery Mire"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Misery Mire",
-               "canDarkRoomNavigate",
-               "bombs"
-            ]
-         }
-      },
       "Misery Mire - Bridge Chest": {
          "always": {
             "allOf": [
@@ -4890,49 +4600,6 @@
                "somaria"
             ]
          }
-      },
-      "Ice Palace - Prize": {
-         "always": {
-            "allOf": [
-               "canBreach|Ice Palace",
-               "keys|2",
-               "canBurnThings",
-               "glove",
-               "hammer",
-               "canKillBoss"
-            ],
-            "anyOf": [
-               "canIceBreak",
-               {
-                  "allOf": [
-                     "bombs",
-                     {
-                        "anyOf": [
-                           "canBombJump",
-                           {
-                              "allOf": [
-                                 "bigkey",
-                                 "keys|3"
-                              ]
-                           }
-                        ]
-                     }
-                  ]
-               }
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Ice Palace",
-               "bigkey",
-               "keys|5",
-               "bombs"
-            ],
-            "anyOf": [
-               "keys|6",
-               "somaria"
-            ]
-         }
       }
    },
    "Palace of Darkness": {
@@ -5025,31 +4692,6 @@
          }
       },
       "Palace of Darkness - Boss": {
-         "always": {
-            "allOf": [
-               "canBreach|Palace of Darkness",
-               "bigkey",
-               "keys|1",
-               "canKillBoss",
-               "bow",
-               "hammer",
-               "canDarkRoomNavigateBlind"
-            ]
-         },
-         "required": {
-            "allOf": [
-               "keys|4"
-            ]
-         },
-         "logical": {
-            "allOf": [
-               "canReach|Palace of Darkness",
-               "keys|6",
-               "canDarkRoomNavigate"
-            ]
-         }
-      },
-      "Palace of Darkness - Prize": {
          "always": {
             "allOf": [
                "canBreach|Palace of Darkness",

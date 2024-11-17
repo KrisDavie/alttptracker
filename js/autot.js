@@ -636,9 +636,6 @@ function autotrackDoTracking(data) {
     function checkItem(data, item, data_loc = 'rooms_inv') {
         return (data[data_loc][item[0]] & item[1]) !== 0;
     }
-    function checkTwoBitMask(data, loc, mask, data_loc = 'rooms_inv') {
-        return ((data[data_loc][loc] | data[data_loc][loc + 1] << 8) & mask) !== 0;
-    }
 
 
     // Decrement dungeon count unless a non-wild dungeon item is found 
@@ -649,9 +646,6 @@ function autotrackDoTracking(data) {
                 if (flags.doorshuffle === 'P') {
                     newCheckedLocationCount += dungeondata.keypots.filter(location => checkItem(data, location, 'potdata')).length;
                     newCheckedLocationCount += dungeondata.keydrops.filter(location => checkItem(data, location, 'spritedata')).length;
-                }
-                if (flags.prizeshuffle === 'W') {
-                    newCheckedLocationCount += 'prize' in dungeondata ? checkTwoBitMask(data, 0x472, dungeondata.prizemask) : 0;
                 }
                 let newDungeonItemCount = 0;
 

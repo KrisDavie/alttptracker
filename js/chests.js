@@ -1,66 +1,21 @@
 (function(window) {
     'use strict';
 
-	const logic_sets = {
-    N: {
-      dungeon: window.logic_dungeon,
-      keydrop: window.logic_dungeon_keydrop,
-      nondungeon: window.logic_nondungeon_checks,
-      nondungeon_entrance: window.logic_nondungeon_checks_entrance,
-      regions: window.logic_regions,
-      entrances: window.logic_entrances,
-    },
-    O: {
-      dungeon: window.logic_dungeon,
-      keydrop: window.logic_dungeon_keydrop,
-      nondungeon: window.owg_logic_nondungeon_checks,
-      nondungeon_entrance: window.owg_logic_nondungeon_checks_entrance,
-      regions: window.owg_logic_regions,
-      entrances: window.owg_logic_entrances,
-    },
-    H: {
-      dungeon: window.logic_dungeon,
-      keydrop: window.logic_dungeon_keydrop,
-      nondungeon: window.owg_logic_nondungeon_checks,
-      nondungeon_entrance: window.owg_logic_nondungeon_checks_entrance,
-      regions: window.owg_logic_regions,
-      entrances: window.owg_logic_entrances,
-    },
-    M: {
-      dungeon: window.logic_dungeon,
-      keydrop: window.logic_dungeon_keydrop,
-      nondungeon: window.owg_logic_nondungeon_checks,
-      nondungeon_entrance: window.owg_logic_nondungeon_checks_entrance,
-      regions: window.owg_logic_regions,
-      entrances: window.owg_logic_entrances,
-    },
-    Z: {
-      dungeon: window.logic_dungeon,
-      keydrop: window.logic_dungeon_keydrop,
-      nondungeon: window.owg_logic_nondungeon_checks,
-      nondungeon_entrance: window.owg_logic_nondungeon_checks_entrance,
-      regions: window.owg_logic_regions,
-      entrances: window.owg_logic_entrances,
-    },
-  };
+	if (flags.doorshuffle === 'P') {
+        window.dungeonLogic = window.logic_dungeon_keydrop
+    } else {
+        window.dungeonLogic = window.logic_dungeon
+    };
 
-  const logic_set = logic_sets[flags.glitches];
+    if (flags.entrancemode === 'N') {
+        window.checkLogic = window.logic_nondungeon_checks
+    } else {
+        window.checkLogic = window.logic_nondungeon_checks_entrance
+    }
 
-  if (flags.doorshuffle === "P") {
-    window.dungeonLogic = logic_set.keydrop;
-  } else {
-    window.dungeonLogic = logic_set.dungeon;
-  }
-
-  if (flags.entrancemode === "N") {
-    window.checkLogic = logic_set.nondungeon;
-  } else {
-    window.checkLogic = logic_set.nondungeon_entrance;
-  }
-
-  window.regionReachLogic = logic_set.regions;
-  window.entranceLogic = logic_set.entrances;
-  window.entranceMap = window.entrance_to_array_id;
+	window.regionReachLogic = window.logic_regions
+	window.entranceLogic = window.logic_entrances
+	window.entranceMap = window.entrance_to_array_id
 
 	const userLogicSettings = JSON.parse(localStorage.getItem("logicSettings"));
 
@@ -228,7 +183,7 @@
 			case "flippers": return items.flippers;
 			case "flute": return activeFlute() || (flags.gametype === 'I' && activeFluteInvertedEntrance());
 			case "firerod": return items.firerod;
-			case "glove": return items.glove > 0;
+			case "glove": return items.glove;
 			case "hammer": return items.hammer;
 			case "halfmagic": return items.magic;
 			case 'hookshot': return items.hookshot;
@@ -268,27 +223,26 @@
 			case "canOpenBonkWalls": return items.boots || items.bomb;
 			case "canHitRangedSwitch": return canHitRangedSwitch();
 			case 'canKillOrExplodeMostEnemies': return items.sword > 0 || items.hammer || items.bow > 1 || items.somaria || items.byrna || items.firerod || items.bomb;
-			case "canGetBonkableItem": return items.boots || (items.sword > 0 && items.quake);
+			case "canGetBonkableItem": return items.boots || (items.sword && items.quake);
 			case 'gtleft': return items.hammer && items.hookshot && canHitRangedSwitch();
 			case 'gtright': return items.somaria && items.firerod;
 			case 'zeroKeyPodders': return items.bow > 1 && items.hammer && (items.bomb || items.boots);
 			case 'canRushRightSidePod': return (items.bomb || items.boots) && (true || items.bow > 1 || items.bottle);
 
-			case 'canBootsClip': return flags.glitches !== 'N' ? items.boots : false;
 			case 'canDarkRoomNavigateBlind': return userLogicSettings[requirement] || bigRequirementSwitch('canDarkRoomNavigate');
 			case 'canTorchRoomNavigateBlind': return userLogicSettings[requirement] || bigRequirementSwitch('canTorchRoomNavigate');
 			case "canFairyReviveHover": return userLogicSettings[requirement] && (items.boots && items.bottle && items.net);
 			case "canOWFairyRevive": return userLogicSettings[requirement] && (items.bottle && items.net);
 			case "canQirnJump": return userLogicSettings[requirement] && (items.bomb);
-			case "canMirrorSuperBunny": return (userLogicSettings[requirement] || flags.glitches !== 'N') && (items.mirror);
-			case "canDungeonBunnyRevive": (userLogicSettings[requirement] || flags.glitches !== 'N');
-			case "canFakeFlipper": return (userLogicSettings[requirement] || flags.glitches !== 'N');
+			case "canMirrorSuperBunny": return userLogicSettings[requirement] && (items.mirror);
+			case "canDungeonBunnyRevive": return userLogicSettings[requirement];
+			case "canFakeFlipper": return userLogicSettings[requirement];
 			case "canFakePowder": return userLogicSettings[requirement] && (items.somaria && items.mushroom);
-			case "canWaterWalk": return (userLogicSettings[requirement] || (flags.glitches !== 'N' && items.boots)) && (items.boots && items.bomb);
-			case "canZoraSplashDelete": return userLogicSettings[requirement] && ((items.bomb && items.bow > 1) || (items.somaria && items.bomb && items.boomerang > 1) || (items.bomb && items.icerod) || (items.bottle && items.net && items.bomb));
-			case "canBunnyPocket": return (userLogicSettings[requirement] || flags.glitches !== 'N') && (items.boots && (items.mirror || items.bottle));
-			case "canSpinSpeedClip": return flags.glitches !== 'N' ? (items.boots && (items.sword >0 || items.hookshot)) : false;
-			case "canMirrorWrap": return userLogicSettings[requirement] && items.mirror;
+			case "canWaterWalk": return userLogicSettings[requirement] && (items.boots && items.bomb);
+			case "canZoraSplashDelete": return userLogicSettings[requirement] && ((items.bomb && items.bow > 0) || (items.somaria && items.bomb && items.boomerang > 1) || (items.bomb && items.icerod) || (items.bottle && items.net && items.bomb));
+			case "canBunnyPocket": return userLogicSettings[requirement] && (items.boots && (items.mirror || items.bottle));
+			case "canSpinSpeedClip": return false;
+			case "canMirrorWrap": return false;
 			case "canTombRaider": return userLogicSettings[requirement] && (items.hookshot && (items.bomb || items.sword > 1));
 			case "canFairyBarrierRevive": return userLogicSettings[requirement] && (items.bottle && items.net && items.mirror);
 			case "canShockBlock": return userLogicSettings[requirement] && (items.somaria);
@@ -305,8 +259,6 @@
 			case 'canMimicClip': return userLogicSettings[requirement];
 			case 'canPotionCameraUnlock': return userLogicSettings[requirement] && (items.bottle > 0);
 			case 'canMoldormBounce': return userLogicSettings[requirement] && (items.bomb && items.sword > 0);
-			case 'canBunnyCitrus': return userLogicSettings[requirement];
-			case 'canTamSwam': return userLogicSettings[requirement];
 
 			case "canCrossEnergyBarrier": return items.sword > 1 || (flags.swordmode === 'S' && items.hammer) || items.cape;
 			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
@@ -383,57 +335,40 @@
 
 	// #region Non-entrance reach and check logic
 	// Location object contains "anyOf" or "allOf" arrays of conditions
-	// chain is an object that keeps track of the state of each condition to prevent infinite recursion
-	function stateOfAll(requirements, chain = {}) {
+	function stateOfAll(requirements) {
 		if (requirements.allOf) {
 			for (const requirement of requirements.allOf) {
-				if (!stateOf(requirement, chain)) return false;
+				if (!stateOf(requirement)) return false;
 			}
 		}
 		if (requirements.anyOf) {
 			for (const requirement of requirements.anyOf) {
-				if (stateOf(requirement, chain)) return true;
+				if (stateOf(requirement)) return true;
 			}
 			return false;
 		}
 		return true;
 	};
 
-	function stateOf(requirement, chain = {}) {
-		if (flags.glitches === 'Z') return true;
+	function stateOf(requirement) {
 		// If requirement is not a string call inLogic recursively
-		let res;
-
-		if (typeof requirement === 'object') {
-			res = stateOfAll(requirement, chain);
-			return res;
-		}
-
-		if (requirement in chain) {
-			return chain[requirement] === true;
-		} else {
-			chain[requirement] = null;
-		}
+		if (typeof requirement === 'object') return stateOfAll(requirement);
 
 		if (requirement.startsWith("canReach|")) {
 			const region = requirement.split("|")[1];
-			res = canReachRegion(region, chain) === 'available';
-		} else if (requirement.startsWith("canBreach|")) {
+			return canReachRegion(region) === 'available';
+		};
+
+		if (requirement.startsWith("canBreach|")) {
 			const region = requirement.split("|")[1];
-			const state = canReachRegion(region, chain);
-			res = state != 'unavailable' && state != 'possible';
-		} else {
-			res = bigRequirementSwitch(requirement);
-		}
-		chain[requirement] = res;
-		return res;
+			const state = canReachRegion(region);
+			return state != 'unavailable' && state != 'possible';
+		};
+
+		return bigRequirementSwitch(requirement);
 	};
 
-	function canReachRegion(region, chain = {}) {
-		// This is needed because at some point this function is used in a map which passes index as the second argument
-		if (typeof chain !== 'object') {
-			chain = {};
-		}
+	function canReachRegion(region) {
 		if (flags.entrancemode != 'N') {
 			if (flags.mapmode === 'N') return 'available';
 			const mapTrackerNames = window.regionReachLogic[region]["Entrance"];
@@ -490,22 +425,18 @@
 		const category = flags.gametype === 'I' ? 'Inverted' : 'Open';
 		const requirements = window.regionReachLogic[region][category];
 		let availability = 'unavailable';
-		if (!("always" in requirements) || stateOfAll(requirements["always"], chain)) {
+		if (!("always" in requirements) || stateOfAll(requirements["always"])) {
 			availability = 'possible';
-			if (!("logical" in requirements) || stateOfAll(requirements["logical"], chain)) {
+			if (!("logical" in requirements) || stateOfAll(requirements["logical"])) {
 				availability = 'available';
-			} else if (!("required" in requirements) || stateOfAll(requirements["required"], chain)) {
+			} else if (!("required" in requirements) || stateOfAll(requirements["required"])) {
 				availability = 'darkavailable';
 			};
 		};
-		let res
-		if (availability === 'unavailable') res = 'unavailable';
-		if (availability === 'possible') res = 'possible';
-		if (availability === 'available') res = medcheck === 'available' ? 'available' : medcheck;
-		if (availability === 'darkavailable') res = medcheck === 'available' ? 'darkavailable' : medcheck;
-
-		chain[region] = res;
-		return res;
+		if (availability === 'unavailable') return 'unavailable';
+		if (availability === 'possible') return 'possible';
+		if (availability === 'available') return medcheck === 'available' ? 'available' : medcheck;
+		if (availability === 'darkavailable') return medcheck === 'available' ? 'darkavailable' : medcheck;
 	};
 
 	function checkAvailability(locations) {
@@ -609,7 +540,6 @@
 
 	function canReachLowerWestDeathMountain() {
 		if (items.flute >= 1) return true;
-		if (canReachUpperWestDeathMountain()) return true;
 		if (hasFoundRegion([
 				"Spectacle Rock Cave", "Spectacle Rock Cave Peak", "Spectacle Rock Cave (Bottom)", "Old Man Cave (East)", 
 				"Death Mountain Return Cave (East)", "Old Man House (Bottom)", "Old Man House (Top)", "Tower of Hera"
@@ -1121,76 +1051,58 @@
 
 	// #region Dungeon Check Logic
 	// Location object contains "anyOf" or "allOf" arrays of conditions that need to be met
-	function inLogic(dungeonId, requirements, chain = {}) {
-		if (flags.glitches === 'Z') return true;
+	function inLogic(dungeonId, requirements) {
 		if (requirements.allOf) {
 			for (const requirement of requirements.allOf) {
-				if (!logicSwitch(dungeonId, requirement, chain)) return false;
+				if (!logicSwitch(dungeonId, requirement)) return false;
 			}
 		}
 		if (requirements.anyOf) {
 			for (const requirement of requirements.anyOf) {
-				if (logicSwitch(dungeonId, requirement, chain)) return true;
+				if (logicSwitch(dungeonId, requirement)) return true;
 			}
 			return false;
 		}
 		return true;
 	};
 
-	function logicSwitch(dungeonId, requirement, chain = {}) {
+	function logicSwitch(dungeonId, requirement) {
 		// If requirement is not a string call inLogic recursively
-		let res;
-
-		if (typeof requirement === 'object') {
-			const reqstring = JSON.stringify(requirement);
-			if (reqstring in chain) {
-				return chain[reqstring];
-			} else {
-				chain[reqstring] = null;
-			}
-			res = inLogic(dungeonId, requirement, chain);
-			chain[reqstring] = res;
-			return res;
-		};
-
-		if (requirement in chain) {
-			return chain[requirement];
-		}
+		if (typeof requirement === 'object') return inLogic(dungeonId, requirement);
 		
-		if (requirement === 'bigkey' && !flags.wildbigkeys) {
-			res = true;
-		} else if (requirement.startsWith('keys')) {
-			if (flags.gametype === 'R' || !flags.wildkeys) res = true;
+		if (requirement === 'bigkey' && !flags.wildbigkeys) return true;
+
+		if (requirement.startsWith('keys')) {
+			if (flags.gametype === 'R' || !flags.wildkeys) return true;
 			const count = requirement.split('|')[1];
 			const keyname = 'smallkey' + dungeonId;
-			res = items[keyname] >= count;
-		} else if (dungeonId === 11 && requirement === 'bigkey') {
-			res = items.bigkey11; // HC
-		} else if (dungeonId === 12 && requirement === 'bigkey') {
-			res = items.bigkey12; // CT
-		} else if (requirement.startsWith('canReach|')) {
+			return items[keyname] >= count;
+		};
+
+		if (dungeonId === 11 && requirement === 'bigkey') return items.bigkey11; // HC
+		if (dungeonId === 12 && requirement === 'bigkey') return items.bigkey12; // CT
+
+		if (requirement.startsWith('canReach|')) {
 			const region = requirement.split('|')[1];
-			res = canReachRegion(region) === 'available';
-		} else if (requirement.startsWith('canBreach|')) {
+			return canReachRegion(region) === 'available';
+		};
+
+		if (requirement.startsWith('canBreach|')) {
 			const region = requirement.split('|')[1];
 			let state = canReachRegion(region);
-			res = state != 'unavailable' && state != 'possible';
-		} else {
-			res = bigRequirementSwitch(requirement, dungeonId);
-		}
-		chain[requirement] = res;
-		return res;
+			return state != 'unavailable' && state != 'possible';
+		};
+
+		return bigRequirementSwitch(requirement, dungeonId);
 	};
 
 	function dungeonAvailability(dungeonId, dungeonName) {
-		if (flags.glitches === 'Z') return 'available';
 		const dungeonAbbreviation = dungeonCheckMap[dungeonId].abbreviation;
 		var checksAlways = 0;
 		var checksRequired = 0;
 		var checksLogical = 0;
 		var checksSuperLogic = 0;
 		const hasNoBossItem = (dungeonName === 'Ganons Tower' || dungeonName === 'Castle Tower')
-		var shouldntCountPrize = 0
 
 		// Stupid exceptions
 		if (dungeonName === 'Swamp Palace') {
@@ -1201,10 +1113,6 @@
 		for (const [location, requirements] of Object.entries(dungeonLogic[dungeonName])) {
 			if (location.includes(' - Boss') && hasNoBossItem) {
 				continue;
-			};
-			if (location.includes(' - Prize') && flags.prizeshuffle !== 'W') {
-				shouldntCountPrize++;
-				continue
 			};
 			if (inLogic(dungeonId, requirements["always"])) {
 				checksAlways++;
@@ -1223,7 +1131,7 @@
 			};
 		};
 
-		var maxChecks = Object.keys(window.dungeonLogic[dungeonName]).length - hasNoBossItem - shouldntCountPrize;
+		var maxChecks = Object.keys(window.dungeonLogic[dungeonName]).length - hasNoBossItem;
 		var collected = maxChecks - items['chest' + dungeonId];
 
 		if (!flags.wildkeys) collected -= window.dungeonTotalLocations[dungeonAbbreviation]['keys'];
@@ -1367,13 +1275,8 @@
 			
 			// Mimic Cave
 			window.chests[4].is_available = function() {
-				if (flags.glitches === 'Z') return 'available';
-				if (!(flags.glitches === 'N')) {
-					if (items.mirror && items.hammer) return 'available';
-				}
 				if (!items.moonpearl || !items.hammer || items.glove !== 2 || (!items.somaria && flags.doorshuffle === 'N') || !items.mirror || (!items.bomb && flags.doorshuffle === 'N') || (flags.wildkeys && flags.doorshuffle === 'N' && items.smallkey9 <= 1 && flags.gametype != 'R')) return 'unavailable';
-				var medallion = flags.glitches === 'N' ? medallionCheck(1) : 'available';
-
+				var medallion = medallionCheck(1);	
 
 				if (flags.doorshuffle === 'P') {
 					if (medallion === 'unavailable') return 'unavailable';
@@ -1399,7 +1302,6 @@
 			}
 			// Back of Escape
 			window.chests[96].is_available = function() {
-				if (flags.glitches === 'Z') return 'available';
 				if (!(items.bomb || items.boots)) return 'unavailable';
 				if (flags.doorshuffle === 'P' || flags.doorshuffle === 'N') {
 					const dungeonId = 11;

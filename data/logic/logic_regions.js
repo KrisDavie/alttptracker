@@ -335,7 +335,7 @@
             },
             "logical": {
                 "allOf": [
-                    "canReach|Light World - East Death Mountain"
+                    "canBreach|Light World - East Death Mountain"
                 ]
             }
         }
