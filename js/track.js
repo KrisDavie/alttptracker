@@ -137,6 +137,10 @@
 		if (Object.keys(sm_increment_items).includes(label)) {
 			var valuediv = document.getElementById(`${label}text`);
 			valuediv.innerHTML = value === 0 ? "" : value * sm_increment_items[label];
+			if (value > 0) {
+				var itemdiv = document.getElementsByClassName(label)[0];
+				itemdiv.classList.add('active');
+			}
 		}
 	}
 

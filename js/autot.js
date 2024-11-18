@@ -25,9 +25,11 @@ var FOREIGN_SM_SRAM = 0xE03902;
 
 var NATIVE_SM_BOSSES_KEYS = 0xF5D828;
 var FOREIGN_SM_BOSSES_KEYS = 0xE03968;
+// 0xa17970
 
 var NATIVE_SM_AMMO = 0xF509C0; // 0xF509C2
 var FOREIGN_SM_AMMO = 0xE0391E;
+// 0xa17920
 
 var NATIVE_SM_ROOMS = 0xF5D870
 var FOREIGN_SM_ROOMS = 0xE107CE // Likely very wrong
@@ -1500,7 +1502,7 @@ function autotrackDoTracking(data) {
         setitem("plasma", true);
     }
 
-    if (newbit(0x04, 0x10, 'sm_items')) {
+    if (newbit(0x05, 0x10, 'sm_items')) {
         setitem("charge", true);
     }
 
