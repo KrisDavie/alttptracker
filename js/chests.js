@@ -286,34 +286,23 @@
 			case "wave": return items.wave;
 			case "xray": return items.xray;
 
+			// Handlers
 			case "canDestroyBombWalls": return ((items.morph && (items.morphbombs  || items.powerbomb > 0)) || items.screw);
 			case "canUsePowerBombs": return (items.morph && items.powerbomb > 0);
 			case "canPassBombPassages": return (items.morph && (items.morphbombs || items.powerbomb > 0));
 			case "canOpenRedDoors": return (items.missile >= 1 || items.super >= 1);
 			case "canEscapeDraygon": return ((items.space) || (bigRequirementSwitch("canIBJ")) || (items.speed && (bigRequirementSwitch("canShortCharge") || items.hijump)) || (bigRequirementSwitch("canGravityJump")) || (bigRequirementSwitch("canSuitlessMaridia") && (bigRequirementSwitch("canDoubleSpringBallJump") || (bigRequirementSwitch("canCFSuitAndAmmoKillDraygon" && bigRequirementSwitch("canXrayClimb")) || ((bigRequirementSwitch("canGrappleEscapeDraygon") || bigRequirementSwitch("canHijumplessGrappleEscapeDraygon"))) && ("canBlueSuitDraygon" || "canXrayClimb"))))) // assumes access to dray's room and dray is dead already
-			case "canTraverseGravitron": return ((items.varia && (items.gravity && (items.space || (bigRequirementSwitch("canGravityJump")))) || (bigRequirementSwitch("canLavaDive")) || (bigRequirementSwitch("canBootlessLavaDive"))) || ((bigRequirementSwitch("canHellRun")) && ((((items.etank + items.rtank) >= 6) && (bigRequirementSwitch("canCrystalFlash")) && ((bigRequirementSwitch("canGravityJump")) || (items.gravity && items.space))) || (bigRequirementSwitch("canSuitlessLavaDive"))))); // lava dive in the forwards direction
+			case "canTraverseGravitron": return ((items.varia && (items.gravity && (items.space || (bigRequirementSwitch("canGravityJump")))) || (bigRequirementSwitch("canLavaDive")) || (bigRequirementSwitch("canBootlessLavaDive"))) || ((bigRequirementSwitch("canHellrun")) && ((((items.etank + items.rtank) >= 6) && (bigRequirementSwitch("canCrystalFlash")) && ((bigRequirementSwitch("canGravityJump")) || (items.gravity && items.space))) || (bigRequirementSwitch("canSuitlessLavaDive"))))); // lava dive in the forwards direction
 			case "canClimbWRITG": return ((items.space && (bigRequirementSwitch("canDestroyBombWalls"))) || (bigRequirementSwitch("canIBJ")) || (items.morph && items.powerbomb > 0 && (items.hijump || bigRequirementSwitch("canSpringBallJump") || bigRequirementSwitch("canWRITGPirateFreeze") || bigRequirementSwitch("canHypoJump")))); // assumes varia FOR NOW :)
 
+			// Common
 			case "canIBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
 			case "canGravityJump": return userLogicSettings[requirement] && (items.gravity);
 			case "canGateGlitch": return userLogicSettings[requirement] && (items.super >= 1 || items.missile >= 1);
 			case "canSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.spring);
-			case "canMochtroidIceClip": return userLogicSettings[requirement] && (items.ice);
-			case "canHellRun": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to hellrun
-			case "canLavaDive": return userLogicSettings[requirement] && (items.varia && items.hijump);
-			case "canSuitlessMaridia": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to do suitless maridia
-			case "canBootlessSuitless": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to do bootless suitless maridia
-			case "canGrappleJump": return userLogicSettings[requirement] && (items.morph && items.grapple);
-			case "canSnailClimb": return userLogicSettings[requirement] && (true);
-			case "canDoubleSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.hijump && items.spring);
-			case "canBombCrystalFlashClip": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash") && items.morphbombs);
-			case "canSuitlessCrystalFlashClip": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
-			case "canBootlessLavaDive": return userLogicSettings[requirement] && (items.varia && (items.etank > 0 && (items.etank + items.rtank) >= 2));
-			case "canSuitlessLavaDive": return userLogicSettings[requirement] && (items.hijump && (items.etank + items.rtank) >= 8 && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
-			case "canUnderwaterWallJump": return userLogicSettings[requirement] && (items.hijump);
-			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
 
 			case "canCrystalFlash": return userLogicSettings[requirement] && (items.morph && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3); // tech should be always enabled
+			// Crateria, Brinstar, Wrecked Ship
 			case "canGauntletWalljumps": return userLogicSettings[requirement] && (true);
 			case "canAlcatrazEscape": return userLogicSettings[requirement] && (items.morph);
 			case "canOldMBWithSpeed": return userLogicSettings[requirement] && (items.speed);
@@ -330,21 +319,59 @@
 			case "canMoatCWJ": return userLogicSettings[requirement] && (true);
 			case "canMoatHBJ": return userLogicSettings[requirement] && (items.morph && items.morphbombs);
 			case "canXrayDboost": return userLogicSettings[requirement] && (items.morph); // not putting a tank requirement in here, if you're xray dboosting you can figure it out
-			case "canHijumpSpeedScrewAttackRoomClimb": return userLogicSettings[requirement] && (items.hijump && items.speed);
-			case "canWRITGPirateFreeze": return userLogicSettings[requirement] && (items.charge && items.ice);
-			case "canHypoJump": return userLogicSettings[requirement] && (true); // might cover all three hypo jumps? currently only used for writg hypo, but might extend to the other two
-			case "canReverseAcidDive": return userLogicSettings[requirement] && (items.varia && (items.etanks + items.rtanks > 5)); // add suitless reverse acid dive stuff later?
+			// Maridia
+			
+			case "canSuitlessMaridia": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to do suitless maridia
+			case "canBootlessSuitless": return userLogicSettings[requirement] && (true); // general tech for if the user is willing to do bootless suitless maridia
+			case "canUnderwaterWallJump": return userLogicSettings[requirement] && (items.hijump);
 			case "canHijumpIceMainStreetClimb": return userLogicSettings[requirement] && (items.hijump && items.ice);
 			case "canCrabClimb": return userLogicSettings[requirement] && (items.hijump && items.ice); // not adding bootless version because if you're doing that in smz3, get a life
+			case "canTurtlePowerBombJump": return userLogicSettings[requirement] && (items.morph && items.powerbomb > 0);
+			case "canSnailClip": return userLogicSettings[requirement] && (items.morph && items.gravity);
+			case "canBreakFree": return userLogicSettings[requirement] && (items.hijump);
+			case "canMochtroidIceClip": return userLogicSettings[requirement] && (items.ice);
+			case "canGrappleJump": return userLogicSettings[requirement] && (items.morph && items.grapple);
+			case "canSnailClimb": return userLogicSettings[requirement] && (true);
+			case "canDoubleSpringBallJump": return userLogicSettings[requirement] && (items.morph && items.hijump && items.spring);
+			case "canBombCrystalFlashClip": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash") && items.morphbombs);
+			case "canSuitlessCrystalFlashClip": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
+			case "canCrossColosseumSuitlessWithIce": return userLogicSettings[requirement] && (items.ice && (items.hijump || bigRequirementSwitch("canBootlessSuitless")));
 			case "canGrappleEscapeDraygon": return userLogicSettings[requirement] && (items.morph && items.grapple && items.hijump && items.tanks >= 3);
 			case "canHijumplessGrappleEscapeDraygon": return userLogicSettings[requirement] && (items.morph && items.grapple && items.tanks >= 3);
 			case "canBlueSuitDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash")); // tech for rbo grapple kill blue suit dray
 			case "canCFSuitAndAmmoKillDraygon": return userLogicSettings[requirement] && (bigRequirementSwitch("canCrystalFlash"));
-			case "canXrayClimb": return userLogicSettings[requirement] && (items.xray); // current xray climbs in logic: precious (bowling skip too, but not with this tech)
-			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb));
+			case "canXrayClimb": return userLogicSettings[requirement] && (items.xray); // current xray climbs in logic: precious, pants room (bowling skip too, but not with this tech)
+			case "canWestSandHallBombJump": return userLogicSettings[requirement] && (items.hijump && items.morph && (items.morphbombs || items.powerbomb > 0));
+			case "canPseudoScrewPlasmaPirates": return userLogicSettings[requirement] && (items.charge && (((items.etank + items.rtank >= 7) && bigRequirementSwitch("canCrystalFlash")) || (items.varia && (items.etank + items.rtank >= 6)) || (items.gravity && (items.etank + items.rtank >= 3))));
+			case "canSparkPlasmaPirates": return userLogicSettings[requirement] && (bigRequirementSwitch("canShortCharge") && items.speed && (items.etank + items.rtank > 0));
+			case "canPantsRoomGravJump": return userLogicSettings[requirement] && (items.gravity);
+			case "canPantsRoomIceClip": return userLogicSettings[requirement] && (items.gravity && items.ice);
+			case "canPantsRoomFlatley": return userLogicSettings[requirement] && (items.hijump && items.space && items.grapple)
+			case "canRJump": return userLogicSettings[requirement] && (items.morph && items.xray);
+			// Norfair
 
-			case "canShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: draygon
-			case "canStupidShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: bottom of red tower
+			// HELLRUN TECHS - should return true if has varia or requisite number of tanks, set by user
+			case "canShortHellrun": return userLogicSettings[requirement] && (true); // covers ice/crumble shaft hellruns, and croc via croc speedway
+			case "canHellrun": return userLogicSettings[requirement] && (true); // covers bubble mountain hellruns
+			case "canLowerNorfairHellrun": return false; // TODO: implement this- disabled for now
+			
+			case "canIceEscape": return userLogicSettings[requirement] && (items.morph && items.ice);
+			case "canIcelessIceEscape": return userLogicSettings[requirement] (items.morph);
+			case "canReverseSparkCrocSpeedway": return userLogicSettings[requirement] (items.varia && items.speed);
+			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
+			case "canNorfairReserveDBoost": return userLogicSettings[requirement] && (true);
+			case "canCrocFarmRoomDBoost": return userLogicSettings[requirement] && (true);
+			case "canNeatoSpringBallJump": return userLogicSettings[requirement] && (items.hijump) && (items.spring) && (items.morph);
+			case "canLavaDive": return userLogicSettings[requirement] && (items.varia && items.hijump);
+			case "canBootlessLavaDive": return userLogicSettings[requirement] && (items.varia && (items.etank > 0 && (items.etank + items.rtank) >= 2));
+			case "canSuitlessLavaDive": return userLogicSettings[requirement] && (items.hijump && (items.etank + items.rtank) >= 8 && items.missile >= 2 && items.super >= 2 && items.powerbomb >= 3);
+			case "canHijumpSpeedScrewAttackRoomClimb": return userLogicSettings[requirement] && (items.hijump && items.speed);
+			case "canWRITGPirateFreeze": return userLogicSettings[requirement] && (items.charge && items.ice);
+			case "canHypoJump": return userLogicSettings[requirement] && (true); // covers writg hypo + bm hypo + plasma exit hypo + wave beam exit hypo (maybe should add a separate tech for that last one because of spikes + crumbles)
+			case "canReverseAcidDive": return userLogicSettings[requirement] && (items.varia && (items.etanks + items.rtanks > 5)); // add suitless reverse acid dive stuff later?
+			
+			case "canShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: draygon, plasma pirates, post-croc farm room
+			case "canStupidShortCharge": return userLogicSettings[requirement] && (items.speed); // current short charges in logic with this tech: bottom of red tower, acid snakes -> nutella, indiana jones, croc escape
 
 
 			case "canOpenGT": return crystalCheck() >= flags.opentowercount;
@@ -472,6 +499,8 @@
 				res = items.etank + items.rtank >= _count;
 			} else if (_item === "ammoDamage") {
 				res = (items.missile * 100 + items.super * 300) >= _count;
+			} else if (_item === "ammoDamageSupersDoubled") { // because ridley needs supers counted as 600, not 300
+				res = (items.missile * 100 + items.super * 600) >= _count;
 			} else {
 				res = items[_item] >= _count / 5;
 			}

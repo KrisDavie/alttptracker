@@ -192,27 +192,27 @@
         wave: false,
         xray: false,
 
-        crkey1: false,
-        crkey2: false,
-        crkeyb: false,
+        Crateria1: false,
+        Crateria2: false,
+        CrateriaB: false,
 
-        brkey1: false,
-        brkey2: false,
-        brkeyb: false,
+        Brinstar1: false,
+        Brinstar2: false,
+        BrinstarB: false,
 
-        mdkey1: false,
-        mdkey2: false,
-        mdkeyb: false,
+        Maridia1: false,
+        Maridia2: false,
+        MaridiaB: false,
 
-        wskey1: false,
-        wskeyb: false,
+        WreckedShip1: false,
+        WreckedShipB: false,
 
-        unkey1: false,
-        unkey2: false,
-        unkeyb: false,
+        Norfair1: false,
+        Norfair2: false,
+        NorfairB: false,
 
-        lnkey1: false,
-        lnkeyb: false,
+        LowerNorfair1: false,
+        LowerNorfairB: false,
         
         range: range,
         inc: limit(1, range),

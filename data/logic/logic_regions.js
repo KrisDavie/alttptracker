@@ -1255,6 +1255,17 @@
     },
     "Crateria - Terminator": { // terminator
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Ship",
+                    {
+                        "anyOf": [
+                            "canDestroyBombWalls",
+                            "speed"
+                        ]
+                    }
+                ]
+            },
             "logical": {
                 "allOf": [
                     "canReach|Crateria - Ship",
@@ -1605,6 +1616,11 @@
 
     "Brinstar - Green Elevator": {
         "Open": {
+            "always": {
+                "allOf": [
+                    "canBreach|Crateria - Terminator"
+                ]
+            },
             "logical": {
                 "allOf": [
                     "canReach|Crateria - Terminator"
@@ -1698,6 +1714,11 @@
     },    
     "Brinstar - Blue": { // retro brin elevator
         "Open": {
+            "always": {
+                "allOf": [
+                    "canReach|Crateria - Ship"
+                ]
+            },
             "logical": {
                 "allOf": [
                     "canReach|Crateria - Ship"
@@ -1784,6 +1805,13 @@
     },
     "Brinstar - Kraid": { // kraid kihunter room - past morph tunnel
         "Open": {
+            "always": {
+                "allOf": [
+                    "canReach|Norfair - Business Center",
+                    "super",
+                    "canPassBombPassages"
+                ]
+            },
             "logical": {
                 "allOf": [
                     "canReach|Norfair - Business Center",
@@ -1814,6 +1842,7 @@
                             {
                                 "allOf": [
                                     "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2",
                                     "gravity", // not writing powerbombless suitless logic until it actually becomes relevant
                                     "morph",
                                     {
@@ -1940,7 +1969,7 @@
             }
         }
     },
-    "Maridia - Portal": {
+    "Maridia - Portal": { // bottom of pre-colosseum
         "Open": {
             "always": {
                 "anyOf": [
@@ -2056,42 +2085,51 @@
                     "canBreach|Norfair - Business Center",
                     {
                         "anyOf": [
-                            // figure out how speed/frog speedway plays into this?????????
-                            "varia",
                             {
                                 "allOf": [
-                                    "canHellRun",
-                                    "tanks|5" // UPDATE THIS WHEN MUFFINS AND I FINISH DISCUSSING HELLRUN LOGIC
+                                    {
+                                        "anyOf": [
+                                            "varia",
+                                            "canHellrun"
+                                        ]
+                                    },
+                                    "SMKeys|Norfair2|super",
+                                    {
+                                        "anyOf": [
+                                            "space",
+                                            "canIBJ",
+                                            "hijump",
+                                            "speed",
+                                            "canSpringBallJump",
+                                            "canNovaBoost",
+                                            {
+                                                "allOf": [
+                                                    "ice",
+                                                    "varia" // THIS WILL INCREASE TANK REQS ?
+                                                ]
+                                            }
+                                        ]
+                                    },
                                 ]
                             }
                         ]
                     },
-                    "super",
-                    "SMKeys|Norfair2",
                     {
-                        "anyOf": [
-                            "space",
-                            "canIBJ",
-                            "hijump",
+                        "allOf": [
                             "speed",
-                            "canSpringBallJump",
-                            "canNovaBoost",
-                            {
-                                "allOf": [
-                                    "ice",
-                                    "varia" // THIS WILL INCREASE TANK REQS ?
-                                ]
-                            }
+                            "canShortHellrun",
+                            "canPassBombPassages",
+                            "SMKeys|Norfair2"
                         ]
                     }
+                    
                 ]
             },
             "logical": {
                 "allOf": [
                     "canReach|Norfair - Business Center",
                     "varia",
-                    "super",
-                    "SMKeys|Norfair2",
+                    "SMKeys|Norfair2|super",
                     {
                         "anyOf": [
                             "space",
@@ -2111,12 +2149,96 @@
     },
     "Norfair - Crocomire": {
         "Open": {
+            "always": {
+                "anyOf": [
+                    { // the normal way
+                        "allOf": [
+                            "canReach|Norfair - Business Center",
+                            "SMKeys|NorfairB|super",
+                            // checking varia/canHellrun in each individual level
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [ // croc speedway via ice gates
+                                            "canShortHellrun",
+                                            "super",
+                                            "canUsePowerBombs",
+                                            "speed"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [ // frog speedway & croc gate
+                                            "canShortHellrun",
+                                            "speed",
+                                            {
+                                                "anyOf": [
+                                                    "wave",
+                                                    "canGateGlitch"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "canHellrun",
+                                            "SMKeys|Norfair2|super",
+                                            "morph",
+                                            {
+                                                "anyOf": [
+                                                    "wave",
+                                                    "canGateGlitch"
+                                                ]
+                                            },
+                                            {
+                                                "anyOf": [
+                                                    "space",
+                                                    "canIBJ",
+                                                    "hijump",
+                                                    "speed",
+                                                    "canSpringBallJump",
+                                                    "canNovaBoost",
+                                                    {
+                                                        "allOf": [
+                                                            "ice",
+                                                            "varia" // THIS WILL INCREASE TANK REQS ?
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "anyOf": [
+                                                    "morphbombs",
+                                                    "powerbomb",
+                                                    "gravity" // remembered highway????!?!!!?!?
+                                                ]
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    { // hit LN portal from zelda, go up WRITG, go down mickey mouse, reverse lava dive, go up purple shaft and down croc gate to croc... without morph or speed :)
+                        "allOf": [
+                            "canReach|Lower Norfair - Portal",
+                            "varia",
+                            "gravity",
+                            "space",
+                            "screw",
+                            "super",
+                            "wave",
+                            "SMKeys|NorfairB"
+                        ]
+                    }
+                ]
+            },
             "logical": {
                 "anyOf": [
                     { // the normal way
                         "allOf": [
                             "canReach|Norfair - Business Center",
                             "varia",
+                            "SMKeys|NorfairB|super",
                             {
                                 "anyOf": [
                                     {
@@ -2138,7 +2260,7 @@
                                             "morph",
                                             "wave",
                                             {
-                                                "anyOf": [
+                                                "anyOf": [ // precathedral
                                                     "space",
                                                     "canIBJ",
                                                     "hijump",
@@ -2166,7 +2288,8 @@
                             "space",
                             "screw",
                             "super",
-                            "wave"
+                            "wave",
+                            "SMKeys|NorfairB"
                         ]
                     }
                 ]
@@ -2297,7 +2420,12 @@
                         "allOf": [
                             "canDestroyBombWalls",
                             "canBreach|Dark World - Mire",
-                            "varia"
+                            {
+                                "anyOf": [
+                                    "varia",
+                                    "canHellrun"
+                                ]
+                            }
                         ]
                     },
                     {
@@ -2334,13 +2462,24 @@
                 ]
             },
             "logical": {
-                "allOf": [
-                    "canReach|Lower Norfair - Elevator",
-                    "varia",
-                    "space",
-                    "gravity",
-                    "canUsePowerBombs",
-                    "super"
+                "anyOf": [
+                    {
+                        "allOf": [
+                            "canReach|Lower Norfair - Elevator",
+                            "varia",
+                            "space",
+                            "gravity",
+                            "canUsePowerBombs",
+                            "super"
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            "canReach|Dark World - Mire",
+                            "canDestroyBombWalls",
+                            "varia"
+                        ]
+                    }
                 ]
             }
         },
