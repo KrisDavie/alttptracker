@@ -1070,8 +1070,8 @@
     { 'open_idx': 153, 'caption': 'Beta Missile', 'checks': ['Beta Missile'] },
     {
         'open_idx': 154,
-        'caption': 'Billy Mays Front Missile',
-        'checks': ['Billy Mays Front Missile', 'Billy Mays Hidden Missile']
+        'caption': 'Billy Mays',
+        'checks': ['Billy Mays Front Missile', 'Billy Mays Back Missile']
     },
     {
         'open_idx': 155,

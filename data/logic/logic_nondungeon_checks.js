@@ -2394,7 +2394,7 @@
                 "anyOf": [
                     "flute",
                     "glove",
-                    "canBreach|Lower Norfair - Portal"
+                    "canBreach|Norfair - Business Center"
                 ]
             },
             "logical": {
@@ -5795,7 +5795,7 @@
         },
         "Inverted": {}
     },
-    "Billy Mays Front Missile": { // this is broken somehow?????????????? FIX
+    "Billy Mays Front Missile": {
         "Open": {
             "always": {
                 "allOf": [
@@ -5820,7 +5820,7 @@
                 "allOf": [
                     "canBreach|Brinstar - Blue",
                     "SMKeys|Brinstar1",
-                    "canUsePowerBombs"
+                    "canUsePowerBombs"               
                 ]
             },
             "logical": {
@@ -6057,7 +6057,7 @@
         },
         "Inverted": {}
     },
-    "Wrecked Ship Left Supers": {
+    "Wrecked Ship Left Super": {
         "Open": {
             "always": {
                 "allOf": [
@@ -6076,7 +6076,7 @@
         },
         "Inverted": {}
     },
-    "Wrecked Ship Right Supers": {
+    "Wrecked Ship Right Super": {
         "Open": {
             "always": {
                 "allOf": [
@@ -7256,7 +7256,7 @@
         },
         "Inverted": {}
     },
-    "Hi-Jump Boots Missile": {
+    "Hi-Jump Boots E-Tank": {
         "Open": {
             "always": {
                 "allOf": [
