@@ -216,7 +216,8 @@
 			case 'canFightAgahnim': return items.sword > 0 || items.hammer || items.net;
 			case 'canLightFires': return items.lantern || items.firerod;
 			case 'canDarkRoomNavigate': return items.lantern;
-			case 'canTorchRoomNavigate': return items.lantern || (items.firerod && !isDoorsBranch() && flags.entrancemode === 'N');
+			case 'canTorchRoomNavigate': return items.lantern; //|| (items.firerod && !isDoorsBranch() && flags.entrancemode === 'N');
+			// SMZ3 forked from v29 so it uses lamp only dark room logic
 			case 'canDefeatCurtains': return items.sword > 0 || flags.swordmode === 'S';
 			case 'canKillWizzrobes': return items.sword > 0 || items.hammer || items.bow > 1 || items.byrna || items.somaria || (items.icerod && (items.bomb || items.hookshot)) || items.firerod;
 			case 'canCrossMireGap': return items.boots || items.hookshot;

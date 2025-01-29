@@ -308,6 +308,7 @@
             "always": {
                 "anyOf": [
                     "flute",
+                    "canBreach|Norfair - Business Center",
                     {
                         "allOf": [
                             "glove",
@@ -319,7 +320,6 @@
                             }
                         ]
                     },
-                    "canBreach|Norfair - Business Center"
                 ]
             },
             "logical": {
@@ -2086,43 +2086,46 @@
                     {
                         "anyOf": [
                             {
-                                "allOf": [
+                                "anyOf": [
                                     {
-                                        "anyOf": [
-                                            "varia",
-                                            "canHellrun"
-                                        ]
-                                    },
-                                    "SMKeys|Norfair2|super",
-                                    {
-                                        "anyOf": [
-                                            "space",
-                                            "canIBJ",
-                                            "hijump",
-                                            "speed",
-                                            "canSpringBallJump",
-                                            "canNovaBoost",
+                                        "allOf": [
                                             {
-                                                "allOf": [
-                                                    "ice",
-                                                    "varia" // THIS WILL INCREASE TANK REQS ?
+                                                "anyOf": [
+                                                    "varia",
+                                                    "canHellrun"
                                                 ]
-                                            }
+                                            },
+                                            "SMKeys|Norfair2|super",
+                                            {
+                                                "anyOf": [
+                                                    "space",
+                                                    "canIBJ",
+                                                    "hijump",
+                                                    "speed",
+                                                    "canSpringBallJump",
+                                                    "canNovaBoost",
+                                                    {
+                                                        "allOf": [
+                                                            "ice",
+                                                            "varia" // THIS WILL INCREASE TANK REQS ?
+                                                        ]
+                                                    }
+                                                ]
+                                            },
                                         ]
-                                    },
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "speed",
+                                    "canShortHellrun",
+                                    "canPassBombPassages",
+                                    "SMKeys|Norfair2"
                                 ]
                             }
                         ]
-                    },
-                    {
-                        "allOf": [
-                            "speed",
-                            "canShortHellrun",
-                            "canPassBombPassages",
-                            "SMKeys|Norfair2"
-                        ]
                     }
-                    
                 ]
             },
             "logical": {
@@ -2160,7 +2163,12 @@
                                 "anyOf": [
                                     {
                                         "allOf": [ // croc speedway via ice gates
-                                            "canShortHellrun",
+                                            {
+                                                "anyOf": [
+                                                    "canShortHellrun",
+                                                    "varia"
+                                                ]
+                                            },
                                             "super",
                                             "canUsePowerBombs",
                                             "speed"
@@ -2168,7 +2176,12 @@
                                     },
                                     {
                                         "allOf": [ // frog speedway & croc gate
-                                            "canShortHellrun",
+                                            {
+                                                "anyOf": [
+                                                    "canShortHellrun",
+                                                    "varia"
+                                                ]
+                                            },
                                             "speed",
                                             {
                                                 "anyOf": [
@@ -2180,7 +2193,12 @@
                                     },
                                     {
                                         "allOf": [
-                                            "canHellrun",
+                                            {
+                                                "anyOf": [
+                                                    "canHellrun",
+                                                    "varia"
+                                                ]
+                                            },
                                             "SMKeys|Norfair2|super",
                                             "morph",
                                             {
