@@ -7388,7 +7388,7 @@
             },
             "logical": {
                 "allOf": [
-                    "canBreach|Norfair - Business Center",
+                    "canReach|Norfair - Business Center",
                     "super",
                     "speed",
                     "canUsePowerBombs",
@@ -8275,7 +8275,7 @@
                             // basically copy pasting the canBreach|Norfair - Crocomire code except without the norfair boss requirements lmao
                             { // the normal way
                                 "allOf": [
-                                    "canReach|Norfair - Business Center",
+                                    "canBreach|Norfair - Business Center",
                                     {
                                         "anyOf": [
                                             {
@@ -8300,7 +8300,12 @@
                                             },
                                             {
                                                 "allOf": [
-                                                    "canHellrun",
+                                                    {
+                                                        "anyOf": [
+                                                            "varia",
+                                                            "canHellrun"
+                                                        ]
+                                                    },
                                                     "SMKeys|Norfair2|super",
                                                     "morph",
                                                     {
@@ -8340,7 +8345,7 @@
                             },
                             { // hit LN portal from zelda, go up WRITG, go down mickey mouse, reverse lava dive, go up purple shaft and down croc gate to croc... without morph or speed :)
                                 "allOf": [
-                                    "canReach|Lower Norfair - Portal",
+                                    "canBreach|Lower Norfair - Portal",
                                     "varia",
                                     "gravity",
                                     "space",
