@@ -1,271 +1,477 @@
 <html>
-	<head>
-		<title>ALTTP Randomizer Community Tracker - Logic Settings</title>
-		<script type="text/javascript" src="js/index.js?v=20250129"></script>
-		<script type="text/javascript" src="js/jquery-3.3.1.js?v=20250129"></script>
-		<script type="text/javascript" src="js/jquery.powertip.js?v=20250129"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js?v=20250129"></script>
-		<script type="text/javascript" src="js/logicsettings.js?v=20250129" defer></script>
-		<link href="css/jquery.powertip.css?v=20250129" rel="stylesheet" />
-		<link href="css/launcher.css?v=20250129" rel="stylesheet">
-		<link href="css/fonts.css?v=20250129" rel="stylesheet">
-		<link href="css/sprites.css?v=20250129" rel="stylesheet">
-		<link href="css/toast.css?v=20250129" rel="stylesheet">
-		<link href="css/style.css?v=20250129" rel="stylesheet">
-		<link href="css/logicsettings.css?v=20250129" rel="stylesheet">
-		<style>
-			a { color: red; }
-		</style>
-		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-		<meta http-equiv="Pragma" content="no-cache" />
-		<meta http-equiv="Expires" content="0" />
-		<link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
-	</head>
-	<body style="overflow: auto;">
-		<div class="outer-wrapper">
-			<div>
-				<div class="header-main-div">
-					<a href="./index.html"><img src="./images/overlay/header.png" class="header-main-img"></a>
-					<div class="header-news-div" >
-						<span class="default-white-text">Build 2.1.003 060724 - Compatible for v31.x.x<br>Report any issues to Muffins (Discord: mfns.)<br>Check Known Issues for current known outstanding issues</span>
-					</div>
-				</div>
-				<div class="header-links">
-					<a href="./release.html">
-						<div class="header-link-img"><span class="header-text-span">Release Notes</span></div>
-					</a>
-					<a href="./instructions.html">
-						<div class="header-link-img"><span class="header-text-span">Instructions</span></div>
-					</a>
-					<a href="./issues.html">
-						<div class="header-link-img"><span class="header-text-span">Known Issues</span></div>
-					</a>
-					<a href="./contributors.html">
-						<div class="header-link-img" ><span class="header-text-span">Contributors</span></div>
-					</a>
-					<a href="./downloads.html">
-						<div class="header-link-img"><span class="header-text-span">Downloads</span></div>
-					</a>
-				</div>
-			</div>
-			<div class="main-wrapper">
-				<div class="preset-div">
-					<div class="preset-header-div">
-						<span class="preset-header-text">Logic Presets (Applied and saved when selected)</span>
-					</div>
-					<button onclick="setAlllogics('all')">All Glitches/Sequence Breaks</button>
-					<button onclick="setAlllogics('nostupid')">Nothing Stupid</button><span class="south tooltop-character" title="Removes things like long hovers and bunny fairy revivals"> [?]</span>
-					<button onclick="setAlllogics('basic')">Basic</button><span class="south tooltop-character" title="Removes all hovers and bunny fairy revivals"> [?]</span>
-					<button onclick="setAlllogics('none')">None</button>
-					<br>
-					<div class="preset-header-div">
-						<span class="preset-header-text">Logic Settings</span>
-					</div>
-                    <div class="logicrow">
-                        <div class="logiccol">
-                            <span class="preset-header-text" style="text-decoration: underline;">Dungeon Logic</span>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canIceBreak" checked>
-                                <label for="canIceBreak" class="logiclabel">Ice Breaker</label><span class="south tooltop-character" title="Use somaria to clip through the wall in IP Big Key Chest Room"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canHookClip" checked>
-                                <label for="canHookClip" class="logiclabel">Hook Clip</label><span class="south tooltop-character" title="TODO"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canBombJump" checked>
-                                <label for="canBombJump" class="logiclabel">Bomb Jumps</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canBombOrBonkCameraUnlock" checked>
-                                <label for="canBombOrBonkCameraUnlock" class="logiclabel">Bonk/Bomb Camera Unlock</label><span class="south tooltop-character" title="Use to get past double Pokeys without a weapon"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canHover" checked>
-                                <label for="canHover" class="logiclabel">Hover</label><span class="south tooltop-character" title="AAAAAAAAAA"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canHoverAlot" checked>
-                                <label for="canHoverAlot" class="logiclabel">Long Hovers</label><span class="south tooltop-character" title="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canSpeckyClip" checked>
-                                <label for="canSpeckyClip" class="logiclabel">Specky Clip</label><span class="south tooltop-character" title="Bypass flooding the first trench in Swamp Palace"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canFireSpooky" checked>
-                                <label for="canFireSpooky" class="logiclabel">Spooky Action</label><span class="south tooltop-character" title="Use the firerod for spooky action"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canBombSpooky" checked>
-                                <label for="canBombSpooky" class="logiclabel">Bomb Spooky</label><span class="south tooltop-character" title="Hit switches in other quadrants with bombs"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canHeraPot" checked>
-                                <label for="canHeraPot" class="logiclabel">Herapot</label><span class="south tooltop-character" title="Get to the top of Hera with the hookshot and no Big Key"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canMimicClip" checked>
-                                <label for="canMimicClip" class="logiclabel">Mimic Clip</label><span class="south tooltop-character" title="Clip Mimics into walls to bypass kill rooms without the bow"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canPotionCameraUnlock" checked>
-                                <label for="canPotionCameraUnlock" class="logiclabel">Potion Camera Unlock</label><span class="south tooltop-character" title="Bypass Mimic kill rooms in front of PoD"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canMoldormBounce" checked>
-                                <label for="canMoldormBounce" class="logiclabel">Moldorm Bounce</label><span class="south tooltop-character" title="Get to Aga 2 without the hookshot"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canDarkRoomNavigateBlind" checked>
-                                <label for="canDarkRoomNavigateBlind" class="logiclabel">Lightless Dark Room Navigation</label><span class="south tooltop-character" title="Navigate dark rooms with no light sources"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canTorchRoomNavigateBlind" checked>
-                                <label for="canTorchRoomNavigateBlind" class="logiclabel">Lightless Torch Room Navigation</label><span class="south tooltop-character" title="Navigate rooms with torches with no light sources"> [?]</span>
-                            </div>
-                            <!-- Unused? -->
-                            <!-- <div>
+  <head>
+    <title>ALTTP Randomizer Community Tracker - Logic Settings</title>
+    <script type="text/javascript" src="js/index.js?v=20250211"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250211"></script>
+    <script type="text/javascript" src="js/jquery.powertip.js?v=20250211"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js?v=20250211"></script>
+    <script type="text/javascript" src="js/logicsettings.js?v=20250211" defer></script>
+    <link href="css/jquery.powertip.css?v=20250211" rel="stylesheet" />
+    <link href="css/launcher.css?v=20250211" rel="stylesheet" />
+    <link href="css/fonts.css?v=20250211" rel="stylesheet" />
+    <link href="css/sprites.css?v=20250211" rel="stylesheet" />
+    <link href="css/toast.css?v=20250211" rel="stylesheet" />
+    <link href="css/style.css?v=20250211" rel="stylesheet" />
+    <link href="css/logicsettings.css?v=20250211" rel="stylesheet" />
+    <style>
+      a {
+        color: red;
+      }
+    </style>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png" />
+  </head>
+  <body style="overflow: auto">
+    <div class="outer-wrapper">
+      <div>
+        <div class="header-main-div">
+          <a href="./index.html"><img src="./images/overlay/header.png" class="header-main-img" /></a>
+          <div class="header-news-div">
+            <span class="default-white-text">Build 2.1.003 060724 - Compatible for v31.x.x<br />Report any issues to Muffins (Discord: mfns.)<br />Check Known Issues for current known outstanding issues</span>
+          </div>
+        </div>
+        <div class="header-links">
+          <a href="./release.html">
+            <div class="header-link-img"><span class="header-text-span">Release Notes</span></div>
+          </a>
+          <a href="./instructions.html">
+            <div class="header-link-img"><span class="header-text-span">Instructions</span></div>
+          </a>
+          <a href="./issues.html">
+            <div class="header-link-img"><span class="header-text-span">Known Issues</span></div>
+          </a>
+          <a href="./contributors.html">
+            <div class="header-link-img"><span class="header-text-span">Contributors</span></div>
+          </a>
+          <a href="./downloads.html">
+            <div class="header-link-img"><span class="header-text-span">Downloads</span></div>
+          </a>
+        </div>
+      </div>
+      <div class="main-wrapper">
+        <div class="preset-div">
+          <div class="preset-header-div">
+            <span class="preset-header-text">Logic Presets (Applied and saved when selected)</span>
+          </div>
+          <button onclick="setAlllogics('all')">All Glitches/Sequence Breaks</button>
+          <button onclick="setAlllogics('nostupid')">Nothing Stupid</button><span class="south tooltip-character" title="Removes things like long hovers and bunny fairy revivals"> [?]</span>
+          <button onclick="setAlllogics('basic')">Basic</button><span class="south tooltip-character" title="Removes all hovers and bunny fairy revivals"> [?]</span>
+          <button onclick="setAlllogics('none')">None</button>
+          <br />
+          <div class="preset-header-div">
+            <span class="preset-header-text">Logic Settings</span>
+          </div>
+          <div class="logicrow">
+            <div class="logiccol">
+              <span class="preset-header-text" style="text-decoration: underline">Dungeon Logic</span>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canIceBreak" checked />
+                <label for="canIceBreak" class="logiclabel">Ice Breaker</label><span class="south tooltip-character" title="Use somaria to clip through the wall in IP Big Key Chest Room"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHookClip" checked />
+                <label for="canHookClip" class="logiclabel">Hook Clip</label><span class="south tooltip-character" title="TODO"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBombJump" checked />
+                <label for="canBombJump" class="logiclabel">Bomb Jumps</label>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBombOrBonkCameraUnlock" checked />
+                <label for="canBombOrBonkCameraUnlock" class="logiclabel">Bonk/Bomb Camera Unlock</label><span class="south tooltip-character" title="Use to get past double Pokeys without a weapon"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHover" checked />
+                <label for="canHover" class="logiclabel">Hover</label><span class="south tooltip-character" title="AAAAAAAAAA"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHoverAlot" checked />
+                <label for="canHoverAlot" class="logiclabel">Long Hovers</label><span class="south tooltip-character" title="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSpeckyClip" checked />
+                <label for="canSpeckyClip" class="logiclabel">Specky Clip</label><span class="south tooltip-character" title="Bypass flooding the first trench in Swamp Palace"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canFireSpooky" checked />
+                <label for="canFireSpooky" class="logiclabel">Spooky Action</label><span class="south tooltip-character" title="Use the firerod for spooky action"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBombSpooky" checked />
+                <label for="canBombSpooky" class="logiclabel">Bomb Spooky</label><span class="south tooltip-character" title="Hit switches in other quadrants with bombs"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHeraPot" checked />
+                <label for="canHeraPot" class="logiclabel">Herapot</label><span class="south tooltip-character" title="Get to the top of Hera with the hookshot and no Big Key"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canMimicClip" checked />
+                <label for="canMimicClip" class="logiclabel">Mimic Clip</label><span class="south tooltip-character" title="Clip Mimics into walls to bypass kill rooms without the bow"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canPotionCameraUnlock" checked />
+                <label for="canPotionCameraUnlock" class="logiclabel">Potion Camera Unlock</label><span class="south tooltip-character" title="Bypass Mimic kill rooms in front of PoD"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canMoldormBounce" checked />
+                <label for="canMoldormBounce" class="logiclabel">Moldorm Bounce</label><span class="south tooltip-character" title="Get to Aga 2 without the hookshot"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canDarkRoomNavigateBlind" checked />
+                <label for="canDarkRoomNavigateBlind" class="logiclabel">Lightless Dark Room Navigation</label><span class="south tooltip-character" title="Navigate dark rooms with no light sources"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canTorchRoomNavigateBlind" checked />
+                <label for="canTorchRoomNavigateBlind" class="logiclabel">Lightless Torch Room Navigation</label><span class="south tooltip-character" title="Navigate rooms with torches with no light sources"> [?]</span>
+              </div>
+              <!-- Unused? -->
+              <!-- <div>
                                 <input type="checkbox" class="logiccheckbox" id="canRushRightSidePod" checked>
-                                <label for="canRushRightSidePod" class="logiclabel">canRushRightSidePod</label><span class="south tooltop-character" title="TODO"> [?]</span>
+                                <label for="canRushRightSidePod" class="logiclabel">canRushRightSidePod</label><span class="south tooltip-character" title="TODO"> [?]</span>
                             </div> -->
-                        </div>
-                        <div class="logiccol">
-                            <span class="preset-header-text" style="text-decoration: underline;">Overworld Logic</span>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canFairyReviveHover" checked>
-                                <label for="canFairyReviveHover" class="logiclabel">Fairy Revive Hover</label><span class="south tooltop-character" title="Hover to EDM with a fairy revival"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canFakeFlipper" checked>
-                                <label for="canFakeFlipper" class="logiclabel">Fake Flippers</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canOWFairyRevive" checked>
-                                <label for="canOWFairyRevive" class="logiclabel">OW Fairy Revival</label><span class="south tooltop-character" title="Become link by dying as a bunny over deep water and have a fairy revive you"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canQirnJump" checked>
-                                <label for="canQirnJump" class="logiclabel">Qirn Jump</label><span class="south tooltop-character" title="Get to East Dark World without the hammer, flippers or killing Aga 1"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canMirrorSuperBunny" checked>
-                                <label for="canMirrorSuperBunny" class="logiclabel">Mirror Super Bunny</label><span class="south tooltop-character" title="Get superbunny state by using the mirror on the same frame as entering a cave"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canDungeonBunnyRevive" checked>
-                                <label for="canDungeonBunnyRevive" class="logiclabel">Dungeon Bunny Revive</label><span class="south tooltop-character" title="Die in a dungeon as a bunny to become link"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canFakePowder" checked>
-                                <label for="canFakePowder" class="logiclabel">Fake Powder</label><span class="south tooltop-character" title="Use somaria with no magic and the mushroom to use powder"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canWaterWalk" checked>
-                                <label for="canWaterWalk" class="logiclabel">Water Walk</label><span class="south tooltop-character" title="I would walk on water, just to be with you."> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canZoraSplashDelete" checked>
-                                <label for="canZoraSplashDelete" class="logiclabel">Zora Splash Delete</label><span class="south tooltop-character" title="Get the Zora ledge item with a splash delete"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canBunnyPocket" checked>
-                                <label for="canBunnyPocket" class="logiclabel">Bunny Pocket</label><span class="south tooltop-character" title="Use items in the overworld as a bunny"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canFairyBarrierRevive" checked>
-                                <label for="canFairyBarrierRevive" class="logiclabel">Fairy Barrier Revive</label><span class="south tooltop-character" title="Bypass the Aga 1 barrier with a fairy revive. Don't hardlock!"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canShockBlock" checked>
-                                <label for="canShockBlock" class="logiclabel">Shock Block</label><span class="south tooltop-character" title="Use Somaria to bypass the Aga 1 barrier"> [?]</span>
-                            </div>
-                            <div>
-                                <input type="checkbox" class="logiccheckbox" id="canTombRaider" checked>
-                                <label for="canTombRaider" class="logiclabel">Tomb Raider</label><span class="south tooltop-character" title="Use hookshot to access King's Tomb from Graveyard Ledge"> [?]</span>
-                        </div>
-                    </div>
-
-                    <div class="logiccol">
-                        <span class="preset-header-text" style="text-decoration: underline;">Super Metroid</span>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canIBJ" checked disabled>
-                            <label for="canIBJ" class="logiclabel">Infinite Bomb Jump</label><span class="south tooltop-character" title="Always in-logic. Gain infinite height by repeatedly bomb jumping in midair"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canGravityJump" checked>
-                            <label for="canGravityJump" class="logiclabel">Gravity Jump</label><span class="south tooltop-character" title="Unequip the Gravity Suit immediately after jumping to traverse Lava Dive and Mt. Everest"> [?]</span>
-                        </div> 
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canGateGlitch" checked>
-                            <label for="canGateGlitch" class="logiclabel">Gate Glitch</label><span class="south tooltop-character" title="Shoot a precisely timed super missile to open the Gold Torizo green gate from the wrong side"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canSpringBallJump" checked>
-                            <label for="canSpringBallJump" class="logiclabel">Spring Ball Jump</label><span class="south tooltop-character" title="Equip spring ball while moving upwards in midair to gain additional height"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canMochtroidIceClip" checked>
-                            <label for="canMochtroidIceClip" class="logiclabel">Mochtroid Ice Clip</label><span class="south tooltop-character" title="Access Botwoon with Ice Beam using a frozen Mochtroid"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canHellRun" checked>
-                            <label for="canHellRun" class="logiclabel">Hell Run</label><span class="south tooltop-character" title="Be willing to perform heated runs without the Varia Suit"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canLavaDive" checked>
-                            <label for="canLavaDive" class="logiclabel">Lava Dive</label><span class="south tooltop-character" title="Traverse the lava pit before the Lower Norfair Elevator with just Varia Suit and Hi-Jump Boots"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canSuitlessMaridia" checked>
-                            <label for="canSuitlessMaridia" class="logiclabel">Suitless Maridia</label><span class="south tooltop-character" title="Be willing to traverse water rooms without the Gravity Suit"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canGrappleJump" checked>
-                            <label for="canGrappleJump" class="logiclabel">Grapple Jump</label><span class="south tooltop-character" title="Repeatedly morph and unmorph after performing a grapple swing with momentum to traverse Mt. Everest and Aqueduct suitless"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canSnailClimb" checked>
-                            <label for="canSnailClimb" class="logiclabel">Snail Climb</label><span class="south tooltop-character" title="Traverse Aqueduct with just Hi-Jump Boots and Morph Ball by riding a snail to the top of the room"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canDoubleSpringBallJump" checked>
-                            <label for="canDoubleSpringBallJump" class="logiclabel">Double Spring Ball Jump</label><span class="south tooltop-character" title="Traverse Mt. Everest by performing extremely tight sequential spring ball jumps"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canBombCrystalFlashClip" checked>
-                            <label for="canBombCrystalFlashClip" class="logiclabel">Bomb Crystal Flash Clip</label><span class="south tooltop-character" title="Traverse pre-Botwoon with just Gravity Suit, Morph Ball Bombs, and a Crystal Flash"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canSuitlessCrystalFlashClip" checked>
-                            <label for="canSuitlessCrystalFlashClip" class="logiclabel">Suitless Crystal Flash Clip</label><span class="south tooltop-character" title="Traverse pre-Botwoon with just a Crystal Flash"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canBootlessLavaDive" checked>
-                            <label for="canBootlessLavaDive" class="logiclabel">Bootless Lava Dive</label><span class="south tooltop-character" title="Traverse the Lava Dive room with just Varia Suit and two energy tanks"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canSuitlessLavaDive" checked>
-                            <label for="canSuitlessLavaDive" class="logiclabel">Suitless Lava Dive</label><span class="south tooltop-character" title="Traverse the Lava Dive room and access the Lower Norfair portal without Varia Suit, with eight tanks, a crystal flash, and Hi-Jump Boots"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canUnderwaterWallJump" checked>
-                            <label for="canUnderwaterWallJump" class="logiclabel">Underwater Wall Jump</label><span class="south tooltop-character" title="Climb Main Street with just Hi-Jump Boots and a gravity jump from the broken tube"> [?]</span>
-                        </div>
-                        <div>
-                            <input type="checkbox" class="logiccheckbox" id="canNovaBoost" checked>
-                            <label for="canNovaBoost" class="logiclabel">Nova Boost</label><span class="south tooltop-character" title="Traverse Pre-Cathedral with only Varia Suit and Morph Ball"> [?]</span>
-                        </div>
-                        
-                    </div>
-                </div>
+              <br />
+              <span class="preset-header-text" style="text-decoration: underline">Overworld Logic</span>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canFairyReviveHover" checked />
+                <label for="canFairyReviveHover" class="logiclabel">Fairy Revive Hover</label><span class="south tooltip-character" title="Hover to EDM with a fairy revival"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canFakeFlipper" checked />
+                <label for="canFakeFlipper" class="logiclabel">Fake Flippers</label>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canOWFairyRevive" checked />
+                <label for="canOWFairyRevive" class="logiclabel">OW Fairy Revival</label><span class="south tooltip-character" title="Become link by dying as a bunny over deep water and have a fairy revive you"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canQirnJump" checked />
+                <label for="canQirnJump" class="logiclabel">Qirn Jump</label><span class="south tooltip-character" title="Get to East Dark World without the hammer, flippers or killing Aga 1"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canMirrorSuperBunny" checked />
+                <label for="canMirrorSuperBunny" class="logiclabel">Mirror Super Bunny</label><span class="south tooltip-character" title="Get superbunny state by using the mirror on the same frame as entering a cave"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canDungeonBunnyRevive" checked />
+                <label for="canDungeonBunnyRevive" class="logiclabel">Dungeon Bunny Revive</label><span class="south tooltip-character" title="Die in a dungeon as a bunny to become link"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canFakePowder" checked />
+                <label for="canFakePowder" class="logiclabel">Fake Powder</label><span class="south tooltip-character" title="Use somaria with no magic and the mushroom to use powder"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canWaterWalk" checked />
+                <label for="canWaterWalk" class="logiclabel">Water Walk</label><span class="south tooltip-character" title="I would walk on water, just to be with you."> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canZoraSplashDelete" checked />
+                <label for="canZoraSplashDelete" class="logiclabel">Zora Splash Delete</label><span class="south tooltip-character" title="Get the Zora ledge item with a splash delete"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBunnyPocket" checked />
+                <label for="canBunnyPocket" class="logiclabel">Bunny Pocket</label><span class="south tooltip-character" title="Use items in the overworld as a bunny"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canFairyBarrierRevive" checked />
+                <label for="canFairyBarrierRevive" class="logiclabel">Fairy Barrier Revive</label><span class="south tooltip-character" title="Bypass the Aga 1 barrier with a fairy revive. Don't hardlock!"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canShockBlock" checked />
+                <label for="canShockBlock" class="logiclabel">Shock Block</label><span class="south tooltip-character" title="Use Somaria to bypass the Aga 1 barrier"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canTombRaider" checked />
+                <label for="canTombRaider" class="logiclabel">Tomb Raider</label><span class="south tooltip-character" title="Use hookshot to access King's Tomb from Graveyard Ledge"> [?]</span>
+              </div>
             </div>
 
-                <button onclick=handleSaveBack()>Save & Back</button>
+            <div class="logiccol">
+              <span class="preset-header-text" style="text-decoration: underline">Super Metroid</span>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canIBJ" checked disabled />
+                <label for="canIBJ" class="logiclabel">Infinite Bomb Jump</label><span class="south tooltip-character" title="Always in-logic. Gain infinite height by repeatedly bomb jumping in midair"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canGravityJump" checked />
+                <label for="canGravityJump" class="logiclabel">Gravity Jump</label><span class="south tooltip-character" title="Unequip the Gravity Suit immediately after jumping to traverse Lava Dive and Mt. Everest"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canGateGlitch" checked />
+                <label for="canGateGlitch" class="logiclabel">Gate Glitch</label><span class="south tooltip-character" title="Shoot a precisely timed super missile to open the Gold Torizo green gate from the wrong side"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSpringBallJump" checked />
+                <label for="canSpringBallJump" class="logiclabel">Spring Ball Jump</label><span class="south tooltip-character" title="Equip spring ball while moving upwards in midair to gain additional height"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCrystalFlash" checked />
+                <label for="canCrystalFlash" class="logiclabel">Crystal Flash</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canGauntletWalljumps" checked />
+                <label for="canGauntletWalljumps" class="logiclabel">Gauntlet Walljumps</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canAlcatrazEscape" checked />
+                <label for="canAlcatrazEscape" class="logiclabel">Alcatraz Escape</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canOldMBWithSpeed" checked />
+                <label for="canOldMBWithSpeed" class="logiclabel">Old MB with Speed</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canEarlySupersBridgeQuickdrop" checked />
+                <label for="canEarlySupersBridgeQuickdrop" class="logiclabel">Early Supers Bridge Quickdrop</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canTrivialMockball" checked />
+                <label for="canTrivialMockball" class="logiclabel">Trivial Mockball</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHoleInOne" checked />
+                <label for="canHoleInOne" class="logiclabel">Hole in One</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHiJumpWaveGateGlitch" checked />
+                <label for="canHiJumpWaveGateGlitch" class="logiclabel">Hi-Jump Wave Gate Glitch</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHiJumplessWaveGateGlitch" checked />
+                <label for="canHiJumplessWaveGateGlitch" class="logiclabel">Hi-Jumpless Wave Gate Glitch</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSporeSpawnSkip" checked />
+                <label for="canSporeSpawnSkip" class="logiclabel">Spore Spawn Skip</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCeilingDboost" checked />
+                <label for="canCeilingDboost" class="logiclabel">Ceiling Dboost</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canClimbRedTower" checked />
+                <label for="canClimbRedTower" class="logiclabel">Climb Red Tower</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSpongeBathBombJump" checked />
+                <label for="canSpongeBathBombJump" class="logiclabel">Sponge Bath Bomb Jump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBowlingSkip" checked />
+                <label for="canBowlingSkip" class="logiclabel">Bowling Skip</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canMoatCWJ" checked />
+                <label for="canMoatCWJ" class="logiclabel">Moat CWJ</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canMoatHBJ" checked />
+                <label for="canMoatHBJ" class="logiclabel">Moat HBJ</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canXrayDboost" checked />
+                <label for="canXrayDboost" class="logiclabel">Xray Dboost</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSuitlessMaridia" checked />
+                <label for="canSuitlessMaridia" class="logiclabel">Suitless Maridia</label><span class="south tooltip-character" title="Be willing to traverse water rooms without the Gravity Suit"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBootlessSuitless" checked />
+                <label for="canBootlessSuitless" class="logiclabel">Bootless Suitless</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canUnderwaterWallJump" checked />
+                <label for="canUnderwaterWallJump" class="logiclabel">Underwater Wall Jump</label><span class="south tooltip-character" title="Climb Main Street with just Hi-Jump Boots and a gravity jump from the broken tube"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHijumpIceMainStreetClimb" checked />
+                <label for="canHijumpIceMainStreetClimb" class="logiclabel">Hi-Jump Ice Main Street Climb</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCrabClimb" checked />
+                <label for="canCrabClimb" class="logiclabel">Crab Climb</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canTurtlePowerBombJump" checked />
+                <label for="canTurtlePowerBombJump" class="logiclabel">Turtle Power Bomb Jump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSnailClip" checked />
+                <label for="canSnailClip" class="logiclabel">Snail Clip</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBreakFree" checked />
+                <label for="canBreakFree" class="logiclabel">Break Free</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canMochtroidIceClip" checked />
+                <label for="canMochtroidIceClip" class="logiclabel">Mochtroid Ice Clip</label><span class="south tooltip-character" title="Access Botwoon with Ice Beam using a frozen Mochtroid"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canGrappleJump" checked />
+                <label for="canGrappleJump" class="logiclabel">Grapple Jump</label
+                ><span class="south tooltip-character" title="Repeatedly morph and unmorph after performing a grapple swing with momentum to traverse Mt. Everest and Aqueduct suitless"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSnailClimb" checked />
+                <label for="canSnailClimb" class="logiclabel">Snail Climb</label><span class="south tooltip-character" title="Traverse Aqueduct with just Hi-Jump Boots and Morph Ball by riding a snail to the top of the room"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canDoubleSpringBallJump" checked />
+                <label for="canDoubleSpringBallJump" class="logiclabel">Double Spring Ball Jump</label><span class="south tooltip-character" title="Traverse Mt. Everest by performing extremely tight sequential spring ball jumps"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBombCrystalFlashClip" checked />
+                <label for="canBombCrystalFlashClip" class="logiclabel">Bomb Crystal Flash Clip</label
+                ><span class="south tooltip-character" title="Traverse pre-Botwoon with just Gravity Suit, Morph Ball Bombs, and a Crystal Flash"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSuitlessCrystalFlashClip" checked />
+                <label for="canSuitlessCrystalFlashClip" class="logiclabel">Suitless Crystal Flash Clip</label><span class="south tooltip-character" title="Traverse pre-Botwoon with just a Crystal Flash"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCrossColosseumSuitlessWithIce" checked />
+                <label for="canCrossColosseumSuitlessWithIce" class="logiclabel">Cross Colosseum Suitless With Ice</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+            </div>
+            <div class="logiccol">
+            
+                <br />
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canGrappleEscapeDraygon" checked />
+                <label for="canGrappleEscapeDraygon" class="logiclabel">Grapple Escape Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHijumplessGrappleEscapeDraygon" checked />
+                <label for="canHijumplessGrappleEscapeDraygon" class="logiclabel">Hi-Jumpless Grapple Escape Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBlueSuitDraygon" checked />
+                <label for="canBlueSuitDraygon" class="logiclabel">Blue Suit Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCFSuitAndAmmoKillDraygon" checked />
+                <label for="canCFSuitAndAmmoKillDraygon" class="logiclabel">CF Suit and Ammo Kill Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canXrayClimb" checked />
+                <label for="canXrayClimb" class="logiclabel">Xray Climb</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canWestSandHallBombJump" checked />
+                <label for="canWestSandHallBombJump" class="logiclabel">West Sand Hall Bomb Jump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canPseudoScrewPlasmaPirates" checked />
+                <label for="canPseudoScrewPlasmaPirates" class="logiclabel">Pseudo Screw Plasma Pirates</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSparkPlasmaPirates" checked />
+                <label for="canSparkPlasmaPirates" class="logiclabel">Spark Plasma Pirates</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canPantsRoomGravJump" checked />
+                <label for="canPantsRoomGravJump" class="logiclabel">Pants Room Grav Jump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canPantsRoomIceClip" checked />
+                <label for="canPantsRoomIceClip" class="logiclabel">Pants Room Ice Clip</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canPantsRoomFlatley" checked />
+                <label for="canPantsRoomFlatley" class="logiclabel">Pants Room Flatley</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canRJump" checked />
+                <label for="canRJump" class="logiclabel">RJump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canShortHellrun" checked />
+                <label for="canShortHellrun" class="logiclabel">Short Hellrun</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHellRun" checked />
+                <label for="canHellRun" class="logiclabel">Hell Run</label><span class="south tooltip-character" title="Be willing to perform heated runs without the Varia Suit"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canLowerNorfairHellrun" checked />
+                <label for="canLowerNorfairHellrun" class="logiclabel">Lower Norfair Hellrun</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canIceEscape" checked />
+                <label for="canIceEscape" class="logiclabel">Ice Escape</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canIcelessIceEscape" checked />
+                <label for="canIcelessIceEscape" class="logiclabel">Iceless Ice Escape</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canReverseSparkCrocSpeedway" checked />
+                <label for="canReverseSparkCrocSpeedway" class="logiclabel">Reverse Spark Croc Speedway</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canNovaBoost" checked />
+                <label for="canNovaBoost" class="logiclabel">Nova Boost</label><span class="south tooltip-character" title="Traverse Pre-Cathedral with only Varia Suit and Morph Ball"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canNorfairReserveDBoost" checked />
+                <label for="canNorfairReserveDBoost" class="logiclabel">Norfair Reserve DBoost</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCrocFarmRoomDBoost" checked />
+                <label for="canCrocFarmRoomDBoost" class="logiclabel">Croc Farm Room DBoost</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canNeatoSpringBallJump" checked />
+                <label for="canNeatoSpringBallJump" class="logiclabel">Neato Spring Ball Jump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canLavaDive" checked />
+                <label for="canLavaDive" class="logiclabel">Lava Dive</label><span class="south tooltip-character" title="Traverse the lava pit before the Lower Norfair Elevator with just Varia Suit and Hi-Jump Boots"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canBootlessLavaDive" checked />
+                <label for="canBootlessLavaDive" class="logiclabel">Bootless Lava Dive</label><span class="south tooltip-character" title="Traverse the Lava Dive room with just Varia Suit and two energy tanks"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canSuitlessLavaDive" checked />
+                <label for="canSuitlessLavaDive" class="logiclabel">Suitless Lava Dive</label
+                ><span class="south tooltip-character" title="Traverse the Lava Dive room and access the Lower Norfair portal without Varia Suit, with eight tanks, a crystal flash, and Hi-Jump Boots"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHijumpSpeedScrewAttackRoomClimb" checked />
+                <label for="canHijumpSpeedScrewAttackRoomClimb" class="logiclabel">Hi-Jump Speed Screw Attack Room Climb</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canWRITGPirateFreeze" checked />
+                <label for="canWRITGPirateFreeze" class="logiclabel">WRITG Pirate Freeze</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canHypoJump" checked />
+                <label for="canHypoJump" class="logiclabel">Hypo Jump</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canReverseAcidDive" checked />
+                <label for="canReverseAcidDive" class="logiclabel">Reverse Acid Dive</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canShortCharge" checked />
+                <label for="canShortCharge" class="logiclabel">Short Charge</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canStupidShortCharge" checked />
+                <label for="canStupidShortCharge" class="logiclabel">Stupid Short Charge</label><span class="south tooltip-character" title=""> [?]</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-			</div>
-		</div>
-	</body>
+        <button onclick="handleSaveBack()">Save & Back</button>
+      </div>
+    </div>
+  </body>
 </html>

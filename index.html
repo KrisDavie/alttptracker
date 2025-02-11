@@ -2,16 +2,16 @@
 
 <head>
    <title>ALTTP Randomizer Community Tracker - Launcher</title>
-   <script type="text/javascript" src="js/index.js?v=20250129"></script>
-   <script type="text/javascript" src="js/autot.js?v=20250129"></script>
-   <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250129"></script>
-   <script type="text/javascript" src="js/jquery.powertip.js?v=20250129"></script>
-   <script type="text/javascript" src="js/bootstrap.min.js?v=20250129"></script>
-   <link href="css/jquery.powertip.css?v=20250129" rel="stylesheet" />
-   <link href="css/launcher.css?v=20250129" rel="stylesheet">
-   <link href="css/fonts.css?v=20250129" rel="stylesheet">
-   <link href="css/sprites.css?v=20250129" rel="stylesheet">
-   <link href="css/toast.css?v=20250129" rel="stylesheet">
+   <script type="text/javascript" src="js/index.js?v=20250211"></script>
+   <script type="text/javascript" src="js/autot.js?v=20250211"></script>
+   <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250211"></script>
+   <script type="text/javascript" src="js/jquery.powertip.js?v=20250211"></script>
+   <script type="text/javascript" src="js/bootstrap.min.js?v=20250211"></script>
+   <link href="css/jquery.powertip.css?v=20250211" rel="stylesheet" />
+   <link href="css/launcher.css?v=20250211" rel="stylesheet">
+   <link href="css/fonts.css?v=20250211" rel="stylesheet">
+   <link href="css/sprites.css?v=20250211" rel="stylesheet">
+   <link href="css/toast.css?v=20250211" rel="stylesheet">
    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
    <meta http-equiv="Pragma" content="no-cache" />
    <meta http-equiv="Expires" content="0" />
@@ -56,7 +56,7 @@
                <input type="button" value="OPEN" class="preset-btn" onclick="loadopenpreset()" />
             </span>
             <span class="preset-btn-span">
-               <span class="south tooltop-character" title="Not yet implemented.">
+               <span class="south tooltip-character" title="Not yet implemented.">
                   <input type="button" value="KEYSANITY" class="preset-btn" onclick="loadkeysanitypreset()"/>
                </span>
             </span>
@@ -68,7 +68,7 @@
             <div id="logicdiv" style="display: block;">
                <div>
                   <span class="preset-span-double">
-                     Glitch Logic: <span class="south tooltop-character" title="Customize the glitches shown as possible on the map">[?]</span>
+                     Glitch Logic: <span class="south tooltip-character" title="Customize the glitches shown as possible on the map">[?]</span>
                   </span>
                   <span class="preset-span-double">
                      <b>
@@ -767,7 +767,7 @@
                </div>
                <div>
                   <span class="preset-span-double">
-                     Colored Chests: <span class="south tooltop-character" title="Color the dungeon chests on the main tracker according to what is available.">[?]</span>
+                     Colored Chests: <span class="south tooltip-character" title="Color the dungeon chests on the main tracker according to what is available.">[?]</span>
                   </span>
                   <span class="preset-span">
                      <input id="chestcolorno" value="N" type="radio" name="chestcolorgroup" />
@@ -780,7 +780,7 @@
                </div>
                <div>
                   <span class="preset-span-double">
-                     Tracker Scale: <span class="south tooltop-character" title="Set the scale for the tracker to fit on smaller screens.">[?]</span>
+                     Tracker Scale: <span class="south tooltip-character" title="Set the scale for the tracker to fit on smaller screens.">[?]</span>
                   </span>
                   <span class="preset-span">
                      <input id="scale100" value="F" type="radio" name="scalegroup" checked />
@@ -801,7 +801,7 @@
                </div>
                <!-- <div>
                   <span class="preset-span-double">
-                     Spoiler Log: <span class="south tooltop-character" title="This will allow you to post a spoiler log after loading to populate items into the map<br>This feature is generally NOT allowed for tournaments! You must use spoiler logs generated from the ALTTPR Site, spoiler logs provided by bots will not be parsed properly (intentionally).">[?]</span>
+                     Spoiler Log: <span class="south tooltip-character" title="This will allow you to post a spoiler log after loading to populate items into the map<br>This feature is generally NOT allowed for tournaments! You must use spoiler logs generated from the ALTTPR Site, spoiler logs provided by bots will not be parsed properly (intentionally).">[?]</span>
                   </span>
                   <span class="preset-span">
                      <input id="spoilerno" value="N" type="radio" name="spoilergroup" checked />
@@ -814,7 +814,7 @@
                </div> -->
                <div>
                   <span class="preset-span-double">
-                     Sphere Tracking: <span class="south tooltop-character" title="This will add additional sphere tracking functionality">[?]</span>
+                     Sphere Tracking: <span class="south tooltip-character" title="This will add additional sphere tracking functionality">[?]</span>
                   </span>
                   <span class="preset-span">
                      <input id="sphereno" value="N" type="radio" name="spheregroup" checked disabled />
@@ -827,7 +827,7 @@
                </div>
                <div>
                   <span class="preset-span-double">
-                     Autotracking: <span class="south tooltop-character" title="This will enable the autotracking listener, default on port 23074. Choose 'Ladder' to disable autotracking of dungeon locations.">[?]</span>
+                     Autotracking: <span class="south tooltip-character" title="This will enable the autotracking listener, default on port 23074. Choose 'Ladder' to disable autotracking of dungeon locations.">[?]</span>
                   </span>
                   <span class="preset-span">
                      <input id="autotrackingno" value="N" type="radio" name="autotrackinggroup" checked />
@@ -844,7 +844,7 @@
                </div>
                <div>
                   <span class="preset-span-double">
-                     Styling: <span class="south tooltop-character" title="Customize your colors and/or map and icon settings. A color-blind friendly preset is available here">[?]</span>
+                     Styling: <span class="south tooltip-character" title="Customize your colors and/or map and icon settings. A color-blind friendly preset is available here">[?]</span>
                   </span>
                   <span class="preset-span-double">
                      <b>
@@ -854,7 +854,7 @@
                </div>
                <div>
                   <span class="preset-span" style="min-width: 100%">
-                     <center><input type="checkbox" id="remembersettings"><label for="remembersettings" style="min-width: 184px;">Remember Display Settings</label> <span class="south tooltop-character" title="This site uses a tracking cookie to remember your settings">[?]</span></center>
+                     <center><input type="checkbox" id="remembersettings"><label for="remembersettings" style="min-width: 184px;">Remember Display Settings</label> <span class="south tooltip-character" title="This site uses a tracking cookie to remember your settings">[?]</span></center>
                   </span>
                </div>
             </div>

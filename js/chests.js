@@ -358,7 +358,7 @@
 			
 			case "canIceEscape": return userLogicSettings[requirement] && (items.morph && items.ice);
 			case "canIcelessIceEscape": return userLogicSettings[requirement] (items.morph);
-			case "canReverseSparkCrocSpeedway": return userLogicSettings[requirement] (items.varia && items.speed);
+			case "canReverseSparkCrocSpeedway": return userLogicSettings[requirement] && (items.varia && items.speed);
 			case "canNovaBoost": return userLogicSettings[requirement] && (items.morph && items.varia);
 			case "canNorfairReserveDBoost": return userLogicSettings[requirement] && (true);
 			case "canCrocFarmRoomDBoost": return userLogicSettings[requirement] && (true);

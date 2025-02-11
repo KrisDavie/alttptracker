@@ -27,6 +27,9 @@ var NATIVE_SM_BOSSES_KEYS = 0xF5D828;
 var FOREIGN_SM_BOSSES_KEYS = 0xE03968;
 // 0xa17970
 
+var NATIVE_SM_MOTHERBRAIN = 0xE03403;
+var NATIVE_LTTP_GANON = 0xE03506
+
 var NATIVE_SM_AMMO = 0xF509C0; // 0xF509C2
 var FOREIGN_SM_AMMO = 0xE0391E;
 // 0xa17920
@@ -53,9 +56,6 @@ var KEYSANITY_LOC = 0x18016A; // Keysanity flags
 var SM_PRIZES_LOC = 0x326000
 
 var CONFIGURING = false;
-
-
-
 
 const prizemap = {
     'crystal': {
@@ -660,8 +660,28 @@ function autotrackReadMem() {
       0x16,
       data,
       "sm_ammo",
-      addPrizeData
+      addBossData
     );
+  }
+
+  function addBossData() {
+    if (currentGame === "sm") {
+      snesreadsave(
+        NATIVE_SM_MOTHERBRAIN,
+        0x01,
+        data,
+        "sm_motherbrain",
+        addPrizeData
+      );
+    } else {
+      snesreadsave(
+        NATIVE_LTTP_GANON,
+        0x01,
+        data,
+        "lttp_ganon",
+        addPrizeData
+      );
+    }
   }
 
   function addPrizeData() {
@@ -726,7 +746,7 @@ function autotrackDoTracking(data) {
     };
 
     function newbit(offset, mask, data_loc = 'lttp_rooms_inv') {
-        return (data[data_loc][offset] & mask) !== 0 && (autotrackPrevData === null || ((autotrackPrevData[data_loc][offset] & mask) !== (data[data_loc][offset] & mask)));
+        return (data[data_loc][offset] & mask) !== 0 && (autotrackPrevData === null || autotrackPrevData[data_loc] === undefined || ((autotrackPrevData[data_loc][offset] & mask) !== (data[data_loc][offset] & mask)));
     };
 
     function newbit_group(locations, data_loc = 'lttp_rooms_inv') {
@@ -1262,8 +1282,9 @@ function autotrackDoTracking(data) {
     }
 
     if (changed(0x38C)) {
-        setitem("mushroom", (data['lttp_rooms_inv'][0x38C] & 0x20) == 0x20 ? 1 : ((data['lttp_rooms_inv'][0x421] & 0x08) == 0x08 ? 2 : 0));
-        setitem("flute", (data['lttp_rooms_inv'][0x38C] & 0x03) == 0x01 ? 2 : ((data['lttp_rooms_inv'][0x38C] & 0x03) == 0x02 ? 1 : 0));
+        setitem("mushroom", (data['lttp_rooms_inv'][0x38C] & 0x28) == 0x28 ? 1 : ((data['lttp_rooms_inv'][0x38C] & 0x28) == 0x08 ? 2 : 0));
+        var fluteState = data['lttp_rooms_inv'][0x38C] & 0x03;
+        setitem("flute", (fluteState == 0x01 || fluteState == 0x03) ? 2 : (fluteState == 0x02 ? 1 : 0));
     }
     if (newbit(0x38C, 0x10))
         setitem("powder", true);
@@ -1528,6 +1549,14 @@ function autotrackDoTracking(data) {
         setitem("draygon", false);
         collect_prize(13)
         toggle_chest(219)
+    }
+
+    if (currentGame === "sm" && newbit(0x00, 0x01, 'sm_motherbrain')){
+        setitem("motherbrain", false);
+    }
+
+    if (currentGame === "alttp" && newbit(0x00, 0x01, 'lttp_ganon')){
+        setitem("ganon", true);
     }
 
 

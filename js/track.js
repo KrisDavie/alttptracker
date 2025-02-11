@@ -141,6 +141,8 @@
 				var itemdiv = document.getElementsByClassName(label)[0];
 				itemdiv.classList.add('active');
 			}
+			items[label] = value;
+			updateLocationAvailability();
 		}
 	}
 
