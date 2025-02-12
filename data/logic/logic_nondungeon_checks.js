@@ -4925,7 +4925,7 @@
                     {
                         "anyOf": [
                             "canIBJ",
-                            "powerbomb|10", // should be two packs
+                            "powerbomb|10", // two packs
                             "screw"
                         ]
                     }
@@ -4949,6 +4949,13 @@
                             "canGauntletWalljumps"
                         ]
                     },
+                    {
+                        "anyOf": [
+                            "canIBJ",
+                            "powerbomb|10", // two packs
+                            "screw"
+                        ]
+                    }
                 ]
             },
             "scout": {
@@ -4974,7 +4981,7 @@
                     {
                         "anyOf": [
                             "canIBJ",
-                            "powerbomb|10", // should be two packs
+                            "powerbomb|10", // two packs
                             "screw"
                         ]
                     }
@@ -4998,6 +5005,13 @@
                             "canGauntletWalljumps"
                         ]
                     },
+                    {
+                        "anyOf": [
+                            "canIBJ",
+                            "powerbomb|10", // two packs
+                            "screw"
+                        ]
+                    }
                 ]
             },
             "scout": {
@@ -5023,7 +5037,7 @@
                     {
                         "anyOf": [
                             "canIBJ",
-                            "powerbomb|10", // should be two packs
+                            "powerbomb|10", // two packs
                             "screw"
                         ]
                     }
