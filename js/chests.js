@@ -482,7 +482,7 @@
 		} else if (requirement.startsWith("canBreach|")) {
 			const region = requirement.split("|")[1];
 			const state = canReachRegion(region, chain);
-			res = state != 'unavailable' && state != 'possible';
+			res = (state != null)  && (state != 'unavailable' && state != 'possible');
 		} else if (requirement.startsWith('SMKeys')) {
 			const keyname = requirement.split('|')[1];
 			const nonKeyReq = requirement.split('|')[2];

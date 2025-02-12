@@ -314,6 +314,22 @@ function loadkeysanitypreset() {
 	// showToast();
 }
 
+function loadtournamentpreset() {
+	document.getElementById("goalganon").checked = true;
+	document.getElementById("goalcrystal").checked = true;
+	document.getElementById("towerselect").value = 7;
+	document.getElementById("ganoncrystal").checked = true;
+	document.getElementById("ganonselect").value = 7;
+	document.getElementById("swordsrandomized").checked = true;
+	document.getElementById("shuffledmaps").checked = false;
+	document.getElementById("shuffledcompasses").checked = false;
+	document.getElementById("shuffledsmallkeys").checked = false;
+	document.getElementById("shuffledbigkeys").checked = false;
+	window.scrollTo(0,document.body.scrollHeight);
+	toggle("boots",22);
+	// showToast();
+}
+
 
 
 async function importflags(auto = false) {
