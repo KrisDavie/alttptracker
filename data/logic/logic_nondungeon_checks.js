@@ -7367,7 +7367,7 @@
     },
     "Crumble Shaft Missile": {
         "Open": {
-            "always": { // TODO ADD MORPHLESS REVERSE CROC SPEEDWAY SPARK
+            "always": {
                 "allOf": [
                     "super",
                     {
@@ -7416,7 +7416,7 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canReach|Norfair - Business Center",
+                    "canBreach|Norfair - Business Center",
                     {
                         "anyOf": [
                             "varia",
@@ -7434,7 +7434,20 @@
                                             "canIBJ",
                                             "space",
                                             "hijump",
-                                            "speed"
+                                            "speed",
+                                            "canSpringBallJump",
+                                            "canNovaBoost",
+                                            {
+                                                "allOf": [
+                                                    "ice",
+                                                    {
+                                                        "anyOf": [
+                                                            "varia",
+                                                            "tanks|5" // canHellrun is already checked earlier
+                                                        ]
+                                                    }
+                                                ]
+                                            }
                                         ]
                                     }
                                 ]
@@ -7451,7 +7464,7 @@
             },
             "scout": {
                 "allOf": [
-                    "canReach|Norfair - Business Center",
+                    "canBreach|Norfair - Business Center",
                     {
                         "anyOf": [
                             "varia",
@@ -7468,7 +7481,20 @@
                                             "canIBJ",
                                             "space",
                                             "hijump",
-                                            "speed"
+                                            "speed",
+                                            "canSpringBallJump",
+                                            "canNovaBoost",
+                                            {
+                                                "allOf": [
+                                                    "ice",
+                                                    {
+                                                        "anyOf": [
+                                                            "varia",
+                                                            "tanks|5" // canHellrun is already checked earlier
+                                                        ]
+                                                    }
+                                                ]
+                                            }
                                         ]
                                     }
                                 ]
@@ -8097,6 +8123,7 @@
                             "space",
                             "hijump",
                             "grapple",
+                            "canSpringBallJump",
                             "canShortCharge",
                             "canCrocFarmRoomDBoost"
                         ]
