@@ -1641,7 +1641,12 @@
                         "allOf": [
                             "canBreach|Brinstar - Green Elevator",
                             "canOpenRedDoors",
-                            "canDestroyBombWalls"
+                            {
+                                "anyOf": [
+                                    "canDestroyBombWalls",
+                                    "speed"
+                                ]
+                            }
                         ]
                     },
                     {
@@ -2012,7 +2017,7 @@
                             {
                                 "anyOf": [ // can kill botwoon
                                     "charge",
-                                    "ammoDamage|5000" // make this dependent on user logic
+                                    "ammoDamage|5000" // TODO: make this dependent on user logic
                                 ]
                             }
                         ]
