@@ -193,7 +193,11 @@
               <span class="preset-header-text" style="text-decoration: underline">Super Metroid</span>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canIBJ" checked disabled />
-                <label for="canIBJ" class="logiclabel">Infinite Bomb Jump</label><span class="south tooltip-character" title="Always in-logic. Gain infinite height by repeatedly bomb jumping in midair"> [?]</span>
+                <label for="canIBJ" class="logiclabel">Infinite Bomb Jump</label><span class="south tooltip-character" title="Gain infinite height by repeatedly bomb jumping in midair"> [?]</span>
+              </div>
+              <div>
+                <input type="checkbox" class="logiccheckbox" id="canCrystalFlash" checked disabled/>
+                <label for="canCrystalFlash" class="logiclabel">Crystal Flash</label><span class="south tooltip-character" title="Spend 10 missiles, 10 super missiles, and 11 power bombs to refill energy."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canGravityJump" checked />
@@ -208,194 +212,189 @@
                 <label for="canSpringBallJump" class="logiclabel">Spring Ball Jump</label><span class="south tooltip-character" title="Equip spring ball while moving upwards in midair to gain additional height"> [?]</span>
               </div>
               <div>
-                <input type="checkbox" class="logiccheckbox" id="canCrystalFlash" checked />
-                <label for="canCrystalFlash" class="logiclabel">Crystal Flash</label><span class="south tooltip-character" title=""> [?]</span>
-              </div>
-              <div>
                 <input type="checkbox" class="logiccheckbox" id="canGauntletWalljumps" checked />
-                <label for="canGauntletWalljumps" class="logiclabel">Gauntlet Walljumps</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canGauntletWalljumps" class="logiclabel">Gauntlet Walljumps</label><span class="south tooltip-character" title="Access the front of Gauntlet with delayed walljumps in Landing Site."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canAlcatrazEscape" checked />
-                <label for="canAlcatrazEscape" class="logiclabel">Alcatraz Escape</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canAlcatrazEscape" class="logiclabel">Alcatraz Escape</label><span class="south tooltip-character" title="Escape Bomb Torizo's area with just morph."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canOldMBWithSpeed" checked />
-                <label for="canOldMBWithSpeed" class="logiclabel">Old MB with Speed</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canOldMBWithSpeed" class="logiclabel">Old MB with Speed</label><span class="south tooltip-character" title="Do a mildly stupid bluekeep to access Old Mother Brain with only speed."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canEarlySupersBridgeQuickdrop" checked />
-                <label for="canEarlySupersBridgeQuickdrop" class="logiclabel">Early Supers Bridge Quickdrop</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canEarlySupersBridgeQuickdrop" class="logiclabel">Early Supers Bridge Quickdrop</label><span class="south tooltip-character" title="Quickdrop through the crumbles above the Early Supers Bridge item and get out before they re-form."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canTrivialMockball" checked />
-                <label for="canTrivialMockball" class="logiclabel">Trivial Mockball</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canTrivialMockball" class="logiclabel">Trivial Mockball</label><span class="south tooltip-character" title="Do a mockball. Covers Early Supers and Ice Beam area."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHoleInOne" checked />
-                <label for="canHoleInOne" class="logiclabel">Hole in One</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHoleInOne" class="logiclabel">Hole in One</label><span class="south tooltip-character" title="Access the rear-most item in Brinstar Reserve with just morph and screw attack."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHiJumpWaveGateGlitch" checked />
-                <label for="canHiJumpWaveGateGlitch" class="logiclabel">Hi-Jump Wave Gate Glitch</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHiJumpWaveGateGlitch" class="logiclabel">Hi-Jump Wave Gate Glitch</label><span class="south tooltip-character" title="Access the Wave Gate item without Wave using the easier setup with hi-jump."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHiJumplessWaveGateGlitch" checked />
-                <label for="canHiJumplessWaveGateGlitch" class="logiclabel">Hi-Jumpless Wave Gate Glitch</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHiJumplessWaveGateGlitch" class="logiclabel">Hi-Jumpless Wave Gate Glitch</label><span class="south tooltip-character" title="Access the Wave Gate item without Wave using the trickier setup without hi-jump."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSporeSpawnSkip" checked />
-                <label for="canSporeSpawnSkip" class="logiclabel">Spore Spawn Skip</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canSporeSpawnSkip" class="logiclabel">Spore Spawn Skip</label><span class="south tooltip-character" title="Access Spore Spawn's item from behind with a precise super missile."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canCeilingDboost" checked />
-                <label for="canCeilingDboost" class="logiclabel">Ceiling Dboost</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canCeilingDboost" class="logiclabel">Retro Brin Ceiling D-Boost</label><span class="south tooltip-character" title="Use the enemies to damage boost to the Retro Brin Ceiling item with no other jump assist."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canClimbRedTower" checked />
-                <label for="canClimbRedTower" class="logiclabel">Climb Red Tower</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canClimbRedTower" class="logiclabel">Climb Red Tower</label><span class="south tooltip-character" title="Can get from the middle of Red Tower to the top of Red Tower with no items."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSpongeBathBombJump" checked />
-                <label for="canSpongeBathBombJump" class="logiclabel">Sponge Bath Bomb Jump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canSpongeBathBombJump" class="logiclabel">Sponge Bath Bomb Jump</label><span class="south tooltip-character" title="Use a bomb or power bomb to get out of the water in Sponge Bath and access the Wrecked Ship E-Tank."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canBowlingSkip" checked />
-                <label for="canBowlingSkip" class="logiclabel">Bowling Skip</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canBowlingSkip" class="logiclabel">Bowling Skip</label><span class="south tooltip-character" title="Grapple clip into the wall below the grey door to Gravity Suit, crystal flash inside the wall, then x-ray climb to the transition blocks to access the Bowling area from its exit."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canMoatCWJ" checked />
-                <label for="canMoatCWJ" class="logiclabel">Moat CWJ</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canMoatCWJ" class="logiclabel">Moat CWJ</label><span class="south tooltip-character" title="Do a tight continuous walljump to cross the Moat with nothing."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canMoatHBJ" checked />
-                <label for="canMoatHBJ" class="logiclabel">Moat HBJ</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canMoatHBJ" class="logiclabel">Moat HBJ</label><span class="south tooltip-character" title="Use morph bombs to cross the Moat with a horizontal bomb jump."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canXrayDboost" checked />
-                <label for="canXrayDboost" class="logiclabel">Xray Dboost</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canXrayDboost" class="logiclabel">X-Ray D-Boost</label><span class="south tooltip-character" title="Use precise damage boosts to access the X-Ray item with no jump assist."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSuitlessMaridia" checked />
-                <label for="canSuitlessMaridia" class="logiclabel">Suitless Maridia</label><span class="south tooltip-character" title="Be willing to traverse water rooms without the Gravity Suit"> [?]</span>
+                <label for="canSuitlessMaridia" class="logiclabel">Suitless Maridia</label><span class="south tooltip-character" title="General handler for willingness to go into Maridia without Gravity Suit."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canBootlessSuitless" checked />
-                <label for="canBootlessSuitless" class="logiclabel">Bootless Suitless</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canBootlessSuitless" class="logiclabel">Bootless Suitless</label><span class="south tooltip-character" title="General handler for willingness to go into Maridia without Gravity Suit or Hi-Jump Boots."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canUnderwaterWallJump" checked />
-                <label for="canUnderwaterWallJump" class="logiclabel">Underwater Wall Jump</label><span class="south tooltip-character" title="Climb Main Street with just Hi-Jump Boots and a gravity jump from the broken tube"> [?]</span>
+                <label for="canUnderwaterWallJump" class="logiclabel">Underwater Wall Jump</label><span class="south tooltip-character" title="Can ascend a single wall underwater with Hi-Jump using precise inputs."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHijumpIceMainStreetClimb" checked />
-                <label for="canHijumpIceMainStreetClimb" class="logiclabel">Hi-Jump Ice Main Street Climb</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHijumpIceMainStreetClimb" class="logiclabel">Hi-Jump/Ice Main Street Climb</label><span class="south tooltip-character" title="Can ascend Main Street without Gravity Suit with just Hi-Jump and Ice Beam."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canCrabClimb" checked />
-                <label for="canCrabClimb" class="logiclabel">Crab Climb</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canCrabClimb" class="logiclabel">Crab Climb</label><span class="south tooltip-character" title="Can access the top right door in Mt. Everest without Gravity Suit with just Hi-Jump and Ice Beam."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canTurtlePowerBombJump" checked />
-                <label for="canTurtlePowerBombJump" class="logiclabel">Turtle Power Bomb Jump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canTurtlePowerBombJump" class="logiclabel">Turtle Power Bomb Jump</label><span class="south tooltip-character" title="Acquire the E-Tank item at Mama Turtle with a tricky power bomb launch from the left wall."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSnailClip" checked />
-                <label for="canSnailClip" class="logiclabel">Snail Clip</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canSnailClip" class="logiclabel">Snail Clip</label><span class="south tooltip-character" title="With Gravity Suit but without Speed Booster, use a precisely positioned snail to access the Aqueduct items."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canBreakFree" checked />
-                <label for="canBreakFree" class="logiclabel">Break Free</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canBreakFree" class="logiclabel">Break Free</label><span class="south tooltip-character" title="Access the Left Sand pit items with quick wall jumps to break free of the water."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canMochtroidIceClip" checked />
-                <label for="canMochtroidIceClip" class="logiclabel">Mochtroid Ice Clip</label><span class="south tooltip-character" title="Access Botwoon with Ice Beam using a frozen Mochtroid"> [?]</span>
+                <label for="canMochtroidIceClip" class="logiclabel">Mochtroid Ice Clip</label><span class="south tooltip-character" title="Traverse Pre-Botwoon without speed booster using an ice clip."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canGrappleJump" checked />
                 <label for="canGrappleJump" class="logiclabel">Grapple Jump</label
-                ><span class="south tooltip-character" title="Repeatedly morph and unmorph after performing a grapple swing with momentum to traverse Mt. Everest and Aqueduct suitless"> [?]</span>
+                ><span class="south tooltip-character" title="Use Grapple to gain infinite height underwater. (Does not cover Draygon Escape.)"> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSnailClimb" checked />
-                <label for="canSnailClimb" class="logiclabel">Snail Climb</label><span class="south tooltip-character" title="Traverse Aqueduct with just Hi-Jump Boots and Morph Ball by riding a snail to the top of the room"> [?]</span>
+                <label for="canSnailClimb" class="logiclabel">Snail Climb</label><span class="south tooltip-character" title="Use a snail to ascend Aqueduct without Gravity Suit or Grapple Beam."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canDoubleSpringBallJump" checked />
-                <label for="canDoubleSpringBallJump" class="logiclabel">Double Spring Ball Jump</label><span class="south tooltip-character" title="Traverse Mt. Everest by performing extremely tight sequential spring ball jumps"> [?]</span>
+                <label for="canDoubleSpringBallJump" class="logiclabel">Double Spring Ball Jump</label><span class="south tooltip-character" title="Suitless underwater with Hi-Jump, do two spring ball jumps to gain increased height."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canBombCrystalFlashClip" checked />
                 <label for="canBombCrystalFlashClip" class="logiclabel">Bomb Crystal Flash Clip</label
-                ><span class="south tooltip-character" title="Traverse pre-Botwoon with just Gravity Suit, Morph Ball Bombs, and a Crystal Flash"> [?]</span>
+                ><span class="south tooltip-character" title="Place a bomb in a 2 frame window to crystal flash clip through the crumble blocks blocking Botwoon access."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSuitlessCrystalFlashClip" checked />
-                <label for="canSuitlessCrystalFlashClip" class="logiclabel">Suitless Crystal Flash Clip</label><span class="south tooltip-character" title="Traverse pre-Botwoon with just a Crystal Flash"> [?]</span>
+                <label for="canSuitlessCrystalFlashClip" class="logiclabel">Suitless Crystal Flash Clip</label><span class="south tooltip-character" title="Frame perfectly jump-morph into a crystal flash to clip through the same crumble blocks."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canCrossColosseumSuitlessWithIce" checked />
-                <label for="canCrossColosseumSuitlessWithIce" class="logiclabel">Cross Colosseum Suitless With Ice</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canCrossColosseumSuitlessWithIce" class="logiclabel">Colosseum with Ice Only</label><span class="south tooltip-character" title="Cross Colosseum with only Ice Beam using Mochtroids as platforms."> [?]</span>
               </div>
             </div>
             <div class="logiccol">
-            
                 <br />
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canGrappleEscapeDraygon" checked />
-                <label for="canGrappleEscapeDraygon" class="logiclabel">Grapple Escape Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canGrappleEscapeDraygon" class="logiclabel">Grapple Escape Draygon</label><span class="south tooltip-character" title="Use precise grapple jumps to escape Draygon, with Hi-Jump."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHijumplessGrappleEscapeDraygon" checked />
-                <label for="canHijumplessGrappleEscapeDraygon" class="logiclabel">Hi-Jumpless Grapple Escape Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHijumplessGrappleEscapeDraygon" class="logiclabel">Hi-Jumpless Grapple Escape Draygon</label><span class="south tooltip-character" title="Now do it without Hi-Jump!"> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canBlueSuitDraygon" checked />
-                <label for="canBlueSuitDraygon" class="logiclabel">Blue Suit Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canBlueSuitDraygon" class="logiclabel">Blue Suit Draygon</label><span class="south tooltip-character" title="Suitless, turn a flash suit from an interrupted Crystal Flash into a blue suit and immediately grapple kill Draygon."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canCFSuitAndAmmoKillDraygon" checked />
-                <label for="canCFSuitAndAmmoKillDraygon" class="logiclabel">CF Suit and Ammo Kill Draygon</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canCFSuitAndAmmoKillDraygon" class="logiclabel">Flash Suit and Ammo Kill Draygon</label><span class="south tooltip-character" title="Suitless, obtain a flash suit in the Draygon fight, then successfully kill her without blowing the spark."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canXrayClimb" checked />
-                <label for="canXrayClimb" class="logiclabel">Xray Climb</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canXrayClimb" class="logiclabel">X-Ray Climb</label><span class="south tooltip-character" title="Get doorstuck, then use X-Ray to climb up the wall. Tech covers Precious Room to escape Draygon, and Pants Room to access Shaktool."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canWestSandHallBombJump" checked />
-                <label for="canWestSandHallBombJump" class="logiclabel">West Sand Hall Bomb Jump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canWestSandHallBombJump" class="logiclabel">West Sand Hall Bomb Jump</label><span class="south tooltip-character" title="Use a precisely placed bomb to launch through West Sand hall without Gravity Suit."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canPseudoScrewPlasmaPirates" checked />
-                <label for="canPseudoScrewPlasmaPirates" class="logiclabel">Pseudo Screw Plasma Pirates</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canPseudoScrewPlasmaPirates" class="logiclabel">Pseudo Screw Plasma Pirates</label><span class="south tooltip-character" title="Use two pseudo screws each to kill the pink standing pirates in Plasma Room."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSparkPlasmaPirates" checked />
-                <label for="canSparkPlasmaPirates" class="logiclabel">Spark Plasma Pirates</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canSparkPlasmaPirates" class="logiclabel">Spark Plasma Pirates</label><span class="south tooltip-character" title="Use shinesparks to kill the pink standing pirates in Plasma Room."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canPantsRoomGravJump" checked />
-                <label for="canPantsRoomGravJump" class="logiclabel">Pants Room Grav Jump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canPantsRoomGravJump" class="logiclabel">Pants Room Grav Jump</label><span class="south tooltip-character" title="Use a gravity jump to get through the grapple block hole in Plasma Room."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canPantsRoomIceClip" checked />
-                <label for="canPantsRoomIceClip" class="logiclabel">Pants Room Ice Clip</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canPantsRoomIceClip" class="logiclabel">Pants Room Ice Clip</label><span class="south tooltip-character" title="With Gravity Suit, use a frozen Puyo to access Shaktool without Grapple."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canPantsRoomFlatley" checked />
-                <label for="canPantsRoomFlatley" class="logiclabel">Pants Room Flatley</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canPantsRoomFlatley" class="logiclabel">Pants Room Flatley</label><span class="south tooltip-character" title="Do a Flatley jump to get in the grapple block hole in Pants Room without Gravity Suit."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canRJump" checked />
-                <label for="canRJump" class="logiclabel">RJump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canRJump" class="logiclabel">R-Jump</label><span class="south tooltip-character" title="Acquire Spring Ball item without Gravity Suit or Spring Ball, using X-Ray."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canShortHellrun" checked />
-                <label for="canShortHellrun" class="logiclabel">Short Hellrun</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canShortHellrun" class="logiclabel">Short Hellrun</label><span class="south tooltip-character" title="Do short hellruns (Ice Beam, Crumble Tower, Croc with Speed)"> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHellrun" checked />
-                <label for="canHellrun" class="logiclabel">Hell Run</label><span class="south tooltip-character" title="Be willing to perform heated runs without the Varia Suit"> [?]</span>
+                <label for="canHellrun" class="logiclabel">Hell Run</label><span class="south tooltip-character" title="Do longer hellruns (Bubble Mountain)"> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canLowerNorfairHellrun" checked />
@@ -403,39 +402,39 @@
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canIceEscape" checked />
-                <label for="canIceEscape" class="logiclabel">Ice Escape</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canIceEscape" class="logiclabel">Ice Escape</label><span class="south tooltip-character" title="With Ice Beam, freeze the trippers to make a runway to escape the Ice Beam area without explosives."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canIcelessIceEscape" checked />
-                <label for="canIcelessIceEscape" class="logiclabel">Iceless Ice Escape</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canIcelessIceEscape" class="logiclabel">Iceless Ice Escape</label><span class="south tooltip-character" title="Now do it without Ice!"> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canReverseSparkCrocSpeedway" checked />
-                <label for="canReverseSparkCrocSpeedway" class="logiclabel">Reverse Spark Croc Speedway</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canReverseSparkCrocSpeedway" class="logiclabel">Reverse Spark Croc Speedway</label><span class="south tooltip-character" title="Charge a spark in Crocomire's room with Croc dead, then spark left in Croc Speedway to access Crumble Tower without Morph Ball."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canNovaBoost" checked />
-                <label for="canNovaBoost" class="logiclabel">Nova Boost</label><span class="south tooltip-character" title="Traverse Pre-Cathedral with only Varia Suit and Morph Ball"> [?]</span>
+                <label for="canNovaBoost" class="logiclabel">Nova Boost</label><span class="south tooltip-character" title="Using an extremely precise bounce off a nova, traverse Pre-Cathedral with just Varia and Morph."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canNorfairReserveDBoost" checked />
-                <label for="canNorfairReserveDBoost" class="logiclabel">Norfair Reserve DBoost</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canNorfairReserveDBoost" class="logiclabel">Norfair Reserve D-Boost</label><span class="south tooltip-character" title="Do a precise damage boost off a waver to access Norfair Reserve from the top right portion of Bubble Mountain."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canCrocFarmRoomDBoost" checked />
-                <label for="canCrocFarmRoomDBoost" class="logiclabel">Croc Farm Room DBoost</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canCrocFarmRoomDBoost" class="logiclabel">Post-Croc Farm Room D-Boost</label><span class="south tooltip-character" title="Do a precise damage boost to access Croc PBs without any movement items."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canNeatoSpringBallJump" checked />
-                <label for="canNeatoSpringBallJump" class="logiclabel">Neato Spring Ball Jump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canNeatoSpringBallJump" class="logiclabel">Indiana Jones Spring Ball Jump</label><span class="south tooltip-character" title="With Hi-Jump, do a precise spring ball jump to access Indiana Jones item."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canLavaDive" checked />
-                <label for="canLavaDive" class="logiclabel">Lava Dive</label><span class="south tooltip-character" title="Traverse the lava pit before the Lower Norfair Elevator with just Varia Suit and Hi-Jump Boots"> [?]</span>
+                <label for="canLavaDive" class="logiclabel">Lava Dive</label><span class="south tooltip-character" title="Traverse the Gravitron with Varia Suit and Hi-Jump Boots."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canBootlessLavaDive" checked />
-                <label for="canBootlessLavaDive" class="logiclabel">Bootless Lava Dive</label><span class="south tooltip-character" title="Traverse the Lava Dive room with just Varia Suit and two energy tanks"> [?]</span>
+                <label for="canBootlessLavaDive" class="logiclabel">Bootless Lava Dive</label><span class="south tooltip-character" title="Traverse the Gravitron with Varia Suit, without Hi-Jump Boots."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canSuitlessLavaDive" checked />
@@ -444,27 +443,27 @@
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHijumpSpeedScrewAttackRoomClimb" checked />
-                <label for="canHijumpSpeedScrewAttackRoomClimb" class="logiclabel">Hi-Jump Speed Screw Attack Room Climb</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHijumpSpeedScrewAttackRoomClimb" class="logiclabel">HJB/Speed Screw Attack Room Climb</label><span class="south tooltip-character" title="Climb Screw Attack room from the GT Refill door using a speedy jump with Hi-Jump and Speed."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canWRITGPirateFreeze" checked />
-                <label for="canWRITGPirateFreeze" class="logiclabel">WRITG Pirate Freeze</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canWRITGPirateFreeze" class="logiclabel">WRITG Pirate Freeze</label><span class="south tooltip-character" title="Freeze a pirate and use it as a platform to ascend Worst Room."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canHypoJump" checked />
-                <label for="canHypoJump" class="logiclabel">Hypo Jump</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canHypoJump" class="logiclabel">Hypo Jump</label><span class="south tooltip-character" title="Do an extremely precise wall jump to ascend Worst Room, the left side of Bubble Mountain, and escape Plasma Room, without any movement items."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canReverseAcidDive" checked />
-                <label for="canReverseAcidDive" class="logiclabel">Reverse Acid Dive</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canReverseAcidDive" class="logiclabel">Reverse Acid Dive</label><span class="south tooltip-character" title="Go backwards through the acid in Amphitheatre."> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canShortCharge" checked />
-                <label for="canShortCharge" class="logiclabel">Short Charge</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canShortCharge" class="logiclabel">Short Charge</label><span class="south tooltip-character" title="Do a basic short charge (covers Draygon, Plasma Pirates, and accessing Croc Power Bombs with a spark.)"> [?]</span>
               </div>
               <div>
                 <input type="checkbox" class="logiccheckbox" id="canStupidShortCharge" checked />
-                <label for="canStupidShortCharge" class="logiclabel">Stupid Short Charge</label><span class="south tooltip-character" title=""> [?]</span>
+                <label for="canStupidShortCharge" class="logiclabel">Stupid Short Charge</label><span class="south tooltip-character" title="Do a tight short charge (covers Indiana Jones morphless, Croc Escape, bottom of red tower, and Nutella -> Kronic Boost.)"> [?]</span>
               </div>
             </div>
           </div>
