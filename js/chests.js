@@ -482,7 +482,7 @@
 		} else if (requirement.startsWith("canBreach|")) {
 			const region = requirement.split("|")[1];
 			const state = canReachRegion(region, chain);
-			res = state != 'unavailable' && state != 'possible';
+			res = (state != null)  && (state != 'unavailable' && state != 'possible');
 		} else if (requirement.startsWith('SMKeys')) {
 			const keyname = requirement.split('|')[1];
 			const nonKeyReq = requirement.split('|')[2];
@@ -499,9 +499,9 @@
 			if (_item === "tanks") {
 				res = items.etank + items.rtank >= _count;
 			} else if (_item === "ammoDamage") {
-				res = (items.missile * 100 + items.super * 300) >= _count;
+				res = ((items.missile * 100 * 5) + (items.super * 300 * 5)) >= _count;
 			} else if (_item === "ammoDamageSupersDoubled") { // because ridley needs supers counted as 600, not 300
-				res = (items.missile * 100 + items.super * 600) >= _count;
+				res = ((items.missile * 100 * 5) + (items.super * 600 * 5)) >= _count;
 			} else {
 				res = items[_item] >= _count / 5;
 			}
