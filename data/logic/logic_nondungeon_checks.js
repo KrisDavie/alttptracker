@@ -7788,7 +7788,6 @@
                 "allOf": [
                     "canBreach|Norfair - Bubble Mountain",
                     "super",
-                    "morph",
                     {
                         "anyOf": [
                             "varia",
@@ -7818,7 +7817,6 @@
                     "canReach|Norfair - Bubble Mountain",
                     "super",
                     "varia",
-                    "morph",
                     {
                         "anyOf": [ // can climb bm
                             "space",
@@ -7844,7 +7842,6 @@
                 "allOf": [
                     "canBreach|Norfair - Bubble Mountain",
                     "super",
-                    "morph",
                     {
                         "anyOf": [
                             "varia",
@@ -7874,7 +7871,6 @@
                     "canReach|Norfair - Bubble Mountain",
                     "super",
                     "varia",
-                    "morph",
                     {
                         "anyOf": [ // can climb bm
                             "space",
@@ -7956,7 +7952,6 @@
                     "canReach|Norfair - Bubble Mountain",
                     "super",
                     "varia",
-                    "morph",
                     {
                         "anyOf": [ // can climb bm
                             "space",
