@@ -724,6 +724,7 @@ function autotrackReadMem() {
   }
 }
 
+let mushroom_collected = false;
 
 function autotrackDoTracking(data) {
     function changed(offset, data_loc = "lttp_rooms_inv") {
@@ -1271,9 +1272,15 @@ function autotrackDoTracking(data) {
     if (changed(0x3C5) && data['lttp_rooms_inv'][0x3C5] >= 3) // Agahnim Killed
         setitem("agahnim", true);
 
-    if (newbit(0x38E, 0xC0)) {
-        var bits = data['lttp_rooms_inv'][0x38E] & 0xC0;
-        setitem("bow", bits == 0x40 && flags.nonprogressivebows ? 1 : (bits == 0x80 ? 2 : 3));
+    if (changed(0x340) || changed(0x38E)) {
+        var bow = data['lttp_rooms_inv'][0x340] > 0;
+        var silvers = data['lttp_rooms_inv'][0x38E] & 0x40;
+        if (bow && silvers)
+            setitem("bow", 3);
+        else if (bow)
+            setitem("bow", 2);
+        else if (silvers)
+            setitem("bow", 1);
     }
 
     if (newbit(0x38C, 0xC0)) {
@@ -1282,7 +1289,10 @@ function autotrackDoTracking(data) {
     }
 
     if (changed(0x38C)) {
-        setitem("mushroom", (data['lttp_rooms_inv'][0x38C] & 0x28) == 0x28 ? 1 : ((data['lttp_rooms_inv'][0x38C] & 0x28) == 0x08 ? 2 : 0));
+        if (((data['lttp_rooms_inv'][0x38C] & 0x20) == 0x20) && !mushroom_collected) {
+            mushroom_collected = true;
+        }
+        setitem("mushroom", mushroom_collected && (data['lttp_rooms_inv'][0x38C] & 0x20) == 0x0 ? 2 : mushroom_collected ? 1 : 0);
         var fluteState = data['lttp_rooms_inv'][0x38C] & 0x03;
         setitem("flute", (fluteState == 0x01 || fluteState == 0x03) ? 2 : (fluteState == 0x02 ? 1 : 0));
     }
