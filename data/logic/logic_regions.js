@@ -1685,7 +1685,12 @@
                         "allOf": [
                             "canReach|Brinstar - Green Elevator",
                             "canOpenRedDoors",
-                            "canDestroyBombWalls"
+                            {
+                                "anyOf": [
+                                    "canDestroyBombWalls",
+                                    "speed"
+                                ]
+                            }
                         ]
                     },
                     {
