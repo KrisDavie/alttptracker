@@ -5776,6 +5776,7 @@
             "scout": {
                 "allOf": [
                     "canBreach|Brinstar - Blue",
+                    "SMKeys|Brinstar1"
                 ]
             },
             "logical": {
@@ -6596,7 +6597,17 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canBreach|Maridia - Pre-Aqueduct",
+                    {
+                        "anyOf": [
+                            "canBreach|Maridia - Pre-Aqueduct",
+                            {
+                                "allOf": [
+                                    "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2"
+                                ]
+                            }
+                        ]
+                    },
                     "gravity",
                     {
                         "anyOf": [
@@ -6608,19 +6619,59 @@
             },
             "scout": {
                 "allOf": [
-                    "canBreach|Maridia - Pre-Aqueduct",
                     {
                         "anyOf": [
-                            "gravity",
-                            "canGrappleJump",
-                            "canSnailClimb"
+                            {
+                                "allOf": [
+                                    "canBreach|Maridia - Pre-Aqueduct",
+                                    {
+                                        "anyOf": [
+                                            "gravity",
+                                            "canGrappleJump",
+                                            "canSnailClimb"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2",
+                                    {
+                                        "anyOf": [ // can traverse post-botwoon right to
+                                            "gravity",
+                                            "hijump",
+                                            "ice",
+                                            "canSpringBallJump"
+                                        ]
+                                    },
+                                    {
+                                        "anyOf": [
+                                            "gravity",
+                                            "canGrappleJump",
+                                            "canSnailClimb"
+                                        ]
+                                    }
+                                ]
+                            }
                         ]
-                    }
+                    },
+                    
                 ]
             },
             "logical": {
                 "allOf": [
-                    "canReach|Maridia - Pre-Aqueduct",
+                    {
+                        "anyOf": [
+                            "canReach|Maridia - Pre-Aqueduct",
+                            {
+                                "allOf": [
+                                    "canReach|Maridia - Portal",
+                                    "SMKeys|Maridia2"
+                                ]
+                            }
+                        ]
+                    },
                     "gravity",
                     "speed"
                 ]
@@ -6632,7 +6683,17 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "canBreach|Maridia - Pre-Aqueduct",
+                    {
+                        "anyOf": [
+                            "canBreach|Maridia - Pre-Aqueduct",
+                            {
+                                "allOf": [
+                                    "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2"
+                                ]
+                            }
+                        ]
+                    },
                     "gravity",
                     {
                         "anyOf": [
@@ -6644,7 +6705,17 @@
             },
             "logical": {
                 "allOf": [
-                    "canReach|Maridia - Pre-Aqueduct",
+                    {
+                        "anyOf": [
+                            "canReach|Maridia - Pre-Aqueduct",
+                            {
+                                "allOf": [
+                                    "canReach|Maridia - Portal",
+                                    "SMKeys|Maridia2"
+                                ]
+                            }
+                        ]
+                    },
                     "gravity",
                     "speed"
                 ]
@@ -6668,6 +6739,7 @@
                             {
                                 "allOf": [
                                     "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2",
                                     "super",
                                     "morph",
                                     {
@@ -6753,6 +6825,7 @@
                             {
                                 "allOf": [
                                     "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2",
                                     "super",
                                     "morph",
                                     {
@@ -6838,6 +6911,7 @@
                             {
                                 "allOf": [
                                     "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2",
                                     "super",
                                     "morph",
                                     {
@@ -6909,6 +6983,7 @@
                             {
                                 "allOf": [
                                     "canBreach|Maridia - Portal",
+                                    "SMKeys|Maridia2",
                                     "super",
                                     "morph",
                                     {
@@ -7336,7 +7411,7 @@
             "always": {
                 "allOf": [
                     "canBreach|Norfair - Business Center",
-                    "super",
+                    "SMKeys|Norfair1|super",
                     "morph",
                     {
                         "anyOf": [
@@ -7362,7 +7437,7 @@
             },
             "logical": {
                 "allOf": [
-                    "super",
+                    "SMKeys|Norfair1|super",
                     "speed",
                     "canPassBombPassages",
                     "varia"
@@ -7375,7 +7450,7 @@
         "Open": {
             "always": {
                 "allOf": [
-                    "super",
+                    "SMKeys|Norfair1|super",
                     {
                         "anyOf": [
                             { // the normal way
@@ -7409,7 +7484,7 @@
             "logical": {
                 "allOf": [
                     "canReach|Norfair - Business Center",
-                    "super",
+                    "SMKeys|Norfair1|super",
                     "speed",
                     "canUsePowerBombs",
                     "varia"
@@ -8415,8 +8490,67 @@
                 ]
             },
             "logical": {
-                "allOf": [
-                    "canReach|Norfair - Crocomire",
+                "allOf": [ // i love copypasting code just to take out one line tammik1Pog
+                    {
+                        "anyOf": [
+                            { // the normal way
+                                "allOf": [
+                                    "canReach|Norfair - Business Center",
+                                    "varia",
+                                    {
+                                        "anyOf": [
+                                            {
+                                                "allOf": [ // croc speedway via ice gates
+                                                    "super",
+                                                    "canUsePowerBombs",
+                                                    "speed"
+                                                ]
+                                            },
+                                            {
+                                                "allOf": [ // frog speedway & croc gate
+                                                    "speed",
+                                                    "wave"
+                                                ]
+                                            },
+                                            {
+                                                "allOf": [
+                                                    "super",
+                                                    "morph",
+                                                    "wave",
+                                                    {
+                                                        "anyOf": [ // precathedral
+                                                            "space",
+                                                            "canIBJ",
+                                                            "hijump",
+                                                            "speed",
+                                                        ]
+                                                    },
+                                                    {
+                                                        "anyOf": [
+                                                            "morphbombs",
+                                                            "powerbomb",
+                                                            "gravity" // remembered highway????!?!!!?!?
+                                                        ]
+                                                    },
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            { // hit LN portal from zelda, go up WRITG, go down mickey mouse, reverse lava dive, go up purple shaft and down croc gate to croc... without morph or speed :)
+                                "allOf": [
+                                    "canReach|Lower Norfair - Portal",
+                                    "varia",
+                                    "gravity",
+                                    "space",
+                                    "screw",
+                                    "super",
+                                    "wave",
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "anyOf": [
                             "grapple",
