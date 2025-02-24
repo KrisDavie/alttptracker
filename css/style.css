@@ -485,7 +485,8 @@ div[class*=" bottle"].active-7 { background-image: url(../images/items/bottle_go
 .varia { background-image: url(../images/items/varia.png); }
 .wave { background-image: url(../images/items/wave.png); }
 .xray { background-image: url(../images/items/xray.png); }
-.motherbrain { background-image: url(../images/items/motherbrain.png); }
+.motherbrain { background-image: url(../images/items/motherbrain2.png); opacity: 1 !important;}
+.motherbrain.active { background-image: url(../images/items/motherbrain.png); }
 .ganon { background-image: url(../images/items/ganon.png); }
 
 .kraid { background-image: url(../images/dungeons/kraid.png); filter: grayscale(1);}
