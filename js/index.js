@@ -1964,7 +1964,7 @@ function loadtruepothuntpreset() {
 		"bonkshuffleno": true,
 	});
 	setstartingitem("boots",22,"1");
-	setstartingitem("lantern",8,"1");
+	setstartingitem("lantern",11,"1");
 }
 
 function loadpotsandbonespreset() {
@@ -1996,8 +1996,8 @@ function loadpotsandbonespreset() {
 		"bonkshuffleno": true,
 	});
 	setstartingitem("boots",22,"1");
-	setstartingitem("lantern",8,"1");
-	setstartingitem("boomerang",9,"2");
+	setstartingitem("lantern",11,"1");
+	setstartingitem("boomerang",2,"2");
 }
 
 function loadsupercrosskeyspreset() {
