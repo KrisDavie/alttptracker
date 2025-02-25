@@ -58,7 +58,7 @@
         var count = dungeonInfo.default;
         var keys = dungeonInfo.keys;
         if (flags.doorshuffle === 'C') {
-            count = 32;
+            count = 100;
             keys = 29;
         } else {
             if (flags.doorshuffle === 'P') {
@@ -176,6 +176,9 @@
         items['chestknown' + i] = false;
         items['bigkey' + i] = !(flags.wildbigkeys || flags.showbigkeys);
         items['smallkey' + i] = ((flags.wildkeys || flags.showsmallkeys) ? 0 : keyCounts[i]);
+        items['chestmanual' + i] = 0
+        items['keymanual' + i] = 0
+        items['maxkey' + i] = 99
     };
 
     if (flags.doorshuffle !== 'C') {

@@ -23,6 +23,12 @@ var DRFLAGS_LOC = 0x138004; // Actually DRFlags
 var PRIZES_LOC = 0x1209B; // Pendant/Crystal number data
 var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
 var KEYSANITY_LOC = 0x18016A; // Keysanity flags
+var COMPASSCOUNTSEEN_LOC = SAVEDATA_START + 0x403; //Compass count seen flags, for autotracking chest counts in doors
+var MAPCOUNTSEEN_LOC = SAVEDATA_START + 0x474; //Map count seen flags, for autotracking key counts in doors
+var COMPASSCOUNT_LOC = 0xF65410; //Max item counts for each dungeon
+var MAPCOUNT_LOC = 0xF65430; //Max key counts for each dungeon
+var CHECKS_LOC = SAVEDATA_START + 0x4B0; //Current checks in each dungeon
+var KEYS_LOC = SAVEDATA_START + 0x4E0; //Current keys in each dungeon
 
 var CONFIGURING = false;
 
@@ -588,10 +594,34 @@ function autotrackReadMem() {
     function addPseudobootsFlag() {
         // Check if we're playing DR and that the mystery flag is not set
         if (["DR", "OR"].includes(data['fork']) && (data['mystery'][1] & 0x1) === 0) {
-            snesreadsave(PSEUDOBOOTS_LOC, 0x1, data, 'pseudoboots', handleAutoTrackData);
+            snesreadsave(PSEUDOBOOTS_LOC, 0x1, data, 'pseudoboots', addCompassCountSeenData);
         } else {
-            handleAutoTrackData();
+            addCompassCountSeenData();
         }
+    }
+
+    function addCompassCountSeenData() {
+        snesreadsave(COMPASSCOUNTSEEN_LOC, 0x2, data, 'compasscountseen', addMapCountSeenData);
+    }
+
+    function addMapCountSeenData() {
+        snesreadsave(MAPCOUNTSEEN_LOC, 0x2, data, 'mapcountseen', addCompassCount);
+    }
+
+    function addCompassCount() {
+        snesreadsave(COMPASSCOUNT_LOC, 0x20, data, 'compasscount', addMapCount);
+    }
+
+    function addMapCount() {
+        snesreadsave(MAPCOUNT_LOC, 0x10, data, 'mapcount', addDungeonChecks);
+    }
+
+    function addDungeonChecks() {
+        snesreadsave(CHECKS_LOC, 0x20, data, "dungeonchecks", addDungeonKeys);
+    }
+
+    function addDungeonKeys() {
+        snesreadsave(KEYS_LOC, 0x10, data, "dungeonkeys", handleAutoTrackData);
     }
 
     function handleAutoTrackData() {
@@ -678,6 +708,61 @@ function autotrackDoTracking(data) {
                 }
             }
         });
+    }
+
+    // Autotrack dungeon key and chest counts if count has been seen by entering the dungeon (for keys, when map in inventory, for checks basically always since that setting is generally on)
+    if (flags.doorshuffle === 'C' && flags.autotracking === 'Y' && data["fork"] !== "VT") {
+        // var dungeon_item_count_seen = (_location_data[0x403] << 8) + _location_data[0x404]
+        //var dungeon_key_count_seen = (_location_data[0x474] << 8) + _location_data[0x475]
+        //var big_key_field = (_location_data[0x366] << 8) + _location_data[0x367]
+        //for dun in dungeon_masks:
+        //    var mask_data = dungeon_masks[dun]
+        //    notes_window.find_node(dun).set_current_checks(_location_data[0x4B0 + mask_data[1]] + ((_location_data[0x4B0 + mask_data[1] - 1]) << 8))
+        //    notes_window.find_node(dun).set_current_keys(_location_data[0x4E0 + (mask_data[1]/2)])
+        //    if dungeon_item_count_seen & mask_data[0]:
+        //        notes_window.find_node(dun).set_total_checks(_location_data[0x500 + mask_data[1]] + ((_location_data[0x500 + mask_data[1] - 1]) << 8))
+        //    if dungeon_key_count_seen & mask_data[0]:
+        //        notes_window.find_node(dun).set_total_keys(_location_data[0x520 + (mask_data[1]/2)])
+
+
+
+        var dungeon_masks = {
+            11: [0x00C0, 2],
+            0: [0x0020, 4],
+            1: [0x0010, 6],
+            2: [0x2000, 20],
+            12: [0x0008, 8],
+            3: [0x0002, 12],
+            4: [0x0004, 10],
+            5: [0x8000, 16],
+            6: [0x1000, 22],
+            7: [0x4000, 18],
+            8: [0x0001, 14],
+            9: [0x0800, 24],
+            10: [0x0400, 26],
+        };
+
+        var dungeon_item_count_seen = (data["compasscountseen"][0] << 8) + data["compasscountseen"][1];
+        var dungeon_key_count_seen = (data["mapcountseen"][0] << 8) + data["mapcountseen"][1];
+        
+        for (let dun = 0; dun < 13; dun++) {
+            var mask_data = dungeon_masks[dun];
+            if (dungeon_item_count_seen & mask_data[0]){
+                var maxChecks = data["compasscount"][mask_data[1]]+ (data["compasscount"][mask_data[1] - 1] << 8);
+                var currentChecks = data["dungeonchecks"][mask_data[1]]
+                if (maxChecks - currentChecks - items['chestmanual'+ dun] < 0){
+                    items['chestmanual'+ dun] = maxChecks - currentChecks;
+                }
+                setChestCount(maxChecks - currentChecks, 'chest' + dun);
+            }
+            
+            if (dungeon_key_count_seen & mask_data[0]){
+                setKeyCount(data["dungeonkeys"][mask_data[1]/2], data["mapcount"][mask_data[1]/2], 'smallkey' + dun);
+            } else {
+                setKeyCount(data["dungeonkeys"][mask_data[1]/2], 99, 'smallkey' + dun);
+            }
+
+        };
     }
 
     dungeonPrizes = {}
@@ -971,7 +1056,7 @@ function autotrackDoTracking(data) {
     update_boss("agahnim2", 0x01B); // Ganons Tower
 
     function updatesmallkeys(dungeon, offset) {
-        if (changed(offset)) {
+        if (changed(offset) && flags.doorshuffle !== 'C') {
             var label = "smallkey" + dungeon;
             var newkeys = autotrackPrevData === null ? data['rooms_inv'][offset] : (data['rooms_inv'][offset] - autotrackPrevData['rooms_inv'][offset] + items[label]);
             if (newkeys > items[label]) {

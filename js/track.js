@@ -169,6 +169,14 @@
 
 		// If left clicked on chest
 		if (label.substring(0,5) === 'chest') {
+			//do this when autotracking doors
+			if (flags.autotracking === 'Y' && flags.doorshuffle === 'C') {
+				if (document.getElementById(label).innerHTML > 0){
+					items['chestmanual'+label.substring(5)]++;
+				}
+				setChestCount(Number(document.getElementById(label).innerHTML) + Number(items['chestmanual'+label.substring(5)]) - 1, label);
+				return;
+			}
             var value = items.dec(label);
 			if (value === 0) {
 				if (!flags.wildkeys && !flags.wildbigkeys && flags.gametype != 'R' && flags.doorshuffle != 'C' && label.length === 6 && !flags.showsmallkeys && !flags.showbigkeys) {
@@ -225,6 +233,13 @@
 		}
 		
 		if (label.substring(0,12) === 'smallkeyhalf' || label.substring(0,8) === 'smallkey') {
+			//do this if autotracking doors
+			if (flags.autotracking === 'Y' && flags.doorshuffle === 'C') {
+					items['keymanual'+label.substring(8)]++;
+				setKeyCount(Number(document.getElementById(label).innerHTML) - Number(items['keymanual'+label.substring(8)]) + 1, items['maxkey'+label.substring(8)], label);
+				return;
+			}
+
 			if (flags.gametype != 'R') {
 				var value = items.inc(label);
 			} else {
@@ -584,6 +599,13 @@
     };
 	
 	window.rightClickChest = function(label) {
+		//do this when autotracking doors
+		if (flags.autotracking === 'Y' && flags.doorshuffle === 'C') {
+			items['chestmanual'+label.substring(5)] = Math.max(items['chestmanual'+label.substring(5)] - 1, 0);
+			setChestCount(Number(document.getElementById(label).innerHTML) + Number(items['chestmanual'+label.substring(5)]) + 1, label);
+			return;
+		}
+		
 		var value = items.inc(label);
 
 		let className = 'chest'
@@ -609,8 +631,39 @@
 
 		updateMapTracker();
 	};
+
+	
+	window.setChestCount = function(value, dungeon) {
+		value = value - items['chestmanual'+dungeon.substring(5)];
+		if (value <= 0) {
+			document.getElementById(dungeon).className = 'chest-0';
+			document.getElementById(dungeon).innerHTML = '';
+		} else {
+			document.getElementById(dungeon).className = 'chest';
+			document.getElementById(dungeon).innerHTML = value;
+		}
+	}
+
+	window.setKeyCount = function(value, maxKeys, dungeon) {		
+		
+		item['maxkey'+dungeon.substring(8)] = maxKeys;
+		if (maxKeys - value - items['keymanual'+dungeon.substring(8)] < 0){
+			items['keymanual'+ dungeon.substring(8)] = maxKeys - value;
+		}
+		value = value + items['keymanual'+dungeon.substring(8)];
+		document.getElementById(dungeon).innerHTML = value;
+		document.getElementById(dungeon).style.color = (value >= maxKeys) ? "green" : "white";
+		
+	}
 	
 	window.rightClickKey = function(label) {
+		//do this if autotracking doors
+		if (flags.autotracking === 'Y' && flags.doorshuffle === 'C') {
+			items['keymanual'+label.substring(8)] = Math.max(items['keymanual'+label.substring(8)] - 1, 0);
+			setKeyCount(Number(document.getElementById(label).innerHTML) - Number(items['keymanual'+label.substring(8)]) - 1, items['maxkey'+label.substring(8)], label);
+			return;
+		}
+
 		if (label.substring(0,12) === 'smallkeyhalf' || label.substring(0,8) === 'smallkey') {
 			if (flags.gametype != 'R') {
 				var value = items.dec(label);
@@ -622,7 +675,7 @@
 		}		
 		updateMapTracker();
 	};
-	
+
 	window.clickCompass = function(dungeonid) {
 		items['chestknown'+dungeonid] = !items['chestknown'+dungeonid];
 		document.getElementById('chest'+dungeonid).innerHTML = items['chest'+dungeonid] == 0 ? '' : (flags.doorshuffle === 'C' && !items['chestknown'+dungeonid] ? (items['chest'+dungeonid] - 1) + '+' : items['chest'+dungeonid]);
