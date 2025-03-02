@@ -592,11 +592,11 @@ function autotrackReadMem() {
     }
 
     function addPseudobootsFlag() {
-        // Check if we're playing DR and that the mystery flag is not set
+        // Check if we're playing DR and that the mystery flag is not set, move on to item and key counts if DR
         if (["DR", "OR"].includes(data['fork']) && (data['mystery'][1] & 0x1) === 0) {
             snesreadsave(PSEUDOBOOTS_LOC, 0x1, data, 'pseudoboots', addCompassCountSeenData);
         } else {
-            addCompassCountSeenData();
+            handleAutoTrackData();
         }
     }
 
@@ -712,20 +712,6 @@ function autotrackDoTracking(data) {
 
     // Autotrack dungeon key and chest counts if count has been seen by entering the dungeon (for keys, when map in inventory, for checks basically always since that setting is generally on)
     if (flags.doorshuffle === 'C' && flags.autotracking === 'Y' && data["fork"] !== "VT") {
-        // var dungeon_item_count_seen = (_location_data[0x403] << 8) + _location_data[0x404]
-        //var dungeon_key_count_seen = (_location_data[0x474] << 8) + _location_data[0x475]
-        //var big_key_field = (_location_data[0x366] << 8) + _location_data[0x367]
-        //for dun in dungeon_masks:
-        //    var mask_data = dungeon_masks[dun]
-        //    notes_window.find_node(dun).set_current_checks(_location_data[0x4B0 + mask_data[1]] + ((_location_data[0x4B0 + mask_data[1] - 1]) << 8))
-        //    notes_window.find_node(dun).set_current_keys(_location_data[0x4E0 + (mask_data[1]/2)])
-        //    if dungeon_item_count_seen & mask_data[0]:
-        //        notes_window.find_node(dun).set_total_checks(_location_data[0x500 + mask_data[1]] + ((_location_data[0x500 + mask_data[1] - 1]) << 8))
-        //    if dungeon_key_count_seen & mask_data[0]:
-        //        notes_window.find_node(dun).set_total_keys(_location_data[0x520 + (mask_data[1]/2)])
-
-
-
         var dungeon_masks = {
             11: [0x00C0, 2],
             0: [0x0020, 4],
