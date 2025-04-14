@@ -571,7 +571,8 @@
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest13",
-                "prize": 0x0
+                "prize": 0x0,
+                "dungeonprize": 11
             }
         },
         {
@@ -594,7 +595,8 @@
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest14",
-                "prize": 0x1
+                "prize": 0x1,
+                "dungeonprize": 12
             }
         },
         {
@@ -617,7 +619,8 @@
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest15",
-                "prize": 0x2
+                "prize": 0x2,
+                "dungeonprize": 13
             }
         },
         {
@@ -640,7 +643,8 @@
             },
             "dungeonDataMem": {
                 "dungeonarrayname": "chest16",
-                "prize": 0x3
+                "prize": 0x3,
+                "dungeonprize": 14
             }
         }
     ]
