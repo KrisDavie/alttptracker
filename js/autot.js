@@ -10,6 +10,7 @@ var autotrackPrevData = null;
 var autotrackRefreshInterval = 1000;
 var autotrackTimeoutDelay = 10000;
 
+var prevGame = null;
 var currentGame = null;
 
 var GAME_CHECK_LOC = 0xe033fe;
@@ -552,6 +553,7 @@ function autotrackReadMem() {
   snesreadsave(GAME_CHECK_LOC, 1, data, "currentgame", handleCurrentGame);
 
   function handleCurrentGame() {
+    prevGame = currentGame;
     if (data["currentgame"][0] == 0x00) {
       autotrackSetStatus("[ALTTP] Connected to " + autotrackDeviceName);
       currentGame = "alttp";
@@ -1252,6 +1254,8 @@ function autotrackDoTracking(data) {
   update_boss("agahnim2", 0x01b); // Ganons Tower
 
   function updatesmallkeys(dungeon, offset) {
+    // Values may shift between games and incorrectly incrememnt keys
+    if (prevGame !== currentGame) return;
     if (changed(offset)) {
       var label = "smallkey" + dungeon;
       var newkeys = autotrackPrevData === null ? data["lttp_rooms_inv"][offset] : data["lttp_rooms_inv"][offset] - autotrackPrevData["lttp_rooms_inv"][offset] + items[label];
@@ -1371,6 +1375,13 @@ function autotrackDoTracking(data) {
     if (newbit(0x368, 0x40) && prizes[7] === 0) setmap(7, 5);
     if (newbit(0x369, 0x01) && prizes[8] === 0) setmap(8, 5);
     if (newbit(0x368, 0x08) && prizes[9] === 0) setmap(9, 5);
+    
+    // SM Maps
+    if (newbit(0x03, 0x01, "sm_bosses_keys") && prizes[11] === 0) setmap(11, 5);
+    if (newbit(0x03, 0x02, "sm_bosses_keys") && prizes[12] === 0) setmap(12, 5);
+    if (newbit(0x03, 0x04, "sm_bosses_keys") && prizes[13] === 0) setmap(13, 5);
+    if (newbit(0x03, 0x08, "sm_bosses_keys") && prizes[10] === 0) setmap(10, 5);
+    
   }
 
   if (flags.wildcompasses) {
@@ -1532,7 +1543,6 @@ function autotrackDoTracking(data) {
   if (newbit(0x09, 0x80, "sm_bosses_keys")) {
     setitem("LowerNorfairB", true)
   }
-
 
   if (newbit(0x01, 0x01, "sm_bosses_keys")) {
     setitem("kraid", false);
