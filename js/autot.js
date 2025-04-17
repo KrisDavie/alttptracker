@@ -24,22 +24,19 @@ var FOREIGN_LTTP_SRAM = 0xe03b40;
 var NATIVE_SM_SRAM = 0xf509a4;
 var FOREIGN_SM_SRAM = 0xe03902;
 
+var FOREIGN_LTTP_SMALLKEYS = 0xe03f50;
+
 var NATIVE_SM_BOSSES_KEYS = 0xf5d828;
 var FOREIGN_SM_BOSSES_KEYS = 0xe03968;
-// 0xa17970
 
 var NATIVE_SM_MOTHERBRAIN = 0xe03402;
-//0xa17402
-
 var NATIVE_LTTP_GANON = 0xe03506;
-// 0xa17506
 
-var NATIVE_SM_AMMO = 0xf509c0; // 0xF509C2
+var NATIVE_SM_AMMO = 0xf509c0;
 var FOREIGN_SM_AMMO = 0xe0391e;
-// 0xa17920
 
 var NATIVE_SM_ROOMS = 0xf5d870;
-var FOREIGN_SM_ROOMS = 0xe107ce; // Likely very wrong
+var FOREIGN_SM_ROOMS = 0xe107ce;
 
 var LTTP_GAME_MODE = 0xf50010;
 var SM_GAME_MODE = 0xf50998;
@@ -659,6 +656,21 @@ function autotrackReadMem() {
     _new[6] = _sm[0x10];
     _new[7] = _sm[0x18];
     data["sm_prizes"] = _new;
+    addZ3KeysInSM();
+  }
+
+  function addZ3KeysInSM() {
+    if (currentGame === "sm") {
+      snesreadsave(FOREIGN_LTTP_SMALLKEYS, 0x0f, data, "tmp_z3_keys", handleZ3KeysInSM);
+    } else {
+      handleAutoTrackData();
+    }
+  }
+
+  function handleZ3KeysInSM() {
+    for (let i = 0; i < 0x0f; i++) {
+      data["lttp_rooms_inv"][0x4e0 + i] = data["tmp_z3_keys"][i];
+    }
     handleAutoTrackData();
   }
 
@@ -1255,10 +1267,10 @@ function autotrackDoTracking(data) {
 
   function updatesmallkeys(dungeon, offset) {
     // Values may shift between games and incorrectly incrememnt keys
-    if (prevGame !== currentGame) return;
     if (changed(offset)) {
       var label = "smallkey" + dungeon;
       var newkeys = autotrackPrevData === null ? data["lttp_rooms_inv"][offset] : data["lttp_rooms_inv"][offset] - autotrackPrevData["lttp_rooms_inv"][offset] + items[label];
+      console.log(`${prevGame} -> ${currentGame} ${dungeon} ${items[label]} -> ${newkeys}`);
       if (newkeys > items[label]) {
         document.getElementById(label).style.color = newkeys === items.range[label].max ? "green" : "white";
         document.getElementById(label).innerHTML = newkeys;
@@ -1375,13 +1387,12 @@ function autotrackDoTracking(data) {
     if (newbit(0x368, 0x40) && prizes[7] === 0) setmap(7, 5);
     if (newbit(0x369, 0x01) && prizes[8] === 0) setmap(8, 5);
     if (newbit(0x368, 0x08) && prizes[9] === 0) setmap(9, 5);
-    
+
     // SM Maps
     if (newbit(0x03, 0x01, "sm_bosses_keys") && prizes[11] === 0) setmap(11, 5);
     if (newbit(0x03, 0x02, "sm_bosses_keys") && prizes[12] === 0) setmap(12, 5);
     if (newbit(0x03, 0x04, "sm_bosses_keys") && prizes[13] === 0) setmap(13, 5);
     if (newbit(0x03, 0x08, "sm_bosses_keys") && prizes[10] === 0) setmap(10, 5);
-    
   }
 
   if (flags.wildcompasses) {
@@ -1494,54 +1505,53 @@ function autotrackDoTracking(data) {
     setitem("charge", true);
   }
 
-
   if (newbit(0x08, 0x01, "sm_bosses_keys")) {
-    setitem("Crateria1", true)
+    setitem("Crateria1", true);
   }
   if (newbit(0x08, 0x02, "sm_bosses_keys")) {
-    setitem("Crateria2", true)
+    setitem("Crateria2", true);
   }
   if (newbit(0x08, 0x04, "sm_bosses_keys")) {
-    setitem("CrateriaB", true)
+    setitem("CrateriaB", true);
   }
   if (newbit(0x08, 0x08, "sm_bosses_keys")) {
-    setitem("Brinstar1", true)
+    setitem("Brinstar1", true);
   }
   if (newbit(0x08, 0x10, "sm_bosses_keys")) {
-    setitem("Brinstar2", true)
+    setitem("Brinstar2", true);
   }
   if (newbit(0x08, 0x20, "sm_bosses_keys")) {
-    setitem("BrinstarB", true)
+    setitem("BrinstarB", true);
   }
   if (newbit(0x08, 0x40, "sm_bosses_keys")) {
-    setitem("Norfair1", true)
+    setitem("Norfair1", true);
   }
   if (newbit(0x08, 0x80, "sm_bosses_keys")) {
-    setitem("Norfair2", true)
+    setitem("Norfair2", true);
   }
   if (newbit(0x09, 0x01, "sm_bosses_keys")) {
-    setitem("NorfairB", true)
+    setitem("NorfairB", true);
   }
   if (newbit(0x09, 0x02, "sm_bosses_keys")) {
-    setitem("Maridia1", true)
+    setitem("Maridia1", true);
   }
   if (newbit(0x09, 0x04, "sm_bosses_keys")) {
-    setitem("Maridia2", true)
+    setitem("Maridia2", true);
   }
   if (newbit(0x09, 0x08, "sm_bosses_keys")) {
-    setitem("MaridiaB", true)
+    setitem("MaridiaB", true);
   }
   if (newbit(0x09, 0x10, "sm_bosses_keys")) {
-    setitem("WreckedShip1", true)
+    setitem("WreckedShip1", true);
   }
   if (newbit(0x09, 0x20, "sm_bosses_keys")) {
-    setitem("WreckedShipB", true)
+    setitem("WreckedShipB", true);
   }
   if (newbit(0x09, 0x40, "sm_bosses_keys")) {
-    setitem("LowerNorfair1", true)
+    setitem("LowerNorfair1", true);
   }
   if (newbit(0x09, 0x80, "sm_bosses_keys")) {
-    setitem("LowerNorfairB", true)
+    setitem("LowerNorfairB", true);
   }
 
   if (newbit(0x01, 0x01, "sm_bosses_keys")) {
