@@ -2018,7 +2018,14 @@
                         "allOf": [
                             "canBreach|Maridia - Pre-Aqueduct",
                             "SMKeys|Maridia2",
-                            "speed",
+                            {
+                                "anyOf": [
+                                    "speed",
+                                    "canMochtroidIceClip",
+                                    "canBombCrystalFlashClip",
+                                    "canSuitlessCrystalFlashClip"
+                                ]
+                            },
                             {
                                 "anyOf": [ // can kill botwoon
                                     "charge",
@@ -2388,7 +2395,24 @@
                     },
                     {
                         "allOf": [
-                            "canBreach|Norfair - Bubble Mountain",
+                            {
+                                "anyOf": [
+                                    "canBreach|Norfair - Bubble Mountain",
+                                    {
+                                        "allOf": [
+                                            "speed",
+                                            "canGateGlitch"
+                                        ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            "speed",
+                                            "wave"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "canUsePowerBombs",
                             "canTraverseGravitron"
                         ]
                     }
@@ -2424,11 +2448,21 @@
                     {
                         "allOf": [
                             "varia",
-                            "canReach|Norfair - Bubble Mountain",
                             "canUsePowerBombs",
                             "space",
                             "gravity",
-                            "super" // sj assured so picky chozo -> 5 super gt fight :)
+                            "super", // sj assured so picky chozo -> 5 super gt fight :)
+                            {
+                                "anyOf": [
+                                    {
+                                        "allOf": [
+                                            "speed",
+                                            "wave"
+                                        ]
+                                    },
+                                    "SMKeys|Norfair2"
+                                ]
+                            }
                         ]
                     }
                 ]

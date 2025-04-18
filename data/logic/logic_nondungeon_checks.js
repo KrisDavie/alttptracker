@@ -6335,6 +6335,28 @@
                     "speed" // not putting stupid blue suits in logic because they're stupid
                 ]
             },
+            "scout": {
+                "allOf": [
+                    "canBreach|Maridia - Main Street",
+                    {
+                        "anyOf": [
+                            "gravity",
+                            {
+                                "allOf": [
+                                    "canSuitlessMaridia",
+                                    "hijump",
+                                    {
+                                        "anyOf": [
+                                            "canHijumpIceMainStreetClimb",
+                                            "canSpringBallJump"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
             "logical": {
                 "allOf": [
                     "canReach|Maridia - Main Street",
