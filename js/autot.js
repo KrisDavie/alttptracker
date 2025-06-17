@@ -1188,9 +1188,14 @@ function autotrackDoTracking(data) {
   updatebigkey("12", 0x367, 0x08);
 
   function setitem(item, value) {
+    const maxLoop = 100; // Prevent infinite loop
     click_map();
-    while (items[item] != value) {
+    while (items[item] != value && maxLoop > 0) {
       toggle(item);
+      maxLoop--;
+    }
+    if (maxLoop <= 0) {
+      console.error(`Infinite loop detected while setting item ${item} to ${value}`);
     }
   }
 
