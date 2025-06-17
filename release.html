@@ -1,17 +1,17 @@
 <html>
   <head>
     <title>ALTTP Randomizer Community Tracker - Release Notes</title>
-    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250526"></script>
-    <script type="text/javascript" src="js/jquery.powertip.js?v=20250526"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js?v=20250526"></script>
-    <script type="text/javascript" src="js/index.js?v=20250526"></script>
-    <script type="text/javascript" src="js/kofi.js?v=20250526"></script>
-    <script type="text/javascript" src="js/header.js?v=20250526"></script>
-    <link href="css/jquery.powertip.css?v=20250526" rel="stylesheet" />
-    <link href="css/launcher.css?v=20250526" rel="stylesheet" />
-    <link href="css/fonts.css?v=20250526" rel="stylesheet" />
-    <link href="css/sprites.css?v=20250526" rel="stylesheet" />
-    <link href="css/toast.css?v=20250526" rel="stylesheet" />
+    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250617"></script>
+    <script type="text/javascript" src="js/jquery.powertip.js?v=20250617"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js?v=20250617"></script>
+    <script type="text/javascript" src="js/index.js?v=20250617"></script>
+    <script type="text/javascript" src="js/kofi.js?v=20250617"></script>
+    <script type="text/javascript" src="js/header.js?v=20250617"></script>
+    <link href="css/jquery.powertip.css?v=20250617" rel="stylesheet" />
+    <link href="css/launcher.css?v=20250617" rel="stylesheet" />
+    <link href="css/fonts.css?v=20250617" rel="stylesheet" />
+    <link href="css/sprites.css?v=20250617" rel="stylesheet" />
+    <link href="css/toast.css?v=20250617" rel="stylesheet" />
     <style>
       a {
         color: red;
@@ -58,6 +58,24 @@
         <div class="preset-div">
           <span id="gameplayarrow"></span> Release 2.2
           <div id="release22">
+            <b><i>20250617 Build 2.2.003</i></b
+            ><br />
+            <ul>
+              <li>Added support for tracking in practice hack >=v14.4.0</li>
+              <ul>
+                <li>kan very kindly carved out some space in the SA-1 BWRAM for a mirror of some data</li>
+                <li>ONLY items will track, no keys, overworld or dungeon locations etc.</li>
+              </ul>
+              <li>Fixed mimic cave logic without fire rod</li>
+              <li>Fixed enemizer colouring for all killable bosses (including GT and in DR)</li>
+              <li>Tweaked HMG colouring for Hera and Swamp</li>
+              <ul>
+                <li>
+                  These are difficult because the default colouring assumes standard key logic in non-keys modes (i.e. keys are all always available), this doesn't hold true for HMG, so there might still be some issues
+                </li>
+              </ul>
+              <li>Fixed changing bosses not updating logic shown</li>
+            </ul>
             <b><i>20250520 Build 2.2.002</i></b
             ><br />
             <ul>

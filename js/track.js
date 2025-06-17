@@ -575,6 +575,7 @@
       if (document.getElementById("bossMap" + n) != null) {
         document.getElementById("bossMap" + n).className = "bossprize-" + prizes[n] + " boss " + dungeons[n].is_beatable();
       }
+    updateLocationAvailability()
   };
 
   // event of clicking on a boss's enemizer portrait
@@ -587,6 +588,7 @@
       if (document.getElementById("bossMap" + n) != null) {
         document.getElementById("bossMap" + n).className = "bossprize-" + prizes[n] + " boss " + dungeons[n].is_beatable();
       }
+    updateLocationAvailability()
   };
 
   window.rightClickChest = function (label) {

@@ -1338,7 +1338,7 @@
     },
     "Mimic Cave": {
       Open: {
-        always: {
+        required: {
           allOf: ["hammer", "mirror"],
         },
       },

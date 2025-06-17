@@ -190,14 +190,19 @@
     // Trinexx
     completable.push(items.firerod && items.icerod && (items.hammer || items.sword > 1) ? "available" : "unavailable");
     // Ganon's Tower
-    completable.push(flags.bossshuffle != "N" ? "possible" : melee() ? "available" : "unavailable");
+    completable.push(melee() ? "available" : "unavailable");
+    completable.push("pass"); // 2
+    // Castle Tower
+    completable.push(melee() ? "available" : "unavailable");
 
-    const bossId = enemizer[i] - 1
-    if (bossId >= 0 && bossId < 12) {
+    const bossId = enemizer[i] - 1;
+    if (bossId != -1) {
       return completable[bossId];
     } else {
-      if (completable.every((c) => c === "available")) {
+      if (completable.every((c) => c === "available" || c === "pass")) {
         return "available";
+      } else if (completable.some((c) => c === "available")) {
+        return "possible";
       } else {
         return "unavailable";
       }
@@ -328,6 +333,8 @@
       case "greenpendant":
         return pendantCheck("green");
 
+      case "canKillSomeBosses":
+        return enemizer_check(dungeonId) != "unavailable";
       case "canKillBoss":
         return enemizer_check(dungeonId) === "available";
       case "canKillArmos":
@@ -540,7 +547,7 @@
           (bigRequirementSwitch("canHMGHeraClipBreach") && ((flags.wildkeys && items.smallkey2 >= 1) || !flags.wildkeys)) || (bigRequirementSwitch("canHMGMireClipBreach") && ((flags.wildkeys && items.smallkey8 >= 1) || !flags.wildkeys))
         );
       case "canHMGUnlockSwampLogic":
-        return bigRequirementSwitch("canHMGMireClipLogic") && ((flags.wildkeys && items.smallkey8 >= 3) || (!flags.wildkeys && items.somaria && items.lantern && flags.wildbigkeys && items.bigkey8));
+        return bigRequirementSwitch("canHMGMireClipLogic") && ((flags.wildkeys && items.smallkey8 >= 3) || (!flags.wildkeys && items.somaria && items.lantern)) && (!flags.wildbigkeys || items.bigkey8);
       case "canHMGMirrorlessSwampBreach":
         return bigRequirementSwitch("canHMGUnlockHeraBreach") || bigRequirementSwitch("canHeraPot") || (bigRequirementSwitch("canHMGHeraClipBreach") && ((flags.wildbigkeys && items.bigkey2) || !flags.wildbigkeys));
       case "canHMGMirrorlessSwampLogic":
@@ -1556,10 +1563,22 @@
     }
 
     if (requirement === "bigkey" && !flags.wildbigkeys) {
-      res = true;
-    } else if (requirement.startsWith("keys")) {
-      if (flags.gametype === "R" || !flags.wildkeys) {
+      if (flags.glitches === "H" && dungeonId == 2) {
+        // Can't guarantee that the big key is available
+        res = false;
+      } else {
         res = true;
+      }
+    } else if (requirement.startsWith("keys")) {
+      if (flags.gametype === "R") {
+        res = true;
+      } else if (!flags.wildkeys) {
+        // Can't guarantee that the sk is available
+        if (flags.glitches === "H" && dungeonId == 4) {
+          res = false;
+        } else {
+          res = true;
+        }
       } else {
         const keyInfo = requirement.split("|");
         if (keyInfo.length === 2) {
@@ -1690,6 +1709,10 @@
       availability = "possible";
       if (!("required" in requirements) || inLogic(dungeonId, requirements["required"])) availability = "darkavailable";
       if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) availability = "available";
+    }
+
+    if (flags.bossshuffle !== "N" && (dungeonId <= 9 || dungeonName === "Ganons Tower")) {
+      availability = minimumAvailability(availability, bigRequirementSwitch("canKillBoss", dungeonId) ? "available" : bigRequirementSwitch("canKillSomeBosses", dungeonId) ? "possible" : "unavailable");
     }
 
     if (!flags.wildkeys || !flags.wildbigkeys) {
@@ -1831,8 +1854,6 @@
             if (items.boots) return "possible";
             return "unavailable";
           }
-
-          if (medallion) return medallion === "possible" && items.flute === 0 && !items.lantern ? "darkpossible" : medallion;
 
           var doorcheck = window.doorCheck(9, items.flute === 0 && !items.lantern, true, false, ["somaria", "firerod", (!flags.wildkeys && flags.gametype != "R") || !flags.wildbigkeys ? "laserbridge" : "", "bomb"], "connector");
           if (doorcheck) return doorcheck;

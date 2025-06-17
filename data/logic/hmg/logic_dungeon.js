@@ -1007,7 +1007,6 @@
     // TODO: This needs proper mirrorless logic added
     "Swamp Palace": {
       "Swamp Palace - Big Chest": {
-        // TODO: Add big key logic
         always: {
           allOf: [
             "canBreach|Swamp Palace",
@@ -1361,9 +1360,9 @@
         logical: {
           anyOf: [
             {
-              allOf: ["canReach|Tower of Hera", "canKillOrExplodeMostEnemies"],
+            allOf: ["canReach|Misery Mire", "bigkey|mm"],
             },
-            "canReach|Misery Mire",
+            "bigkey|toh",
           ],
         },
       },
@@ -1397,9 +1396,9 @@
         logical: {
           anyOf: [
             {
-              allOf: ["canReach|Tower of Hera", "bigkey", "canKillOrExplodeMostEnemies"],
+            allOf: ["canReach|Misery Mire", "bigkey|mm"],
             },
-            "canReach|Misery Mire",
+            "bigkey|toh",
           ],
         },
       },
@@ -1425,9 +1424,9 @@
         logical: {
           anyOf: [
             {
-              allOf: ["canReach|Tower of Hera", "bigkey", "canKillOrExplodeMostEnemies"],
+            allOf: ["canReach|Misery Mire", "bigkey|mm"],
             },
-            "canReach|Misery Mire",
+            "bigkey|toh",
           ],
         },
       },
@@ -1453,9 +1452,9 @@
         logical: {
           anyOf: [
             {
-              allOf: ["canReach|Tower of Hera", "bigkey", "canKillOrExplodeMostEnemies"],
+            allOf: ["canReach|Misery Mire", "bigkey|mm"],
             },
-            "canReach|Misery Mire",
+            "bigkey|toh",
           ],
         },
       },

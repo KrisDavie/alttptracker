@@ -11,7 +11,6 @@ var kofiwidget2 =
     var id = "";
     return {
       init: function (pText, pColor, pId) {
-        console.log("kofiwidget2.init called with text: " + pText + ", color: " + pColor + ", id: " + pId);
         color = pColor;
         text = pText;
         id = pId;

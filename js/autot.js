@@ -12,6 +12,7 @@ var autotrackTimeoutDelay = 10000;
 
 var WRAM_START = 0xf50000;
 var WRAM_SIZE = 0x20000;
+var GAMEMODE_LOC = WRAM_START + 0x10; 
 var SAVEDATA_START = WRAM_START + 0xf000;
 var SAVEDATA_SIZE = 0x500;
 var POTDATA_START = SAVEDATA_START + 0x7018;
@@ -521,7 +522,68 @@ function autotrackReadMem() {
   }, autotrackTimeoutDelay);
 
   var data = {};
-  snesreadsave(WRAM_START + 0x10, 1, data, "gamemode", addMainAutoTrackData1);
+
+  addRomName();
+
+  function addRomName() {
+    snesreadsave(RANDOVERSION_LOC, 0x21, data, "version", parseRomName);
+  }
+
+  function parseRomName() {
+    const romName = Array.from(data["version"])
+      .map((c) => String.fromCharCode(c))
+      .join("");
+    if (romName.startsWith("ALTTPRAC")) {
+      data["fork"] = "PH";
+      data["version"] = romName.slice(10, 18);
+      const phMajorVersion = data['version'].split('.')[0];
+      const phMinorVersion = data['version'].split('.')[1];
+      if (phMajorVersion < 14 || (phMajorVersion == 14 && phMinorVersion < 4)) {
+        alert("This version of Prachack is not supported by the autotracker. Please update to at least version 14.4.0");
+        return;
+      }
+      GAMEMODE_LOC = 0xE07C04;
+
+      addGamemode();
+      return;
+    } else {
+      data["fork"] = Array.from(data["version"])
+        .slice(0, 2)
+        .map((c) => String.fromCharCode(c))
+        .join("");
+    }
+    if (data["fork"] !== "VT") {
+      data["version"] = Array.from(data["version"])
+        .slice(2, 5)
+        .map((c) => String.fromCharCode(c))
+        .join("");
+    } else {
+      data["version"] = "VT";
+    }
+    addORVersion();
+  }
+
+  function addORVersion() {
+    if (data["fork"] === "OR") {
+      snesreadsave(ORVERSION_LOC, 0x21, data, "orversion", parseORVersion);
+    } else {
+      data["orversion"] = [0, 0, 0, 0];
+      addGamemode();
+    }
+  }
+
+  function parseORVersion() {
+    var orver = Array.from(data["orversion"])
+      .map((c) => String.fromCharCode(c))
+      .join("")
+      .split("\x00")[0];
+    data["orversion"] = orver.split("-")[0].split(".").map(Number);
+    addGamemode();
+  }
+
+  function addGamemode() {
+      snesreadsave(GAMEMODE_LOC, 1, data, "gamemode", addMainAutoTrackData1);
+  }
 
   function addMainAutoTrackData1() {
     var gamemode = data["gamemode"][0];
@@ -529,7 +591,17 @@ function autotrackReadMem() {
       autotrackStartTimer();
       return;
     }
-    snesreadsave(SAVEDATA_START, 0x280, data, "rooms_inv", addMainAutoTrackData2);
+    if (data['fork'] === "PH") {
+      data['rooms_inv'] = new Uint8Array(0x340);
+      snesreadsave(0xE07C08, 0x28, data, "rooms_inv", handlePracHack,(merge = true));
+    } else {
+      snesreadsave(SAVEDATA_START, 0x280, data, "rooms_inv", addMainAutoTrackData2);
+    }
+  }
+
+  function handlePracHack() {
+    data['rooms_inv'] = [...data['rooms_inv'], ...new Uint8Array(0x188)];
+    handleAutoTrackData();
   }
 
   function addMainAutoTrackData2() {
@@ -565,45 +637,7 @@ function autotrackReadMem() {
   }
 
   function addDungeonKeys() {
-    snesreadsave(KEYS_LOC, 0x10, data, "dungeonkeys", RETROARCH_QUSB ? handleAutoTrackData : addRandoVersion);
-  }
-
-  function addRandoVersion() {
-    snesreadsave(RANDOVERSION_LOC, 0x21, data, "version", parseRandoVersion);
-  }
-
-  function parseRandoVersion() {
-    data["fork"] = Array.from(data["version"])
-      .slice(0, 2)
-      .map((c) => String.fromCharCode(c))
-      .join("");
-    if (data["fork"] !== "VT") {
-      data["version"] = Array.from(data["version"])
-        .slice(2, 5)
-        .map((c) => String.fromCharCode(c))
-        .join("");
-    } else {
-      data["version"] = "VT";
-    }
-    addORVersion();
-  }
-
-  function addORVersion() {
-    if (data["fork"] === "OR") {
-      snesreadsave(ORVERSION_LOC, 0x21, data, "orversion", parseORVersion);
-    } else {
-      data["orversion"] = [0, 0, 0, 0];
-      addMysteryFlag();
-    }
-  }
-
-  function parseORVersion() {
-    var orver = Array.from(data["orversion"])
-      .map((c) => String.fromCharCode(c))
-      .join("")
-      .split("\x00")[0];
-    data["orversion"] = orver.split("-")[0].split(".").map(Number);
-    addMysteryFlag();
+    snesreadsave(KEYS_LOC, 0x10, data, "dungeonkeys", RETROARCH_QUSB ? handleAutoTrackData : addMysteryFlag);
   }
 
   function addMysteryFlag() {
@@ -772,7 +806,7 @@ function autotrackDoTracking(data) {
   }
 
   dungeonPrizes = {};
-  if (!RETROARCH_QUSB && flags.autotracking !== "N" && !(data["fork"] === "OR" && (data["keysanity"][0] & 0x20) === 0x20)) {
+  if (data["prizes"] && !RETROARCH_QUSB && flags.autotracking !== "N" && !(data["fork"] === "OR" && (data["keysanity"][0] & 0x20) === 0x20)) {
     Object.entries(window.dungeonDataMem).forEach(([dungeon, dungeondata]) => {
       if ("prize" in dungeondata && dungeondata.prize > 0) {
         const prizeType = data["prizes"][dungeondata.prize + 0xd] == 0x40 ? "crystal" : "pendant";
@@ -1168,23 +1202,53 @@ function autotrackDoTracking(data) {
     // Agahnim Killed
     setitem("agahnim", true);
 
-  if (newbit(0x38e, 0xc0)) {
-    var bits = data["rooms_inv"][0x38e] & 0xc0;
-    setitem("bow", bits == 0x40 && flags.nonprogressivebows ? 1 : bits == 0x80 ? 2 : 3);
+  if (data['fork'] == 'PH') {
+    // PRACHACK/VANILLA
+    if (changed(0x340)) setitem("bow", data["rooms_inv"][0x340] == 0x02 ? 2 : data["rooms_inv"][0x340] == 0x04 ? 3 : 0);
+    if (changed(0x341)) setitem("boomerang", data["rooms_inv"][0x341]);
+    if (changed(0x344)) {
+      if (data["rooms_inv"][0x344] == 0x01) {
+        setitem("mushroom", 1);
+      } else if (data["rooms_inv"][0x344] == 0x02) {
+        setitem("powder", true);
+        setitem("mushroom", 2);
+      }
+    }
+
+    if (changed(0x34C)) {
+      if (data["rooms_inv"][0x34C] == 0x01) {
+        setitem("shovel", true);
+      } else if (data["rooms_inv"][0x34C] == 0x02) {
+        setitem("flute", 1);
+        setitem("shovel", false);
+      }
+      else if (data["rooms_inv"][0x34C] == 0x03) {
+        setitem("flute", 2);
+        setitem("shovel", false);
+      }
+    }
+  } else {
+    // RANDO
+    if (newbit(0x38e, 0xc0)) {
+      var bits = data["rooms_inv"][0x38e] & 0xc0;
+      setitem("bow", bits == 0x40 && flags.nonprogressivebows ? 1 : bits == 0x80 ? 2 : 3);
+    }
+
+    if (newbit(0x38c, 0xc0)) {
+      var bits = data["rooms_inv"][0x38c] & 0xc0;
+      setitem("boomerang", bits == 0x80 ? 1 : bits == 0x40 ? 2 : 3);
+    }
+
+    if (changed(0x38c)) {
+      setitem("mushroom", (data["rooms_inv"][0x38c] & 0x28) == 0x28 ? 1 : (data["rooms_inv"][0x38c] & 0x28) == 0x08 ? 2 : 0);
+      var fluteState = data["rooms_inv"][0x38c] & 0x03;
+      setitem("flute", fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState == 0x02 ? 1 : 0);
+    }
+
+    if (newbit(0x38c, 0x10)) setitem("powder", true);
+    if (newbit(0x38c, 0x04)) setitem("shovel", true);
   }
 
-  if (newbit(0x38c, 0xc0)) {
-    var bits = data["rooms_inv"][0x38c] & 0xc0;
-    setitem("boomerang", bits == 0x80 ? 1 : bits == 0x40 ? 2 : 3);
-  }
-
-  if (changed(0x38c)) {
-    setitem("mushroom", (data["rooms_inv"][0x38c] & 0x28) == 0x28 ? 1 : (data["rooms_inv"][0x38c] & 0x28) == 0x08 ? 2 : 0);
-    var fluteState = data["rooms_inv"][0x38c] & 0x03;
-    setitem("flute", fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState == 0x02 ? 1 : 0);
-  }
-  if (newbit(0x38c, 0x10)) setitem("powder", true);
-  if (newbit(0x38c, 0x04)) setitem("shovel", true);
   if (newbit(0x342, 0x01)) setitem("hookshot", true);
   if (newbit(0x345, 0x01)) setitem("firerod", true);
   if (newbit(0x346, 0x01)) setitem("icerod", true);
