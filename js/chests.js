@@ -144,7 +144,7 @@
     if ((items.sword === 0 && flags.swordmode != "S") || (!items.bombos && !items.ether && !items.quake)) return "unavailable";
     if ((medallions[i] === 1 && !items.bombos) || (medallions[i] === 2 && !items.ether) || (medallions[i] === 3 && !items.quake)) return "unavailable";
     if (items.bombos && items.ether && items.quake) return "available";
-    if (medallions[i] === 0 && !(items.bombos && items.ether && items.quake)) return "possible";
+    if (medallions[i] === 0 && (items.bombos || items.ether || items.quake)) return "possible";
     return "available";
   }
 
@@ -525,6 +525,12 @@
       case "canOnlyReachTurtleRockMain":
         return flags.gametype != "I" && flags.entrancemode === "N";
       // Can get into mire, can get to torches and can either dash citrus or bomb clip (with the wall moved)
+      case "canReachTurtleRockBackOpen":
+        return (
+          (bigRequirementSwitch("canBreachTurtleRockMainMaybe") || bigRequirementSwitch("canBreachTurtleRockMiddle")) && 
+          bigRequirementSwitch("canTorchRoomNavigate") && 
+          items.somaria && 
+          (items.firerod || ((items.smallkey9 >= 3 || !flags.wildkeys) && (items.bigkey9 || !flags.wildbigkeys))));
       case "canHMGMireClipBreach":
         return canReachRegion("Misery Mire") !== "unavailable" && (items.boots || (bigRequirementSwitch("canLightFires") && items.bomb)) && bigRequirementSwitch("canKillWizzrobes") && bigRequirementSwitch("canCrossMireGap");
       case "canHMGMireClipLogic":
@@ -1639,21 +1645,26 @@
         shouldntCountPrize++;
         continue;
       }
+      var _loc_acc = 'none'
       if (inLogic(dungeonId, requirements["always"])) {
         checksAlways++;
+        _loc_acc = 'always';
         if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) {
           checksLogical++;
           checksRequired++;
+          _loc_acc = 'logical';
           if ("superlogical" in requirements && inLogic(dungeonId, requirements["superlogical"])) {
             checksSuperLogic++;
           }
         } else if (!("required" in requirements) || inLogic(dungeonId, requirements["required"])) {
           checksRequired++;
+          _loc_acc = 'required';
           if ("superlogical" in requirements && inLogic(dungeonId, requirements["superlogical"])) {
             checksSuperLogic++;
           }
         }
       }
+      // console.log(`Location: ${location}, Availability: ${_loc_acc}`);
     }
 
     var maxChecks = Object.keys(window.dungeonLogic[dungeonName]).length - hasNoBossItem - shouldntCountPrize;
@@ -1862,7 +1873,7 @@
             return items.smallkey9 <= 1 && flags.gametype != "R" ? "unavailable" : items.lantern || items.flute >= 1 ? "available" : "darkavailable";
           }
 
-          return items.firerod ? (items.lantern || items.flute >= 1 ? "available" : "darkavailable") : items.lantern || items.flute >= 1 ? "possible" : "darkpossible";
+          return minimumAvailability(medallion, items.firerod ? (items.lantern || items.flute >= 1 ? "available" : "darkavailable") : items.lantern || items.flute >= 1 ? "possible" : "darkpossible");
         };
       }
       // Back of Escape

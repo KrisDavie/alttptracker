@@ -1,20 +1,20 @@
 <html>
   <head>
     <title>ALTTP Randomizer Community Tracker - Launcher</title>
-    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250617"></script>
-    <script type="text/javascript" src="js/jquery.powertip.js?v=20250617"></script>
-    <script type="text/javascript" src="js/select2.min.js?v=20250617"></script>
-    <script type="text/javascript" src="js/index.js?v=20250617"></script>
-    <script type="text/javascript" src="js/autot.js?v=20250617"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js?v=20250617"></script>
-    <script type="text/javascript" src="js/kofi.js?v=20250617"></script>
-    <script type="text/javascript" src="js/header.js?v=20250617"></script>
-    <link href="css/jquery.powertip.css?v=20250617" rel="stylesheet" />
-    <link href="css/select2.min.css?v=20250617" rel="stylesheet" />
-    <link href="css/launcher.css?v=20250617" rel="stylesheet" />
-    <link href="css/fonts.css?v=20250617" rel="stylesheet" />
-    <link href="css/sprites.css?v=20250617" rel="stylesheet" />
-    <link href="css/toast.css?v=20250617" rel="stylesheet" />
+    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250701"></script>
+    <script type="text/javascript" src="js/jquery.powertip.js?v=20250701"></script>
+    <script type="text/javascript" src="js/select2.min.js?v=20250701"></script>
+    <script type="text/javascript" src="js/index.js?v=20250701"></script>
+    <script type="text/javascript" src="js/autot.js?v=20250701"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js?v=20250701"></script>
+    <script type="text/javascript" src="js/kofi.js?v=20250701"></script>
+    <script type="text/javascript" src="js/header.js?v=20250701"></script>
+    <link href="css/jquery.powertip.css?v=20250701" rel="stylesheet" />
+    <link href="css/select2.min.css?v=20250701" rel="stylesheet" />
+    <link href="css/launcher.css?v=20250701" rel="stylesheet" />
+    <link href="css/fonts.css?v=20250701" rel="stylesheet" />
+    <link href="css/sprites.css?v=20250701" rel="stylesheet" />
+    <link href="css/toast.css?v=20250701" rel="stylesheet" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -67,7 +67,7 @@
             <span id="upcomingSpan" style="visibility: visible">
               <span style="white-space: pre; margin-left: 16px">Next Race:</span>
               <span class="preset-btn-span">
-                <input id="upcomingButton" type="button" value="NO UPCOMING RACE" class="preset-btn" onclick="loadnextladderpreset()" disabled />
+                <input id="upcomingButton" type="button" value="NO UPCOMING RACE" class="preset-btn" style="min-width: 140px; width: auto;" onclick="loadnextladderpreset()" disabled />
               </span>
               <span class="preset-btn-span" id="upcomingStartsAt" style="visibility: hidden"> - Starts: <span id="upcomingTime"></span> (local time) </span>
             </span>
@@ -329,6 +329,17 @@
               <span class="preset-span">
                 <input id="pseudobootsyes" value="Y" type="radio" name="pseudobootsgroup" />
                 <label for="pseudobootsyes">Yes</label>
+              </span>
+            </div>
+            <div>
+              <span class="preset-span-double"> Mirror Scroll: </span>
+              <span class="preset-span">
+                <input id="mirrorscrollno" value="N" type="radio" name="mirrorscrollgroup" checked />
+                <label for="mirrorscrollno">No</label>
+              </span>
+              <span class="preset-span">
+                <input id="mirrorscrollyes" value="Y" type="radio" name="mirrorscrollgroup" />
+                <label for="mirrorscrollyes">Yes</label>
               </span>
             </div>
             <div>

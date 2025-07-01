@@ -151,7 +151,7 @@
       return;
     }
 
-    if (label === "mirror" && flags.doorshuffle != "N" && flags.doorshuffle != "P") {
+    if (label === "mirror" && ((flags.doorshuffle != "N" && flags.doorshuffle != "P") || flags.mirrorscroll === 'Y')) {
       document.getElementById("mirrorscroll").style.display = items.mirror ? "block" : "none";
     }
 
@@ -2564,7 +2564,7 @@
 
     document.getElementById("bombfloor").style.visibility = flags.doorshuffle != "C" ? "hidden" : "visible";
 
-    document.getElementById("mirrorscroll").style.visibility = flags.doorshuffle === "N" || flags.doorshuffle === "P" ? "hidden" : "visible";
+    document.getElementById("mirrorscroll").style.visibility = ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && flags.mirrorscroll === "N") ? "hidden" : "visible";
 
     document.getElementById("pseudoboots").style.visibility = flags.pseudoboots === "N" ? "hidden" : "visible";
 

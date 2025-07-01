@@ -29,6 +29,7 @@
         ganonvulncount: query.f.charAt(22),
         swordmode: query.f.charAt(23),
         prizeshuffle: query.f.charAt(24),
+        mirrorscroll: query.f.charAt(25),
         mapmode: query.d.charAt(0),
         chestcolormode: query.d.charAt(1),
         spoilermode: query.d.charAt(2),

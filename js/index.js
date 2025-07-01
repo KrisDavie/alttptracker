@@ -205,6 +205,7 @@ function resetallsettings() {
     shopsanityno: true,
     ambrosiano: true,
     pseudobootsno: true,
+    mirrorscrollno: true,
     shuffledmaps: false,
     shuffledcompasses: false,
     shuffledsmallkeys: false,
@@ -231,6 +232,7 @@ function launch_tracker() {
   var boss = document.querySelector('input[name="bossgroup"]:checked').value;
   var enemy = document.querySelector('input[name="enemygroup"]:checked').value;
   var pseudoboots = document.querySelector('input[name="pseudobootsgroup"]:checked').value;
+  var mirrorscroll = document.querySelector('input[name="mirrorscrollgroup"]:checked').value;
   var unknown = document.querySelector('input[name="unknowngroup"]:checked').value;
   var glitches = document.querySelector('input[name="glitchesgroup"]:checked').value;
   var shuffledmaps = document.getElementById("shuffledmaps").checked === true ? "1" : "0";
@@ -313,7 +315,7 @@ function launch_tracker() {
   }
 
   var trackerWindow = window.open(
-    "tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{prizeshuffle}&d={map}{chestcolor}{spoiler}{sphere}{autotracking}{trackingport}{mapstyle}{scale}{alwaysdisplay}&s={startingitemstring}&p={sprite}&r={epoch}"
+    "tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{prizeshuffle}{mirrorscroll}&d={map}{chestcolor}{spoiler}{sphere}{autotracking}{trackingport}{mapstyle}{scale}{alwaysdisplay}&s={startingitemstring}&p={sprite}&r={epoch}"
       .replace("{world}", world)
       .replace("{entrance}", entrance)
       .replace("{door}", door)
@@ -339,6 +341,7 @@ function launch_tracker() {
       .replace("{ganoncrystals}", ganoncrystals)
       .replace("{swords}", swords)
       .replace("{prizeshuffle}", prizeshuffle)
+      .replace("{mirrorscroll}", mirrorscroll)
       .replace("{map}", map)
       .replace("{chestcolor}", chestcolor)
       .replace("{spoiler}", spoiler)
@@ -417,6 +420,21 @@ function loadnamedpreset(name) {
     case "crosskeys2024":
       loadcrosskeys2024preset();
       break;
+    case "mfns./crosskeys_flute_ms_pb":
+      loadcrosskeysflute_ms_pbpreset();
+      break;
+    case "mfns./crosskeys_kd_flute_inv_pb_zw":
+      loadcrosskeys_kd_flute_inv_pb_zwpreset();
+      break;
+    case "mfns./crosskeys_kd_ms_pb_zw":
+      loadcrosskeys_kd_ms_pb_zwpreset();
+      break;
+    case "mfns./crosskeys_ms_pb_zw":
+      loadcrosskeys_ms_pb_zwpreset();
+      break;
+    case "mfns./crosskeys_kd_ad":
+      loadcrosskeys_kd_adpreset();
+      break;
     case "beginnerdoors":
       loaddoorsbeginnerpreset();
       break;
@@ -452,6 +470,7 @@ function loadnamedpreset(name) {
       loadinflukeyspreset();
       break;
     case "inverted":
+    case "invc2023":
       loadinvertedpreset();
       break;
     case "invertedadkeysanity":
@@ -978,6 +997,157 @@ function loadcrosskeyspreset() {
     enemynone: true,
     glitchesnone: true,
     goalfast: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+}
+
+function loadcrosskeysflute_ms_pbpreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancesimple: true,
+    doornone: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalfast: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    mirrorscrollyes: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteyes: true,
+    bonkshuffleno: true,
+  });
+  setstartingitem("flute", 14, "0");
+
+}
+
+function loadcrosskeys_kd_flute_inv_pb_zwpreset() {
+  loadPreset({
+    gametypeinverted: true,
+    entrancesimple: true,
+    doorpots: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalfast: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsyes: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteyes: true,
+    bonkshuffleno: true,
+  });
+  setstartingitem("flute", 14, "0");
+}
+
+function loadcrosskeys_kd_ms_pb_zwpreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancesimple: true,
+    doorpots: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalfast: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsyes: true,
+    mirrorscrollyes: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+}
+
+function loadcrosskeys_ms_pb_zwpreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancesimple: true,
+    doornone: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalfast: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsyes: true,
+    mirrorscrollyes: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+}
+
+function loadcrosskeys_kd_adpreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancesimple: true,
+    doorpots: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goaldungeons: true,
     goalcrystal: true,
     towerselect: 7,
     ganoncrystal: true,
@@ -2234,6 +2404,12 @@ async function importflags(auto = false) {
           document.getElementById("pseudobootsyes").checked = true;
         } else {
           document.getElementById("pseudobootsno").checked = true;
+        }
+
+        if ("mirrorscroll" in d.meta && d.meta.mirrorscroll) {
+          document.getElementById("mirrorscrollyes").checked = true;
+        } else {
+          document.getElementById("mirrorscrollno").checked = true;
         }
 
         // Logic

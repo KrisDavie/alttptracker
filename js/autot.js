@@ -20,7 +20,9 @@ var SPRITEDATA_START = SAVEDATA_START + 0x7268;
 var PSEUDOBOOTS_LOC = 0x18008e;
 var RANDOVERSION_LOC = 0x7fc0; // Actually ROM name
 var ORVERSION_LOC = 0x150010;
+var DRMODE_LOC = 0x138002;
 var DRFLAGS_LOC = 0x138004; // Actually DRFlags
+var SMITH_LOC = 0x18004C; // Smiths can go into eg2
 var PRIZES_LOC = 0x1209b; // Pendant/Crystal number data
 var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
 var KEYSANITY_LOC = 0x18016a; // Keysanity flags
@@ -165,7 +167,7 @@ function autotrackOnDeviceList(event) {
   autotrackDeviceName = results[0];
 
   // This is qusb2snes connected to a retroarch core, we will need to skip certain reads
-  if (autotrackDeviceName.startsWith("RetroArch")) {
+  if (autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
     RETROARCH_QUSB = true;
   }
 
@@ -208,7 +210,7 @@ function snesreadsave(address, size, data, data_loc, nextCallback, merge = false
 }
 
 function parseWorldState(config_data) {
-  if (config_data["mainflags"][0x175] == 0x01) {
+  if ((config_data["mainflags"][0x175] == 0x01) && (config_data["mainflags"][0x172] == 0x01)) {
     return "retro";
   } else if (config_data["mainflags"][0x4a] == 0x01) {
     return "inverted";
@@ -223,6 +225,15 @@ function parseWorldState(config_data) {
   return false;
 }
 
+function parseEntranceShuffle(config_data) {
+  // We use the smiths flag, it won't detect simple or dungeons entrance shuffles
+  if (config_data["smiths"][0x00] === 0x01) {
+    return "crossed";
+  } else {
+    return "none";
+  }
+}
+
 function parseDoorShuffle(config_data) {
   if ((config_data["drflags"][0x01] & 0x02) === 0) {
     if (config_data["potflags"][0x00] === 1) {
@@ -230,12 +241,13 @@ function parseDoorShuffle(config_data) {
     }
     return "none";
   } else {
-    if ((config_data["drflags"][0x01] & 0x04) === 0) {
-      return "basic";
-    } else {
+    if (config_data["drmode"][0x00] === 0x02) {
       return "crossed";
+    } else if (config_data["drmode"][0x00] === 0x01) {
+      return "basic";
     }
   }
+  return "none";
 }
 
 function parseSwordSettings(config_data) {
@@ -392,8 +404,8 @@ async function autotrackerConfigure() {
       autotrackSetStatus("Detected VT seed. Loading data from alttpr.com and then ROM");
       const mystery = (await importflags((auto = true))) === "mystery";
       MYSTERY_SEED = mystery;
-    } else if (["DR", "OD"].includes(hashChars.slice(0, 2) && (config_data["drflags"][1] & 0x1) === 1)) {
-      MYSTERY_SEED = true;
+    } else if (["DR", "OR"].includes(hashChars.slice(0, 2)) && (config_data["drflags"][1] & 0x1) === 1) {
+      // MYSTERY_SEED = true;
       config_data["seed_type"] = hashChars.slice(0, 2);
       autotrackSetStatus("Detected DR/OR seed. Loading data from ROM");
     }
@@ -421,7 +433,15 @@ async function autotrackerConfigure() {
   }
 
   function readPotFlags() {
-    snesreadsave(0x28aa56, 0x1, config_data, "potflags", readEnemizerFlags);
+    snesreadsave(0x28aa56, 0x1, config_data, "potflags", readDoorsModeFlags);
+  }
+
+  function readDoorsModeFlags() {
+    snesreadsave(DRMODE_LOC, 0x1, config_data, "drmode", readSmithFlags);
+  }
+
+  function readSmithFlags() {
+    snesreadsave(SMITH_LOC, 0x1, config_data, "smiths", readEnemizerFlags);
   }
 
   function readEnemizerFlags() {
@@ -436,21 +456,21 @@ async function autotrackerConfigure() {
     // For now, we always turn this on to allow people to correct any mistakes after the fact
     document.getElementById("unknownmystery").checked = true;
 
-    if (MYSTERY_SEED) {
-      loadmysterypreset();
-      autotrackSetStatus("Mystery seed detected. Mystery preset loaded and starting items configured.");
-      return;
-    }
+    // if (MYSTERY_SEED) {
+    //   loadmysterypreset();
+    //   autotrackSetStatus("Mystery seed detected. Mystery preset loaded and starting items configured.");
+    //   CONFIGURING = false;
+    //   autotrackDisconnect();
+    //   return;
+    // }
 
     // Gameplay
     if (parseWorldState(config_data)) {
       document.getElementById("gametype" + parseWorldState(config_data)).checked = true;
     }
 
-    if ((config_data["mainflags"][0x211] & 0x02) !== 0) {
-      document.getElementById("entrancesimple").checked = true;
-    } else {
-      document.getElementById("entrancenone").checked = true;
+    if (config_data["smiths"]) {
+      document.getElementById("entrance" + parseEntranceShuffle(config_data)).checked = true;
     }
 
     if (config_data["seed_type"] === "DR") {
@@ -510,6 +530,12 @@ async function autotrackerConfigure() {
     autotrackSetStatus("Tracker auto-configured.");
     autotrackDisconnect();
   }
+  if (RETROARCH_QUSB) {
+    autotrackSetStatus("Autconfiguration is not supported in RetroArch. Please configure the settings manually.");
+    alert("Autconfiguration is not supported in RetroArch. Please configure the settings manually.");
+    autotrackDisconnect();
+    return;
+  }
   snesreadsave(0x7fc0, 21, config_data, "hash", readDRFlags);
 }
 
@@ -523,7 +549,20 @@ function autotrackReadMem() {
 
   var data = {};
 
-  addRomName();
+  if (!RETROARCH_QUSB) {
+    addRomName();
+  } else {
+    // If we're using RetroArch, we skip the ROM name and go straight to the gamemode
+    data["version"] = new Uint8Array(21);
+    data["fork"] = "VT";
+    data["orversion"] = [0, 0, 0, 0];
+    data["mystery"] = new Uint8Array(2);
+    data["keysanity"] = new Uint8Array(1);
+    data["pseudoboots"] = new Uint8Array(1);
+    data["entrances"] = new Uint8Array(1);
+    data["prizes"] = new Uint8Array(0xd + 0xd);
+    addGamemode();
+  }
 
   function addRomName() {
     snesreadsave(RANDOVERSION_LOC, 0x21, data, "version", parseRomName);
@@ -1188,7 +1227,7 @@ function autotrackDoTracking(data) {
   updatebigkey("12", 0x367, 0x08);
 
   function setitem(item, value) {
-    const maxLoop = 100; // Prevent infinite loop
+    let maxLoop = 100; // Prevent infinite loop
     click_map();
     while (items[item] != value && maxLoop > 0) {
       toggle(item);

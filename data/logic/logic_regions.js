@@ -689,7 +689,7 @@
     "Turtle Rock - Back": {
       Open: {
         always: {
-          allOf: ["canBreach|Light World - Lower West Death Mountain", "canMirrorWrap"],
+          allOf: ["canReachTurtleRockBackOpen"],
         },
       },
       Inverted: {
