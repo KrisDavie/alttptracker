@@ -12,7 +12,7 @@ var autotrackTimeoutDelay = 10000;
 
 var WRAM_START = 0xf50000;
 var WRAM_SIZE = 0x20000;
-var GAMEMODE_LOC = WRAM_START + 0x10; 
+var GAMEMODE_LOC = WRAM_START + 0x10;
 var SAVEDATA_START = WRAM_START + 0xf000;
 var SAVEDATA_SIZE = 0x500;
 var POTDATA_START = SAVEDATA_START + 0x7018;
@@ -22,7 +22,7 @@ var RANDOVERSION_LOC = 0x7fc0; // Actually ROM name
 var ORVERSION_LOC = 0x150010;
 var DRMODE_LOC = 0x138002;
 var DRFLAGS_LOC = 0x138004; // Actually DRFlags
-var SMITH_LOC = 0x18004C; // Smiths can go into eg2
+var SMITH_LOC = 0x18004c; // Smiths can go into eg2
 var PRIZES_LOC = 0x1209b; // Pendant/Crystal number data
 var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
 var KEYSANITY_LOC = 0x18016a; // Keysanity flags
@@ -36,7 +36,7 @@ var KEYS_LOC = SAVEDATA_START + 0x4e0; //Current keys in each dungeon
 
 var CONFIGURING = false;
 
-var RETROARCH_QUSB = false;
+var NO_ROM_READS = false;
 
 const prizemap = {
   crystal: {
@@ -81,12 +81,13 @@ function autotrackSetStatus(text) {
 }
 
 function autotrackTrackerConfigure() {
+  const athost = document.getElementById("autotrackinghost").value;
   const port = document.getElementById("autotrackingport").value;
-  autotrackConnect("ws://localhost:" + port, true);
+  autotrackConnect("ws://" + athost + ":" + port, true);
   CONFIGURING = true;
 }
 
-function autotrackConnect(host = "ws://localhost:" + flags.trackingport) {
+function autotrackConnect(host = "ws://" + flags.trackinghost + ":" + flags.trackingport) {
   if (autotrackSocket !== null || autotrackReconnectTimer !== null) {
     autotrackDisconnect();
     return;
@@ -166,11 +167,6 @@ function autotrackOnDeviceList(event) {
   }
   autotrackDeviceName = results[0];
 
-  // This is qusb2snes connected to a retroarch core, we will need to skip certain reads
-  if (autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
-    RETROARCH_QUSB = true;
-  }
-
   autotrackSocket.send(
     JSON.stringify({
       Opcode: "Attach",
@@ -178,7 +174,26 @@ function autotrackOnDeviceList(event) {
       Operands: [autotrackDeviceName],
     })
   );
+
   autotrackSetStatus("Connected to " + autotrackDeviceName);
+
+  autotrackSocket.send(
+    JSON.stringify({
+      Opcode: "Info",
+      Space: "SNES",
+      Operands: [autotrackDeviceName],
+    })
+  );
+  autotrackSocket.onmessage = autotrackHandleInfoResponse;
+}
+
+function autotrackHandleInfoResponse(event) {
+  var results = JSON.parse(event.data).Results;
+  
+  // This is qusb2snes connected to a retroarch core, we will need to skip certain reads
+  if (results.includes('NO_ROM_READ') || autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
+    NO_ROM_READS = true;
+  }
 
   if (!CONFIGURING) {
     autotrackStartTimer();
@@ -210,7 +225,7 @@ function snesreadsave(address, size, data, data_loc, nextCallback, merge = false
 }
 
 function parseWorldState(config_data) {
-  if ((config_data["mainflags"][0x175] == 0x01) && (config_data["mainflags"][0x172] == 0x01)) {
+  if (config_data["mainflags"][0x175] == 0x01 && config_data["mainflags"][0x172] == 0x01) {
     return "retro";
   } else if (config_data["mainflags"][0x4a] == 0x01) {
     return "inverted";
@@ -530,7 +545,7 @@ async function autotrackerConfigure() {
     autotrackSetStatus("Tracker auto-configured.");
     autotrackDisconnect();
   }
-  if (RETROARCH_QUSB) {
+  if (NO_ROM_READS) {
     autotrackSetStatus("Autconfiguration is not supported in RetroArch. Please configure the settings manually.");
     alert("Autconfiguration is not supported in RetroArch. Please configure the settings manually.");
     autotrackDisconnect();
@@ -549,7 +564,7 @@ function autotrackReadMem() {
 
   var data = {};
 
-  if (!RETROARCH_QUSB) {
+  if (!NO_ROM_READS) {
     addRomName();
   } else {
     // If we're using RetroArch, we skip the ROM name and go straight to the gamemode
@@ -575,13 +590,13 @@ function autotrackReadMem() {
     if (romName.startsWith("ALTTPRAC")) {
       data["fork"] = "PH";
       data["version"] = romName.slice(10, 18);
-      const phMajorVersion = data['version'].split('.')[0];
-      const phMinorVersion = data['version'].split('.')[1];
+      const phMajorVersion = data["version"].split(".")[0];
+      const phMinorVersion = data["version"].split(".")[1];
       if (phMajorVersion < 14 || (phMajorVersion == 14 && phMinorVersion < 4)) {
         alert("This version of Prachack is not supported by the autotracker. Please update to at least version 14.4.0");
         return;
       }
-      GAMEMODE_LOC = 0xE07C04;
+      GAMEMODE_LOC = 0xe07c04;
 
       addGamemode();
       return;
@@ -621,7 +636,7 @@ function autotrackReadMem() {
   }
 
   function addGamemode() {
-      snesreadsave(GAMEMODE_LOC, 1, data, "gamemode", addMainAutoTrackData1);
+    snesreadsave(GAMEMODE_LOC, 1, data, "gamemode", addMainAutoTrackData1);
   }
 
   function addMainAutoTrackData1() {
@@ -630,16 +645,16 @@ function autotrackReadMem() {
       autotrackStartTimer();
       return;
     }
-    if (data['fork'] === "PH") {
-      data['rooms_inv'] = new Uint8Array(0x340);
-      snesreadsave(0xE07C08, 0x28, data, "rooms_inv", handlePracHack,(merge = true));
+    if (data["fork"] === "PH") {
+      data["rooms_inv"] = new Uint8Array(0x340);
+      snesreadsave(0xe07c08, 0x28, data, "rooms_inv", handlePracHack, (merge = true));
     } else {
       snesreadsave(SAVEDATA_START, 0x280, data, "rooms_inv", addMainAutoTrackData2);
     }
   }
 
   function handlePracHack() {
-    data['rooms_inv'] = [...data['rooms_inv'], ...new Uint8Array(0x188)];
+    data["rooms_inv"] = [...data["rooms_inv"], ...new Uint8Array(0x188)];
     handleAutoTrackData();
   }
 
@@ -676,7 +691,7 @@ function autotrackReadMem() {
   }
 
   function addDungeonKeys() {
-    snesreadsave(KEYS_LOC, 0x10, data, "dungeonkeys", RETROARCH_QUSB ? handleAutoTrackData : addMysteryFlag);
+    snesreadsave(KEYS_LOC, 0x10, data, "dungeonkeys", NO_ROM_READS ? handleAutoTrackData : addMysteryFlag);
   }
 
   function addMysteryFlag() {
@@ -845,7 +860,7 @@ function autotrackDoTracking(data) {
   }
 
   dungeonPrizes = {};
-  if (data["prizes"] && !RETROARCH_QUSB && flags.autotracking !== "N" && !(data["fork"] === "OR" && (data["keysanity"][0] & 0x20) === 0x20)) {
+  if (data["prizes"] && !NO_ROM_READS && flags.autotracking !== "N" && !(data["fork"] === "OR" && (data["keysanity"][0] & 0x20) === 0x20)) {
     Object.entries(window.dungeonDataMem).forEach(([dungeon, dungeondata]) => {
       if ("prize" in dungeondata && dungeondata.prize > 0) {
         const prizeType = data["prizes"][dungeondata.prize + 0xd] == 0x40 ? "crystal" : "pendant";
@@ -1163,8 +1178,8 @@ function autotrackDoTracking(data) {
     if (newbit(offset, 0x08) && !items[boss]) {
       click_map();
       toggle(boss);
-      if ((RETROARCH_QUSB || PENDANT_SWAP_BUG_PRESENT) && ['N', 'O'].includes(flags.glitches)) {
-          collect_prize(boss.slice(-1));
+      if ((NO_ROM_READS || PENDANT_SWAP_BUG_PRESENT) && ["N", "O"].includes(flags.glitches)) {
+        collect_prize(boss.slice(-1));
       }
     }
   }
@@ -1246,7 +1261,7 @@ function autotrackDoTracking(data) {
     // Agahnim Killed
     setitem("agahnim", true);
 
-  if (data['fork'] == 'PH') {
+  if (data["fork"] == "PH") {
     // PRACHACK/VANILLA
     if (changed(0x340)) setitem("bow", data["rooms_inv"][0x340] == 0x02 ? 2 : data["rooms_inv"][0x340] == 0x04 ? 3 : 0);
     if (changed(0x341)) setitem("boomerang", data["rooms_inv"][0x341]);
@@ -1259,14 +1274,13 @@ function autotrackDoTracking(data) {
       }
     }
 
-    if (changed(0x34C)) {
-      if (data["rooms_inv"][0x34C] == 0x01) {
+    if (changed(0x34c)) {
+      if (data["rooms_inv"][0x34c] == 0x01) {
         setitem("shovel", true);
-      } else if (data["rooms_inv"][0x34C] == 0x02) {
+      } else if (data["rooms_inv"][0x34c] == 0x02) {
         setitem("flute", 1);
         setitem("shovel", false);
-      }
-      else if (data["rooms_inv"][0x34C] == 0x03) {
+      } else if (data["rooms_inv"][0x34c] == 0x03) {
         setitem("flute", 2);
         setitem("shovel", false);
       }
