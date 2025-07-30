@@ -20,6 +20,8 @@ body {
 #app.mapless { width: 448px; }
 #app.sphereless { height: 448px; }
 
+.scale200 { zoom: 2;}
+.scale150 { zoom: 1.5;}
 .scale100 { zoom: 1;}
 .scale75 { zoom: 0.75;}
 .scale50 { zoom: 0.5;}

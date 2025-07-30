@@ -836,7 +836,16 @@
     "Turtle Rock - West": {
       Open: {
         always: {
-          allOf: ["canBreach|Dark World - Death Mountain", "canSpinSpeedClip", "moonpearl"],
+          allOf: ["canBreach|Dark World - Death Mountain",
+            {
+              anyOf: [
+                {
+                  allOf: ["canBootsClip", "moonpearl"]
+                },
+                "mirror"
+              ]
+            }
+          ],
         },
       },
       Inverted: {
@@ -852,7 +861,16 @@
     "Turtle Rock - East": {
       Open: {
         always: {
-          allOf: ["canBreach|Dark World - Death Mountain", "canSpinSpeedClip", "moonpearl"],
+          allOf: ["canBreach|Dark World - Death Mountain",
+            {
+              anyOf: [
+                {
+                  allOf: ["canBootsClip", "moonpearl"]
+                },
+                "mirror"
+              ]
+            }
+          ],
         },
       },
       Inverted: {
@@ -884,8 +902,15 @@
     "Ganons Tower": {
       Open: {
         always: {
-          allOf: ["canBreach|Dark World - Death Mountain"],
-          anyOf: ["moonpearl", "canBunnyCitrus"],
+          anyOf: [
+            {
+              allOf: ["canBreach|Dark World - Death Mountain"],
+              anyOf: ["moonpearl", "canBunnyCitrus"],
+            },
+            {
+              allOf: ["canBreach|Light World - Lower West Death Mountain", "canBunnyCitrus"],
+            }
+          ]
         },
         logical: {
           allOf: ["canReach|Dark World - Death Mountain", "moonpearl"],

@@ -49,6 +49,12 @@ body {
   height: 448px;
 }
 
+.scale200 {
+  zoom: 2;
+}
+.scale150 {
+  zoom: 1.5;
+}
 .scale100 {
   zoom: 1;
 }

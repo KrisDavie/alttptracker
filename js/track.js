@@ -2392,6 +2392,12 @@
   window.updateLayout = function () {
     let scaleClass = "scale100";
     switch (flags.scale) {
+      case "D":
+        scaleClass = "scale200";
+        break;
+      case "E":
+        scaleClass = "scale150";
+        break;
       case "F":
         break;
       case "T":

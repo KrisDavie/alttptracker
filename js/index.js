@@ -79,6 +79,12 @@ function load_cookie() {
           break;
         case "sc":
           switch (setting[1]) {
+            case "D":
+              document.getElementById("scale200").checked = true;
+              break;
+            case "E":
+              document.getElementById("scale150").checked = true;
+              break;
             case "F":
               document.getElementById("scale100").checked = true;
               break;
@@ -297,6 +303,14 @@ function launch_tracker() {
   }
 
   switch (scale) {
+    case "D":
+      width = width * 2;
+      height = height * 2;
+      break;
+    case "E":
+      width = width * 1.5;
+      height = height * 1.5;
+      break;
     case "F":
       break;
     case "T":

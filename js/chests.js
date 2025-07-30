@@ -196,7 +196,7 @@
     completable.push(melee() ? "available" : "unavailable");
 
     const bossId = enemizer[i] - 1;
-    if (bossId != -1) {
+    if (bossId != -1 && bossId != 10) {
       return completable[bossId];
     } else {
       if (completable.every((c) => c === "available" || c === "pass")) {
@@ -1676,7 +1676,8 @@
     if (!flags.wildmaps) collected -= window.dungeonTotalLocations[dungeonAbbreviation]["map"];
 
     if ((!flags.wildkeys && window.dungeonTotalLocations[dungeonAbbreviation]["keys"] > 0) || (!flags.wildbigkeys && window.dungeonTotalLocations[dungeonAbbreviation]["bigkey"])) {
-      if (checksRequired > 0 && checksRequired < maxChecks) return "possible";
+      if (checksLogical > 0 && checksLogical < maxChecks) return "possible";
+      if (checksRequired > 0 && checksRequired < maxChecks) return "darkavailable";
     }
 
     // In doors, when the number of items isn't known, collected is set to a negative

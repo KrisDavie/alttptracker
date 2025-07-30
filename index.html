@@ -1,20 +1,21 @@
 <html>
   <head>
     <title>ALTTP Randomizer Community Tracker - Launcher</title>
-    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250728"></script>
-    <script type="text/javascript" src="js/jquery.powertip.js?v=20250728"></script>
-    <script type="text/javascript" src="js/select2.min.js?v=20250728"></script>
-    <script type="text/javascript" src="js/index.js?v=20250728"></script>
-    <script type="text/javascript" src="js/autot.js?v=20250728"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js?v=20250728"></script>
-    <script type="text/javascript" src="js/kofi.js?v=20250728"></script>
-    <script type="text/javascript" src="js/header.js?v=20250728"></script>
-    <link href="css/jquery.powertip.css?v=20250728" rel="stylesheet" />
-    <link href="css/select2.min.css?v=20250728" rel="stylesheet" />
-    <link href="css/launcher.css?v=20250728" rel="stylesheet" />
-    <link href="css/fonts.css?v=20250728" rel="stylesheet" />
-    <link href="css/sprites.css?v=20250728" rel="stylesheet" />
-    <link href="css/toast.css?v=20250728" rel="stylesheet" />
+    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20250731"></script>
+    <script type="text/javascript" src="js/jquery.powertip.js?v=20250731"></script>
+    <script type="text/javascript" src="js/select2.min.js?v=20250731"></script>
+    <script type="text/javascript" src="js/util.js?v=20250731"></script>
+    <script type="text/javascript" src="js/index.js?v=20250731"></script>
+    <script type="text/javascript" src="js/autot.js?v=20250731"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js?v=20250731"></script>
+    <script type="text/javascript" src="js/kofi.js?v=20250731"></script>
+    <script type="text/javascript" src="js/header.js?v=20250731"></script>
+    <link href="css/jquery.powertip.css?v=20250731" rel="stylesheet" />
+    <link href="css/select2.min.css?v=20250731" rel="stylesheet" />
+    <link href="css/launcher.css?v=20250731" rel="stylesheet" />
+    <link href="css/fonts.css?v=20250731" rel="stylesheet" />
+    <link href="css/sprites.css?v=20250731" rel="stylesheet" />
+    <link href="css/toast.css?v=20250731" rel="stylesheet" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -35,7 +36,7 @@
     </script>
   </head>
 
-  <body>
+  <body>    
     <div class="outer-wrapper">
       <div>
         <div class="header-main-div">
@@ -1175,6 +1176,15 @@
             </div>
             <div>
               <span class="preset-span-double"> Tracker Scale: <span class="south tooltop-character" title="Set the scale for the tracker to fit on smaller screens.">[?]</span> </span>
+              <!-- <span class="preset-span">
+                <input id="scale200" value="D" type="radio" name="scalegroup" />
+                <label for="scale200">200%</label>
+              </span> -->
+              <span class="preset-span">
+                <input id="scale150" value="E" type="radio" name="scalegroup" />
+                <label for="scale150">150%</label>
+              </span>
+              
               <span class="preset-span">
                 <input id="scale100" value="F" type="radio" name="scalegroup" checked />
                 <label for="scale100">100%</label>
@@ -1245,7 +1255,9 @@
               <label for="autotrackinghost">Host:</label>
               <input style="width: 100px" id="autotrackinghost" value="localhost" type="text" />
             </span>
-
+            <span class="preset-span-double" id="autotrackingWarning" style="color: red; margin-top: 5px; display: none; font-size: 18px">
+              Using a remote host requires allowing insecure websocket connections in your browser for this site. Instructions can be found <a href="https://www.damirscorner.com/blog/posts/20210528-AllowingInsecureWebsocketConnections.html" target="_blank">here</a>.
+            </span>
           </div>
           <div>
             <span class="preset-span-double"> Styling: <span class="south tooltop-character" title="Customize your colors and/or map and icon settings. A color-blind friendly preset is available here">[?]</span> </span>
@@ -1273,4 +1285,32 @@
       </div>
     </div>
   </body>
+  <script>
+      document.getElementById("autotrackinghost").addEventListener("input", function () {
+      const value = this.value.trim();
+
+      if (value !== "localhost" && value !== "127.0.0.1") {
+        document.getElementById("autotrackingWarning").style.display = "block";
+      } else {
+        document.getElementById("autotrackingWarning").style.display = "none";
+      }
+    });
+  </script>
+  <script>
+    // If window.isDev, add a greyscale filter to the background image and add a repeating DEVELOPMENT watermark
+    if (window.isDev) {
+      document.body.style.backdropFilter = "grayscale(100%)";
+      const watermark = document.createElement("div");
+      watermark.style.position = "fixed";
+      watermark.style.top = "0";
+      watermark.style.left = "0";
+      watermark.style.width = "100%";
+      watermark.style.height = "100%";
+      watermark.style.pointerEvents = "none";
+      watermark.style.backgroundImage = "repeating-linear-gradient(45deg, rgba(255, 0, 0, 0.075) 0, rgba(255, 0, 0, 0.075) 20px, transparent 20px, transparent 40px)";
+      watermark.style.zIndex = "1000";
+      document.body.appendChild(watermark);
+    }
+
+  </script>
 </html>
