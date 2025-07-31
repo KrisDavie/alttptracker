@@ -105,6 +105,7 @@ function load_cookie() {
           document.getElementById("alwaysshowcompasses").checked = alwaysDisplay[1] === "1";
           document.getElementById("alwaysshowsmallkeys").checked = alwaysDisplay[2] === "1";
           document.getElementById("alwaysshowbigkeys").checked = alwaysDisplay[3] === "1";
+          document.getElementById("alwaysshowhcct").checked = alwaysDisplay[4] === "1";
           break;
       }
     });
@@ -278,7 +279,8 @@ function launch_tracker() {
   var showcompasses = document.getElementById("alwaysshowcompasses").checked;
   var showsmallkeys = document.getElementById("alwaysshowsmallkeys").checked;
   var showbigkeys = document.getElementById("alwaysshowbigkeys").checked;
-  var alwaysdisplay = (showmaps ? "1" : "0") + (showcompasses ? "1" : "0") + (showsmallkeys ? "1" : "0") + (showbigkeys ? "1" : "0");
+  var showhcct = document.getElementById("alwaysshowhcct").checked;
+  var alwaysdisplay = (showmaps ? "1" : "0") + (showcompasses ? "1" : "0") + (showsmallkeys ? "1" : "0") + (showbigkeys ? "1" : "0") + (showhcct ? "1" : "0");
 
   var width = map === "M" ? 1340 : 448;
 

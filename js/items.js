@@ -40,6 +40,7 @@
         showmaps: query.d.charAt(7) === '1' ? true : false,
         showsmallkeys: query.d.charAt(8) === '1' ? true : false,
         showbigkeys: query.d.charAt(9) === '1' ? true : false,
+        showhcctcounts: query.d.charAt(10) === '1' ? true : false,
         autotracking: query.a.charAt(0),
         trackingport: query.a.charAt(1) + query.a.charAt(2) + query.a.charAt(3) + query.a.charAt(4) + query.a.charAt(5),
         trackinghost: query.a.slice(6, 100),
