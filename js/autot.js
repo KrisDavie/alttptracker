@@ -813,7 +813,7 @@ function autotrackDoTracking(data) {
 
   // Autotrack dungeon key and chest counts if count has been seen by entering the dungeon (for keys, when map in inventory, for checks basically always since that setting is generally on)
   // If NO_ROM_READS is set, we _assume_ that it's the correct fork
-  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && (data["fork"] !== "VT" || NO_ROM_READS)) {
+  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && ((data["fork"] !== "VT") || NO_ROM_READS)) {
     var dungeon_masks = {
       11: [0x00c0, 2],
       0: [0x0020, 4],
