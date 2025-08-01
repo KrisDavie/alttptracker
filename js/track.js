@@ -2392,6 +2392,12 @@
   window.updateLayout = function () {
     let scaleClass = "scale100";
     switch (flags.scale) {
+      case "D":
+        scaleClass = "scale200";
+        break;
+      case "E":
+        scaleClass = "scale150";
+        break;
       case "F":
         break;
       case "T":
@@ -2447,15 +2453,15 @@
     document.getElementById("mapEntranceDiv_dark").style.display = flags.entrancemode === "N" ? "none" : "block";
 
     //Hide HC and CT big keys if not needed
-    document.getElementById("bigkey11").style.visibility = flags.wildbigkeys && flags.doorshuffle != "N" ? "visible" : "hidden";
-    document.getElementById("bigkey12").style.visibility = flags.wildbigkeys && flags.doorshuffle === "C" ? "visible" : "hidden";
+    document.getElementById("bigkey11").style.visibility = (flags.wildbigkeys || flags.showbigkeys) && flags.doorshuffle != "N" ? "visible" : "hidden";
+    document.getElementById("bigkey12").style.visibility = (flags.wildbigkeys || flags.showbigkeys) && flags.doorshuffle === "C" ? "visible" : "hidden";
 
     //Hide HC and CT chests if neither Entrance nor Door Shuffle is on
-    document.getElementById("agamagicsplitdiv").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" ? "none" : "block";
-    document.getElementById("hcctchests").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" ? "none" : "block";
-    document.getElementById("bighalfmagic").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" ? "block" : "none";
-    document.getElementById("agasplitdiv").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" ? "block" : "none";
-    if (!(flags.entrancemode === "N" && flags.doorshuffle === "N") && items.maxchest12 === 0) {
+    document.getElementById("agamagicsplitdiv").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" && !flags.showhcctcounts ? "none" : "block";
+    document.getElementById("hcctchests").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" && !flags.showhcctcounts ? "none" : "block";
+    document.getElementById("bighalfmagic").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" && !flags.showhcctcounts ? "block" : "none";
+    document.getElementById("agasplitdiv").style.display = flags.entrancemode === "N" && flags.doorshuffle === "N" && !flags.showhcctcounts ? "block" : "none";
+    if ((!(flags.entrancemode === "N" && flags.doorshuffle === "N") || flags.showhcctcounts) && items.maxchest12 === 0) {
       rightClickChest("chest12");
       toggle("chest12");
     }

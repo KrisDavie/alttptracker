@@ -3,6 +3,8 @@
 
 	window.buildString = "20250701";
 
+	window.isDev = false;
+
 	// based on https://github.com/medialize/URI.js/blob/gh-pages/src/URI.js
 	window.uri_query = memoize(function () {
 		var q, href = location.href + '',

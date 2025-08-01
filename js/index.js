@@ -64,6 +64,11 @@ function load_cookie() {
             document.getElementById("autotrackingport").value = autotrackingPort;
           }
           break;
+        case "ah":
+          if (setting[1]) {
+            document.getElementById("autotrackinghost").value = setting[1];
+          }
+          break;
         case "p":
           document.getElementById("spriteselect").value = setting[1];
           break;
@@ -74,6 +79,12 @@ function load_cookie() {
           break;
         case "sc":
           switch (setting[1]) {
+            case "D":
+              document.getElementById("scale200").checked = true;
+              break;
+            case "E":
+              document.getElementById("scale150").checked = true;
+              break;
             case "F":
               document.getElementById("scale100").checked = true;
               break;
@@ -94,6 +105,7 @@ function load_cookie() {
           document.getElementById("alwaysshowcompasses").checked = alwaysDisplay[1] === "1";
           document.getElementById("alwaysshowsmallkeys").checked = alwaysDisplay[2] === "1";
           document.getElementById("alwaysshowbigkeys").checked = alwaysDisplay[3] === "1";
+          document.getElementById("alwaysshowhcct").checked = alwaysDisplay[4] === "1";
           break;
       }
     });
@@ -157,6 +169,10 @@ function resetallstartingitems() {
 
 async function getNextLadderRace() {
   const response = await fetch("https://alttpr.racing/api/v1/upcoming");
+  if (!response.ok) {
+    console.error("Failed to fetch upcoming races");
+    return;
+  }
   const data = await response.json();
   const nextRace = data[0];
   if (nextRace) {
@@ -258,6 +274,7 @@ function launch_tracker() {
   var sphere = document.querySelector('input[name="spheregroup"]:checked').value;
   var autotracking = document.querySelector('input[name="autotrackinggroup"]:checked').value;
   var trackingport = document.getElementById("autotrackingport").value;
+  var trackinghost = document.getElementById("autotrackinghost").value;
   var spritesel = document.getElementById("spriteselect");
   var sprite = spritesel.options[spritesel.selectedIndex].value;
   var mapStyle = document.querySelector('input[name="oldmapstyles"]:checked') === null ? "N" : "O";
@@ -266,7 +283,8 @@ function launch_tracker() {
   var showcompasses = document.getElementById("alwaysshowcompasses").checked;
   var showsmallkeys = document.getElementById("alwaysshowsmallkeys").checked;
   var showbigkeys = document.getElementById("alwaysshowbigkeys").checked;
-  var alwaysdisplay = (showmaps ? "1" : "0") + (showcompasses ? "1" : "0") + (showsmallkeys ? "1" : "0") + (showbigkeys ? "1" : "0");
+  var showhcct = document.getElementById("alwaysshowhcct").checked;
+  var alwaysdisplay = (showmaps ? "1" : "0") + (showcompasses ? "1" : "0") + (showsmallkeys ? "1" : "0") + (showbigkeys ? "1" : "0") + (showhcct ? "1" : "0");
 
   var width = map === "M" ? 1340 : 448;
 
@@ -291,6 +309,14 @@ function launch_tracker() {
   }
 
   switch (scale) {
+    case "D":
+      width = width * 2;
+      height = height * 2;
+      break;
+    case "E":
+      width = width * 1.5;
+      height = height * 1.5;
+      break;
     case "F":
       break;
     case "T":
@@ -308,14 +334,14 @@ function launch_tracker() {
   }
 
   if (document.getElementById("remembersettings").checked == true) {
-    var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale + "|ad-" + alwaysdisplay;
+    var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|ah-" + trackinghost + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale + "|ad-" + alwaysdisplay;
     document.cookie = "settings=" + settings + "; expires=Sat, 3 Jan 2026 12:00:00 UTC";
   } else {
     document.cookie = "settings=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
   }
 
   var trackerWindow = window.open(
-    "tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{prizeshuffle}{mirrorscroll}&d={map}{chestcolor}{spoiler}{sphere}{autotracking}{trackingport}{mapstyle}{scale}{alwaysdisplay}&s={startingitemstring}&p={sprite}&r={epoch}"
+    "tracker.html?f={world}{entrance}{door}{overworld}{boss}{enemy}{pseudoboots}{unknown}{glitches}{shuffledmaps}{shuffledcompasses}{shuffledsmallkeys}{shuffledbigkeys}{shopsanity}{ambrosia}{nonprogressivebows}{activatedflute}{bonkshuffle}{goal}{tower}{towercrystals}{ganon}{ganoncrystals}{swords}{prizeshuffle}{mirrorscroll}&d={map}{chestcolor}{spoiler}{sphere}{mapstyle}{scale}{alwaysdisplay}&a={autotracking}{trackingport}{trackinghost}&s={startingitemstring}&p={sprite}&r={epoch}"
       .replace("{world}", world)
       .replace("{entrance}", entrance)
       .replace("{door}", door)
@@ -348,6 +374,7 @@ function launch_tracker() {
       .replace("{sphere}", sphere)
       .replace("{autotracking}", autotracking)
       .replace("{trackingport}", trackingport.padStart(5, "0"))
+      .replace("{trackinghost}", trackinghost)
       .replace("{mapstyle}", mapStyle)
       .replace("{scale}", scale)
       .replace("{alwaysdisplay}", alwaysdisplay)
@@ -452,6 +479,10 @@ function loadnamedpreset(name) {
       break;
     case "enemizerboots":
       loadenemizerbootspreset();
+      break;
+    case "enemizerkeydrop":
+    case "mfns./open_keydrop_logenemizer":
+      loadenemizerkeydroppreset();
       break;
     case "ganonhunt":
       loadganonhuntpreset();
@@ -1034,7 +1065,7 @@ function loadcrosskeysflute_ms_pbpreset() {
     unknownnone: true,
     shopsanityno: true,
     ambrosiano: true,
-    pseudobootsno: true,
+    pseudobootsyes: true,
     mirrorscrollyes: true,
     shuffledmaps: true,
     shuffledcompasses: true,
@@ -1397,6 +1428,35 @@ function loadenemizerbootspreset() {
     bonkshuffleno: true,
   });
   setstartingitem("boots", 22, "1");
+}
+
+function loadenemizerkeydroppreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancenone: true,
+    doorpots: true,
+    overworldno: true,
+    bossshuffled: true,
+    enemyshuffled: true,
+    glitchesnone: true,
+    goalganon: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
 }
 
 function loadganonhuntpreset() {

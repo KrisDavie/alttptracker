@@ -34,19 +34,22 @@
         chestcolormode: query.d.charAt(1),
         spoilermode: query.d.charAt(2),
         spheresmode: query.d.charAt(3),
-        autotracking: query.d.charAt(4),
-        trackingport: query.d.charAt(5) + query.d.charAt(6) + query.d.charAt(7) + query.d.charAt(8) + query.d.charAt(9),
-        mapstyle: query.d.charAt(10),
-        scale: query.d.charAt(11),
-        showcompasses: query.d.charAt(12) === '1' ? true : false,
-        showmaps: query.d.charAt(13) === '1' ? true : false,
-        showsmallkeys: query.d.charAt(14) === '1' ? true : false,
-        showbigkeys: query.d.charAt(15) === '1' ? true : false,
+        mapstyle: query.d.charAt(4),
+        scale: query.d.charAt(5),
+        showcompasses: query.d.charAt(6) === '1' ? true : false,
+        showmaps: query.d.charAt(7) === '1' ? true : false,
+        showsmallkeys: query.d.charAt(8) === '1' ? true : false,
+        showbigkeys: query.d.charAt(9) === '1' ? true : false,
+        showhcctcounts: query.d.charAt(10) === '1' ? true : false,
+        autotracking: query.a.charAt(0),
+        trackingport: query.a.charAt(1) + query.a.charAt(2) + query.a.charAt(3) + query.a.charAt(4) + query.a.charAt(5),
+        trackinghost: query.a.slice(6, 100),
         startingitems: query.s,
         sprite: query.p.replace('#','').replace('!',''),
     };
 
     window.flags.trackingport = parseInt(flags.trackingport);
+    window.flags.trackinghost = flags.trackinghost || 'localhost';
     
     window.maptype = query.map;
     
