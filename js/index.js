@@ -169,6 +169,10 @@ function resetallstartingitems() {
 
 async function getNextLadderRace() {
   const response = await fetch("https://alttpr.racing/api/v1/upcoming");
+  if (!response.ok) {
+    console.error("Failed to fetch upcoming races");
+    return;
+  }
   const data = await response.json();
   const nextRace = data[0];
   if (nextRace) {
@@ -475,6 +479,10 @@ function loadnamedpreset(name) {
       break;
     case "enemizerboots":
       loadenemizerbootspreset();
+      break;
+    case "enemizerkeydrop":
+    case "mfns./open_keydrop_logenemizer":
+      loadenemizerkeydroppreset();
       break;
     case "ganonhunt":
       loadganonhuntpreset();
@@ -1420,6 +1428,35 @@ function loadenemizerbootspreset() {
     bonkshuffleno: true,
   });
   setstartingitem("boots", 22, "1");
+}
+
+function loadenemizerkeydroppreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancenone: true,
+    doorpots: true,
+    overworldno: true,
+    bossshuffled: true,
+    enemyshuffled: true,
+    glitchesnone: true,
+    goalganon: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
 }
 
 function loadganonhuntpreset() {

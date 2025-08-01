@@ -769,7 +769,7 @@ function autotrackDoTracking(data) {
   // VT and ER is enabled
   // DR and version is less than 142
   // OR and ORversion is less than 4.0
-  const PENDANT_SWAP_BUG_PRESENT = (data["fork"] === "VT" && (data["entrances"][0] & 0x02) != 0) || (data["fork"] === "DR" && data["version"] < 142) || (data["fork"] === "OR" && data["orversion"][0] === 0 && data["orversion"][1] < 4);
+  const PENDANT_SWAP_BUG_PRESENT = (data["fork"] === "VT" && (data["entrances"][0] & 0x02) != 0) || (data["fork"] === "DR" && data["version"] < 142) || (data["fork"] === "OR" && data["orversion"][0] === 0 && data["orversion"][1] < 4) || NO_ROM_READS;
 
   // Decrement dungeon count unless a non-wild dungeon item is found
   if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && flags.autotracking === "Y") {
@@ -812,7 +812,8 @@ function autotrackDoTracking(data) {
   }
 
   // Autotrack dungeon key and chest counts if count has been seen by entering the dungeon (for keys, when map in inventory, for checks basically always since that setting is generally on)
-  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && data["fork"] !== "VT") {
+  // If NO_ROM_READS is set, we _assume_ that it's the correct fork
+  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && (data["fork"] !== "VT" || NO_ROM_READS)) {
     var dungeon_masks = {
       11: [0x00c0, 2],
       0: [0x0020, 4],
