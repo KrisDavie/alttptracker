@@ -10,6 +10,8 @@ var autotrackPrevData = null;
 var autotrackRefreshInterval = 1000;
 var autotrackTimeoutDelay = 10000;
 
+var hasWarnedPracHackVersion = false
+
 var WRAM_START = 0xf50000;
 var WRAM_SIZE = 0x20000;
 var GAMEMODE_LOC = WRAM_START + 0x10;
@@ -587,13 +589,16 @@ function autotrackReadMem() {
     const romName = Array.from(data["version"])
       .map((c) => String.fromCharCode(c))
       .join("");
-    if (romName.startsWith("ALTTPRAC")) {
+    if (romName.startsWith("ALTTPRAC") || romName.startsWith("ZELDANODEN")) {
       data["fork"] = "PH";
       data["version"] = romName.slice(10, 18);
       const phMajorVersion = data["version"].split(".")[0];
       const phMinorVersion = data["version"].split(".")[1];
-      if (phMajorVersion < 14 || (phMajorVersion == 14 && phMinorVersion < 4)) {
-        alert("This version of Prachack is not supported by the autotracker. Please update to at least version 14.4.0");
+      if ((phMajorVersion == 14 && phMinorVersion < 4) || phMinorVersion === undefined) {
+        if (!hasWarnedPracHackVersion) {
+          alert("This version of Prachack is not supported by the autotracker. Please update to at least version 14.4.0");
+          hasWarnedPracHackVersion = true;
+        }
         return;
       }
       GAMEMODE_LOC = 0xe07c04;
