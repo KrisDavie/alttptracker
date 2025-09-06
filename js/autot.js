@@ -24,6 +24,7 @@ var RANDOVERSION_LOC = 0x7fc0; // Actually ROM name
 var ORVERSION_LOC = 0x150010;
 var DRMODE_LOC = 0x138002;
 var DRFLAGS_LOC = 0x138004; // Actually DRFlags
+var OWDATA_LOC =  0x1539B0; // Overworld data for autotracking
 var SMITH_LOC = 0x18004c; // Smiths can go into eg2
 var PRIZES_LOC = 0x1209b; // Pendant/Crystal number data
 var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
@@ -726,7 +727,11 @@ function autotrackReadMem() {
   }
 
   function addPrize2Data() {
-    snesreadsave(PRIZES2_LOC, 0xd, data, "prizes", handleAutoTrackData, (merge = true));
+    snesreadsave(PRIZES2_LOC, 0xd, data, "prizes", addOWShuffleData, (merge = true));
+  }
+
+  function addOWShuffleData() {
+    snesreadsave(OWDATA_LOC, 0x40, data, "owshuffle", handleAutoTrackData);
   }
 
   function handleAutoTrackData() {
@@ -768,6 +773,21 @@ function autotrackDoTracking(data) {
   }
   function checkTwoBitMask(data, loc, mask, data_loc = "rooms_inv") {
     return ((data[data_loc][loc] | (data[data_loc][loc + 1] << 8)) & mask) !== 0;
+  }
+
+  for (let ilw = 0x280; ilw < 0x280 + 0x40; ilw++) {
+      let lwv, dwv = false;
+      let idw = ilw + 0x40;
+      if (newbit(ilw, 0x80, "rooms_inv")) { console.log('Lightworld visited'); lwv = true; }
+      if (newbit(idw, 0x80, "rooms_inv")) { console.log('Darkworld visited'); dwv = true; }
+
+    if (lwv || dwv) {
+      if (data['owshuffle'][ilw - 0x280] > 0) {
+        window.sendShuffleUpdate(ilw - 0x280, true)
+      } else {
+        window.sendShuffleUpdate(ilw - 0x280, false)
+      }
+    }
   }
 
   // TEMP FIX: Don't track red and blue on the following conditions:
@@ -818,7 +838,7 @@ function autotrackDoTracking(data) {
 
   // Autotrack dungeon key and chest counts if count has been seen by entering the dungeon (for keys, when map in inventory, for checks basically always since that setting is generally on)
   // If NO_ROM_READS is set, we _assume_ that it's the correct fork
-  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && ((data["fork"] !== "VT") || NO_ROM_READS)) {
+  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && (data["fork"] !== "VT" || NO_ROM_READS)) {
     var dungeon_masks = {
       11: [0x00c0, 2],
       0: [0x0020, 4],

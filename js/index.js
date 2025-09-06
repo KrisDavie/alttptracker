@@ -445,6 +445,7 @@ function loadnamedpreset(name) {
       loadcrosskeyspreset();
       break;
     case "crosskeys2024":
+    case "jem041/crosskeys2024":
       loadcrosskeys2024preset();
       break;
     case "mfns./crosskeys_flute_ms_pb":

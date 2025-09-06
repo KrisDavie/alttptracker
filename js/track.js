@@ -151,7 +151,7 @@
       return;
     }
 
-    if (label === "mirror" && ((flags.doorshuffle != "N" && flags.doorshuffle != "P") || flags.mirrorscroll === 'Y')) {
+    if (label === "mirror" && ((flags.doorshuffle != "N" && flags.doorshuffle != "P") || flags.mirrorscroll === "Y")) {
       document.getElementById("mirrorscroll").style.display = items.mirror ? "block" : "none";
     }
 
@@ -390,6 +390,12 @@
     }
   };
 
+  window.sendShuffleUpdate = function (tile, swapped) {
+    if (doorWindow && !doorWindow.closed && doorWindow.mixedow) {
+      doorWindow.postMessage({ type: "SHUFFLEUPDATE", tile: tile, swapped: swapped }, "*");
+    }
+  };
+
   window.receiveMessage = function (event) {
     if (window.origin === event.origin) {
       if (event.data.logic && flags.overworldshuffle != "N") {
@@ -575,7 +581,7 @@
       if (document.getElementById("bossMap" + n) != null) {
         document.getElementById("bossMap" + n).className = "bossprize-" + prizes[n] + " boss " + dungeons[n].is_beatable();
       }
-    updateLocationAvailability()
+    updateLocationAvailability();
   };
 
   // event of clicking on a boss's enemizer portrait
@@ -588,7 +594,7 @@
       if (document.getElementById("bossMap" + n) != null) {
         document.getElementById("bossMap" + n).className = "bossprize-" + prizes[n] + " boss " + dungeons[n].is_beatable();
       }
-    updateLocationAvailability()
+    updateLocationAvailability();
   };
 
   window.rightClickChest = function (label) {
@@ -2570,7 +2576,7 @@
 
     document.getElementById("bombfloor").style.visibility = flags.doorshuffle != "C" ? "hidden" : "visible";
 
-    document.getElementById("mirrorscroll").style.visibility = ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && flags.mirrorscroll === "N") ? "hidden" : "visible";
+    document.getElementById("mirrorscroll").style.visibility = (flags.doorshuffle === "N" || flags.doorshuffle === "P") && flags.mirrorscroll === "N" ? "hidden" : "visible";
 
     document.getElementById("pseudoboots").style.visibility = flags.pseudoboots === "N" ? "hidden" : "visible";
 
