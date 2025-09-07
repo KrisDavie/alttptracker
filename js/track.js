@@ -162,7 +162,7 @@
     // If left clicked on chest
     if (label.substring(0, 5) === "chest") {
       //do this when autotracking doors
-      if (flags.autotracking === "Y" && flags.doorshuffle === "C") {
+      if (["Y", "E"].includes(flags.autotracking) && flags.doorshuffle === "C") {
         var curCount = Number(document.getElementById(label).innerHTML.replace("+", ""));
         if (curCount > 0) {
           items["chestmanual" + label.substring(5)]++;
@@ -225,7 +225,7 @@
 
     if (label.substring(0, 12) === "smallkeyhalf" || label.substring(0, 8) === "smallkey") {
       //do this if autotracking doors
-      if (flags.autotracking === "Y" && flags.doorshuffle === "C") {
+      if (["Y", "E"].includes(flags.autotracking) && flags.doorshuffle === "C") {
         items["keymanual" + label.substring(8)]++;
         setKeyCount(Number(document.getElementById(label).innerHTML) - Number(items["keymanual" + label.substring(8)]) + 1, items["maxkey" + label.substring(8)], label);
         return;
@@ -599,7 +599,7 @@
 
   window.rightClickChest = function (label) {
     //do this when autotracking doors
-    if (flags.autotracking === "Y" && flags.doorshuffle === "C") {
+    if (["Y", "E"].includes(flags.autotracking) && flags.doorshuffle === "C") {
       items["chestmanual" + label.substring(5)] = Math.max(items["chestmanual" + label.substring(5)] - 1, 0);
       var curCount = Number(document.getElementById(label).innerHTML.replace("+", ""));
       setChestCount(curCount + Number(items["chestmanual" + label.substring(5)]) + 1, label);
@@ -654,7 +654,7 @@
 
   window.rightClickKey = function (label) {
     //do this if autotracking doors
-    if (flags.autotracking === "Y" && flags.doorshuffle === "C") {
+    if (["Y", "E"].includes(flags.autotracking) && flags.doorshuffle === "C") {
       items["keymanual" + label.substring(8)] = Math.max(items["keymanual" + label.substring(8)] - 1, 0);
       setKeyCount(Number(document.getElementById(label).innerHTML) - Number(items["keymanual" + label.substring(8)]) - 1, items["maxkey" + label.substring(8)], label);
       return;

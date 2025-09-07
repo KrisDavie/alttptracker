@@ -10,7 +10,7 @@ var autotrackPrevData = null;
 var autotrackRefreshInterval = 1000;
 var autotrackTimeoutDelay = 10000;
 
-var hasWarnedPracHackVersion = false
+var hasWarnedPracHackVersion = false;
 
 var WRAM_START = 0xf50000;
 var WRAM_SIZE = 0x20000;
@@ -24,7 +24,7 @@ var RANDOVERSION_LOC = 0x7fc0; // Actually ROM name
 var ORVERSION_LOC = 0x150010;
 var DRMODE_LOC = 0x138002;
 var DRFLAGS_LOC = 0x138004; // Actually DRFlags
-var OWDATA_LOC =  0x1539B0; // Overworld data for autotracking
+var OWDATA_LOC = 0x1539b0; // Overworld data for autotracking
 var SMITH_LOC = 0x18004c; // Smiths can go into eg2
 var PRIZES_LOC = 0x1209b; // Pendant/Crystal number data
 var PRIZES2_LOC = 0x180050; // Pendant/Crystal data
@@ -192,9 +192,9 @@ function autotrackOnDeviceList(event) {
 
 function autotrackHandleInfoResponse(event) {
   var results = JSON.parse(event.data).Results;
-  
+
   // This is qusb2snes connected to a retroarch core, we will need to skip certain reads
-  if (results.includes('NO_ROM_READ') || autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
+  if (results.includes("NO_ROM_READ") || autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
     NO_ROM_READS = true;
   }
 
@@ -731,11 +731,14 @@ function autotrackReadMem() {
   }
 
   function addOWShuffleData() {
-    snesreadsave(OWDATA_LOC, 0x40, data, "owshuffle", handleAutoTrackData);
+    if (data["fork"] === "OR" && flags.autotracking === "E") {
+      snesreadsave(OWDATA_LOC, 0x40, data, "owshuffle", handleAutoTrackData);
+    } else {
+      handleAutoTrackData();
+    }
   }
 
   function handleAutoTrackData() {
-    // If autotracking is set to "Old", we get the second half of rooms_inv data, else we're getting the pseudoboots flag
     autotrackDoTracking(data);
     autotrackPrevData = data;
     autotrackStartTimer();
@@ -775,17 +778,24 @@ function autotrackDoTracking(data) {
     return ((data[data_loc][loc] | (data[data_loc][loc + 1] << 8)) & mask) !== 0;
   }
 
-  for (let ilw = 0x280; ilw < 0x280 + 0x40; ilw++) {
-      let lwv, dwv = false;
+  if (data["fork"] === "OR" && flags.autotracking === "E") {
+    for (let ilw = 0x280; ilw < 0x280 + 0x40; ilw++) {
+      let lwv,
+        dwv = false;
       let idw = ilw + 0x40;
-      if (newbit(ilw, 0x80, "rooms_inv")) { console.log('Lightworld visited'); lwv = true; }
-      if (newbit(idw, 0x80, "rooms_inv")) { console.log('Darkworld visited'); dwv = true; }
+      if (newbit(ilw, 0x80, "rooms_inv")) {
+        lwv = true;
+      }
+      if (newbit(idw, 0x80, "rooms_inv")) {
+        dwv = true;
+      }
 
-    if (lwv || dwv) {
-      if (data['owshuffle'][ilw - 0x280] > 0) {
-        window.sendShuffleUpdate(ilw - 0x280, true)
-      } else {
-        window.sendShuffleUpdate(ilw - 0x280, false)
+      if (lwv || dwv) {
+        if (data["owshuffle"][ilw - 0x280] > 0) {
+          window.sendShuffleUpdate(ilw - 0x280, true);
+        } else {
+          window.sendShuffleUpdate(ilw - 0x280, false);
+        }
       }
     }
   }
@@ -794,10 +804,11 @@ function autotrackDoTracking(data) {
   // VT and ER is enabled
   // DR and version is less than 142
   // OR and ORversion is less than 4.0
-  const PENDANT_SWAP_BUG_PRESENT = (data["fork"] === "VT" && (data["entrances"][0] & 0x02) != 0) || (data["fork"] === "DR" && data["version"] < 142) || (data["fork"] === "OR" && data["orversion"][0] === 0 && data["orversion"][1] < 4) || NO_ROM_READS;
+  const PENDANT_SWAP_BUG_PRESENT =
+    (data["fork"] === "VT" && (data["entrances"][0] & 0x02) != 0) || (data["fork"] === "DR" && data["version"] < 142) || (data["fork"] === "OR" && data["orversion"][0] === 0 && data["orversion"][1] < 4) || NO_ROM_READS;
 
   // Decrement dungeon count unless a non-wild dungeon item is found
-  if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && flags.autotracking === "Y") {
+  if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && ["Y", "E"].includes(flags.autotracking)) {
     Object.entries(window.dungeonDataMem).forEach(([dungeon, dungeondata]) => {
       if (items[dungeondata["dungeonarrayname"]] > 0) {
         let newCheckedLocationCount = dungeondata.locations.filter((location) => checkItem(data, location)).length;
@@ -838,7 +849,7 @@ function autotrackDoTracking(data) {
 
   // Autotrack dungeon key and chest counts if count has been seen by entering the dungeon (for keys, when map in inventory, for checks basically always since that setting is generally on)
   // If NO_ROM_READS is set, we _assume_ that it's the correct fork
-  if (flags.doorshuffle === "C" && flags.autotracking === "Y" && (data["fork"] !== "VT" || NO_ROM_READS)) {
+  if (flags.doorshuffle === "C" && ["Y", "E"].includes(flags.autotracking) && (data["fork"] !== "VT" || NO_ROM_READS)) {
     var dungeon_masks = {
       11: [0x00c0, 2],
       0: [0x0020, 4],
@@ -870,7 +881,7 @@ function autotrackDoTracking(data) {
         if (maxChecks - currentChecks - items["chestmanual" + dun] < 0) {
           items["chestmanual" + dun] = maxChecks - currentChecks;
         }
-        if (flags.autotracking === "Y") {
+        if (["Y", "E"].includes(flags.autotracking)) {
           setChestCount(maxChecks - currentChecks, "chest" + dun);
         } else {
           setChestCount(maxChecks, "chest" + dun);
