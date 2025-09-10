@@ -413,6 +413,9 @@ function loadnamedpreset(name) {
     case "fadkeysanity":
       loadadkeyspreset();
       break;
+    case "adtileswap":
+      loadadtileswappreset();
+      break;
     case "ambrosia":
       loadambrosiapreset();
       break;
@@ -616,6 +619,35 @@ function loadadpreset() {
     entrancenone: true,
     doornone: true,
     overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goaldungeons: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: false,
+    shuffledcompasses: false,
+    shuffledsmallkeys: false,
+    shuffledbigkeys: false,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+}
+
+function loadadtileswappreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancenone: true,
+    doornone: true,
+    overworldyes: true,
     bossnone: true,
     enemynone: true,
     glitchesnone: true,
