@@ -396,6 +396,16 @@
     }
   };
 
+  function minimumAvailability(a, b) {
+    var availabilities = [a, b];
+    if (availabilities.includes("unavailable")) return "unavailable";
+    if (availabilities.includes("possible")) return "possible";
+    if (availabilities.includes("darkpossible")) return "darkpossible";
+    if (availabilities.includes("darkavailable")) return "darkavailable";
+    if (availabilities.includes("partialavailable")) return "partialavailable";
+    return "available";
+  }
+
   window.receiveMessage = function (event) {
     if (window.origin === event.origin) {
       if (event.data.logic && flags.overworldshuffle != "N") {
@@ -424,10 +434,23 @@
             dungeonEntrances[l] = event.data.dungeons[k * 8 + l];
             dungeonEntrancesBunny[l] = event.data.dungeonsBunny[k * 8 + l];
           }
-          var bossAvail = dungeonBoss(k, dungeonEntrances, dungeonEntrancesBunny);
-          var chestsAvail = dungeonChests(k, dungeonEntrances, dungeonEntrancesBunny);
-          dungeons[k].is_beatable = constantFunctions[bossAvail];
-          dungeons[k].can_get_chest = constantFunctions[chestsAvail];
+          if (dungeons[k].is_beatable_orig === undefined) {
+            dungeons[k].is_beatable_orig = dungeons[k].is_beatable;
+          }
+          if (dungeons[k].can_get_chest_orig === undefined) {
+            dungeons[k].can_get_chest_orig = dungeons[k].can_get_chest;
+          }
+          const dungeonAvailable = window.OWDungeonAvailable(k, dungeonEntrances, dungeonEntrancesBunny);
+          dungeons[k].is_beatable = (function(dungeonIndex) {
+            return function () {
+              return minimumAvailability(dungeonAvailable, dungeons[dungeonIndex].is_beatable_orig());
+            };
+          })(k);
+          dungeons[k].can_get_chest = (function(dungeonIndex) {
+            return function () {
+              return minimumAvailability(dungeonAvailable, dungeons[dungeonIndex].can_get_chest_orig());
+            };
+          })(k);
         }
         agahnim.is_available = dungeons[12].is_beatable;
         if (flags.entrancemode != "N") {

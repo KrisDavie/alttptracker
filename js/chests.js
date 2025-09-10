@@ -2180,17 +2180,14 @@
     return doorcheck;
   };
 
-  //dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
-  //dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
-  window.dungeonBoss = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
-    if (dungeonID === 11) return items.chest11 ? dungeonChests(11, dungeonEntrances, dungeonEntrancesBunny) : "opened";
+  window.OWDungeonAvailable = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
     var state = "unavailable",
       bunny = true,
       allAccessible = true;
     for (var k = 0; k < dungeonEntranceCounts[dungeonID]; k++) {
       if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && dungeonEntrancesBunny[k]) dungeonEntrances[k] = "unavailable";
       if (dungeonEntrances[k] !== "unavailable") {
-        state = bestAvailability(state, dungeonEntrances[k]);
+        state = bestAvailability([state, dungeonEntrances[k]]);
         if (!dungeonEntrancesBunny[k]) bunny = false;
       }
       if (dungeonEntrances[k] !== "available" || dungeonEntrancesBunny[k]) {
@@ -2200,7 +2197,14 @@
       }
     }
     if (bunny) return "unavailable";
-    var best = state;
+    return state;
+  }
+
+  //dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
+  //dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
+  window.dungeonBoss = function (dungeonID, dungeonEntrances, dungeonEntrancesBunny) {
+    if (dungeonID === 11) return items.chest11 ? dungeonChests(11, dungeonEntrances, dungeonEntrancesBunny) : "opened";
+    var state = window.OWDungeonAvailable(dungeonID, dungeonEntrances, dungeonEntrancesBunny);
     state = window.dungeons[dungeonID].is_beatable();
 
     if (best === "darkavailable") {
@@ -2227,7 +2231,7 @@
     for (var k = 0; k < dungeonEntranceCounts[dungeonID]; k++) {
       if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && dungeonEntrancesBunny[k]) dungeonEntrances[k] = "unavailable";
       if (dungeonEntrances[k] !== "unavailable") {
-        state = bestAvailability(state, dungeonEntrances[k]);
+        state = bestAvailability([state, dungeonEntrances[k]]);
         if (!dungeonEntrancesBunny[k]) bunny = false;
       }
       if (dungeonEntrances[k] !== "available" || dungeonEntrancesBunny[k]) {
@@ -2255,6 +2259,7 @@
     if (flags.doorshuffle !== "N" && flags.doorshuffle !== "P" && state === "available" && (best === "possible" || !allAccessible)) return "possible";
     if (flags.doorshuffle !== "N" && flags.doorshuffle !== "P" && state === "darkavailable" && (best === "possible" || !allAccessible)) return "darkpossible";
     if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && state === "available" && best === "possible") return "possible";
+    if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && state === "possible" && best === "possible") return "possible";
     if ((flags.doorshuffle === "N" || flags.doorshuffle === "P") && state === "darkavailable" && best === "possible") return "darkpossible";
 
     return state;
