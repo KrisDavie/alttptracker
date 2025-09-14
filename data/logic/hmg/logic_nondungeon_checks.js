@@ -263,26 +263,7 @@
       Inverted: {
         always: {
           anyOf: [
-            "canBreach|Dark World - East",
-            {
-              allOf: ["canBreach|Light World", "moonpearl", "mirror"],
-            },
-          ],
-        },
-        required: {
-          anyOf: [
-            "canBreach|Dark World - East",
-            {
-              allOf: ["canBreach|Light World", "moonpearl", "mirror"],
-            },
-          ],
-        },
-        logical: {
-          anyOf: [
-            "canReach|Dark World - East",
-            {
-              allOf: ["canReach|Light World", "moonpearl", "mirror"],
-            },
+            "canBreach|Dark World - Death Mountain",
           ],
         },
       },
@@ -1314,7 +1295,7 @@
           anyOf: ["flippers", "canFakeFlipper", "canBootsClip"],
         },
         logical: {
-          allOf: ["canReach|Light World", "flippers"],
+          allOf: ["canReach|Light World"],
         },
       },
     },
@@ -2099,10 +2080,11 @@
       },
       Inverted: {
         always: {
-          allOf: ["canBreach|Light World"],
-          anyOf: [
-            "mitts",
-            "mirror",
+          allOf: [
+            "canBreach|Light World",
+            {
+              anyOf: ["mitts", "mirror"],
+            },
             {
               allOf: ["canBreach|Dark World - East", "moonpearl", "canBootsClip"],
             },
@@ -2753,7 +2735,9 @@
           ],
         },
         logical: {
-          allOf: ["canReach|Light World", "flippers"],
+          allOf: [
+            "canReach|Light World"
+          ],
         },
       },
     },

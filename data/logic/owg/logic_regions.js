@@ -376,12 +376,6 @@
         },
         logical: {
           allOf: ["canReach|Dark World - Death Mountain"],
-          anyOf: [
-            "mitts",
-            {
-              allOf: ["moonpearl", "canBootsClip", "hookshot"],
-            },
-          ],
         },
       },
     },
@@ -836,24 +830,30 @@
     "Turtle Rock - West": {
       Open: {
         always: {
-          allOf: ["canBreach|Dark World - Death Mountain",
+          allOf: [
+            "canBreach|Dark World - Death Mountain",
             {
               anyOf: [
                 {
-                  allOf: ["canBootsClip", "moonpearl"]
+                  allOf: ["canBootsClip", "moonpearl"],
                 },
-                "mirror"
-              ]
-            }
+                "mirror",
+              ],
+            },
           ],
         },
       },
       Inverted: {
         always: {
-          allOf: ["canBreach|Light World - East Death Mountain", "mirror"],
+          anyOf: [
+            { 
+              allOf: ["canBreach|Light World - East Death Mountain", "mirror"] 
+            },
+            "canBootsClip",
+          ],
         },
         logical: {
-          allOf: ["canReach|Light World - East Death Mountain"],
+          anyOf: ["canReach|Light World - East Death Mountain", "canBootsClip"],
         },
       },
       Entrance: ["tr_w"],
@@ -861,24 +861,30 @@
     "Turtle Rock - East": {
       Open: {
         always: {
-          allOf: ["canBreach|Dark World - Death Mountain",
+          allOf: [
+            "canBreach|Dark World - Death Mountain",
             {
               anyOf: [
                 {
-                  allOf: ["canBootsClip", "moonpearl"]
+                  allOf: ["canBootsClip", "moonpearl"],
                 },
-                "mirror"
-              ]
-            }
+                "mirror",
+              ],
+            },
           ],
         },
       },
       Inverted: {
         always: {
-          allOf: ["canBreach|Light World - East Death Mountain", "mirror"],
+          anyOf: [
+            { 
+              allOf: ["canBreach|Light World - East Death Mountain", "mirror"] 
+            },
+            "canBootsClip",
+          ],
         },
         logical: {
-          allOf: ["canReach|Light World - East Death Mountain"],
+          anyOf: ["canReach|Light World - East Death Mountain", "canBootsClip"],
         },
       },
       Entrance: ["tr_e"],
@@ -886,7 +892,7 @@
     "Turtle Rock - Back": {
       Open: {
         always: {
-          allOf: ["canBreach|Light World - Lower West Death Mountain"],
+          allOf: ["canBreach|Light World - Lower West Death Mountain", "canMirrorWrap"],
         },
       },
       Inverted: {
@@ -909,8 +915,8 @@
             },
             {
               allOf: ["canBreach|Light World - Lower West Death Mountain", "canBunnyCitrus"],
-            }
-          ]
+            },
+          ],
         },
         logical: {
           allOf: ["canReach|Dark World - Death Mountain", "moonpearl"],
