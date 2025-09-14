@@ -1871,7 +1871,7 @@
           if (doorcheck) return doorcheck;
 
           if (flags.wildkeys) {
-            return items.smallkey9 <= 1 && flags.gametype != "R" ? "unavailable" : items.lantern || items.flute >= 1 ? "available" : "darkavailable";
+            return minimumAvailability(medallion, (items.smallkey9 <= 1 && flags.gametype != "R" ? "unavailable" : items.lantern || items.flute >= 1 ? "available" : "darkavailable"));
           }
 
           return minimumAvailability(medallion, items.firerod ? (items.lantern || items.flute >= 1 ? "available" : "darkavailable") : items.lantern || items.flute >= 1 ? "possible" : "darkpossible");
