@@ -824,7 +824,8 @@ function autotrackDoTracking(data) {
         if (!flags.wildcompasses && checkItem(data, dungeondata.compass)) {
           newDungeonItemCount++;
         }
-        if (!flags.wildbigkeys && checkItem(data, dungeondata.bigkey)) {
+        // HC is a keydrop, doesn't count in normal counts becaus it doesn't come from a chest.
+        if (!flags.wildbigkeys && (dungeon != 'hc' && flags.doorshuffle == 'N') && checkItem(data, dungeondata.bigkey)) {
           newDungeonItemCount++;
         }
         if (!flags.wildmaps && checkItem(data, dungeondata.map)) {
