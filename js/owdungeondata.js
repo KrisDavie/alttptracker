@@ -1640,7 +1640,6 @@
         }
       }
     }
-    items.follower = oldFollower;
     return availability;
   };
 
