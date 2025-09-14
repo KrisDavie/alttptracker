@@ -2371,6 +2371,8 @@
         document.getElementById("map").style.position = "absolute";
         document.getElementById("map").style.left = "0";
         document.getElementById("map").style.top = "448";
+        document.getElementById("map_light").style.height = "433px";
+				document.getElementById("map_dark").style.height = "433px";
         break;
     }
 
