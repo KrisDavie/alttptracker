@@ -79,8 +79,8 @@ function autotrackStartTimer() {
   autotrackTimer = setTimeout(autotrackReadMem, autotrackRefreshInterval);
 }
 
-function autotrackSetStatus(text) {
-  document.getElementById("autotrackingstatus").textContent = (flags.autotracking === "E" ? "(Enhanced) " : "") + "Autotracking Status: " + text;
+function autotrackSetStatus(text, prachack=false) {
+  document.getElementById("autotrackingstatus").textContent = (prachack ? "(Prachack) " : "") + (flags.autotracking === "E" ? "(Enhanced) " : "") + "Autotracking Status: " + text;
 }
 
 function autotrackTrackerConfigure() {
@@ -602,6 +602,8 @@ function autotrackReadMem() {
         }
         return;
       }
+      autotrackSetStatus("Connected to " + autotrackDeviceName, true);
+
       GAMEMODE_LOC = 0xe07c04;
 
       addGamemode();
