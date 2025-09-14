@@ -80,7 +80,7 @@ function autotrackStartTimer() {
 }
 
 function autotrackSetStatus(text) {
-  document.getElementById("autotrackingstatus").textContent = "Autotracking Status: " + text;
+  document.getElementById("autotrackingstatus").textContent = (flags.autotracking === "E" ? "(Enhanced) " : "") + "Autotracking Status: " + text;
 }
 
 function autotrackTrackerConfigure() {
