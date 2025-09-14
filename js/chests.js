@@ -528,7 +528,7 @@
       case "canReachTurtleRockBackOpen":
         return (
           (bigRequirementSwitch("canBreachTurtleRockMainMaybe") || bigRequirementSwitch("canBreachTurtleRockMiddle")) && 
-          bigRequirementSwitch("canTorchRoomNavigate") && 
+          bigRequirementSwitch("canDarkRoomNavigate") && 
           items.somaria && 
           (items.firerod || ((items.smallkey9 >= 3 || !flags.wildkeys) && (items.bigkey9 || !flags.wildbigkeys))));
       case "canHMGMireClipBreach":
