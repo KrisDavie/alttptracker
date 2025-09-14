@@ -1,7 +1,7 @@
 var header = `
   <div style="flex: auto"> 
     <span class="default-white-text" 
-      >Build 2.2.006 20250910<br />DR, OR, VT (v31.x.x) and Prachack (>=14.4.0) supported<br />Report any issues via 
+      >Build 2.2.006 20250914<br />DR, OR, VT (v31.x.x) and Prachack (>=14.4.0) supported<br />Report any issues via 
       <a href="https://discord.gg/VpqbrHjPCu" target="_blank">Muffins' discord server <img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a><br /> 
       Check Known Issues for current known outstanding issues 
     </span> 
