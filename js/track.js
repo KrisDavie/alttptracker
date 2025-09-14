@@ -620,16 +620,16 @@
     updateLocationAvailability();
   };
 
-  window.rightClickChest = function (label) {
+  window.rightClickChest = function (label, reset=false) {
     //do this when autotracking doors
-    if (["Y", "E"].includes(flags.autotracking) && flags.doorshuffle === "C") {
+    if (["Y", "E"].includes(flags.autotracking) && flags.doorshuffle === "C" && !reset) {
       items["chestmanual" + label.substring(5)] = Math.max(items["chestmanual" + label.substring(5)] - 1, 0);
       var curCount = Number(document.getElementById(label).innerHTML.replace("+", ""));
       setChestCount(curCount + Number(items["chestmanual" + label.substring(5)]) + 1, label);
       return;
     }
 
-    var value = items.inc(label);
+    var value = reset? items[label] : items.inc(label);
 
     let className = "chest";
     let innerHTML = "";
@@ -1913,126 +1913,56 @@
     ) {
       var adjustForCrossed = (document.getElementById("doorselect").value === "C") != (flags.doorshuffle === "C");
 
-      var chestschecked0 = adjustForCrossed ? 0 : items.maxchest0 - items.chest0;
-      var chestschecked1 = adjustForCrossed ? 0 : items.maxchest1 - items.chest1;
-      var chestschecked2 = adjustForCrossed ? 0 : items.maxchest2 - items.chest2;
-      var chestschecked3 = adjustForCrossed ? 0 : items.maxchest3 - items.chest3;
-      var chestschecked4 = adjustForCrossed ? 0 : items.maxchest4 - items.chest4;
-      var chestschecked5 = adjustForCrossed ? 0 : items.maxchest5 - items.chest5;
-      var chestschecked6 = adjustForCrossed ? 0 : items.maxchest6 - items.chest6;
-      var chestschecked7 = adjustForCrossed ? 0 : items.maxchest7 - items.chest7;
-      var chestschecked8 = adjustForCrossed ? 0 : items.maxchest8 - items.chest8;
-      var chestschecked9 = adjustForCrossed ? 0 : items.maxchest9 - items.chest9;
-      var chestschecked10 = adjustForCrossed ? 0 : items.maxchest10 - items.chest10;
-      var chestschecked11 = adjustForCrossed ? 0 : items.maxchest11 - items.chest11;
-      var chestschecked12 = adjustForCrossed ? 0 : items.maxchest12 - items.chest12;
-
-      var chestmod = 0;
-
-      if (document.getElementById("shuffledmaps").checked) {
-        chestmod++;
+      // Store how many chests have been checked
+      var chestsChecked = [];
+      for (var k = 0; k < 13; k++) {
+        chestsChecked[k] = adjustForCrossed ? 0 : items["maxchest" + k] - items["chest" + k];
       }
 
-      if (document.getElementById("shuffledcompasses").checked) {
-        chestmod++;
+      // Create new flags object
+      var newFlags = {
+        gametype: document.getElementById("stateselect").value,
+        doorshuffle: document.getElementById("doorselect").value,
+        wildmaps: document.getElementById("shuffledmaps").checked,
+        wildcompasses: document.getElementById("shuffledcompasses").checked,
+        wildkeys: document.getElementById("shuffledkeys").checked,
+        wildbigkeys: document.getElementById("shuffledbigkeys").checked,
+        prizeshuffle: flags.prizeshuffle
+      };
+
+      // Calculate new chest counts using the shared function
+      var { chestCounts, keyCounts } = window.calculateDungeonCounts(newFlags);
+
+      // Apply the new counts - preserve number of items already collected
+      for (var k = 0; k < 13; k++) {
+        var newMaxCount = chestCounts[k];
+        var newCurrentCount = newMaxCount - chestsChecked[k];
+        
+        // Ensure current count doesn't go below 0 - shouldn't ever happen, but just in case
+        newCurrentCount = newCurrentCount < 0 ? 0 : newCurrentCount;
+        
+        // Update the items object
+        items["maxchest" + k] = newMaxCount;
+        items["chest" + k] = newCurrentCount;
+
+        items["chestknown" + k] = !adjustForCrossed;
+
+        items.range["chest" + k] = { min: 0, max: chestCounts[k] };
+        items.range["smallkey" + k] = { min: 0, max: keyCounts[k] };
       }
 
-      var chestmodcrossed = chestmod;
-
-      if (document.getElementById("shuffledbigkeys").checked) {
-        chestmod++;
-        if (document.getElementById("shuffledkeys").checked || flags.gametype === "R") {
-          chestmodcrossed++;
-        }
-      }
-
-      var chests0 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 3 + chestmod;
-      var chests1 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 2 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 1 : 0);
-      var chests2 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 2 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 1 : 0);
-      var chests3 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 5 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 6 : 0);
-      var chests4 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 6 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 1 : 0);
-      var chests5 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 2 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 3 : 0);
-      var chests6 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 4 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 1 : 0);
-      var chests7 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 3 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 2 : 0);
-      var chests8 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 2 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 3 : 0);
-      var chests9 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 5 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 4 : 0);
-      var chests10 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 20 + chestmod + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 4 : 0);
-      var chests11 =
-        document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : 6 + (document.getElementById("shuffledmaps").checked ? 1 : 0) + (document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 1 : 0);
-      var chests12 = document.getElementById("doorselect").value === "C" ? 3 + chestmodcrossed : document.getElementById("shuffledkeys").checked || flags.gametype === "R" ? 2 : 0;
-
-      var maxchests0 = document.getElementById("doorselect").value === "C" ? 32 : chests0;
-      var maxchests1 = document.getElementById("doorselect").value === "C" ? 32 : chests1;
-      var maxchests2 = document.getElementById("doorselect").value === "C" ? 32 : chests2;
-      var maxchests3 = document.getElementById("doorselect").value === "C" ? 32 : chests3;
-      var maxchests4 = document.getElementById("doorselect").value === "C" ? 32 : chests4;
-      var maxchests5 = document.getElementById("doorselect").value === "C" ? 32 : chests5;
-      var maxchests6 = document.getElementById("doorselect").value === "C" ? 32 : chests6;
-      var maxchests7 = document.getElementById("doorselect").value === "C" ? 32 : chests7;
-      var maxchests8 = document.getElementById("doorselect").value === "C" ? 32 : chests8;
-      var maxchests9 = document.getElementById("doorselect").value === "C" ? 32 : chests9;
-      var maxchests10 = document.getElementById("doorselect").value === "C" ? 32 : chests10;
-      var maxchests11 = document.getElementById("doorselect").value === "C" ? 32 : chests11;
-      var maxchests12 = document.getElementById("doorselect").value === "C" ? 32 : chests12;
-
-      if (adjustForCrossed || flags.doorshuffle != "C") {
-        items.chest0 = chests0 - chestschecked0;
-        items.chest1 = chests1 - chestschecked1;
-        items.chest2 = chests2 - chestschecked2;
-        items.chest3 = chests3 - chestschecked3;
-        items.chest4 = chests4 - chestschecked4;
-        items.chest5 = chests5 - chestschecked5;
-        items.chest6 = chests6 - chestschecked6;
-        items.chest7 = chests7 - chestschecked7;
-        items.chest8 = chests8 - chestschecked8;
-        items.chest9 = chests9 - chestschecked9;
-        items.chest10 = chests10 - chestschecked10;
-        items.chest11 = chests11 - chestschecked11;
-        items.chest12 = chests12 - chestschecked12;
-
-        items.chest0 = items.chest0 < 0 ? 0 : items.chest0;
-        items.chest1 = items.chest1 < 0 ? 0 : items.chest1;
-        items.chest2 = items.chest2 < 0 ? 0 : items.chest2;
-        items.chest3 = items.chest3 < 0 ? 0 : items.chest3;
-        items.chest4 = items.chest4 < 0 ? 0 : items.chest4;
-        items.chest5 = items.chest5 < 0 ? 0 : items.chest5;
-        items.chest6 = items.chest6 < 0 ? 0 : items.chest6;
-        items.chest7 = items.chest7 < 0 ? 0 : items.chest7;
-        items.chest8 = items.chest8 < 0 ? 0 : items.chest8;
-        items.chest9 = items.chest9 < 0 ? 0 : items.chest9;
-        items.chest10 = items.chest10 < 0 ? 0 : items.chest10;
-        items.chest11 = items.chest11 < 0 ? 0 : items.chest11;
-        items.chest12 = items.chest12 < 0 ? 0 : items.chest12;
-      }
-
-      items.maxchest0 = maxchests0;
-      items.maxchest1 = maxchests1;
-      items.maxchest2 = maxchests2;
-      items.maxchest3 = maxchests3;
-      items.maxchest4 = maxchests4;
-      items.maxchest5 = maxchests5;
-      items.maxchest6 = maxchests6;
-      items.maxchest7 = maxchests7;
-      items.maxchest8 = maxchests8;
-      items.maxchest9 = maxchests9;
-      items.maxchest10 = maxchests10;
-      items.maxchest11 = maxchests11;
-      items.maxchest12 = maxchests12;
-
-      if (adjustForCrossed) {
-        for (var k = 0; k < 13; k++) {
-          items["chestknown" + k] = false;
-        }
-      }
 
       items.inc = limit(1, items.range);
       items.dec = limit(-1, items.range);
 
       flags.doorshuffle = document.getElementById("doorselect").value;
+      flags.wildmaps = document.getElementById("shuffledmaps").checked;
+      flags.wildcompasses = document.getElementById("shuffledcompasses").checked;
+      flags.wildkeys = document.getElementById("shuffledkeys").checked;
+      flags.wildbigkeys = document.getElementById("shuffledbigkeys").checked;
 
       for (var k = 0; k < 13; k++) {
-        rightClickChest("chest" + k);
-        toggle("chest" + k);
+        rightClickChest("chest" + k, true);
       }
 
       if (!document.getElementById("shuffledmaps").checked) {
@@ -2109,52 +2039,20 @@
         document.getElementById("bigkey12").style.visibility = document.getElementById("doorselect").value === "C" ? "visible" : "hidden";
       }
 
-      if (document.getElementById("shuffledkeys").checked && flags.gametype != "R") {
-        if (!flags.wildkeys) {
-          items.smallkey0 = 0;
-          items.smallkey1 = 0;
-          items.smallkey2 = 0;
-          items.smallkey3 = 0;
-          items.smallkey4 = 0;
-          items.smallkey5 = 0;
-          items.smallkey6 = 0;
-          items.smallkey7 = 0;
-          items.smallkey8 = 0;
-          items.smallkey9 = 0;
-          items.smallkey10 = 0;
-          items.smallkey11 = 0;
-          items.smallkey12 = 0;
+      if (newFlags.wildkeys || newFlags.gametype === "R") {
+        for (var k = 0; k < 13; k++) {
+          items["smallkey" + k] = 0;
         }
       } else {
-        items.smallkey0 = document.getElementById("doorselect").value === "C" ? 29 : 0;
-        items.smallkey1 = document.getElementById("doorselect").value === "C" ? 29 : 1;
-        items.smallkey2 = document.getElementById("doorselect").value === "C" ? 29 : 1;
-        items.smallkey3 = document.getElementById("doorselect").value === "C" ? 29 : 6;
-        items.smallkey4 = document.getElementById("doorselect").value === "C" ? 29 : 1;
-        items.smallkey5 = document.getElementById("doorselect").value === "C" ? 29 : 3;
-        items.smallkey6 = document.getElementById("doorselect").value === "C" ? 29 : 1;
-        items.smallkey7 = document.getElementById("doorselect").value === "C" ? 29 : 2;
-        items.smallkey8 = document.getElementById("doorselect").value === "C" ? 29 : 3;
-        items.smallkey9 = document.getElementById("doorselect").value === "C" ? 29 : 4;
-        items.smallkey10 = document.getElementById("doorselect").value === "C" ? 29 : 4;
-        items.smallkey11 = document.getElementById("doorselect").value === "C" ? 29 : 1;
-        items.smallkey12 = document.getElementById("doorselect").value === "C" ? 29 : 2;
+        for (var k = 0; k < 13; k++) {
+          items["smallkey" + k] = newFlags.doorshuffle === "C" ? 29 : keyCounts[k];
+        }
       }
 
-      if (adjustForCrossed && document.getElementById("doorselect").value != "C") {
-        items.smallkey0 = Math.min(items.smallkey0, 0);
-        items.smallkey1 = Math.min(items.smallkey1, 1);
-        items.smallkey2 = Math.min(items.smallkey2, 1);
-        items.smallkey3 = Math.min(items.smallkey3, 6);
-        items.smallkey4 = Math.min(items.smallkey4, 1);
-        items.smallkey5 = Math.min(items.smallkey5, 3);
-        items.smallkey6 = Math.min(items.smallkey6, 1);
-        items.smallkey7 = Math.min(items.smallkey7, 2);
-        items.smallkey8 = Math.min(items.smallkey8, 3);
-        items.smallkey9 = Math.min(items.smallkey9, 4);
-        items.smallkey10 = Math.min(items.smallkey10, 4);
-        items.smallkey11 = Math.min(items.smallkey11, 1);
-        items.smallkey12 = Math.min(items.smallkey12, 2);
+      if (adjustForCrossed && newFlags.doorshuffle != "C") {
+        for (var k = 0; k < 13; k++) {
+          items["smallkey" + k] = Math.min(items["smallkey" + k], keyCounts[k]);
+        }
       }
 
       document.getElementById("smallkey0").innerHTML = items.smallkey0;
