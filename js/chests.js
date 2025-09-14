@@ -527,10 +527,12 @@
       // Can get into mire, can get to torches and can either dash citrus or bomb clip (with the wall moved)
       case "canReachTurtleRockBackOpen":
         return (
-          (bigRequirementSwitch("canBreachTurtleRockMainMaybe") || bigRequirementSwitch("canBreachTurtleRockMiddle")) && 
-          bigRequirementSwitch("canDarkRoomNavigate") && 
-          items.somaria && 
-          (items.firerod || ((items.smallkey9 >= 3 || !flags.wildkeys) && (items.bigkey9 || !flags.wildbigkeys))));
+          (bigRequirementSwitch("canBreachTurtleRockMainMaybe") || bigRequirementSwitch("canBreachTurtleRockMiddle")) &&
+          bigRequirementSwitch("canDarkRoomNavigate") &&
+          items.somaria &&
+          (items.smallkey9 >= 3 || (!flags.wildkeys && items.firerod)) &&
+          (items.bigkey9 || !flags.wildbigkeys)
+        );
       case "canHMGMireClipBreach":
         return canReachRegion("Misery Mire") !== "unavailable" && (items.boots || (bigRequirementSwitch("canLightFires") && items.bomb)) && bigRequirementSwitch("canKillWizzrobes") && bigRequirementSwitch("canCrossMireGap");
       case "canHMGMireClipLogic":
@@ -1645,20 +1647,20 @@
         shouldntCountPrize++;
         continue;
       }
-      var _loc_acc = 'none'
+      var _loc_acc = "none";
       if (inLogic(dungeonId, requirements["always"])) {
         checksAlways++;
-        _loc_acc = 'always';
+        _loc_acc = "always";
         if (!("logical" in requirements) || inLogic(dungeonId, requirements["logical"])) {
           checksLogical++;
           checksRequired++;
-          _loc_acc = 'logical';
+          _loc_acc = "logical";
           if ("superlogical" in requirements && inLogic(dungeonId, requirements["superlogical"])) {
             checksSuperLogic++;
           }
         } else if (!("required" in requirements) || inLogic(dungeonId, requirements["required"])) {
           checksRequired++;
-          _loc_acc = 'required';
+          _loc_acc = "required";
           if ("superlogical" in requirements && inLogic(dungeonId, requirements["superlogical"])) {
             checksSuperLogic++;
           }
@@ -1871,7 +1873,7 @@
           if (doorcheck) return doorcheck;
 
           if (flags.wildkeys) {
-            return minimumAvailability(medallion, (items.smallkey9 <= 1 && flags.gametype != "R" ? "unavailable" : items.lantern || items.flute >= 1 ? "available" : "darkavailable"));
+            return minimumAvailability(medallion, items.smallkey9 <= 1 && flags.gametype != "R" ? "unavailable" : items.lantern || items.flute >= 1 ? "available" : "darkavailable");
           }
 
           return minimumAvailability(medallion, items.firerod ? (items.lantern || items.flute >= 1 ? "available" : "darkavailable") : items.lantern || items.flute >= 1 ? "possible" : "darkpossible");
@@ -2198,7 +2200,7 @@
     }
     if (bunny) return "unavailable";
     return state;
-  }
+  };
 
   //dungeonEntrances is an array of length dungeonEntranceCounts[dungeonID] with values 'available', 'possible' or 'unavailable'
   //dungeonEntrancesBunny is an array of length dungeonEntranceCounts[dungeonID] with values true (can only access as a bunny) or false/null/undefined otherwise
