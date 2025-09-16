@@ -874,7 +874,7 @@
           leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 442 : 0;
         } else if (flags.mapmode === "V") {
           leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? -5 : 0;
-          topOffset += loc.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0;
+          topOffset += loc.parentElement.id === "mapEntranceDiv_dark" ? 434 : 0;
         }
 
         divtoadd.style.left = loc.offsetLeft + 10 + leftOffset;
@@ -1107,7 +1107,7 @@
           leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? 442 : 0;
         } else if (flags.mapmode === "V") {
           leftOffset = loc.parentElement.id === "mapEntranceDiv_dark" ? -5 : 0;
-          topOffset += loc.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0;
+          topOffset += loc.parentElement.id === "mapEntranceDiv_dark" ? 434 : 0;
         }
 
         divtoadd.style.left = loc.offsetLeft - 5.5 + leftOffset;
@@ -1260,7 +1260,7 @@
           }
 
           if (c1offsetleft > c2offsetleft) {
-            divtoadd.style.left = c2offsetleft + 6;
+            divtoadd.style.left = c2offsetleft + 4;
           } else {
             divtoadd.style.left = c1offsetleft + 6;
           }
@@ -1280,17 +1280,17 @@
           }
 
           if (connector2.parentElement.id === "mapEntranceDiv_light") {
-            divtoadd.style.height = Math.abs(connector1.offsetTop + 448 - connector2.offsetTop);
+            divtoadd.style.height = Math.abs(connector1.offsetTop + 434 - connector2.offsetTop);
             divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft - 2);
           } else {
-            divtoadd.style.height = Math.abs(connector2.offsetTop + 448 - connector1.offsetTop);
+            divtoadd.style.height = Math.abs(connector2.offsetTop + 434 - connector1.offsetTop);
             divtoadd.style.width = Math.abs(c1offsetleft - c2offsetleft + 2);
           }
         } else {
           if (connector1.offsetTop > connector2.offsetTop) {
-            divtoadd.style.top = connector2.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0);
+            divtoadd.style.top = connector2.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 434 : 0);
           } else {
-            divtoadd.style.top = connector1.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 448 : 0);
+            divtoadd.style.top = connector1.offsetTop + (flags.mapmode === "C" ? 4.5 : 6) + (flags.mapmode === "V" && connector1.parentElement.id === "mapEntranceDiv_dark" ? 434 : 0);
           }
 
           if (c1offsetleft > c2offsetleft) {
@@ -2367,7 +2367,7 @@
         ganonCompactEntranceLabelDiv.appendChild(ganonEntranceLabelDiv);
         break;
       case "V":
-        document.getElementById("map").style.width = "448px";
+        document.getElementById("map").style.width = "433px";
         document.getElementById("map").style.position = "absolute";
         document.getElementById("map").style.left = "0";
         document.getElementById("map").style.top = "448";
@@ -2863,8 +2863,8 @@
       document.getElementById("map_dark").style.backgroundImage = "url(images/overlay/map_dw_old.png)";
       var locations = document.getElementsByClassName("location");
       for (var i = 0; i < locations.length; i++) {
-        locations[i].style.width = flags.entrancemode === "N" ? "20px" : "16px";
-        locations[i].style.height = flags.entrancemode === "N" ? "20px" : "16px";
+        locations[i].style.width = flags.entrancemode === "N" ? "20px !important" : "16px";
+        locations[i].style.height = flags.entrancemode === "N" ? "20px !important" : "16px";
         locations[i].style.border = flags.entrancemode === "N" ? "3px solid" : "2px solid";
         locations[i].style.marginLeft = flags.entrancemode === "N" ? "-10px" : "-8px";
         locations[i].style.marginTop = flags.entrancemode === "N" ? "-10px" : "-8px";
@@ -2872,15 +2872,15 @@
 
       for (var i = 0; i < dungeons.length; i++) {
         let dungeon = document.getElementById("dungeon" + i);
-        dungeon.style.width = "40px";
-        dungeon.style.height = "40px";
+        dungeon.style.width = "38px";
+        dungeon.style.height = "38px";
         dungeon.style.border = "4px solid";
         dungeon.style.marginLeft = "-20px";
         dungeon.style.marginTop = "-20px";
         if ([2, 8].includes(i)) {
-          dungeon.style.marginLeft = "-15px";
+          dungeon.style.marginLeft = "-17px";
           let boss = document.getElementById("bossMap" + i);
-          boss.style.marginLeft = "-7px";
+          boss.style.marginLeft = "-12px";
         }
       }
 
