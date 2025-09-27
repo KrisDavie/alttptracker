@@ -31,6 +31,8 @@
   window.constantFunctions = {};
   window.constantFunctionsEDC = {};
   window.dungeonEntranceCounts = [1, 4, 1, 1, 1, 8, 1, 1, 1, 4, 1, 5, 1];
+  window.dungeonEntrances = [];
+  window.dungeonEntrancesBunny = [];
   window.bottlesObtained = [false, false, false, false];
 
   window.doorWindow = null;
@@ -447,15 +449,18 @@
           const dungeonAvailable = window.OWDungeonAvailable(k, dungeonEntrances, dungeonEntrancesBunny);
           dungeons[k].is_beatable = (function(dungeonIndex) {
             return function () {
-              return minimumAvailability(dungeonAvailable, dungeons[dungeonIndex].is_beatable_orig());
+              return dungeonAvailable === 'unavailable' ? dungeonAvailable : dungeons[dungeonIndex].is_beatable_orig();
             };
           })(k);
           dungeons[k].can_get_chest = (function(dungeonIndex) {
             return function () {
-              return minimumAvailability(dungeonAvailable, dungeons[dungeonIndex].can_get_chest_orig());
+              return dungeonAvailable === 'unavailable' ? dungeonAvailable : dungeons[dungeonIndex].can_get_chest_orig();
             };
           })(k);
+          window.dungeonEntrances[k] = dungeonEntrances;
+          window.dungeonEntrancesBunny[k] = dungeonEntrancesBunny;
         }
+
         agahnim.is_available = dungeons[12].is_beatable;
         if (flags.entrancemode != "N") {
           for (var k = 0; k < entrances.length; k++) {

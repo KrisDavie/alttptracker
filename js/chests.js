@@ -642,6 +642,10 @@
     if (typeof chain !== "object") {
       chain = {};
     }
+    if (window.mixedow) {
+      return "available";
+    }
+    
     if (flags.entrancemode != "N") {
       if (flags.mapmode === "N") return "available";
       const mapTrackerNames = window.regionReachLogic[region]["Entrance"];
@@ -1609,11 +1613,13 @@
       res = items.bigkey12; // CT
     } else if (requirement.startsWith("canReach|")) {
       const region = requirement.split("|")[1];
-      res = canReachRegion(region) === "available";
+      // We bypass any reachability checks in mixedow since reachability is determined by the OW tracker
+      res = window.mixedow ? true : canReachRegion(region) === "available";
     } else if (requirement.startsWith("canBreach|")) {
       const region = requirement.split("|")[1];
       let state = canReachRegion(region);
-      res = state != "unavailable" && state != "possible";
+      // We bypass any reachability checks in mixedow since reachability is determined by the OW tracker
+      res = window.mixedow ? true : state != "unavailable" && state != "possible";
     } else {
       res = bigRequirementSwitch(requirement, dungeonId);
     }
@@ -1757,7 +1763,7 @@
       const dungeon = dungeonCheckMap[i];
       dungeonChecks.push({
         can_get_chest: function () {
-          const reachability = bestAvailability(dungeon.regions.map(canReachRegion));
+          var reachability = window.mixedow ? window.OWDungeonAvailable(dungeon.id, window.dungeonEntrances[dungeon.id], window.dungeonEntrancesBunny[dungeon.id]) : bestAvailability(dungeon.regions.map(canReachRegion));
           const chestAvailabilityState = dungeonAvailability(dungeon.id, dungeon.dungeon);
           let bossAvailabilityState = "unavailable";
           if (dungeon.id < 10) {
