@@ -49,23 +49,52 @@ body {
   height: 448px;
 }
 
-.scale200 {
-  zoom: 2;
+@supports (-moz-transform: scale(1)) {
+  .scale200 {
+    -moz-transform: scale(2);
+    -moz-transform-origin: top left;
+  }
+  .scale150 {
+    -moz-transform: scale(1.5);
+    -moz-transform-origin: top left;
+  }
+  .scale100 {
+    -moz-transform: scale(1);
+    -moz-transform-origin: top left;
+  }
+  .scale75 {
+    -moz-transform: scale(0.75);
+    -moz-transform-origin: top left;
+  }
+  .scale50 {
+    -moz-transform: scale(0.5);
+    -moz-transform-origin: top left;
+  }
+  .scale25 {
+    -moz-transform: scale(0.25);
+    -moz-transform-origin: top left;
+  }
 }
-.scale150 {
-  zoom: 1.5;
-}
-.scale100 {
-  zoom: 1;
-}
-.scale75 {
-  zoom: 0.75;
-}
-.scale50 {
-  zoom: 0.5;
-}
-.scale25 {
-  zoom: 0.25;
+
+@supports not (-moz-transform: scale(1)) {
+  .scale200 {
+    zoom: 2;
+  }
+  .scale150 {
+    zoom: 1.5;
+  }
+  .scale100 {
+    zoom: 1;
+  }
+  .scale75 {
+    zoom: 0.75;
+  }
+  .scale50 {
+    zoom: 0.5;
+  }
+  .scale25 {
+    zoom: 0.25;
+  }
 }
 
 #tracker .item,

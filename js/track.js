@@ -3044,5 +3044,10 @@
       // Stopping the event bubbling up the DOM tree...
       e.stopPropagation();
     };
+    document.addEventListener('mousedown', function(e) {
+    if (e.button === 1) {
+      e.preventDefault(); // Prevents Autoscroll toggle
+    }
+});
   };
 })(window);
