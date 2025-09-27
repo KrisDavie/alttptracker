@@ -1662,6 +1662,8 @@
     document.getElementById("doorselect").value = flags.doorshuffle;
     document.getElementById("overworldbox").checked = flags.overworldshuffle != "N";
     document.getElementById("shopsanitybox").checked = flags.shopsanity != "N";
+    document.getElementById("pseudobootsbox").checked = flags.pseudoboots != "N" ? true : false;
+    document.getElementById("mirrorscrollbox").checked = flags.mirrorscroll != "N" ? true : false;
 
     openMainSettings();
     $("#flagsModal").show();
@@ -2246,6 +2248,17 @@
     if (document.getElementById("shopsanitybox").checked != (flags.shopsanity != "N")) {
       flags.shopsanity = document.getElementById("shopsanitybox").checked ? "Y" : "N";
     }
+
+    // Pseudoboots
+    if (document.getElementById("pseudobootsbox").checked != (flags.pseudoboots != "N")) {
+      flags.pseudoboots = document.getElementById("pseudobootsbox").checked ? "Y" : "N";
+    }
+
+    // Mirror scroll
+    if (document.getElementById("mirrorscrollbox").checked != (flags.mirrorscroll != "N")) {
+      flags.mirrorscroll = document.getElementById("mirrorscrollbox").checked ? "Y" : "N";
+    }
+
 
     //Entrance
     if (document.getElementById("entranceselect").value != flags.entrancemode) {
