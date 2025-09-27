@@ -35,6 +35,7 @@
 
   window.doorWindow = null;
   window.dungeonData = null;
+  window.mixedow = false;
 
   window.rgbToLightness = function (rgb) {
     if (rgb.substring(0, 1) === "#") {
@@ -391,7 +392,7 @@
   };
 
   window.sendShuffleUpdate = function (tile, swapped) {
-    if (doorWindow && !doorWindow.closed && doorWindow.mixedow) {
+    if (doorWindow && !doorWindow.closed && window.mixedow) {
       doorWindow.postMessage({ type: "SHUFFLEUPDATE", tile: tile, swapped: swapped }, "*");
     }
   };
@@ -408,6 +409,9 @@
 
   window.receiveMessage = function (event) {
     if (window.origin === event.origin) {
+      if (event.data.mixedow !== undefined) {
+        window.mixedow = event.data.mixedow;
+      }
       if (event.data.logic && flags.overworldshuffle != "N") {
         owGraphLogic = true;
         var newSwapTowers = event.data.towerSwap === true;

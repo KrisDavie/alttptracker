@@ -1341,6 +1341,9 @@ function autotrackDoTracking(data) {
       setitem("mushroom", (data["rooms_inv"][0x38c] & 0x28) == 0x28 ? 1 : (data["rooms_inv"][0x38c] & 0x28) == 0x08 ? 2 : 0);
       var fluteState = data["rooms_inv"][0x38c] & 0x03;
       setitem("flute", fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState == 0x02 ? 1 : 0);
+      if (fluteState == 0x01 && window.doorWindow && !window.doorWindow.closed) {
+        window.doorWindow.postMessage("FLUTEACTIVATED", "*");
+      }
     }
 
     if (newbit(0x38c, 0x10)) setitem("powder", true);

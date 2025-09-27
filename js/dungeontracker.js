@@ -1171,6 +1171,9 @@
           alert("The main tracker window has been refreshed and disconnected from this window as a consequence of changing certain mode settings.\n\n" + reconnectHelpMessage);
         }
       }
+      if (event.data === "FLUTEACTIVATED") {
+        window.clickFluteActivated();
+      }
       if (event.data.type && event.data.type === "SHUFFLEUPDATE") {
         let tile = event.data.tile;
         let swapped = event.data.swapped;
