@@ -359,6 +359,8 @@
         return items.boots || items.hookshot;
       case "canBurnThings":
         return items.firerod || (items.bombos && items.sword > 0);
+      case "canBurnThingsMaybeSwordless":
+        return items.firerod || (items.bombos && (items.sword > 0 || (flags.swordmode === "S"  && items.hammer)));
       case "canHitSwitch":
         return canHitSwitch();
       case "canDestroyEnergyBarrier":

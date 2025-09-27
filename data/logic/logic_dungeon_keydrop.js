@@ -2541,7 +2541,7 @@
       },
       "Ice Palace - Compass Chest": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThings", "canKillOrExplodeMostEnemies"],
+          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThingsMaybeSwordless", "canKillOrExplodeMostEnemies"],
         },
         logical: {
           allOf: ["canReach|Ice Palace"],
@@ -2571,7 +2571,7 @@
       },
       "Ice Palace - Freezor Chest": {
         always: {
-          allOf: ["canBreach|Ice Palace", "canBurnThings", "keys|2"],
+          allOf: ["canBreach|Ice Palace", "canBurnThingsMaybeSwordless", "keys|2"],
         },
         required: {
           anyOf: ["bombs", "canIceBreak"],
@@ -2582,7 +2582,7 @@
       },
       "Ice Palace - Big Chest": {
         always: {
-          allOf: ["canBreach|Ice Palace", "bigkey", "keys|2", "canBurnThings"],
+          allOf: ["canBreach|Ice Palace", "bigkey", "keys|2", "canBurnThingsMaybeSwordless"],
           anyOf: [
             "bombs",
             {
@@ -2596,7 +2596,7 @@
       },
       "Ice Palace - Spike Room": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThings"],
+          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThingsMaybeSwordless"],
           anyOf: [
             "canIceBreak",
             {
@@ -2617,7 +2617,7 @@
       },
       "Ice Palace - Map Chest": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThings", "glove", "hammer"],
+          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThingsMaybeSwordless", "glove", "hammer"],
           anyOf: [
             "canIceBreak",
             {
@@ -2659,7 +2659,7 @@
       },
       "Ice Palace - Big Key Chest": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThings"],
+          allOf: ["canBreach|Ice Palace", "keys|1", "canBurnThingsMaybeSwordless"],
           anyOf: [
             "canIceBreak",
             {
@@ -2694,7 +2694,7 @@
       },
       "Ice Palace - Iced T Room": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|2", "canBurnThings"],
+          allOf: ["canBreach|Ice Palace", "keys|2", "canBurnThingsMaybeSwordless"],
           anyOf: ["bombs", "canIceBreak"],
         },
         required: {
@@ -2706,7 +2706,7 @@
       },
       "Ice Palace - Boss": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|2", "canBurnThings", "glove", "hammer", "canKillBoss"],
+          allOf: ["canBreach|Ice Palace", "keys|2", "canBurnThingsMaybeSwordless", "glove", "hammer", "canKillBoss"],
           anyOf: [
             "canIceBreak",
             {
@@ -2731,7 +2731,7 @@
       },
       "Ice Palace - Prize": {
         always: {
-          allOf: ["canBreach|Ice Palace", "keys|2", "canBurnThings", "glove", "hammer", "canKillBoss"],
+          allOf: ["canBreach|Ice Palace", "keys|2", "canBurnThingsMaybeSwordless", "glove", "hammer", "canKillBoss"],
           anyOf: [
             "canIceBreak",
             {

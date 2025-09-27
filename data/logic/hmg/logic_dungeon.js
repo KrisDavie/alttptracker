@@ -2214,7 +2214,7 @@
       },
       "Ice Palace - Freezor Chest": {
         always: {
-          allOf: ["canBreach|Ice Palace", "canBurnThings"],
+          allOf: ["canBreach|Ice Palace", "canBurnThingsMaybeSwordless"],
         },
         required: {
           anyOf: ["bombs", "canIceBreak"],
@@ -2307,7 +2307,7 @@
       },
       "Ice Palace - Boss": {
         always: {
-          allOf: ["canBreach|Ice Palace", "canBurnThings", "glove", "hammer", "canKillBoss"],
+          allOf: ["canBreach|Ice Palace", "canBurnThingsMaybeSwordless", "glove", "hammer", "canKillBoss"],
           anyOf: [
             "canIceBreak",
             {
@@ -2337,7 +2337,7 @@
       },
       "Ice Palace - Prize": {
         always: {
-          allOf: ["canBreach|Ice Palace", "canBurnThings", "glove", "hammer", "canKillBoss"],
+          allOf: ["canBreach|Ice Palace", "canBurnThingsMaybeSwordless", "glove", "hammer", "canKillBoss"],
           anyOf: [
             "canIceBreak",
             {
