@@ -2360,10 +2360,7 @@
         break;
     }
 
-    const updateElements = ["app", "entranceModal", "summaryModal", "spoilerModal", "flagsModal"];
-    for (const element of updateElements) {
-      document.getElementById(element).classList.add(scaleClass);
-    }
+    document.body.className = scaleClass;
 
     //Map layers
     switch (flags.mapmode) {

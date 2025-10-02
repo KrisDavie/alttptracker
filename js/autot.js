@@ -194,7 +194,8 @@ function autotrackHandleInfoResponse(event) {
   var results = JSON.parse(event.data).Results;
 
   // This is qusb2snes connected to a retroarch core, we will need to skip certain reads
-  if (results.includes("NO_ROM_READ") || autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
+  // if (results.includes("NO_ROM_READ") || autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
+  if (autotrackDeviceName.startsWith("RetroArch") || autotrackDeviceName.startsWith("ra://")) {
     NO_ROM_READS = true;
   }
 
