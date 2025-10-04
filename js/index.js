@@ -414,6 +414,7 @@ function loadnamedpreset(name) {
       loadadkeyspreset();
       break;
     case "adtileswap":
+    case "kaesden/open_ad_tileswap":
       loadadtileswappreset();
       break;
     case "ambrosia":
@@ -480,6 +481,7 @@ function loadnamedpreset(name) {
       loaddualitypreset();
       break;
     case "enemizer":
+    case "kaesden/open_logicalenemizer":
       loadenemizerpreset();
       break;
     case "enemizerboots":

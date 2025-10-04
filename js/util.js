@@ -1,7 +1,7 @@
 (function (window) {
 	'use strict';
 
-	window.buildString = "20251002";
+	window.buildString = "20251004";
 
 	window.isDev = false;
 
