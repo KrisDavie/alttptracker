@@ -334,8 +334,7 @@ function launch_tracker() {
   }
 
   if (document.getElementById("remembersettings").checked == true) {
-    // If enhanced autotracking enabled, only save autotracking, enhanced must be enabled each time.
-    var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + (autotracking === "E" ? "Y" : autotracking) + trackingport + "|ah-" + trackinghost + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale + "|ad-" + alwaysdisplay;
+    var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|ah-" + trackinghost + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale + "|ad-" + alwaysdisplay;
     document.cookie = "settings=" + settings + "; expires=Sat, 3 Jan 2026 12:00:00 UTC";
   } else {
     document.cookie = "settings=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
