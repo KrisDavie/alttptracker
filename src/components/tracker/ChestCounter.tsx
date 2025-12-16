@@ -46,7 +46,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
         onContextMenu={(e) => { e.preventDefault(); setCount(collected - 1); }}
       >
         <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 bg-white bg-opacity-50 ${small ? "border" : "border-2"} border-black ${collected === maxCount ? "hidden" : ""}`}>
-          <div className={`text-black ${small ? "text-sm" : "text-3xl"} font-bold select-none`} onClick={(e) => { e.stopPropagation(); setCount(collected + 1); }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setCount(collected - 1); }}>
+          <div className={`text-black ${small ? "": "text-4xl"} select-none font-roboto font-black`} onClick={(e) => { e.stopPropagation(); setCount(collected + 1); }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setCount(collected - 1); }}>
             {checksRemaining}
           </div>
         </div>

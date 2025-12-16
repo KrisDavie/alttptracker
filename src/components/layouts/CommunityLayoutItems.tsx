@@ -1,5 +1,5 @@
 import SpriteSquare from "../tracker/SpriteSquare";
-import BottleTracker from "../tracker/BottleTracker";
+import QuadTrackerItem from "../tracker/QuadTrackerItem";
 import DualTrackerItem from "../tracker/DualTrackerItem";
 import DungeonSquare from "../tracker/DungeonSquare";
 import TrackerItem from "../tracker/TrackerItem";
@@ -24,77 +24,73 @@ function CommunityLayoutItems() {
   // +-----------------------------------+
 
   return (
-    <div className="w-112 h-112 flex flex-col bg-black">
-      {/* Top of tracker */}
-      <div className="flex flex-row h-80">
-        {/* Left side */}
-        <div className="flex flex-col w-32">
-          {/* Sprite */}
-          <div className="flex flex-col h-32">
-            <SpriteSquare />
+    <div className="w-112 h-112 grid grid-cols-7 grid-rows-7 bg-black">
+      {/* Sprite (2x2) */}
+      <div className="col-start-1 row-start-1 col-span-2 row-span-2">
+        <SpriteSquare />
+      </div>
+
+      {/* LW Bosses (2x3) */}
+      <div className="col-start-1 row-start-3 col-span-2 row-span-3 grid grid-rows-3">
+        <DungeonSquare dungeon="ep" />
+        <DungeonSquare dungeon="dp" />
+        <DungeonSquare dungeon="toh" />
+      </div>
+
+      {/* Items (5x5) */}
+      <div className="col-start-3 row-start-1 col-span-5 row-span-5 grid grid-cols-5 grid-rows-5">
+        <TrackerItem itemName="bow" />
+        <TrackerItem itemName="boomerang" />
+        <TrackerItem itemName="hookshot" />
+        <TrackerItem itemName="bomb" />
+        <DualTrackerItem item1="mushroom" item2="powder" />
+
+        <TrackerItem itemName="firerod" />
+        <TrackerItem itemName="icerod" />
+        <TrackerItem itemName="bombos" />
+        <TrackerItem itemName="ether" />
+        <TrackerItem itemName="quake" />
+
+        <TrackerItem itemName="lantern" />
+        <TrackerItem itemName="hammer" />
+        <DualTrackerItem item1="shovel" item2="flute" />
+        <TrackerItem itemName="net" />
+        <TrackerItem itemName="book" />
+
+        <QuadTrackerItem
+          item1={{ name: "bottle", storageKey: "bottle1" }}
+          item2={{ name: "bottle", storageKey: "bottle2" }}
+          item3={{ name: "bottle", storageKey: "bottle3" }}
+          item4={{ name: "bottle", storageKey: "bottle4" }}
+        />
+        <TrackerItem itemName="somaria" />
+        <TrackerItem itemName="byrna" />
+        <TrackerItem itemName="cape" />
+        <TrackerItem itemName="mirror" />
+
+        <TrackerItem itemName="boots" />
+        <TrackerItem itemName="glove" />
+        <TrackerItem itemName="flippers" />
+        <TrackerItem itemName="magic" />
+        <div
+          className="grid grid-cols-2 grid-rows-2 w-full h-full"
+          style={{
+            backgroundImage: "url(/items/splitbackground.png)",
+            backgroundSize: "100% 100%",
+            imageRendering: "pixelated",
+          }}
+        >
+          <div className="col-start-1 row-start-1 w-full h-full">
+            <BossIcon dungeon="ct" />
           </div>
-          {/* LW bosses */}
-          <div className="flex flex-col">
-            <DungeonSquare dungeon="ep" />
-            <DungeonSquare dungeon="dp" />
-            <DungeonSquare dungeon="toh" />
-          </div>
-        </div>
-        {/* Items */}
-        <div className="flex flex-col w-80 ">
-          <div className="flex flex-row h-16 w-full ">
-            <TrackerItem itemName="bow" />
-            <TrackerItem itemName="boomerang" />
-            <TrackerItem itemName="hookshot" />
-            <TrackerItem itemName="bomb" />
-            <DualTrackerItem item1="mushroom" item2="powder" />
-          </div>
-          <div className="flex flex-row h-16 w-full ">
-            <TrackerItem itemName="firerod" />
-            <TrackerItem itemName="icerod" />
-            <TrackerItem itemName="bombos" />
-            <TrackerItem itemName="ether" />
-            <TrackerItem itemName="quake" />
-          </div>
-          <div className="flex flex-row h-16 w-full ">
-            <TrackerItem itemName="lantern" />
-            <TrackerItem itemName="hammer" />
-            <DualTrackerItem item1="shovel" item2="flute" />
-            <TrackerItem itemName="net" />
-            <TrackerItem itemName="book" />
-          </div>
-          <div className="flex flex-row h-16 w-full ">
-            <BottleTracker />
-            <TrackerItem itemName="somaria" />
-            <TrackerItem itemName="byrna" />
-            <TrackerItem itemName="cape" />
-            <TrackerItem itemName="mirror" />
-          </div>
-          <div className="flex flex-row h-16 w-full ">
-            <TrackerItem itemName="boots" />
-            <TrackerItem itemName="glove" />
-            <TrackerItem itemName="flippers" />
-            <TrackerItem itemName="magic" />
-            <div
-              className="relative min-w-16 min-h-16"
-              style={{
-                backgroundImage: "url(/items/splitbackground.png)",
-                backgroundSize: "100% 100%",
-                imageRendering: "pixelated",
-              }}
-            >
-              <div className="absolute top-0 left-0 w-1/2 h-1/2">
-                <BossIcon dungeon="ct" />
-              </div>
-              <div className="absolute bottom-0 right-0 w-1/2 h-1/2">
-                <BossIcon dungeon="gt" />
-              </div>
-            </div>
+          <div className="col-start-2 row-start-2 w-full h-full">
+            <BossIcon dungeon="gt" />
           </div>
         </div>
       </div>
-      {/* DW bosses */}
-      <div className="flex flex-row">
+
+      {/* DW Bosses (7x2) */}
+      <div className="col-start-1 row-start-6 col-span-7 row-span-2 grid grid-cols-7">
         <DungeonSquare dungeon="pod" direction="vertical" />
         <DungeonSquare dungeon="sp" direction="vertical" />
         <DungeonSquare dungeon="sw" direction="vertical" />

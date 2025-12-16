@@ -4,7 +4,7 @@ interface DungeonData {
   defeatedIcon?: string;
   totalLocations?: {
     chests: number;
-    keys: number;
+    smallkeys: number;
     keypots: number;
     keydrops: number;
     pots: number;
@@ -23,7 +23,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/armos.png",
     totalLocations: {
       chests: 6,
-      keys: 0,
+      smallkeys: 0,
       keypots: 1,
       keydrops: 1,
       pots: 0,
@@ -40,7 +40,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/lanmolas.png",
     totalLocations: {
       chests: 6,
-      keys: 1,
+      smallkeys: 1,
       keypots: 3,
       keydrops: 0,
       pots: 0,
@@ -57,7 +57,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/moldorm.png",
     totalLocations: {
       chests: 6,
-      keys: 1,
+      smallkeys: 1,
       keypots: 0,
       keydrops: 0,
       pots: 0,
@@ -74,7 +74,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/helmasaur_king.png",
     totalLocations: {
       chests: 14,
-      keys: 6,
+      smallkeys: 6,
       keypots: 0,
       keydrops: 0,
       pots: 0,
@@ -91,7 +91,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/arrghus.png",
     totalLocations: {
       chests: 10,
-      keys: 1,
+      smallkeys: 1,
       keypots: 5,
       keydrops: 0,
       pots: 0,
@@ -108,7 +108,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/mothula.png",
     totalLocations: {
       chests: 8,
-      keys: 3,
+      smallkeys: 3,
       keypots: 1,
       keydrops: 1,
       pots: 0,
@@ -125,7 +125,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/blind.png",
     totalLocations: {
       chests: 8,
-      keys: 1,
+      smallkeys: 1,
       keypots: 2,
       keydrops: 0,
       pots: 0,
@@ -142,7 +142,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/kholdstare.png",
     totalLocations: {
       chests: 8,
-      keys: 2,
+      smallkeys: 2,
       keypots: 2,
       keydrops: 2,
       pots: 0,
@@ -159,7 +159,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/vitreous.png",
     totalLocations: {
       chests: 8,
-      keys: 3,
+      smallkeys: 3,
       keypots: 2,
       keydrops: 1,
       pots: 0,
@@ -176,7 +176,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/trinexx.png",
     totalLocations: {
       chests: 12,
-      keys: 4,
+      smallkeys: 4,
       keypots: 0,
       keydrops: 2,
       pots: 0,
@@ -194,7 +194,7 @@ const DungeonsData: Record<string, DungeonData> = {
     defeatedIcon: "/dungeons/agahnim1.png",
     totalLocations: {
       chests: 27,
-      keys: 4,
+      smallkeys: 4,
       keypots: 3,
       keydrops: 1,
       pots: 0,
@@ -212,7 +212,7 @@ const DungeonsData: Record<string, DungeonData> = {
     defeatedIcon: "/dungeons/agahnim1.png",
     totalLocations: {
       chests: 2,
-      keys: 2,
+      smallkeys: 2,
       keypots: 0,
       keydrops: 2,
       pots: 0,
@@ -229,7 +229,7 @@ const DungeonsData: Record<string, DungeonData> = {
     icon: "/dungeons/bnc.png",
     totalLocations: {
       chests: 8,
-      keys: 1,
+      smallkeys: 1,
       keypots: 0,
       keydrops: 3,
       pots: 0,

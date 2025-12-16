@@ -1,6 +1,42 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: 'PT Sans';
+  src: url('/fonts/PTSans-Regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('/fonts/RobotoCondensed-Regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Teko';
+  src: url('/fonts/Teko-Light-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Triforce';
+  src: url('/fonts/Triforce-Regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --font-ptsans: 'PT Sans', sans-serif;
+  --font-roboto: 'Roboto Condensed', sans-serif;
+  --font-teko: 'Teko', sans-serif;
+  --font-triforce: 'Triforce', sans-serif;
+  --font-arialblack: 'Arial Black', sans-serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -12,7 +48,7 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  font-synthesis: none;
+  /* font-synthesis: none; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

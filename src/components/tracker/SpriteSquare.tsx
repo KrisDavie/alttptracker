@@ -1,8 +1,16 @@
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 import ChestCounter from "./ChestCounter";
 import SpriteDisplay from "./SpriteDisplay";
 import TrackerItem from "./TrackerItem";
+import BigKeyTracker from "./BigKeyTracker";
+import SmallKeyTracker from "./SmallKeyTracker";
 
 function SpriteSquare() {
+  const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);
+  const wildSmallKeys = useSelector((state: RootState) => state.tracker.settings.wildSmallKeys);
+  const doors = false;
+
   return (
     <div className="relative w-full h-full">
       <div className="h-24 w-24">
@@ -18,10 +26,25 @@ function SpriteSquare() {
         <TrackerItem itemName="shield" />
       </div>
       <div className="h-4 w-4 absolute top-11 right-9">
-        <TrackerItem itemName="heartpiece" skipFirstImgOnCollect/>
+        <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
       </div>
-      <div className="h-8 w-8">
-        <ChestCounter dungeon="gt" small />
+      {wildSmallKeys && (
+        <div className="h-4 w-4 absolute top-2 right-4">
+          <SmallKeyTracker dungeon="hc" size="1x1" />
+        </div>
+      )}
+      {wildSmallKeys && (
+        <div className="h-4 w-4 absolute top-14 right-4">
+          <SmallKeyTracker dungeon="ct" size="1x1" />
+        </div>
+      )}
+
+      <div className="flex flex-row h-8 w-32">
+        <div className="flex flex-row h-8 w-8">
+          <ChestCounter dungeon="gt" small />
+        </div>
+        {wildBigKeys && <BigKeyTracker dungeon="gt" />}
+        {wildSmallKeys && <SmallKeyTracker dungeon="gt" size={doors ? "1x1" : "1x2"} />}
       </div>
     </div>
   );
