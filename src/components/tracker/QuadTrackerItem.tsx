@@ -16,7 +16,7 @@ function renderItem(item: ItemProp) {
   return (
     <TrackerItem
       itemName={item.name}
-      storageKey={item.storageKey}
+      storageKey={item.storageKey ?? item.name}
       skipFirstImgOnCollect={item.skipFirstImgOnCollect}
     />
   );

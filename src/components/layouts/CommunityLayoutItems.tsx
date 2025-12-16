@@ -3,7 +3,8 @@ import QuadTrackerItem from "../tracker/QuadTrackerItem";
 import DualTrackerItem from "../tracker/DualTrackerItem";
 import DungeonSquare from "../tracker/DungeonSquare";
 import TrackerItem from "../tracker/TrackerItem";
-import BossIcon from "../tracker/BossIcon";
+import MagicAgaSquare from "../tracker/MagicAgaSquare";
+import AgaOrCastleCountsSquare from "../tracker/AgaOrCastleCountsSquare";
 
 function CommunityLayoutItems() {
   // Regular community tracker layout:
@@ -57,12 +58,7 @@ function CommunityLayoutItems() {
         <TrackerItem itemName="net" />
         <TrackerItem itemName="book" />
 
-        <QuadTrackerItem
-          item1={{ name: "bottle", storageKey: "bottle1" }}
-          item2={{ name: "bottle", storageKey: "bottle2" }}
-          item3={{ name: "bottle", storageKey: "bottle3" }}
-          item4={{ name: "bottle", storageKey: "bottle4" }}
-        />
+        <QuadTrackerItem item1={{ name: "bottle", storageKey: "bottle1" }} item2={{ name: "bottle", storageKey: "bottle2" }} item3={{ name: "bottle", storageKey: "bottle3" }} item4={{ name: "bottle", storageKey: "bottle4" }} />
         <TrackerItem itemName="somaria" />
         <TrackerItem itemName="byrna" />
         <TrackerItem itemName="cape" />
@@ -71,22 +67,10 @@ function CommunityLayoutItems() {
         <TrackerItem itemName="boots" />
         <TrackerItem itemName="glove" />
         <TrackerItem itemName="flippers" />
-        <TrackerItem itemName="magic" />
-        <div
-          className="grid grid-cols-2 grid-rows-2 w-full h-full"
-          style={{
-            backgroundImage: "url(/items/splitbackground.png)",
-            backgroundSize: "100% 100%",
-            imageRendering: "pixelated",
-          }}
-        >
-          <div className="col-start-1 row-start-1 w-full h-full">
-            <BossIcon dungeon="ct" />
-          </div>
-          <div className="col-start-2 row-start-2 w-full h-full">
-            <BossIcon dungeon="gt" />
-          </div>
-        </div>
+        {/* Is magic alone or magic + aga in keys */}
+        <MagicAgaSquare />
+        {/* Is aga or castle counts in keys */}
+        <AgaOrCastleCountsSquare />
       </div>
 
       {/* DW Bosses (7x2) */}

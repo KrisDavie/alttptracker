@@ -29,13 +29,20 @@ function SpriteSquare() {
         <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
       </div>
       {wildSmallKeys && (
-        <div className="h-4 w-4 absolute top-2 right-4">
-          <SmallKeyTracker dungeon="hc" size="1x1" />
+        <div>
+          <div className="h-4 w-4 absolute top-4 right-4">
+            <SmallKeyTracker dungeon="hc" size="1x1" />
+          </div>
+          <div className="h-4 w-4 absolute top-0.5 right-1 text-white font-bold font-arialblack text-2xs">HC</div>
         </div>
       )}
       {wildSmallKeys && (
-        <div className="h-4 w-4 absolute top-14 right-4">
-          <SmallKeyTracker dungeon="ct" size="1x1" />
+        <div>
+          <div className="h-4 w-4 absolute top-16 right-4">
+            <SmallKeyTracker dungeon="ct" size="1x1" />
+          </div>
+
+            <div className="h-4 w-4 absolute top-12.5 right-1 text-white font-bold font-arialblack text-2xs">CT</div>
         </div>
       )}
 
