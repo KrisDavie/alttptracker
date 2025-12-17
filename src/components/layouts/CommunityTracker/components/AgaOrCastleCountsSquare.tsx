@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
-import BossIcon from "./BossIcon";
-import ChestCounter from "./ChestCounter";
+import type { RootState } from "../../../../store/store";
+import BossIcon from "../../../tracker/BossIcon";
+import ChestCounter from "../../../tracker/ChestCounter";
 
 function AgaOrCastleCountsSquare() {
   // const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);

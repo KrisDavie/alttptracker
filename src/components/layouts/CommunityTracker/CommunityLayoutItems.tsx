@@ -1,10 +1,10 @@
-import SpriteSquare from "../tracker/SpriteSquare";
-import QuadTrackerItem from "../tracker/QuadTrackerItem";
-import DualTrackerItem from "../tracker/DualTrackerItem";
-import DungeonSquare from "../tracker/DungeonSquare";
-import TrackerItem from "../tracker/TrackerItem";
-import MagicAgaSquare from "../tracker/MagicAgaSquare";
-import AgaOrCastleCountsSquare from "../tracker/AgaOrCastleCountsSquare";
+import SpriteSquare from "./components/SpriteSquare";
+import QuadTrackerItem from "../../tracker/QuadTrackerItem";
+import DualTrackerItem from "../../tracker/DualTrackerItem";
+import DungeonSquare from "./components/DungeonSquare";
+import TrackerItem from "../../tracker/TrackerItem";
+import MagicAgaSquare from "./components/MagicAgaSquare";
+import AgaOrCastleCountsSquare from "./components/AgaOrCastleCountsSquare";
 
 function CommunityLayoutItems() {
   // Regular community tracker layout:

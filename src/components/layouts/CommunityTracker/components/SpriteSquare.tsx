@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
-import ChestCounter from "./ChestCounter";
-import SpriteDisplay from "./SpriteDisplay";
-import TrackerItem from "./TrackerItem";
-import BigKeyTracker from "./BigKeyTracker";
-import SmallKeyTracker from "./SmallKeyTracker";
+import type { RootState } from "../../../../store/store";
+import ChestCounter from "../../../tracker/ChestCounter";
+import SpriteDisplay from "../../../tracker/SpriteDisplay";
+import TrackerItem from "../../../tracker/TrackerItem";
+import BigKeyTracker from "../../../tracker/BigKeyTracker";
+import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
 
 function SpriteSquare() {
   const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);

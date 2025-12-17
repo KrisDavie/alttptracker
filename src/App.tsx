@@ -1,5 +1,5 @@
 import "./App.css";
-import CommunityLayoutItems from "./components/layouts/CommunityLayoutItems";
+import CommunityLayoutItems from "./components/layouts/CommunityTracker/CommunityLayoutItems";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleWildBigKeys, toggleWildSmallKeys } from "./store/trackerSlice";
 import type { RootState } from "./store/store";

@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
-import ChestCounter from "./ChestCounter";
-import BossIcon from "./BossIcon";
-import SmallKeyTracker from "./SmallKeyTracker";
-import BigKeyTracker from "./BigKeyTracker";
+import type { RootState } from "../../../../store/store";
+import ChestCounter from "../../../tracker/ChestCounter";
+import BossIcon from "../../../tracker/BossIcon";
+import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
+import BigKeyTracker from "../../../tracker/BigKeyTracker";
 
 interface DungeonSquareProps {
   dungeon: string;

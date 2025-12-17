@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
-import TrackerItem from "./TrackerItem";
-import BossIcon from "./BossIcon";
+import type { RootState } from "../../../../store/store";
+import TrackerItem from "../../../tracker/TrackerItem";
+import BossIcon from "../../../tracker/BossIcon";
 
 function MagicAgaSquare() {
   // const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);
