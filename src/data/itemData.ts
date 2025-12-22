@@ -1,4 +1,12 @@
-const ItemsData = {
+interface ItemData {
+  name: string;
+  description: string;
+  maxCount: number;
+  images: string[];
+  pseudoImage?: string;
+}
+
+const ItemsData: Record<string, ItemData> = {
   "bow": {
     name: "Bow",
     description: "A ranged weapon for attacking enemies from a distance.",
@@ -215,6 +223,7 @@ const ItemsData = {
       "/items/flippers.png",
     ],
   },
+  // TODO: Add quarter magic
   "magic": {
     name: "Half Magic",
     description: "An upgrade that increases the player's magic meter capacity.",
@@ -263,6 +272,7 @@ const ItemsData = {
       "/items/sword4.png",
     ],
   },
+  // TODO: Get green and red mail images
   "mail": {
     name: "Mail",
     description: "Armor that reduces damage taken from enemies.",
