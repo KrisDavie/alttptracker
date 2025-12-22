@@ -2,6 +2,7 @@ interface OWMapProps {
   world?: "lw" | "dw";
 }
 
+import MapLocation from "@/components/tracker/MapLocation";
 import { entranceData } from "@/data/entranceData";
 import { locationsData } from "@/data/locationsData";
 
@@ -13,6 +14,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
   return (
     <div
       className="w-112 h-112 relative"
+      key={world}
       style={{
         backgroundImage: `url("${bgimg}")`,
         backgroundPosition: "center",
@@ -28,38 +30,31 @@ function OWMap({ world = "lw" }: OWMapProps) {
         const location = locationsData[locationKey];
         if (location.world !== world) return null;
         if (entranceMode && !location.overworld) return null;
+        let itemType = "item"
+        if (location.bonk) {
+          itemType = "tree"
+        }
         return (
-          <div
-            key={locationKey}
-            className="absolute h-2.5 w-2.5 bg-green-400 border border-black group z-10 hover:z-20"
-            style={{
-              top: `${((location.y/512)*448)-3}px`,
-              left: `${((location.x/512)*448)-3}px`,
-            }}
-          >
-            <div className="invisible group-hover:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-black text-white text-2xs whitespace-nowrap rounded pointer-events-none border border-gray-600">
-              {locationKey}
-            </div>
-          </div>
+          <MapLocation
+            name={locationKey}
+            type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"}
+            x={location.x}
+            y={location.y}
+          />
         );
       })}
 
-     {entranceMode &&Object.keys(entranceData).map((entranceKey) => {
-        const entrance = entranceData[entranceKey];
-        if (entrance.world !== world) return null;
+      {Object.keys(entranceData).map((locationKey) => {
+        const location = entranceData[locationKey];
+        if (location.world !== world) return null;
+        const itemType = "entrance"
         return (
-          <div
-            key={entranceKey}
-            className="absolute rounded-full h-2.5 w-2.5 bg-blue-400 border border-black group z-10 hover:z-20"
-            style={{
-              top: `${((entrance.y/512)*448)-3}px`,
-              left: `${((entrance.x/512)*448)-3}px`,
-            }}
-          >
-            <div className="invisible group-hover:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-black text-white text-2xs whitespace-nowrap rounded pointer-events-none border border-gray-600">
-              {entranceKey}
-            </div>
-          </div>
+          <MapLocation
+            name={locationKey}
+            type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"}
+            x={location.x}
+            y={location.y}
+          />
         );
       })}
 

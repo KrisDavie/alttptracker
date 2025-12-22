@@ -3,6 +3,7 @@ export interface LocationData {
   y: number;
   world: "lw" | "dw";
   open: boolean;
+  // Is an overworld location (opposed to a dungeon/cave/shop/etc.)
   overworld: boolean;
   shopsanity: boolean;
   pots: boolean;
