@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getRangeFromAddress, MEMORY_RANGES } from "@/data/sramLocations";
+import { getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVENTORY_ITEMS } from "@/data/sramLocations";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { setConnectedgRPC, setDeviceList, setRomName} from "@/store/autotrackerSlice";
+import { setConnectedgRPC, setDeviceList, setRomName } from "@/store/autotrackerSlice";
 import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
@@ -69,13 +69,13 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
           requestMemoryMapping: MemoryMapping.LoROM, // TODO: Detect this on connection (and when reloading rom)
           requestAddressSpace: AddressSpace.FxPakPro,
           requestAddress,
-          size
-        }
-
+          size,
+        },
       });
       return memoryRangeResponse.response.response?.data;
     }
 
+    // Polling loop
     const poll = async () => {
       const transport = getTransport({ host, port });
       if (!isConnected) {
@@ -98,7 +98,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
             if (data) {
               if (index === 0) {
                 // Checking ROM name range
-                const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, '');
+                const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, "");
                 if (romName !== fetchedRomName) {
                   console.log("ROM name changed:", fetchedRomName);
                   dispatch(setRomName(fetchedRomName));
@@ -127,7 +127,6 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     return () => clearInterval(interval);
   }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch]);
 
-
   // Actually process the data and mark things as checked etc. This will likely be very long
   useEffect(() => {
     if (Object.keys(autoTrackingData).length === 0) {
@@ -143,10 +142,10 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       const locationChecked = checksRef.current[location] ?? "none";
 
       if (locationChecked === "all") {
-        return; // Already checked
+        return; // Already cleared
       }
 
-      // Check 
+      // Checks for this location
       const locationMax = locData.itemLocations.length;
       const checkedLocations = locData.itemLocations.reduce((count, itemLoc) => {
         const sramLoc = ALL_SRAM_LOCATIONS_MAP[itemLoc];
@@ -194,7 +193,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       }
     });
 
-    // Inventory items
+    // Inventory items - covers most things
     INVENTORY_LOCATIONS.forEach((sramLoc) => {
       const itemName = sramLoc.name.replace("Inventory - ", "");
       const currentAmount = itemsRef.current[itemName]?.amount ?? 0;
@@ -215,8 +214,82 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         newValue = (value & sramLoc.mask) !== 0 ? 1 : 0;
       }
 
+      if (itemName.startsWith("bottle")) {
+        newValue = Math.max(0, newValue - 1);
+      }
+
       if (newValue !== currentAmount) {
         itemUpdates[itemName] = newValue;
+      }
+    });
+
+    // Special handling for some items, either different in PH or complex checks needed
+    SPECIAL_HANDLE_INVENTORY_ITEMS.forEach((sramLoc) => {
+      const itemName = sramLoc.name.replace("Inventory - ", "");
+      const fork = "DR";
+
+      if (fork === "PH") {
+        const memRange = getRangeFromAddress(sramLoc.phWramAddress);
+        if (!memRange) return;
+
+        const data = autoTrackingData[memRange.name];
+        if (!data) return;
+
+        const offset = sramLoc.phWramAddress - memRange.start;
+        const value = data[offset] || 0;
+        return; // Currently no special handling for PH
+        switch (itemName) {
+          case "bow":
+          case "boomerang":
+          case "bombs":
+          case "mushroom":
+          case "powder":
+          case "shovel":
+          case "flute":
+          default:
+        }
+      } else {
+        const memRange = getRangeFromAddress(sramLoc.wramAddress);
+        if (!memRange) return;
+
+        const data = autoTrackingData[memRange.name];
+        if (!data) return;
+
+        const offset = sramLoc.wramAddress - memRange.start;
+        const value = data[offset] || 0;
+
+        switch (itemName) {
+          case "bow": {
+            const bits = value & 0xc0;
+            // TODO, add non prog bows flag
+            // Index up by one because empty bow no quiver
+            itemUpdates["bow"] = bits === 0x40 ? 2 : bits === 0x80 ? 3 : 4;
+            break;
+          }
+          case "boomerang": {
+            const bits = value & 0xc0;
+            itemUpdates["boomerang"] = bits === 0x80 ? 1 : bits === 0x40 ? 2 : 3;
+            break;
+          }
+          case "bombs":
+            itemUpdates["bomb"] = value > 0 ? 1 : 0;
+            break;
+          case "mushroom": {
+            const bits = value & 0x28;
+            itemUpdates["mushroom"] = bits & 0x28 ? 1 : bits & 0x08 ? 2 : 0;
+            break;
+          }
+          case "powder":
+          case "shovel":
+            itemUpdates[itemName] = (value & sramLoc.mask) !== 0 ? 1 : 0;
+            break;
+          case "flute": {
+            const fluteState = value & 0x03;
+            itemUpdates["flute"] = fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState === 0x02 ? 1 : 0;
+            break;
+          }
+          default:
+        }
       }
     });
 
@@ -228,8 +301,6 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       dispatch(updateMultipleItems(itemUpdates));
     }
   }, [autoTrackingData, dispatch]);
-
-
 
   return <>{children}</>;
 };

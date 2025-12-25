@@ -61,6 +61,11 @@ export interface SramLocation {
   screenId?: number;
 }
 
+export interface MultiSramLocation extends SramLocation {
+  phWramAddress: number;
+  phMask: number;
+}
+
 export interface UnderworldLocation extends SramLocation {
   type: typeof LocationType.Chest | typeof LocationType.StandingKey | typeof LocationType.Torch;
   roomId: number;
@@ -112,6 +117,10 @@ export interface BossPrizeLocation extends SramLocation {
 }
 
 export interface InventoryItemLocation extends SramLocation {
+  type: typeof LocationType.InventoryItem;
+}
+
+export interface MultiInventoryItemLocation extends MultiSramLocation {
   type: typeof LocationType.InventoryItem;
 }
 
@@ -3491,7 +3500,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 3,
   },
   {
-    name:  "Desert Wall Slide Pot #1",
+    name: "Desert Wall Slide Pot #1",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x8000,
@@ -3499,7 +3508,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 0,
   },
   {
-    name:  "Desert Wall Slide Pot #2",
+    name: "Desert Wall Slide Pot #2",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x4000,
@@ -3507,7 +3516,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 1,
   },
   {
-    name:  "Desert Wall Slide Pot #3",
+    name: "Desert Wall Slide Pot #3",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x2000,
@@ -3515,7 +3524,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 2,
   },
   {
-    name:  "Desert Wall Slide Pot #4",
+    name: "Desert Wall Slide Pot #4",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x1000,
@@ -3523,7 +3532,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 3,
   },
   {
-    name:  "Desert Tiles 2 Pot #5",
+    name: "Desert Tiles 2 Pot #5",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x800,
@@ -3531,7 +3540,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 4,
   },
   {
-    name:  "Desert Tiles 2 Pot #6",
+    name: "Desert Tiles 2 Pot #6",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x400,
@@ -3539,7 +3548,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 5,
   },
   {
-    name:  "Desert Tiles 2 Pot #7",
+    name: "Desert Tiles 2 Pot #7",
     type: LocationType.Pot,
     wramAddress: 0xf6609e,
     mask: 0x200,
@@ -3891,7 +3900,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 1,
   },
   {
-    name:  "Desert Beamos Hall Pot #1",
+    name: "Desert Beamos Hall Pot #1",
     type: LocationType.Pot,
     wramAddress: 0xf660be,
     mask: 0x8000,
@@ -3899,7 +3908,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 0,
   },
   {
-    name:  "Desert Beamos Hall Pot #2",
+    name: "Desert Beamos Hall Pot #2",
     type: LocationType.Pot,
     wramAddress: 0xf660be,
     mask: 0x4000,
@@ -3907,7 +3916,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 1,
   },
   {
-    name:  "Desert Palace - Beamos Hall Pot Key",
+    name: "Desert Palace - Beamos Hall Pot Key",
     type: LocationType.KeyPot,
     wramAddress: 0xf660be,
     mask: 0x2000,
@@ -3915,7 +3924,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 2,
   },
   {
-    name:  "Desert Beamos Hall Pot #4",
+    name: "Desert Beamos Hall Pot #4",
     type: LocationType.Pot,
     wramAddress: 0xf660be,
     mask: 0x1000,
@@ -4539,7 +4548,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 0,
   },
   {
-    name:  "Desert Tiles 1 Pot #1",
+    name: "Desert Tiles 1 Pot #1",
     type: LocationType.Pot,
     wramAddress: 0xf660de,
     mask: 0x8000,
@@ -4547,7 +4556,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 0,
   },
   {
-    name:  "Desert Tiles 1 Pot #2",
+    name: "Desert Tiles 1 Pot #2",
     type: LocationType.Pot,
     wramAddress: 0xf660de,
     mask: 0x4000,
@@ -4555,7 +4564,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 1,
   },
   {
-    name:  "Desert Tiles 1 Pot #3",
+    name: "Desert Tiles 1 Pot #3",
     type: LocationType.Pot,
     wramAddress: 0xf660de,
     mask: 0x2000,
@@ -4563,7 +4572,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 2,
   },
   {
-    name:  "Desert Tiles 1 Pot #4",
+    name: "Desert Tiles 1 Pot #4",
     type: LocationType.Pot,
     wramAddress: 0xf660de,
     mask: 0x1000,
@@ -4571,7 +4580,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 3,
   },
   {
-    name:  "Desert Tiles 1 Pot #5",
+    name: "Desert Tiles 1 Pot #5",
     type: LocationType.Pot,
     wramAddress: 0xf660de,
     mask: 0x800,
@@ -5059,7 +5068,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 3,
   },
   {
-    name:  "Desert Circle of Pots Pot #1",
+    name: "Desert Circle of Pots Pot #1",
     type: LocationType.Pot,
     wramAddress: 0xf660fe,
     mask: 0x8000,
@@ -5067,7 +5076,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 0,
   },
   {
-    name:  "Desert Circle of Pots Pot #2",
+    name: "Desert Circle of Pots Pot #2",
     type: LocationType.Pot,
     wramAddress: 0xf660fe,
     mask: 0x4000,
@@ -5075,7 +5084,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 1,
   },
   {
-    name:  "Desert Circle of Pots Pot #3",
+    name: "Desert Circle of Pots Pot #3",
     type: LocationType.Pot,
     wramAddress: 0xf660fe,
     mask: 0x2000,
@@ -5083,7 +5092,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 2,
   },
   {
-    name:  "Desert Circle of Pots Pot #4",
+    name: "Desert Circle of Pots Pot #4",
     type: LocationType.Pot,
     wramAddress: 0xf660fe,
     mask: 0x1000,
@@ -21293,12 +21302,10 @@ export const MISC_LOCATIONS: SramLocation[] = [
   },
 ];
 
+// Prefixed with "Inventory -"" to avoid mixups with other location types (i.e. Mushroom)
+// Main inventory items that can be simply checked for presence/absence and/or count
 export const INVENTORY_LOCATIONS: InventoryItemLocation[] = [
-  { name: "Inventory - bow", type: LocationType.InventoryItem, wramAddress: 0xf5f340, mask: 0x00 },
-  { name: "Inventory - boomerang", type: LocationType.InventoryItem, wramAddress: 0xf5f341, mask: 0x00 },
   { name: "Inventory - hookshot", type: LocationType.InventoryItem, wramAddress: 0xf5f342, mask: 0x01 },
-  { name: "Inventory - mushroom", type: LocationType.InventoryItem, wramAddress: 0xf5f344, mask: 0x00 },
-  { name: "Inventory - powder", type: LocationType.InventoryItem, wramAddress: 0xf5f344, mask: 0x02 },
   { name: "Inventory - firerod", type: LocationType.InventoryItem, wramAddress: 0xf5f345, mask: 0x01 },
   { name: "Inventory - icerod", type: LocationType.InventoryItem, wramAddress: 0xf5f346, mask: 0x01 },
   { name: "Inventory - bombos", type: LocationType.InventoryItem, wramAddress: 0xf5f347, mask: 0x01 },
@@ -21306,8 +21313,6 @@ export const INVENTORY_LOCATIONS: InventoryItemLocation[] = [
   { name: "Inventory - quake", type: LocationType.InventoryItem, wramAddress: 0xf5f349, mask: 0x01 },
   { name: "Inventory - lantern", type: LocationType.InventoryItem, wramAddress: 0xf5f34a, mask: 0x01 },
   { name: "Inventory - hammer", type: LocationType.InventoryItem, wramAddress: 0xf5f34b, mask: 0x01 },
-  { name: "Inventory - shovel", type: LocationType.InventoryItem, wramAddress: 0xf5f34c, mask: 0x01 },
-  { name: "Inventory - flute", type: LocationType.InventoryItem, wramAddress: 0xf5f34c, mask: 0x02 },
   { name: "Inventory - net", type: LocationType.InventoryItem, wramAddress: 0xf5f34d, mask: 0x01 },
   { name: "Inventory - book", type: LocationType.InventoryItem, wramAddress: 0xf5f34e, mask: 0x01 },
   { name: "Inventory - somaria", type: LocationType.InventoryItem, wramAddress: 0xf5f350, mask: 0x01 },
@@ -21320,9 +21325,23 @@ export const INVENTORY_LOCATIONS: InventoryItemLocation[] = [
   { name: "Inventory - moonpearl", type: LocationType.InventoryItem, wramAddress: 0xf5f357, mask: 0x01 },
   { name: "Inventory - sword", type: LocationType.InventoryItem, wramAddress: 0xf5f359, mask: 0x00 },
   { name: "Inventory - shield", type: LocationType.InventoryItem, wramAddress: 0xf5f35a, mask: 0x00 },
-  { name: "Inventory - tunic", type: LocationType.InventoryItem, wramAddress: 0xf5f35b, mask: 0x00 },
+  { name: "Inventory - mail", type: LocationType.InventoryItem, wramAddress: 0xf5f35b, mask: 0x00 },
   { name: "Inventory - heartpiece", type: LocationType.InventoryItem, wramAddress: 0xf5f36b, mask: 0x00 },
   { name: "Inventory - magic", type: LocationType.InventoryItem, wramAddress: 0xf5f37b, mask: 0x00 },
+  { name: "Inventory - bottle1", type: LocationType.InventoryItem, wramAddress: 0xf5f35c, mask: 0x00 },
+  { name: "Inventory - bottle2", type: LocationType.InventoryItem, wramAddress: 0xf5f35d, mask: 0x00 },
+  { name: "Inventory - bottle3", type: LocationType.InventoryItem, wramAddress: 0xf5f35e, mask: 0x00 },
+  { name: "Inventory - bottle4", type: LocationType.InventoryItem, wramAddress: 0xf5f35f, mask: 0x00 },
+];
+
+export const SPECIAL_HANDLE_INVENTORY_ITEMS: MultiInventoryItemLocation[] = [
+  { name: "Inventory - bow", type: LocationType.InventoryItem, wramAddress: 0xf5f38e, mask: 0x00, phWramAddress: 0xf5f340, phMask: 0x00 },
+  { name: "Inventory - boomerang", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f341, phMask: 0x00 },
+  { name: "Inventory - bombs", type: LocationType.InventoryItem, wramAddress: 0xf5f341, mask: 0x00, phWramAddress: 0xf5f341, phMask: 0x00 },
+  { name: "Inventory - mushroom", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f344, phMask: 0x00 },
+  { name: "Inventory - powder", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x10, phWramAddress: 0xf5f344, phMask: 0x00 },
+  { name: "Inventory - shovel", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x04, phWramAddress: 0xf5f34c, phMask: 0x00 },
+  { name: "Inventory - flute", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f34c, phMask: 0x00 },
 ];
 
 export const MEMORY_RANGES: MemoryRange[] = [
@@ -21371,7 +21390,6 @@ export const ALL_SRAM_LOCATIONS: SramLocation[] = [
   ...BONK_LOCATIONS,
   ...BOSS_PRIZE_LOCATIONS,
   ...MISC_LOCATIONS,
-  ...INVENTORY_LOCATIONS,
 ];
 
 /** Efficient lookup map for all locations by name */

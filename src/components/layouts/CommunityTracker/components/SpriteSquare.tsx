@@ -31,7 +31,7 @@ function SpriteSquare() {
         <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
       </div>
       {autotracking && (
-        <div className="h-4 w-4 absolute top-1 right-7.5">
+        <div className="h-4 w-4 absolute top-0.5 right-18.5">
           <AutotrackingIcon size={16} />
         </div>
       )}
