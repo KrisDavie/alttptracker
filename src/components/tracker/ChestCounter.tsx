@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setDungeonCollectedCount } from "../../store/trackerSlice";
+import { setDungeonCollectedCount } from "../../store/dungeonsSlice";
 import DungeonsData from "@/data/dungeonData";
 
 interface ChestCounterProps {
@@ -10,11 +10,11 @@ interface ChestCounterProps {
 
 function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const dispatch = useDispatch();
-  const collected = useSelector((state: RootState) => state.tracker.dungeons[dungeon]?.collectedCount ?? 0);
-  const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);
-  const wildSmallKeys = useSelector((state: RootState) => state.tracker.settings.wildSmallKeys);
-  const wildCompasses = useSelector((state: RootState) => state.tracker.settings.wildCompasses);
-  const wildMaps = useSelector((state: RootState) => state.tracker.settings.wildMaps);
+  const collected = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.collectedCount ?? 0);
+  const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
+  const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
+  const wildCompasses = useSelector((state: RootState) => state.settings.wildCompasses);
+  const wildMaps = useSelector((state: RootState) => state.settings.wildMaps);
 
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
   const totLocs = dungeonData?.totalLocations;
@@ -23,7 +23,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
 
   // Maxcount starts as total chests, then we subtract out items that are not shuffled
   maxCount -= ((wildBigKeys ? 0 : (totLocs?.bigkey ? 1 : 0))
-    + (wildSmallKeys ? 0 : (totLocs?.smallkeys ?? 0))
+    + (wildSmallKeys === "wild" ? 0 : (totLocs?.smallkeys ?? 0))
     + (wildCompasses ? 0 : (totLocs?.compass ? 1 : 0))
     + (wildMaps ? 0 : (totLocs?.map ? 1 : 0)));
 

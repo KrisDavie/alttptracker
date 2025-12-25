@@ -1,14 +1,15 @@
-interface OWMapProps {
-  world?: "lw" | "dw";
-}
 
 import MapLocation from "@/components/tracker/MapLocation";
 import { entranceData } from "@/data/entranceData";
 import { locationsData } from "@/data/locationsData";
 
-function OWMap({ world = "lw" }: OWMapProps) {
+interface OWMapProps {
+  world?: "lw" | "dw";
+}
 
-  const entranceMode = true;
+function OWMap({ world = "lw" }: OWMapProps) {
+  const entranceMode = false;
+  const bonkShuffle = true;
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
   return (
@@ -24,15 +25,15 @@ function OWMap({ world = "lw" }: OWMapProps) {
         alignItems: "center",
         justifyContent: "center",
       }}
-
     >
       {Object.keys(locationsData).map((locationKey) => {
         const location = locationsData[locationKey];
         if (location.world !== world) return null;
         if (entranceMode && !location.overworld) return null;
-        let itemType = "item"
+        if (!bonkShuffle && location.bonk) return null;
+        let itemType = "item";
         if (location.bonk) {
-          itemType = "tree"
+          itemType = "tree";
         }
         return (
           <MapLocation
@@ -40,24 +41,20 @@ function OWMap({ world = "lw" }: OWMapProps) {
             type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"}
             x={location.x}
             y={location.y}
+            className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? "h-2.5 w-2.5" : "h-4 w-4"}`}
+            tooltip={true}
+            locations={location.itemLocations}
           />
         );
       })}
 
       {Object.keys(entranceData).map((locationKey) => {
+        if (!entranceMode) return null;
         const location = entranceData[locationKey];
         if (location.world !== world) return null;
-        const itemType = "entrance"
-        return (
-          <MapLocation
-            name={locationKey}
-            type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"}
-            x={location.x}
-            y={location.y}
-          />
-        );
+        const itemType = "entrance";
+        return <MapLocation name={locationKey} type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"} x={location.x} y={location.y} className="h-3 w-3 hover:origin-center hover:scale-150" tooltip={true} />;
       })}
-
     </div>
   );
 }

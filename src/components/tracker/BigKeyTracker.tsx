@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setBigKey } from "@/store/trackerSlice";
+import { setBigKey } from "@/store/dungeonsSlice";
 
 interface BigKeyTrackerProps {
   dungeon: string;
@@ -8,7 +8,7 @@ interface BigKeyTrackerProps {
 
 function BigKeyTracker({ dungeon}: BigKeyTrackerProps) {
   const dispatch = useDispatch();
-  const collectedBigKey = useSelector((state: RootState) => state.tracker.dungeons[dungeon]?.bigKey);
+  const collectedBigKey = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.bigKey);
 
   function toggleBigKey() {
     dispatch(setBigKey({ dungeon, hasBigKey: !collectedBigKey }));   

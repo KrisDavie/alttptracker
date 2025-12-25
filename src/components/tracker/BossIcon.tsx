@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { toggleDungeonBoss } from "../../store/trackerSlice";
+import { toggleDungeonBoss, togglePrizeCollected } from "../../store/dungeonsSlice";
 import DungeonsData from "@/data/dungeonData";
 
 interface BossIconProps {
@@ -9,7 +9,7 @@ interface BossIconProps {
 
 function BossIcon({ dungeon }: BossIconProps) {
   const dispatch = useDispatch();
-  const bossDefeated = useSelector((state: RootState) => state.tracker.dungeons[dungeon]?.bossDefeated ?? false);
+  const bossDefeated = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.bossDefeated ?? false);
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
   
   if (!dungeonData) return null;
@@ -20,6 +20,10 @@ function BossIcon({ dungeon }: BossIconProps) {
     <div
       className="h-full w-full"
       onClick={() => dispatch(toggleDungeonBoss({ dungeon: dungeon }))}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        dispatch(togglePrizeCollected({ dungeon: dungeon }));
+      }}
       style={{
         backgroundImage: `url(${dungeonImage})`,
         backgroundSize: "100% 100%",

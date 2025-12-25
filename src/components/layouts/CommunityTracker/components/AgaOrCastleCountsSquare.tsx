@@ -4,10 +4,9 @@ import BossIcon from "../../../tracker/BossIcon";
 import ChestCounter from "../../../tracker/ChestCounter";
 
 function AgaOrCastleCountsSquare() {
-  // const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);
-  const wildSmallKeys = useSelector((state: RootState) => state.tracker.settings.wildSmallKeys);
+  const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
 
-  if (!wildSmallKeys) {
+  if (wildSmallKeys === "inDungeon") {
     return (
       <div
         className="grid grid-cols-2 grid-rows-2 w-full h-full"

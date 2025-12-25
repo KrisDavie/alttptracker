@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setItemCount } from "../../store/trackerSlice";
+import { setItemCount } from "../../store/itemsSlice";
 import ItemsData from "@/data/itemData";
 
 interface TrackerItemProps {
@@ -12,7 +12,7 @@ interface TrackerItemProps {
 function TrackerItem({ itemName, storageKey, skipFirstImgOnCollect = false }: TrackerItemProps) {
   const dispatch = useDispatch();
   const key = storageKey || itemName;
-  const collected = useSelector((state: RootState) => state.tracker.items[key]?.amount ?? 0);
+  const collected = useSelector((state: RootState) => state.items.items[key]?.amount ?? 0);
   const itemData = ItemsData[itemName as keyof typeof ItemsData];
   const maxCount = (itemData ? itemData.maxCount : 1) - (skipFirstImgOnCollect ? 1 : 0);
 

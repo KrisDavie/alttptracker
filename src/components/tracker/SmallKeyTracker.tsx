@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import DungeonsData from "@/data/dungeonData";
-import { setSmallKeyCount } from "@/store/trackerSlice";
+import { setSmallKeyCount } from "@/store/dungeonsSlice";
 
 interface SmallKeyTrackerProps {
   dungeon: string;
@@ -11,7 +11,7 @@ interface SmallKeyTrackerProps {
 function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
   const dispatch = useDispatch();
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
-  const collectedSmallKeys = useSelector((state: RootState) => state.tracker.dungeons[dungeon]?.smallKeys ?? 0);
+  const collectedSmallKeys = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.smallKeys ?? 0);
   const maxSmallKeys = dungeonData?.totalLocations?.smallkeys || 0;
 
   function setCount(newCount: number) {

@@ -5,10 +5,12 @@ import SpriteDisplay from "../../../tracker/SpriteDisplay";
 import TrackerItem from "../../../tracker/TrackerItem";
 import BigKeyTracker from "../../../tracker/BigKeyTracker";
 import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
+import AutotrackingIcon from "@/components/AutotrackingIcon";
 
 function SpriteSquare() {
-  const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);
-  const wildSmallKeys = useSelector((state: RootState) => state.tracker.settings.wildSmallKeys);
+  const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
+  const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
+  const autotracking = useSelector((state: RootState) => state.settings.autotracking);
   const doors = false;
 
   return (
@@ -28,7 +30,13 @@ function SpriteSquare() {
       <div className="h-4 w-4 absolute top-11 right-9">
         <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
       </div>
-      {wildSmallKeys && (
+      {autotracking && (
+        <div className="h-4 w-4 absolute top-1 right-7.5">
+          <AutotrackingIcon size={16} />
+        </div>
+      )}
+
+      {wildSmallKeys === "wild" && (
         <div>
           <div className="h-4 w-4 absolute top-4 right-4">
             <SmallKeyTracker dungeon="hc" size="1x1" />
@@ -36,13 +44,13 @@ function SpriteSquare() {
           <div className="h-4 w-4 absolute top-0.5 right-1 text-white font-bold font-arialblack text-2xs">HC</div>
         </div>
       )}
-      {wildSmallKeys && (
+      {wildSmallKeys === "wild" && (
         <div>
           <div className="h-4 w-4 absolute top-16 right-4">
             <SmallKeyTracker dungeon="ct" size="1x1" />
           </div>
 
-            <div className="h-4 w-4 absolute top-12.5 right-1 text-white font-bold font-arialblack text-2xs">CT</div>
+          <div className="h-4 w-4 absolute top-12.5 right-1 text-white font-bold font-arialblack text-2xs">CT</div>
         </div>
       )}
 
@@ -51,7 +59,7 @@ function SpriteSquare() {
           <ChestCounter dungeon="gt" small />
         </div>
         {wildBigKeys && <BigKeyTracker dungeon="gt" />}
-        {wildSmallKeys && <SmallKeyTracker dungeon="gt" size={doors ? "1x1" : "1x2"} />}
+        {wildSmallKeys === "wild" && <SmallKeyTracker dungeon="gt" size={doors ? "1x1" : "1x2"} />}
       </div>
     </div>
   );

@@ -4,10 +4,10 @@ import TrackerItem from "../../../tracker/TrackerItem";
 import BossIcon from "../../../tracker/BossIcon";
 
 function MagicAgaSquare() {
-  // const wildBigKeys = useSelector((state: RootState) => state.tracker.settings.wildBigKeys);
-  const wildSmallKeys = useSelector((state: RootState) => state.tracker.settings.wildSmallKeys);
+  // const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
+  const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
 
-  if (!wildSmallKeys) {
+  if (wildSmallKeys === "inDungeon") {
     return <TrackerItem itemName="magic" />;
   }
 

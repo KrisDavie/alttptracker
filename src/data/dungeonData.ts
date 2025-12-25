@@ -17,7 +17,7 @@ interface DungeonData {
   };
 }
 
-const DungeonsData: Record<string, DungeonData> = {
+export const DungeonsData: Record<string, DungeonData> = {
   ep: {
     name: "Eastern Palace",
     icon: "/dungeons/armos.png",

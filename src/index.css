@@ -39,6 +39,16 @@
   --text-2xs--line-height: 0.75rem;
 }
 
+@utility is-hatched {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.3) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
