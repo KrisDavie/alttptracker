@@ -9,7 +9,7 @@ import autotrackerReducer from './autotrackerSlice';
 import trackerReducer from './trackerSlice';
 
 // const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances'];
-const rememberedKeys = [];
+const rememberedKeys: string[] = [];
 
 const urlParams = new URLSearchParams(window.location.search);
 const instanceId = urlParams.get("id") || urlParams.get("instance") || 'default';

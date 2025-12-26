@@ -14,7 +14,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Load settings from URL on mount (overrides persisted state)
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    // const params = new URLSearchParams(window.location.search);
     const urlSettings: Partial<SettingsState> = {};
     
     // if (params.has("wildSmallKeys")) urlSettings.wildSmallKeys = params.get("wildSmallKeys") === "true";

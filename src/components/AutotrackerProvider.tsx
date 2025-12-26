@@ -231,70 +231,49 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     // Special handling for some items, either different in PH or complex checks needed
     SPECIAL_HANDLE_INVENTORY_ITEMS.forEach((sramLoc) => {
       const itemName = sramLoc.name.replace("Inventory - ", "");
-      const fork = "DR";
+      
+      // TODO: Re-add handling for practice hack
+      
+      const memRange = getRangeFromAddress(sramLoc.wramAddress);
+      if (!memRange) return;
 
-      if (fork === "PH") {
-        const memRange = getRangeFromAddress(sramLoc.phWramAddress);
-        if (!memRange) return;
+      const data = autoTrackingData[memRange.name];
+      if (!data) return;
 
-        const data = autoTrackingData[memRange.name];
-        if (!data) return;
+      const offset = sramLoc.wramAddress - memRange.start;
+      const value = data[offset] || 0;
 
-        const offset = sramLoc.phWramAddress - memRange.start;
-        const value = data[offset] || 0;
-        return; // Currently no special handling for PH
-        switch (itemName) {
-          case "bow":
-          case "boomerang":
-          case "bombs":
-          case "mushroom":
-          case "powder":
-          case "shovel":
-          case "flute":
-          default:
+      switch (itemName) {
+        case "bow": {
+          const bits = value & 0xc0;
+          // TODO, add non prog bows flag
+          // Index up by one because empty bow no quiver
+          itemUpdates["bow"] = bits === 0x40 ? 2 : bits === 0x80 ? 3 : 4;
+          break;
         }
-      } else {
-        const memRange = getRangeFromAddress(sramLoc.wramAddress);
-        if (!memRange) return;
-
-        const data = autoTrackingData[memRange.name];
-        if (!data) return;
-
-        const offset = sramLoc.wramAddress - memRange.start;
-        const value = data[offset] || 0;
-
-        switch (itemName) {
-          case "bow": {
-            const bits = value & 0xc0;
-            // TODO, add non prog bows flag
-            // Index up by one because empty bow no quiver
-            itemUpdates["bow"] = bits === 0x40 ? 2 : bits === 0x80 ? 3 : 4;
-            break;
-          }
-          case "boomerang": {
-            const bits = value & 0xc0;
-            itemUpdates["boomerang"] = bits === 0x80 ? 1 : bits === 0x40 ? 2 : 3;
-            break;
-          }
-          case "bombs":
-            itemUpdates["bomb"] = value > 0 ? 1 : 0;
-            break;
-          case "mushroom": {
-            const bits = value & 0x28;
-            itemUpdates["mushroom"] = bits & 0x28 ? 1 : bits & 0x08 ? 2 : 0;
-            break;
-          }
-          case "powder":
-          case "shovel":
-            itemUpdates[itemName] = (value & sramLoc.mask) !== 0 ? 1 : 0;
-            break;
-          case "flute": {
-            const fluteState = value & 0x03;
-            itemUpdates["flute"] = fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState === 0x02 ? 1 : 0;
-            break;
-          }
-          default:
+        case "boomerang": {
+          const bits = value & 0xc0;
+          itemUpdates["boomerang"] = bits === 0x80 ? 1 : bits === 0x40 ? 2 : 3;
+          break;
         }
+        case "bombs":
+          itemUpdates["bomb"] = value > 0 ? 1 : 0;
+          break;
+        case "mushroom": {
+          const bits = value & 0x28;
+          itemUpdates["mushroom"] = bits & 0x28 ? 1 : bits & 0x08 ? 2 : 0;
+          break;
+        }
+        case "powder":
+        case "shovel":
+          itemUpdates[itemName] = (value & sramLoc.mask) !== 0 ? 1 : 0;
+          break;
+        case "flute": {
+          const fluteState = value & 0x03;
+          itemUpdates["flute"] = fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState === 0x02 ? 1 : 0;
+          break;
+        }
+        default:
       }
     });
 
