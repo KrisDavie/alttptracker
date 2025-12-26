@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/store";
 
 import MapLocation from "@/components/tracker/MapLocation";
 import { entranceData } from "@/data/entranceData";
@@ -8,7 +10,7 @@ interface OWMapProps {
 }
 
 function OWMap({ world = "lw" }: OWMapProps) {
-  const entranceMode = false;
+  const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const bonkShuffle = true;
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
@@ -29,7 +31,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
       {Object.keys(locationsData).map((locationKey) => {
         const location = locationsData[locationKey];
         if (location.world !== world) return null;
-        if (entranceMode && !location.overworld) return null;
+        if (entranceMode !== "none" && !location.overworld) return null;
         if (!bonkShuffle && location.bonk) return null;
         let itemType = "item";
         if (location.bonk) {
@@ -43,13 +45,12 @@ function OWMap({ world = "lw" }: OWMapProps) {
             y={location.y}
             className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? "h-2.5 w-2.5" : "h-4 w-4"}`}
             tooltip={true}
-            locations={location.itemLocations}
           />
         );
       })}
 
       {Object.keys(entranceData).map((locationKey) => {
-        if (!entranceMode) return null;
+        if (entranceMode === "none") return null;
         const location = entranceData[locationKey];
         if (location.world !== world) return null;
         const itemType = "entrance";

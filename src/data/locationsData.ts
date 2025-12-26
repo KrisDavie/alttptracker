@@ -53,8 +53,8 @@ export const locationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Ether Tablet": {
-    x: 214.5,
-    y: 9.0,
+    x: 218.5,
+    y: 16.0,
     world: "lw",
     itemLocations: ["Ether Tablet"],
     open: true,

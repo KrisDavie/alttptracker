@@ -2565,3 +2565,26 @@ export const entranceData: { [key: string]: EntranceInfo } = {
     }
   }
 };
+
+export const PER_MODE_ENTRANCE_GROUPS: { [mode: string]: { [group: string]: string[] } } = {
+  "dungeonssimple": {},
+  "dungeonsfull": {},
+  "lite": {},
+  "lean": {},
+  "simple": {},
+  "restricted": {},
+  "full": {},
+  "district": {},
+  "swapped": {},
+  "crossed": {},
+  "insanity": {}
+};
+
+for (const [location, data] of Object.entries(entranceData)) {
+  for (const [mode, group] of Object.entries(data.modes)) {
+    if (!(group in PER_MODE_ENTRANCE_GROUPS[mode])) {
+      PER_MODE_ENTRANCE_GROUPS[mode][group] = [];
+    }
+    PER_MODE_ENTRANCE_GROUPS[mode][group].push(location);
+  }
+}

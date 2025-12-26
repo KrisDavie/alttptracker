@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface ItemState {
   amount: number;
+  manuallyChanged?: boolean;
 }
 
 export interface ItemsState {
@@ -22,13 +23,18 @@ export const itemsSlice = createSlice({
         state.items[itemName] = { amount: 0 };
       }
       state.items[itemName].amount = count;
+      state.items[itemName].manuallyChanged = true;
     },
     updateMultipleItems: (state, action: PayloadAction<Record<string, number>>) => {
       Object.entries(action.payload).forEach(([itemName, count]) => {
         if (!state.items[itemName]) {
           state.items[itemName] = { amount: 0 };
         }
+        if (state.items[itemName].manuallyChanged) {
+          return;
+        }
         state.items[itemName].amount = count;
+        
       });
     },
   },

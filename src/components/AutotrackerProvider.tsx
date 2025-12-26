@@ -8,7 +8,7 @@ import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
 import { ALL_SRAM_LOCATIONS_MAP, INVENTORY_LOCATIONS } from "@/data/sramLocations";
-import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
+import { updateMultipleLocations, type CheckStatus, type Status } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
 
 interface AutotrackerProviderProps {
@@ -27,7 +27,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
   const { isConnected, connectionType, selectedDevice, romName, host, port } = autotrackerState;
   const [autoTrackingData, setAutoTrackingData] = useState<Record<string, Uint8Array>>({});
 
-  const checks = useSelector((state: RootState) => state.checks.checks);
+  const checks = useSelector((state: RootState) => state.checks.locationsChecks);
   const checksRef = useRef(checks);
 
   // Keep the ref updated with the latest checks state
@@ -139,7 +139,12 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     // Item locations
     Object.entries(locationsData).forEach(([location, locData]) => {
       // TODO: Check that settings enable this location to be auto-tracked
-      const locationChecked = checksRef.current[location] ?? "none";
+      const locationState = checksRef.current[location];
+      const locationChecked = locationState?.status ?? "none";
+
+      if (locationState.manuallyChecked) {
+        return; // Skip manually checked locations
+      }
 
       if (locationChecked === "all") {
         return; // Already cleared
@@ -181,7 +186,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         return count;
       }, 0);
 
-      let newStatus: CheckStatus = "none";
+      let newStatus: Status = "none";
       if (checkedLocations === locationMax) {
         newStatus = "all";
       } else if (checkedLocations > 0) {
@@ -189,7 +194,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       }
 
       if (newStatus !== locationChecked) {
-        updates[location] = newStatus;
+        updates[location] = { ...locationState, status: newStatus, manuallyChecked: false };
       }
     });
 

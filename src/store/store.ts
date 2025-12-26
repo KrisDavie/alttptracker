@@ -6,6 +6,7 @@ import checksReducer from './checksSlice';
 import settingsReducer from './settingsSlice';
 import entrancesReducer from './entrancesSlice';
 import autotrackerReducer from './autotrackerSlice';
+import trackerReducer from './trackerSlice';
 
 // const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances'];
 const rememberedKeys = [];
@@ -15,6 +16,7 @@ const instanceId = urlParams.get("id") || urlParams.get("instance") || 'default'
 
 export const store = configureStore({
   reducer: rememberReducer({
+    trackerState: trackerReducer,
     items: itemsReducer,
     dungeons: dungeonsReducer,
     checks: checksReducer,

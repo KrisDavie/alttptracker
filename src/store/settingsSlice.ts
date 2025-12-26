@@ -5,6 +5,7 @@ export interface SettingsState {
   wildBigKeys: boolean;
   wildMaps: boolean;
   wildCompasses: boolean;
+  entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity"
   autotracking: boolean;
 }
 
@@ -13,6 +14,7 @@ const initialState: SettingsState = {
   wildBigKeys: false,
   wildMaps: false,
   wildCompasses: false,
+  entranceMode: "lite",
   autotracking: true,
 };
 
