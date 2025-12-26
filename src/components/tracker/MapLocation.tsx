@@ -12,14 +12,24 @@ interface MapLocationProps {
   tooltip?: boolean;
 }
 
-
 function MapLocation(props: MapLocationProps) {
   const dispatch = useDispatch();
   const showTooltip = props.tooltip ?? false;
 
   const locName = typeof props.name === "string" ? props.name : props.name[0];
-  const check = useSelector((state: RootState) => props.type === "entrance" ? state.checks.entranceChecks[locName] : state.checks.locationsChecks[locName]);
+  const check = useSelector((state: RootState) => (props.type === "entrance" ? state.checks.entranceChecks[locName] : state.checks.locationsChecks[locName]));
   const status = check?.status ?? "none";
+
+  const xPercent = (props.x / 512) * 100;
+  const yPercent = (props.y / 512) * 100;
+
+  const tooltipClasses = cn(
+    "invisible group-hover:visible absolute z-50 px-2 py-1 bg-black text-white text-2xs whitespace-nowrap rounded pointer-events-none border border-gray-600",
+    // Vertical position
+    yPercent < 12.5 ? "top-full mt-1" : "bottom-full mb-1",
+    // Horizontal position
+    xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2"
+  );
 
   function handleClick() {
     const nextStatus = status === "all" ? "none" : "all";
@@ -36,7 +46,6 @@ function MapLocation(props: MapLocationProps) {
       e.stopPropagation();
       console.log("Connector click on", locName);
     }
-
   }
 
   return (
@@ -51,17 +60,13 @@ function MapLocation(props: MapLocationProps) {
         props.className
       )}
       style={{
-        top: `${(props.y / 512)*100}%`,
-        left: `${(props.x / 512)*100}%`,
+        top: `${yPercent}%`,
+        left: `${xPercent}%`,
       }}
       onClick={handleClick}
       {...(props.type === "entrance" ? { onAuxClick: handleConnectorClick } : {})}
     >
-      {showTooltip && (
-        <div className="invisible group-hover:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-black text-white text-2xs whitespace-nowrap rounded pointer-events-none border border-gray-600" onClick={handleClick}>
-          {locName}
-        </div>
-      )}
+      {showTooltip && <div className={tooltipClasses}>{locName}</div>}
     </div>
   );
 }

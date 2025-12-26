@@ -1,41 +1,52 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 import CommunityLayoutItems from "./components/layouts/CommunityTracker/CommunityLayoutItems";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleWildBigKeys, setWildSmallKeys } from "./store/settingsSlice";
-import type { RootState } from "./store/store";
-import { Button } from "./components/ui/button";
 import OWMap from "./components/layouts/Map/OWMap";
 
 function App() {
-  const dispatch = useDispatch();
-  const { wildSmallKeys, wildBigKeys } = useSelector((state: RootState) => state.settings);
+  const [scale, setScale] = useState(1);
 
-  function toggleWildSmallKeys() {
-    console.log("Toggling wild small keys from:", wildSmallKeys);
-    if (wildSmallKeys === "inDungeon") {
-      dispatch(setWildSmallKeys("wild"));
-    } else if (wildSmallKeys === "wild") {
-      dispatch(setWildSmallKeys("inDungeon"));
-    }
-  }
+  useEffect(() => {
+    const handleResize = () => {
+      // The base width of the tracker (3 panels of 448px each)
+      // 1344px width
+      const baseWidth = 448 * 3;
+      const baseHeight = 448;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      
+      // Calculate scale for both width and height to ensure it fits
+      const scaleW = windowWidth / baseWidth;
+      const scaleH = windowHeight / baseHeight;
+      
+      // Use the smaller scale factor to ensure it fits in both dimensions
+      // but don't scale up beyond 1.0 unless desired
+      setScale(Math.min(scaleW, scaleH, 1));
+    };
 
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex gap-2">
-          <Button className="bg-white" variant={wildSmallKeys ? "default" : "outline"} onClick={() => toggleWildSmallKeys()}>
-            Wild Small Keys: {wildSmallKeys ? "ON" : "OFF"}
-          </Button>
-          <Button className="bg-white" variant={wildBigKeys ? "default" : "outline"} onClick={() => dispatch(toggleWildBigKeys())}>
-            Wild Big Keys: {wildBigKeys ? "ON" : "OFF"}
-          </Button>
-        </div>
-        <div className="flex flex-row">
-          <CommunityLayoutItems />
-          <OWMap world="lw"/>
-          <OWMap world="dw"/>
-        </div>
+    <div className="h-screen w-screen bg-neutral-900 flex items-start justify-start overflow-hidden fixed inset-0">
+      <div 
+        style={{ 
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+          width: `${448 * 3}px`,
+          height: `448px`,
+          flexShrink: 0
+        }}
+        className="flex flex-row items-start shadow-2xl"
+      >
+        <CommunityLayoutItems />
+        <OWMap world="lw"/>
+        <OWMap world="dw"/>
       </div>
+    </div>
   );
 }
 
