@@ -1,20 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface SettingsState {
+  worldState: "open" | "standard" | "inverted";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
   wildMaps: boolean;
   wildCompasses: boolean;
-  entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity"
+  entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity";
+  bossShuffle: "none" | "simple" | "full" | "random";
+  enemyShuffle: "none" | "shuffled" | "random";
+  goal: "ganon" | "fast_ganon" | "dungeons" | "pedestal" | "triforce_hunt";
+  swords: "randomized" | "assured" | "vanilla" | "swordless";
+  itemPool: "normal" | "hard" | "expert";
+  activatedFlute: boolean;
+  bonkShuffle: boolean;
   autotracking: boolean;
 }
 
 const initialState: SettingsState = {
+  worldState: "open",
   wildSmallKeys: "inDungeon",
   wildBigKeys: false,
   wildMaps: false,
   wildCompasses: false,
-  entranceMode: "lite",
+  entranceMode: "none",
+  bossShuffle: "none",
+  enemyShuffle: "none",
+  goal: "fast_ganon",
+  swords: "randomized",
+  itemPool: "normal",
+  activatedFlute: false,
+  bonkShuffle: false,
   autotracking: true,
 };
 

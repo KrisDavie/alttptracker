@@ -11,7 +11,7 @@ interface OWMapProps {
 
 function OWMap({ world = "lw" }: OWMapProps) {
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
-  const bonkShuffle = true;
+  const bonkShuffle = useSelector((state: RootState) => state.settings.bonkShuffle);
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
   return (

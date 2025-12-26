@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../../../store/store";
 import ChestCounter from "../../../tracker/ChestCounter";
 import SpriteDisplay from "../../../tracker/SpriteDisplay";
@@ -6,8 +6,10 @@ import TrackerItem from "../../../tracker/TrackerItem";
 import BigKeyTracker from "../../../tracker/BigKeyTracker";
 import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
 import AutotrackingIcon from "@/components/AutotrackingIcon";
+import { setModalOpen } from "@/store/trackerSlice";
 
 function SpriteSquare() {
+  const dispatch = useDispatch();
   const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
   const autotracking = useSelector((state: RootState) => state.settings.autotracking);
@@ -30,12 +32,29 @@ function SpriteSquare() {
       <div className="h-4 w-4 absolute top-11 right-9">
         <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
       </div>
+      {/* Mystery Flags */}
+      <div className="h-6 w-6 absolute top-12 left-0">
+        <div
+          style={{
+            backgroundImage: `url(/dungeons/flagicon.png)`,
+            width: "100%",
+            height: "100%",
+            backgroundPosition: "center",
+            backgroundSize: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => (dispatch(setModalOpen("mystery")))}
+        />
+      </div>
+      {/* Autotracking Icon */}
       {autotracking && (
         <div className="h-4 w-4 absolute top-0.5 right-18.5">
           <AutotrackingIcon size={16} />
         </div>
       )}
-
+      {/* HC */}
       {wildSmallKeys === "wild" && (
         <div>
           <div className="h-4 w-4 absolute top-4 right-4">
@@ -44,6 +63,7 @@ function SpriteSquare() {
           <div className="h-4 w-4 absolute top-0.5 right-1 text-white font-bold font-arialblack text-2xs">HC</div>
         </div>
       )}
+      {/* CT */}
       {wildSmallKeys === "wild" && (
         <div>
           <div className="h-4 w-4 absolute top-16 right-4">
@@ -53,7 +73,7 @@ function SpriteSquare() {
           <div className="h-4 w-4 absolute top-12.5 right-1 text-white font-bold font-arialblack text-2xs">CT</div>
         </div>
       )}
-
+      {/* GT */}
       <div className="flex flex-row h-8 w-32">
         <div className="flex flex-row h-8 w-8">
           <ChestCounter dungeon="gt" small />

@@ -1,3 +1,6 @@
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../store/store";
+
 import SpriteSquare from "./components/SpriteSquare";
 import QuadTrackerItem from "../../tracker/QuadTrackerItem";
 import DualTrackerItem from "../../tracker/DualTrackerItem";
@@ -5,8 +8,11 @@ import DungeonSquare from "./components/DungeonSquare";
 import TrackerItem from "../../tracker/TrackerItem";
 import MagicAgaSquare from "./components/MagicAgaSquare";
 import AgaOrCastleCountsSquare from "./components/AgaOrCastleCountsSquare";
+import MysteryModal from "@/components/tracker/MysteryModal";
 
 function CommunityLayoutItems() {
+  const modalOpen = useSelector((state: RootState) => state.trackerState.modalOpen);
+
   // Regular community tracker layout:
   // +-----------+-----------------------+
   // |  SPRITE   |                       |
@@ -25,7 +31,12 @@ function CommunityLayoutItems() {
   // +-----------------------------------+
 
   return (
-    <div className="w-112 h-112 grid grid-cols-7 grid-rows-7 bg-black">
+    <div className="w-112 h-112 grid grid-cols-7 grid-rows-7 bg-black relative">
+      {/* Mystery Modal */}
+      <div className={`absolute top-0 left-0 w-full h-full z-10 ${modalOpen === "mystery" ? "" : "hidden"}`}>
+        <MysteryModal />        
+      </div>
+      
       {/* Sprite (2x2) */}
       <div className="col-start-1 row-start-1 col-span-2 row-span-2">
         <SpriteSquare />
