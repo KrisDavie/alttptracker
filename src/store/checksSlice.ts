@@ -3,6 +3,7 @@ import { locationsData } from "@/data/locationsData";
 import { entranceData } from "@/data/entranceData";
 
 export type Status = "none" | "all" | "some";
+export type Logic = "unavailable" | "available" | "possible" | "information" | "mixed";
 
 export interface CheckStatus {
   status: Status;

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { setSettings } from "../../store/settingsSlice";
 import { setModalClose } from "../../store/trackerSlice";
@@ -10,10 +10,12 @@ function MysteryModal() {
   const [page, setPage] = useState(1);
   const trackerSettings = useSelector((state: RootState) => state.settings);
   const [localSettings, setLocalSettings] = useState(trackerSettings);
+  const [prevTrackerSettings, setPrevTrackerSettings] = useState(trackerSettings);
 
-  useEffect(() => {
+  if (trackerSettings !== prevTrackerSettings) {
+    setPrevTrackerSettings(trackerSettings);
     setLocalSettings(trackerSettings);
-  }, [trackerSettings]);
+  }
 
   type SettingsKey = keyof typeof trackerSettings;
   type SettingsValue = string | boolean;
@@ -41,7 +43,8 @@ function MysteryModal() {
         </div>
       </div>
       {/* Page 1 */}
-      <div className={`row-span-5 px-4 pt-1 overflow-y-auto ${page === 1 ? "" : "hidden"}`}>
+      { page === 1 && (
+      <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
         <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
           <label className="font-medium">World State:</label>
           <select
@@ -91,7 +94,7 @@ function MysteryModal() {
             <option value="random">Random</option>
           </select>
 
-          <label className="font-medium self-start pt-1">Shuffled Dungeon Items:</label>
+          <label className="font-medium self-start pt-1">Dungeon Items:</label>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
             <label className="flex items-center space-x-1 cursor-pointer">
               <input
@@ -189,10 +192,12 @@ function MysteryModal() {
           </div>
         </div>
       </div>
-      {/* Page 2 */}
-      <div className={`row-span-5 p-4 overflow-y-auto ${page === 2 ? "" : "hidden"}`}>
-        <p>One day there will be more settings here.</p>
-      </div>
+      )}
+      { page === 2 && (
+        <div className={`row-span-5 p-4 overflow-y-auto`}>
+          <p>One day there will be more settings here.</p>
+        </div>
+      )}
       {/* Footer */}
       <div className="row-span-1 flex flex-row justify-center items-center mx-3 space-x-3">
         <Button variant="outline" className="bg-gray-300 font-roboto" size="sm" onClick={() => dispatch(setModalClose())}>

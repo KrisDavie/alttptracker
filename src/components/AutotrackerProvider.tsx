@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { DUNGEON_ITEMS, getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVENTORY_ITEMS, type DungeonInfo, type SramData } from "@/data/sramLocations";
+import { DUNGEON_ITEMS, getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVENTORY_ITEMS, type DungeonInfo } from "@/data/sramLocations";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setItemCount } from "../../store/itemsSlice";
+import { incrementItemCount } from "../../store/itemsSlice";
 import ItemsData from "@/data/itemData";
 
 interface TrackerItemProps {
@@ -14,20 +14,7 @@ function TrackerItem({ itemName, storageKey, skipFirstImgOnCollect = false }: Tr
   const key = storageKey || itemName;
   const collected = useSelector((state: RootState) => state.items.items[key]?.amount ?? 0);
   const itemData = ItemsData[itemName as keyof typeof ItemsData];
-  const maxCount = (itemData ? itemData.maxCount : 1) - (skipFirstImgOnCollect ? 1 : 0);
-
-  function setCount(newCount: number) {
-    let finalCount = newCount;
-    if (newCount < 0) {
-      finalCount = maxCount;
-    } else if (newCount > maxCount) {
-      finalCount = 0;
-    }
-    dispatch(setItemCount({ itemName: key, count: finalCount }));
-  }
-
   const itemImage = itemData ? itemData.images[Math.max(0, collected - (skipFirstImgOnCollect ? 0 : 1))] : "unknown";
-
 
   return (
     <div
@@ -43,10 +30,10 @@ function TrackerItem({ itemName, storageKey, skipFirstImgOnCollect = false }: Tr
         alignItems: "center",
         justifyContent: "center",
       }}
-      onClick={() => setCount(collected + 1)}
+      onClick={() => dispatch(incrementItemCount({ itemName, decrement: false, skipFirstImgOnCollect, storageKey: key }))}
       onContextMenu={(e) => {
         e.preventDefault();
-        setCount(collected - 1);
+        dispatch(incrementItemCount({ itemName, decrement: true, skipFirstImgOnCollect, storageKey: key }));
       }}
     ></div>
   );

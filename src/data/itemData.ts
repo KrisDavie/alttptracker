@@ -282,8 +282,6 @@ const ItemsData: Record<string, ItemData> = {
       "/items/bluemail.png",
     ],
   },
-
-
 };
 
 export default ItemsData;
