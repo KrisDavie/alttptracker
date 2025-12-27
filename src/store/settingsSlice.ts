@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface SettingsState {
+  logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
   worldState: "open" | "standard" | "inverted";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
@@ -18,6 +19,7 @@ export interface SettingsState {
 }
 
 const initialState: SettingsState = {
+  logicMode: "noglitches",
   worldState: "open",
   wildSmallKeys: "inDungeon",
   wildBigKeys: false,

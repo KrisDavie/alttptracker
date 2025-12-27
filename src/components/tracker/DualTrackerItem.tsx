@@ -12,7 +12,7 @@ export default function DualTrackerItem({ item1, item2 }: DualTrackerItemProps) 
       style={{
         backgroundImage: "url(/items/splitbackground.png)",
         backgroundSize: "100% 100%",
-        imageRendering: "pixelated",
+        imageRendering: "smooth",
       }}
     >
       <div className="col-start-1 row-start-1 w-full h-full">

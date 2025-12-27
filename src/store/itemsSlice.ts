@@ -17,10 +17,17 @@ const itemInitialState: ItemState = {
 
 const initialState: ItemsState = {
   items: Object.keys(ItemsData).reduce((acc, itemName) => {
+    if (itemName.startsWith("bottle")) return acc; // bottles are added manually below
     acc[itemName] = { ...itemInitialState };
     return acc;
   }, {} as Record<string, ItemState>),
 };
+
+// Manually add bottles (duplicated items with different storage keys)
+initialState.items["bottle1"] = { ...itemInitialState };
+initialState.items["bottle2"] = { ...itemInitialState };
+initialState.items["bottle3"] = { ...itemInitialState };
+initialState.items["bottle4"] = { ...itemInitialState };
 
 export const itemsSlice = createSlice({
   name: "items",

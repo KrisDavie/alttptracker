@@ -2,40 +2,50 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { locationsData } from "@/data/locationsData";
 import { entranceData } from "@/data/entranceData";
 
-export type Status = "none" | "all" | "some";
 export type Logic = "unavailable" | "available" | "possible" | "information" | "mixed";
 
 export interface CheckStatus {
-  status: Status;
+  checked: boolean;
+  logic: Logic;
   manuallyChecked: boolean;
   scoutedItems: string[];
 }
 
+// We have to keep entrances and locations separate because some locations and entrances may share names
 export interface ChecksState {
   locationsChecks: Record<string, CheckStatus>;
   entranceChecks: Record<string, CheckStatus>;
 }
 
+const initialCheckStatus: CheckStatus = {
+  checked: false,
+  logic: "available",
+  manuallyChecked: false,
+  scoutedItems: [],
+};
+
 const initialState: ChecksState = {
-  locationsChecks: Object.keys(locationsData).reduce((acc, loc) => {
-    acc[loc] = { status: "none", manuallyChecked: false, scoutedItems: [] };
+  locationsChecks: Object.values(locationsData).reduce((acc, loc) => {
+    loc.itemLocations.forEach((location) => {
+      acc[location] = { ...initialCheckStatus };
+    });
     return acc;
   }, {} as Record<string, CheckStatus>),
   entranceChecks: Object.keys(entranceData).reduce((acc, loc) => {
-    acc[loc] = { status: "none", manuallyChecked: false, scoutedItems: [] };
+    acc[loc] = { ...initialCheckStatus };
     return acc;
-  }, {} as Record<string, CheckStatus>)
+  }, {} as Record<string, CheckStatus>),
 };
 
 export const checksSlice = createSlice({
   name: "checks",
   initialState,
   reducers: {
-    setLocationChecked: (state, action: PayloadAction<{ location: string; status: Status; manual?: boolean }>) => {
-      const { location, status, manual = true } = action.payload;
+    setLocationChecked: (state, action: PayloadAction<{ location: string; checked: boolean; manual?: boolean }>) => {
+      const { location, checked, manual = true } = action.payload;
       state.locationsChecks[location] = {
         ...state.locationsChecks[location],
-        status,
+        checked,
         manuallyChecked: manual,
       };
     },
@@ -44,14 +54,14 @@ export const checksSlice = createSlice({
         state.locationsChecks[location] = checkStatus;
       });
     },
-    setEntranceChecked: (state, action: PayloadAction<{ entrance: string; status: Status; manual?: boolean }>) => {
-      const { entrance, status, manual = true } = action.payload;
+    setEntranceChecked: (state, action: PayloadAction<{ entrance: string; checked: boolean; manual?: boolean }>) => {
+      const { entrance, checked, manual = true } = action.payload;
       state.entranceChecks[entrance] = {
         ...state.entranceChecks[entrance],
-        status,
-        manuallyChecked: manual
+        checked,
+        manuallyChecked: manual,
       };
-    }
+    },
   },
 });
 

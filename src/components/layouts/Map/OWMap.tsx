@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
 
-import MapLocation from "@/components/tracker/MapLocation";
+import MapItemLocation from "@/components/tracker/MapItemLocation";
+import MapEntranceLocation from "@/components/tracker/MapEntranceLocation";
 import { entranceData } from "@/data/entranceData";
 import { locationsData } from "@/data/locationsData";
 
@@ -38,11 +39,11 @@ function OWMap({ world = "lw" }: OWMapProps) {
           itemType = "tree";
         }
         return (
-          <MapLocation
+          <MapItemLocation
+            key={locationKey}
             name={locationKey}
-            type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"}
-            x={location.x}
-            y={location.y}
+            location={location}
+            type={itemType as "dungeon" | "item" | "tree"}
             className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? "h-2.5 w-2.5" : "h-4 w-4"}`}
             tooltip={true}
           />
@@ -53,8 +54,15 @@ function OWMap({ world = "lw" }: OWMapProps) {
         if (entranceMode === "none") return null;
         const location = entranceData[locationKey];
         if (location.world !== world) return null;
-        const itemType = "entrance";
-        return <MapLocation name={locationKey} type={itemType as "dungeon" | "entrance" | "item" | "multiItem" | "tree"} x={location.x} y={location.y} className="h-3 w-3 hover:origin-center hover:scale-150" tooltip={true} />;
+        return (
+          <MapEntranceLocation
+            key={locationKey}
+            name={locationKey}
+            location={location}
+            className="h-3 w-3 hover:origin-center hover:scale-150"
+            tooltip={true}
+          />
+        );
       })}
     </div>
   );

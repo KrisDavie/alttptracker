@@ -8,7 +8,7 @@ import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
 import { ALL_SRAM_LOCATIONS_MAP, INVENTORY_LOCATIONS } from "@/data/sramLocations";
-import { updateMultipleLocations, type CheckStatus, type Status } from "@/store/checksSlice";
+import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
 import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
 
@@ -139,40 +139,21 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     const dungeonUpdates: Record<string, Partial<DungeonState>> = {};
 
     // Item locations
-    Object.entries(locationsData).forEach(([location, locData]) => {
-      // TODO: Check that settings enable this location to be auto-tracked
-      const locationState = checksRef.current[location];
-      const locationChecked = locationState?.status ?? "none";
-
-      if (locationState.manuallyChecked) {
-        return; // Skip manually checked locations
-      }
-
-      if (locationChecked === "all") {
-        return; // Already cleared
-      }
-
-      // Checks for this location
-      const locationMax = locData.itemLocations.length;
-      const checkedLocations = locData.itemLocations.reduce((count, itemLoc) => {
-        const sramLoc = ALL_SRAM_LOCATIONS_MAP[itemLoc];
-
-        if (!sramLoc) {
-          return count;
+    Object.values(locationsData).forEach((locData) => {
+      locData.itemLocations.forEach((itemLoc) => {
+        const locationState = checksRef.current[itemLoc];
+        if (!locationState || locationState.manuallyChecked || locationState.checked) {
+          return;
         }
+
+        const sramLoc = ALL_SRAM_LOCATIONS_MAP[itemLoc];
+        if (!sramLoc) return;
 
         const memRange = getRangeFromAddress(sramLoc.wramAddress);
-
-        if (!memRange) {
-          console.warn(`No memory range found for location ${itemLoc} at ${sramLoc.wramAddress.toString(16)}`);
-          return count;
-        }
+        if (!memRange) return;
 
         const data = autoTrackingData[memRange.name];
-
-        if (!data) {
-          return count;
-        }
+        if (!data) return;
 
         const offset = sramLoc.wramAddress - memRange.start;
         const byte1 = data[offset] || 0;
@@ -182,22 +163,9 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         const isChecked = (value & sramLoc.mask) !== 0;
 
         if (isChecked) {
-          return count + 1;
+          updates[itemLoc] = { ...locationState, checked: true, manuallyChecked: false };
         }
-
-        return count;
-      }, 0);
-
-      let newStatus: Status = "none";
-      if (checkedLocations === locationMax) {
-        newStatus = "all";
-      } else if (checkedLocations > 0) {
-        newStatus = "some";
-      }
-
-      if (newStatus !== locationChecked) {
-        updates[location] = { ...locationState, status: newStatus, manuallyChecked: false };
-      }
+      });
     });
 
     // Inventory items - covers most things
