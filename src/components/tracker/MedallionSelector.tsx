@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { cycleMedallion, reverseCycleMedallion } from "@/store/entrancesSlice";
+import { incrementMedallionCount } from "@/store/entrancesSlice";
 import { cn } from "@/lib/utils";
 
 interface MedallionSelectorProps {
@@ -26,10 +26,10 @@ function MedallionSelector({ entrance, className }: MedallionSelectorProps) {
     <div 
     key={`${entrance}-medallion`}
     className={cn(className)}
-    onClick={() => dispatch(cycleMedallion({ entrance: entrance === "mm" ? "Misery Mire" : "Turtle Rock" }))}
+    onClick={() => dispatch(incrementMedallionCount({ entrance: entrance === "mm" ? "Misery Mire" : "Turtle Rock", decrement: false }))}
     onContextMenu={(e) => {
       e.preventDefault();
-      dispatch(reverseCycleMedallion({ entrance: entrance === "mm" ? "Misery Mire" : "Turtle Rock" }));
+      dispatch(incrementMedallionCount({ entrance: entrance === "mm" ? "Misery Mire" : "Turtle Rock", decrement: true }));
     }}
     >
       <img src={medallionImages[medallion]} alt={`${medallion} medallion`} className="w-full h-full object-contain" />

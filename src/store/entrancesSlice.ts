@@ -7,6 +7,9 @@ export interface EntranceData {
   connectorGroup: string | null;
   oneway: boolean;
   medallion?: "unknown" | "bombos" | "ether" | "quake";
+  manuallyChanged?: {
+    medallion?: boolean;
+  };
 }
 
 const MEDALLIONS: NonNullable<EntranceData["medallion"]>[] = ["unknown", "bombos", "ether", "quake"];
@@ -16,6 +19,9 @@ const entranceInitialState: EntranceData = {
   connector: false,
   connectorGroup: null,
   oneway: false,
+  manuallyChanged: {
+    medallion: false,
+  },
 };
 
 export interface EntrancesState {
@@ -36,20 +42,23 @@ export const entrancesSlice = createSlice({
   name: "trackerEntrances",
   initialState,
   reducers: {
-    cycleMedallion: (state, action: PayloadAction<{ entrance: string }>) => {
-      const { entrance } = action.payload;
+    incrementMedallionCount: (state, action: PayloadAction<{ entrance: string; decrement: boolean }>) => {
+      const { entrance, decrement } = action.payload;
       const current = state.entrances[entrance].medallion ?? "unknown";
-      const nextIndex = (MEDALLIONS.indexOf(current) + 1) % MEDALLIONS.length;
-      state.entrances[entrance].medallion = MEDALLIONS[nextIndex];
-    },
-    reverseCycleMedallion: (state, action: PayloadAction<{ entrance: string }>) => {
-      const { entrance } = action.payload;
-      const current = state.entrances[entrance].medallion ?? "unknown";
-      const nextIndex = (MEDALLIONS.indexOf(current) - 1 + MEDALLIONS.length) % MEDALLIONS.length;
-      state.entrances[entrance].medallion = MEDALLIONS[nextIndex];
+      const currentIndex = MEDALLIONS.indexOf(current);
+      const maxCount = MEDALLIONS.length - 1;
+
+      if (decrement) {
+        state.entrances[entrance].medallion = MEDALLIONS[(currentIndex - 1 + (maxCount + 1)) % (maxCount + 1)];
+      } else {
+        state.entrances[entrance].medallion = MEDALLIONS[(currentIndex + 1) % (maxCount + 1)];
+      }
+      if (state.entrances[entrance].manuallyChanged) {
+        state.entrances[entrance].manuallyChanged.medallion = true;
+      }
     },
   },
 });
 
-export const { cycleMedallion, reverseCycleMedallion } = entrancesSlice.actions;
+export const { incrementMedallionCount } = entrancesSlice.actions;
 export default entrancesSlice.reducer;

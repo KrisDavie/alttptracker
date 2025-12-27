@@ -10,6 +10,10 @@ export interface DungeonState {
   bigKey: boolean;
   map: boolean;
   compass: boolean;
+  manuallyChanged?: {
+    smallKeys?: boolean;
+    prize?: boolean;
+  };
 }
 
 export interface DungeonsState {
@@ -25,6 +29,10 @@ const dungeonInitialState: DungeonState = {
   bigKey: false,
   map: false,
   compass: false,
+  manuallyChanged: {
+    smallKeys: false,
+    prize: false,
+  },
 };
 
 const PRIZES: NonNullable<DungeonState["prize"]>[] = [
@@ -57,6 +65,23 @@ export const dungeonsSlice = createSlice({
     setSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; count: number }>) => {
       const { dungeon, count } = action.payload;
       state.dungeons[dungeon].smallKeys = count;
+      if (state.dungeons[dungeon].manuallyChanged) {
+        state.dungeons[dungeon].manuallyChanged.smallKeys = true;
+      }
+    },
+    incrementSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
+      const { dungeon, decrement } = action.payload;
+      const currentCount = state.dungeons[dungeon].smallKeys;
+      const maxCount = DungeonsData[dungeon].totalLocations?.smallkeys || 0;
+
+      if (decrement) {
+        state.dungeons[dungeon].smallKeys = (currentCount - 1 + (maxCount + 1)) % (maxCount + 1);
+      } else {
+        state.dungeons[dungeon].smallKeys = (currentCount + 1) % (maxCount + 1);
+      }
+      if (state.dungeons[dungeon].manuallyChanged) {
+        state.dungeons[dungeon].manuallyChanged.smallKeys = true;
+      }
     },
     setBigKey: (state, action: PayloadAction<{ dungeon: string; hasBigKey: boolean }>) => {
       const { dungeon, hasBigKey } = action.payload;
@@ -66,27 +91,32 @@ export const dungeonsSlice = createSlice({
       const { dungeon } = action.payload;
       state.dungeons[dungeon].prizeCollected = !state.dungeons[dungeon].prizeCollected;
     },
-    cyclePrize: (state, action: PayloadAction<{ dungeon: string }>) => {
-      const { dungeon } = action.payload;
+    incrementPrizeCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
+      const { dungeon, decrement } = action.payload;
       const current = state.dungeons[dungeon].prize ?? "unknown";
-      const nextIndex = (PRIZES.indexOf(current) + 1) % PRIZES.length;
-      state.dungeons[dungeon].prize = PRIZES[nextIndex];
-    },
-    reverseCyclePrize: (state, action: PayloadAction<{ dungeon: string }>) => {
-      const { dungeon } = action.payload;
-      const current = state.dungeons[dungeon].prize ?? "unknown";
-      const nextIndex = (PRIZES.indexOf(current) - 1 + PRIZES.length) % PRIZES.length;
-      state.dungeons[dungeon].prize = PRIZES[nextIndex];
+      const currentIndex = PRIZES.indexOf(current);
+      const maxCount = PRIZES.length - 1;
+
+      if (decrement) {
+        state.dungeons[dungeon].prize = PRIZES[(currentIndex - 1 + (maxCount + 1)) % (maxCount + 1)];
+      } else {
+        state.dungeons[dungeon].prize = PRIZES[(currentIndex + 1) % (maxCount + 1)];
+      }
+      if (state.dungeons[dungeon].manuallyChanged) {
+        state.dungeons[dungeon].manuallyChanged.prize = true;
+      }
     },
     updateDungeonState: (state, action: PayloadAction<{ dungeon: string; newState: Partial<DungeonState> }>) => {
       const { dungeon, newState } = action.payload;
-      state.dungeons[dungeon] = {
-        ...state.dungeons[dungeon],
-        ...newState,
-      };
+      const current = state.dungeons[dungeon];
+
+      Object.assign(current, newState, 
+        current.manuallyChanged?.smallKeys ? { smallKeys: current.smallKeys } : {},
+        current.manuallyChanged?.prize ? { prize: current.prize } : {}
+      );
     }
   },
 });
 
-export const { setDungeonCollectedCount, toggleDungeonBoss, setSmallKeyCount, setBigKey, cyclePrize, reverseCyclePrize, togglePrizeCollected, updateDungeonState } = dungeonsSlice.actions;
+export const { setDungeonCollectedCount, toggleDungeonBoss, setSmallKeyCount, incrementSmallKeyCount, setBigKey, incrementPrizeCount, togglePrizeCollected, updateDungeonState } = dungeonsSlice.actions;
 export default dungeonsSlice.reducer;

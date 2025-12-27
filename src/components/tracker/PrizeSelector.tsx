@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { cyclePrize, reverseCyclePrize } from "@/store/dungeonsSlice";
+import { incrementPrizeCount } from "@/store/dungeonsSlice";
 import { cn } from "@/lib/utils";
 
 interface PrizeSelectorProps {
@@ -26,17 +26,17 @@ function PrizeSelector({ dungeon, className }: PrizeSelectorProps) {
     <div
       key={`${dungeon}-prize`}
       className={cn(`border-2 ${prizeCollected ? "border-green-600" : "border-red-600"}`, className)}
-      onClick={() => dispatch(cyclePrize({ dungeon }))}
+      onClick={() => dispatch(incrementPrizeCount({ dungeon, decrement: false }))}
       onContextMenu={(e) => {
         e.preventDefault();
-        dispatch(reverseCyclePrize({ dungeon }));
+        dispatch(incrementPrizeCount({ dungeon, decrement: true }));
       }}
       style={{
         backgroundImage: `url(${prizeImages[prize]})`,
         opacity: prizeCollected ? 1 : 0.7,
         backgroundPosition: "center",
         backgroundSize: (prize === "greenPendant" || prize === "pendant") ? "90%" : "110%",
-        imageRendering: "pixelated",
+        imageRendering: "smooth",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

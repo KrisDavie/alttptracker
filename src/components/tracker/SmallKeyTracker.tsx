@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import DungeonsData from "@/data/dungeonData";
-import { setSmallKeyCount } from "@/store/dungeonsSlice";
+import { incrementSmallKeyCount } from "@/store/dungeonsSlice";
 
 interface SmallKeyTrackerProps {
   dungeon: string;
@@ -14,24 +14,14 @@ function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
   const collectedSmallKeys = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.smallKeys ?? 0);
   const maxSmallKeys = dungeonData?.totalLocations?.smallkeys || 0;
 
-  function setCount(newCount: number) {
-    let finalCount = newCount;
-    if (newCount < 0) {
-      finalCount = maxSmallKeys;
-    } else if (newCount > maxSmallKeys) {
-      finalCount = 0;
-    }
-    dispatch(setSmallKeyCount({ dungeon, count: finalCount }));
-  }
-
   if (size === "1x1") {
     return (
       <div
         className="grid grid-cols-2 grid-rows-2 w-8 h-8 relative"
-        onClick={() => setCount(collectedSmallKeys + 1)}
+        onClick={() => dispatch(incrementSmallKeyCount({ dungeon, decrement: false }))}
         onContextMenu={(e) => {
           e.preventDefault();
-          setCount(collectedSmallKeys - 1);
+          dispatch(incrementSmallKeyCount({ dungeon, decrement: true }));
         }}
       >
         <div
@@ -53,10 +43,10 @@ function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
     return (
       <div
         className="flex flex-row w-16 h-8"
-        onClick={() => setCount(collectedSmallKeys + 1)}
+        onClick={() => dispatch(incrementSmallKeyCount({ dungeon, decrement: false }))}
         onContextMenu={(e) => {
           e.preventDefault();
-          setCount(collectedSmallKeys - 1);
+          dispatch(incrementSmallKeyCount({ dungeon, decrement: true }));
         }}
       >
         <div
