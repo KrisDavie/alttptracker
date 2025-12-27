@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setLocationChecked, type CheckStatus, updateMultipleLocations } from "../../store/checksSlice";
 import { cn } from "@/lib/utils";
@@ -17,8 +17,9 @@ function MapItemLocation(props: MapItemLocationProps) {
   const dispatch = useDispatch();
   const showTooltip = props.tooltip ?? false;
 
-  const itemChecks = useSelector((state: RootState) =>
-    location.itemLocations.map((itemLoc) => state.checks.locationsChecks[itemLoc])
+  const itemChecks = useSelector(
+    (state: RootState) => location.itemLocations.map((itemLoc) => state.checks.locationsChecks[itemLoc]),
+    shallowEqual
   );
 
   // How many locations are checked?

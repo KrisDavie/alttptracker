@@ -5,7 +5,7 @@ import SpriteDisplay from "../../../tracker/SpriteDisplay";
 import TrackerItem from "../../../tracker/TrackerItem";
 import BigKeyTracker from "../../../tracker/BigKeyTracker";
 import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
-import AutotrackingIcon from "@/components/AutotrackingIcon";
+import AutotrackingIcon from "@/components/tracker/AutotrackingIcon";
 import { setModalOpen } from "@/store/trackerSlice";
 
 function SpriteSquare() {
