@@ -77,9 +77,16 @@ export const dungeonsSlice = createSlice({
       const current = state.dungeons[dungeon].prize ?? "unknown";
       const nextIndex = (PRIZES.indexOf(current) - 1 + PRIZES.length) % PRIZES.length;
       state.dungeons[dungeon].prize = PRIZES[nextIndex];
+    },
+    updateDungeonState: (state, action: PayloadAction<{ dungeon: string; newState: Partial<DungeonState> }>) => {
+      const { dungeon, newState } = action.payload;
+      state.dungeons[dungeon] = {
+        ...state.dungeons[dungeon],
+        ...newState,
+      };
     }
   },
 });
 
-export const { setDungeonCollectedCount, toggleDungeonBoss, setSmallKeyCount, setBigKey, cyclePrize, reverseCyclePrize, togglePrizeCollected } = dungeonsSlice.actions;
+export const { setDungeonCollectedCount, toggleDungeonBoss, setSmallKeyCount, setBigKey, cyclePrize, reverseCyclePrize, togglePrizeCollected, updateDungeonState } = dungeonsSlice.actions;
 export default dungeonsSlice.reducer;

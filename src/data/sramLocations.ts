@@ -22,43 +22,60 @@ export const LocationType = {
   BossPrize: "bossPrize",
   Misc: "misc",
   InventoryItem: "inventoryItem",
+  DungeonItem: "dungeonItem",
 } as const;
 
 export type LocationType = (typeof LocationType)[keyof typeof LocationType];
 
 export const Dungeon = {
-  HyruleCastle: "hyruleCastle",
-  EasternPalace: "easternPalace",
-  DesertPalace: "desertPalace",
-  TowerOfHera: "towerOfHera",
-  CastleTower: "castleTower",
-  PalaceOfDarkness: "palaceOfDarkness",
-  SwampPalace: "swampPalace",
-  SkullWoods: "skullWoods",
-  ThievesTown: "thievesTown",
-  IcePalace: "icePalace",
-  MiseryMire: "miseryMire",
-  TurtleRock: "turtleRock",
-  GanonsTower: "ganonsTower",
-  Overworld: "overworld",
-  Cave: "cave",
-  House: "house",
+  HyruleCastle: "hc",
+  EasternPalace: "ep",
+  DesertPalace: "dp",
+  TowerOfHera: "toh",
+  CastleTower: "ct",
+  PalaceOfDarkness: "pod",
+  SwampPalace: "sp",
+  SkullWoods: "sw",
+  ThievesTown: "tt",
+  IcePalace: "ip",
+  MiseryMire: "mm",
+  TurtleRock: "tr",
+  GanonsTower: "gt",
+  Overworld: "ow",
+} as const;
+
+export const DungeonInfos = {
+  BigKey: "bigKey",
+  Compass: "compass",
+  Map: "map",
+  SmallKeys: "smallKeys",
+  Boss: "boss",
+  Prize: "prize",
 } as const;
 
 export type Dungeon = (typeof Dungeon)[keyof typeof Dungeon];
+export type DungeonInfo = (typeof DungeonInfos)[keyof typeof DungeonInfos];
 
 // ============================================================================
 // BASE TYPES
 // ============================================================================
 
-export interface SramLocation {
-  name: string;
-  type: LocationType;
+export interface SramData {
   wramAddress: number;
   mask: number;
+}
+
+export interface SramLocation extends SramData {
+  name: string;
+  type: LocationType;
   dungeon?: Dungeon;
   roomId?: number;
   screenId?: number;
+}
+
+export interface DungeonItemLocations {
+  dungeon: Dungeon;
+  datas: Record<DungeonInfo, SramData>;
 }
 
 export interface MultiSramLocation extends SramLocation {
@@ -21344,6 +21361,152 @@ export const SPECIAL_HANDLE_INVENTORY_ITEMS: MultiInventoryItemLocation[] = [
   { name: "Inventory - flute", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f34c, phMask: 0x00 },
 ];
 
+export const DUNGEON_ITEMS: DungeonItemLocations[] = [
+  {
+    dungeon: Dungeon.EasternPalace,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x20 },
+      compass: { wramAddress: 0xf5f365, mask: 0x20 },
+      map: { wramAddress: 0xf5f369, mask: 0x20 },
+      smallKeys: { wramAddress: 0xf5f4e2, mask: 0x00 },
+      boss: { wramAddress: 0xf5f190, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x2000 },
+    },
+  },
+  {
+    dungeon: Dungeon.DesertPalace,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x10 },
+      compass: { wramAddress: 0xf5f365, mask: 0x10 },
+      map: { wramAddress: 0xf5f369, mask: 0x10 },
+      smallKeys: { wramAddress: 0xf5f4e3, mask: 0x00 },
+      boss: { wramAddress: 0xf5f066, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x1000 },
+    },
+  },
+  {
+    dungeon: Dungeon.TowerOfHera,
+    datas: {
+      bigKey: { wramAddress: 0xf5f366, mask: 0x20 },
+      compass: { wramAddress: 0xf5f364, mask: 0x20 },
+      map: { wramAddress: 0xf5f368, mask: 0x20 },
+      smallKeys: { wramAddress: 0xf5f4ea, mask: 0x00 },
+      boss: { wramAddress: 0xf5f00e, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x20 },
+    },
+  },
+  {
+    dungeon: Dungeon.PalaceOfDarkness,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x02 },
+      compass: { wramAddress: 0xf5f365, mask: 0x02 },
+      map: { wramAddress: 0xf5f369, mask: 0x02 },
+      smallKeys: { wramAddress: 0xf5f4e6, mask: 0x00 },
+      boss: { wramAddress: 0xf5f0b4, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x200 },
+    },
+  },
+  {
+    dungeon: Dungeon.SwampPalace,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x04 },
+      compass: { wramAddress: 0xf5f365, mask: 0x04 },
+      map: { wramAddress: 0xf5f369, mask: 0x04 },
+      smallKeys: { wramAddress: 0xf5f4e5, mask: 0x00 },
+      boss: { wramAddress: 0xf5f00c, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x400 },
+    },
+  },
+  {
+    dungeon: Dungeon.SkullWoods,
+    datas: {
+      bigKey: { wramAddress: 0xf5f366, mask: 0x80 },
+      compass: { wramAddress: 0xf5f364, mask: 0x80 },
+      map: { wramAddress: 0xf5f368, mask: 0x80 },
+      smallKeys: { wramAddress: 0xf5f4e8, mask: 0x00 },
+      boss: { wramAddress: 0xf5f052, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x80 },
+    },
+  },
+  {
+    dungeon: Dungeon.ThievesTown,
+    datas: {
+      bigKey: { wramAddress: 0xf5f366, mask: 0x10 },
+      compass: { wramAddress: 0xf5f364, mask: 0x10 },
+      map: { wramAddress: 0xf5f368, mask: 0x10 },
+      smallKeys: { wramAddress: 0xf5f4eb, mask: 0x00 },
+      boss: { wramAddress: 0xf5f158, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x10 },
+    },
+  },
+  {
+    dungeon: Dungeon.IcePalace,
+    datas: {
+      bigKey: { wramAddress: 0xf5f366, mask: 0x40 },
+      compass: { wramAddress: 0xf5f364, mask: 0x40 },
+      map: { wramAddress: 0xf5f368, mask: 0x40 },
+      smallKeys: { wramAddress: 0xf5f4e9, mask: 0x00 },
+      boss: { wramAddress: 0xf5f1bc, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x40 },
+    },
+  },
+  {
+    dungeon: Dungeon.MiseryMire,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x01 },
+      compass: { wramAddress: 0xf5f365, mask: 0x01 },
+      map: { wramAddress: 0xf5f369, mask: 0x01 },
+      smallKeys: { wramAddress: 0xf5f4e7, mask: 0x00 },
+      boss: { wramAddress: 0xf5f120, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x100 },
+    },
+  },
+  {
+    dungeon: Dungeon.TurtleRock,
+    datas: {
+      bigKey: { wramAddress: 0xf5f366, mask: 0x08 },
+      compass: { wramAddress: 0xf5f364, mask: 0x08 },
+      map: { wramAddress: 0xf5f368, mask: 0x08 },
+      smallKeys: { wramAddress: 0xf5f4ec, mask: 0x00 },
+      boss: { wramAddress: 0xf5f148, mask: 0x800 },
+      prize: { wramAddress: 0xf5f472, mask: 0x8 },
+    },
+  },
+  {
+    dungeon: Dungeon.GanonsTower,
+    datas: {
+      bigKey: { wramAddress: 0xf5f366, mask: 0x04 },
+      compass: { wramAddress: 0xf5f364, mask: 0x04 },
+      map: { wramAddress: 0xf5f368, mask: 0x04 },
+      smallKeys: { wramAddress: 0xf5f4ed, mask: 0x00 },
+      boss: { wramAddress: 0x0, mask: 0x0 },
+      prize: { wramAddress: 0x0, mask: 0x0 },
+    },
+  },
+  {
+    dungeon: Dungeon.HyruleCastle,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x40 },
+      compass: { wramAddress: 0xf5f365, mask: 0x40 },
+      map: { wramAddress: 0xf5f369, mask: 0x40 },
+      smallKeys: { wramAddress: 0xf5f4e0, mask: 0x00 },
+      boss: { wramAddress: 0x0, mask: 0x0 },
+      prize: { wramAddress: 0x0, mask: 0x0 },
+    },
+  },
+  {
+    dungeon: Dungeon.CastleTower,
+    datas: {
+      bigKey: { wramAddress: 0xf5f367, mask: 0x08 },
+      compass: { wramAddress: 0xf5f365, mask: 0x08 },
+      map: { wramAddress: 0xf5f369, mask: 0x08 },
+      smallKeys: { wramAddress: 0xf5f4e4, mask: 0x00 },
+      boss: { wramAddress: 0x0, mask: 0x0 },
+      prize: { wramAddress: 0x0, mask: 0x0 },
+    },
+  },
+];
+
 export const MEMORY_RANGES: MemoryRange[] = [
   {
     name: "romname",
@@ -21360,8 +21523,14 @@ export const MEMORY_RANGES: MemoryRange[] = [
   {
     name: "main",
     start: 0xf5f000,
-    end: 0xf5f473,
-    size: 0x473,
+    end: 0xf5f4ff,
+    size: 0x4ff,
+  },
+  {
+    name: "dungeon_stats",
+    start: 0xf65410,
+    end: 0xf65440,
+    size: 0x30,
   },
   {
     name: "pots_drops",

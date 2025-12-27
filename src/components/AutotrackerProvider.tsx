@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVENTORY_ITEMS } from "@/data/sramLocations";
+import { DUNGEON_ITEMS, getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVENTORY_ITEMS, type DungeonInfo, type SramData } from "@/data/sramLocations";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
@@ -10,6 +10,7 @@ import { locationsData } from "@/data/locationsData";
 import { ALL_SRAM_LOCATIONS_MAP, INVENTORY_LOCATIONS } from "@/data/sramLocations";
 import { updateMultipleLocations, type CheckStatus, type Status } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
+import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
 
 interface AutotrackerProviderProps {
   children: React.ReactNode;
@@ -135,6 +136,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
 
     const updates: Record<string, CheckStatus> = {};
     const itemUpdates: Record<string, number> = {};
+    const dungeonUpdates: Record<string, Partial<DungeonState>> = {};
 
     // Item locations
     Object.entries(locationsData).forEach(([location, locData]) => {
@@ -233,7 +235,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       const itemName = sramLoc.name.replace("Inventory - ", "");
       
       // TODO: Re-add handling for practice hack
-      
+
       const memRange = getRangeFromAddress(sramLoc.wramAddress);
       if (!memRange) return;
 
@@ -246,6 +248,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       switch (itemName) {
         case "bow": {
           const bits = value & 0xc0;
+          if (bits === 0x00) { break; }
           // TODO, add non prog bows flag
           // Index up by one because empty bow no quiver
           itemUpdates["bow"] = bits === 0x40 ? 2 : bits === 0x80 ? 3 : 4;
@@ -253,6 +256,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         }
         case "boomerang": {
           const bits = value & 0xc0;
+          if (bits === 0x00) { break; }
           itemUpdates["boomerang"] = bits === 0x80 ? 1 : bits === 0x40 ? 2 : 3;
           break;
         }
@@ -277,12 +281,43 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       }
     });
 
+    // Dungeon items and info
+    DUNGEON_ITEMS.forEach((dungeonItem) => {
+      const dungeon = dungeonItem.dungeon;
+      const newDungeonState: Partial<DungeonState> = {};
+      Object.keys(dungeonItem.datas).forEach((key) => {
+        const itemData = dungeonItem.datas[key as DungeonInfo];
+        const memRange = getRangeFromAddress(itemData.wramAddress);
+        if (!memRange) return;
+        const data = autoTrackingData[memRange.name]
+        const offset = itemData.wramAddress - memRange.start;
+        const value = data[offset] || 0;
+        if (key === "smallKeys") {
+          newDungeonState.smallKeys = value;
+        } else if (key === "bigKey") {
+          newDungeonState.bigKey = (value & itemData.mask) !== 0;
+        } else if (key === "compass") {
+          newDungeonState.compass = (value & itemData.mask) !== 0;
+        } else if (key === "map") {
+          newDungeonState.map = (value & itemData.mask) !== 0;
+        }
+      })
+      dungeonUpdates[dungeon] = newDungeonState;
+    });
+
+
     if (Object.keys(updates).length > 0) {
       dispatch(updateMultipleLocations(updates));
     }
 
     if (Object.keys(itemUpdates).length > 0) {
       dispatch(updateMultipleItems(itemUpdates));
+    }
+
+    if (Object.keys(dungeonUpdates).length > 0) {
+      Object.entries(dungeonUpdates).forEach(([dungeon, newState]) => {
+        dispatch(updateDungeonState({ dungeon, newState }));
+      });
     }
   }, [autoTrackingData, dispatch]);
 
