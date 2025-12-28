@@ -10,10 +10,10 @@ interface SpriteDisplayProps {
 function SpriteDisplay({ spriteName = "dark_link" }: SpriteDisplayProps) {
   const dispatch = useDispatch();
   const key = "mail";
-  const collected = useSelector((state: RootState) => state.items.items[key]?.amount ?? 0);
+  const collected = useSelector((state: RootState) => state.items[key]?.amount ?? 0);
   const itemData = ItemsData[key as keyof typeof ItemsData];
   const maxCount = itemData ? itemData.maxCount : 1;
-  const moonPearlCollected = useSelector((state: RootState) => state.items.items["moonpearl"]?.amount ?? 0);
+  const moonPearlCollected = useSelector((state: RootState) => state.items["moonpearl"]?.amount ?? 0);
 
   const spriteImage = `/sprites/${spriteName}_tunic${moonPearlCollected ? "" : "bunny"}${collected + 1}.png`;
 

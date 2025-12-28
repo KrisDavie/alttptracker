@@ -25,18 +25,16 @@ const entranceInitialState: EntranceData = {
 };
 
 export interface EntrancesState {
-  entrances: Record<string, EntranceData>;
+  [key: string]: EntranceData;
 }
 
-const initialState: EntrancesState = {
-  entrances: Object.keys(entranceData).reduce((acc, entrance) => {
-    acc[entrance] = { ...entranceInitialState };
-    return acc;
-  }, {} as Record<string, EntranceData>),
-};
+const initialState: Record<string, EntranceData> = Object.keys(entranceData).reduce((acc, entrance) => {
+  acc[entrance] = { ...entranceInitialState };
+  return acc;
+}, {} as Record<string, EntranceData>);
 
-initialState.entrances["Misery Mire"].medallion = "unknown";
-initialState.entrances["Turtle Rock"].medallion = "unknown";
+initialState["Misery Mire"].medallion = "unknown";
+initialState["Turtle Rock"].medallion = "unknown";
 
 export const entrancesSlice = createSlice({
   name: "trackerEntrances",
@@ -44,17 +42,17 @@ export const entrancesSlice = createSlice({
   reducers: {
     incrementMedallionCount: (state, action: PayloadAction<{ entrance: string; decrement: boolean }>) => {
       const { entrance, decrement } = action.payload;
-      const current = state.entrances[entrance].medallion ?? "unknown";
+      const current = state[entrance].medallion ?? "unknown";
       const currentIndex = MEDALLIONS.indexOf(current);
       const maxCount = MEDALLIONS.length - 1;
 
       if (decrement) {
-        state.entrances[entrance].medallion = MEDALLIONS[(currentIndex - 1 + (maxCount + 1)) % (maxCount + 1)];
+        state[entrance].medallion = MEDALLIONS[(currentIndex - 1 + (maxCount + 1)) % (maxCount + 1)];
       } else {
-        state.entrances[entrance].medallion = MEDALLIONS[(currentIndex + 1) % (maxCount + 1)];
+        state[entrance].medallion = MEDALLIONS[(currentIndex + 1) % (maxCount + 1)];
       }
-      if (state.entrances[entrance].manuallyChanged) {
-        state.entrances[entrance].manuallyChanged.medallion = true;
+      if (state[entrance].manuallyChanged) {
+        state[entrance].manuallyChanged.medallion = true;
       }
     },
   },

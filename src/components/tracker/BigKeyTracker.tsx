@@ -8,7 +8,7 @@ interface BigKeyTrackerProps {
 
 function BigKeyTracker({ dungeon}: BigKeyTrackerProps) {
   const dispatch = useDispatch();
-  const collectedBigKey = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.bigKey);
+  const collectedBigKey = useSelector((state: RootState) => state.dungeons[dungeon]?.bigKey);
 
   function toggleBigKey() {
     dispatch(setBigKey({ dungeon, hasBigKey: !collectedBigKey }));   

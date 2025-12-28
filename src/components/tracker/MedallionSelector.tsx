@@ -12,7 +12,7 @@ function MedallionSelector({ entrance, className }: MedallionSelectorProps) {
   const dispatch = useDispatch();
   const medallion = useSelector((state: RootState) => {
     const entranceName = entrance === "mm" ? "Misery Mire" : "Turtle Rock";
-    return state.entrances.entrances[entranceName]?.medallion || "unknown";
+    return state.entrances[entranceName]?.medallion || "unknown";
   });
 
   const medallionImages: Record<string, string> = {

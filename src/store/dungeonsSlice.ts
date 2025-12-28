@@ -17,7 +17,7 @@ export interface DungeonState {
 }
 
 export interface DungeonsState {
-  dungeons: Record<string, DungeonState>;
+  [key: string]: DungeonState;
 }
 
 const dungeonInitialState: DungeonState = {
@@ -35,20 +35,12 @@ const dungeonInitialState: DungeonState = {
   },
 };
 
-const PRIZES: NonNullable<DungeonState["prize"]>[] = [
-  "unknown",
-  "greenPendant",
-  "pendant",
-  "crystal",
-  "redCrystal",
-];
+const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
 
-const initialState: DungeonsState = {
-  dungeons: Object.keys(DungeonsData).reduce((acc, dungeon) => {
-    acc[dungeon] = { ...dungeonInitialState };
-    return acc;
-  }, {} as Record<string, DungeonState>),
-};
+const initialState: Record<string, DungeonState> = Object.keys(DungeonsData).reduce((acc, dungeon) => {
+  acc[dungeon] = { ...dungeonInitialState };
+  return acc;
+}, {} as Record<string, DungeonState>);
 
 export const dungeonsSlice = createSlice({
   name: "dungeons",
@@ -56,65 +48,62 @@ export const dungeonsSlice = createSlice({
   reducers: {
     setDungeonCollectedCount: (state, action: PayloadAction<{ dungeon: string; count: number }>) => {
       const { dungeon, count } = action.payload;
-      state.dungeons[dungeon].collectedCount = count;
+      state[dungeon].collectedCount = count;
     },
     toggleDungeonBoss: (state, action: PayloadAction<{ dungeon: string }>) => {
       const { dungeon } = action.payload;
-      state.dungeons[dungeon].bossDefeated = !state.dungeons[dungeon].bossDefeated;
+      state[dungeon].bossDefeated = !state[dungeon].bossDefeated;
     },
     setSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; count: number }>) => {
       const { dungeon, count } = action.payload;
-      state.dungeons[dungeon].smallKeys = count;
-      if (state.dungeons[dungeon].manuallyChanged) {
-        state.dungeons[dungeon].manuallyChanged.smallKeys = true;
+      state[dungeon].smallKeys = count;
+      if (state[dungeon].manuallyChanged) {
+        state[dungeon].manuallyChanged.smallKeys = true;
       }
     },
     incrementSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
       const { dungeon, decrement } = action.payload;
-      const currentCount = state.dungeons[dungeon].smallKeys;
+      const currentCount = state[dungeon].smallKeys;
       const maxCount = DungeonsData[dungeon].totalLocations?.smallkeys || 0;
 
       if (decrement) {
-        state.dungeons[dungeon].smallKeys = (currentCount - 1 + (maxCount + 1)) % (maxCount + 1);
+        state[dungeon].smallKeys = (currentCount - 1 + (maxCount + 1)) % (maxCount + 1);
       } else {
-        state.dungeons[dungeon].smallKeys = (currentCount + 1) % (maxCount + 1);
+        state[dungeon].smallKeys = (currentCount + 1) % (maxCount + 1);
       }
-      if (state.dungeons[dungeon].manuallyChanged) {
-        state.dungeons[dungeon].manuallyChanged.smallKeys = true;
+      if (state[dungeon].manuallyChanged) {
+        state[dungeon].manuallyChanged.smallKeys = true;
       }
     },
     setBigKey: (state, action: PayloadAction<{ dungeon: string; hasBigKey: boolean }>) => {
       const { dungeon, hasBigKey } = action.payload;
-      state.dungeons[dungeon].bigKey = hasBigKey;
+      state[dungeon].bigKey = hasBigKey;
     },
     togglePrizeCollected: (state, action: PayloadAction<{ dungeon: string }>) => {
       const { dungeon } = action.payload;
-      state.dungeons[dungeon].prizeCollected = !state.dungeons[dungeon].prizeCollected;
+      state[dungeon].prizeCollected = !state[dungeon].prizeCollected;
     },
     incrementPrizeCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
       const { dungeon, decrement } = action.payload;
-      const current = state.dungeons[dungeon].prize ?? "unknown";
+      const current = state[dungeon].prize ?? "unknown";
       const currentIndex = PRIZES.indexOf(current);
       const maxCount = PRIZES.length - 1;
 
       if (decrement) {
-        state.dungeons[dungeon].prize = PRIZES[(currentIndex - 1 + (maxCount + 1)) % (maxCount + 1)];
+        state[dungeon].prize = PRIZES[(currentIndex - 1 + (maxCount + 1)) % (maxCount + 1)];
       } else {
-        state.dungeons[dungeon].prize = PRIZES[(currentIndex + 1) % (maxCount + 1)];
+        state[dungeon].prize = PRIZES[(currentIndex + 1) % (maxCount + 1)];
       }
-      if (state.dungeons[dungeon].manuallyChanged) {
-        state.dungeons[dungeon].manuallyChanged.prize = true;
+      if (state[dungeon].manuallyChanged) {
+        state[dungeon].manuallyChanged.prize = true;
       }
     },
     updateDungeonState: (state, action: PayloadAction<{ dungeon: string; newState: Partial<DungeonState> }>) => {
       const { dungeon, newState } = action.payload;
-      const current = state.dungeons[dungeon];
+      const current = state[dungeon];
 
-      Object.assign(current, newState, 
-        current.manuallyChanged?.smallKeys ? { smallKeys: current.smallKeys } : {},
-        current.manuallyChanged?.prize ? { prize: current.prize } : {}
-      );
-    }
+      Object.assign(current, newState, current.manuallyChanged?.smallKeys ? { smallKeys: current.smallKeys } : {}, current.manuallyChanged?.prize ? { prize: current.prize } : {});
+    },
   },
 });
 

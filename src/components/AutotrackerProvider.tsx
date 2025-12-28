@@ -36,7 +36,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     checksRef.current = checks;
   }, [checks]);
 
-  const items = useSelector((state: RootState) => state.items.items);
+  const items = useSelector((state: RootState) => state.items);
   const itemsRef = useRef(items);
   useEffect(() => {
     itemsRef.current = items;

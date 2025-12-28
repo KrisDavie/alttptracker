@@ -11,7 +11,7 @@ interface SmallKeyTrackerProps {
 function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
   const dispatch = useDispatch();
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
-  const collectedSmallKeys = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.smallKeys ?? 0);
+  const collectedSmallKeys = useSelector((state: RootState) => state.dungeons[dungeon]?.smallKeys ?? 0);
   const maxSmallKeys = dungeonData?.totalLocations?.smallkeys || 0;
 
   if (size === "1x1") {

@@ -10,7 +10,7 @@ interface ChestCounterProps {
 
 function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const dispatch = useDispatch();
-  const collected = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.collectedCount ?? 0);
+  const collected = useSelector((state: RootState) => state.dungeons[dungeon]?.collectedCount ?? 0);
   const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
   const wildCompasses = useSelector((state: RootState) => state.settings.wildCompasses);

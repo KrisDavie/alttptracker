@@ -9,7 +9,7 @@ interface BossIconProps {
 
 function BossIcon({ dungeon }: BossIconProps) {
   const dispatch = useDispatch();
-  const bossDefeated = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.bossDefeated ?? false);
+  const bossDefeated = useSelector((state: RootState) => state.dungeons[dungeon]?.bossDefeated ?? false);
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
   
   if (!dungeonData) return null;

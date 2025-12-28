@@ -12,7 +12,7 @@ interface TrackerItemProps {
 function TrackerItem({ itemName, storageKey, skipFirstImgOnCollect = false }: TrackerItemProps) {
   const dispatch = useDispatch();
   const key = storageKey || itemName;
-  const collected = useSelector((state: RootState) => state.items.items[key]?.amount ?? 0);
+  const collected = useSelector((state: RootState) => state.items[key]?.amount ?? 0);
   const itemData = ItemsData[itemName as keyof typeof ItemsData];
   const itemImage = itemData ? itemData.images[Math.max(0, collected - (skipFirstImgOnCollect ? 0 : 1))] : "unknown";
 

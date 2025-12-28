@@ -10,8 +10,8 @@ interface PrizeSelectorProps {
 
 function PrizeSelector({ dungeon, className }: PrizeSelectorProps) {
   const dispatch = useDispatch();
-  const prize = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.prize || "unknown");
-  const prizeCollected = useSelector((state: RootState) => state.dungeons.dungeons[dungeon]?.prizeCollected || false);
+  const prize = useSelector((state: RootState) => state.dungeons[dungeon]?.prize || "unknown");
+  const prizeCollected = useSelector((state: RootState) => state.dungeons[dungeon]?.prizeCollected || false);
 
   const prizeImages: Record<string, string> = {
     unknown: "/dungeons/prize_unknown.png",
