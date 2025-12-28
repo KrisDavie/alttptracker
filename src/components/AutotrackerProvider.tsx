@@ -25,11 +25,13 @@ const getTransport = ({ host, port }: { host: string; port: number }) => {
 export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
   const autotrackerState = useSelector((state: RootState) => state.autotracker);
+  const autotrackingEnabled = useSelector((state: RootState) => state.settings.autotracking);
   const { isConnected, connectionType, selectedDevice, romName, host, port } = autotrackerState;
   const [autoTrackingData, setAutoTrackingData] = useState<Record<string, Uint8Array>>({});
 
   const checks = useSelector((state: RootState) => state.checks.locationsChecks);
   const checksRef = useRef(checks);
+
 
   // Keep the ref updated with the latest checks state
   useEffect(() => {
@@ -44,6 +46,12 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
 
   // Connecting and querying data
   useEffect(() => {
+
+    if (!autotrackingEnabled) {
+      return;
+    }
+
+
     if (connectionType !== "sni") {
       return;
     }
@@ -83,7 +91,6 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         fetchDevices(transport)
           .then((devices) => {
             if (devices.length > 0) {
-              console.log("Fetched devices:", devices);
               dispatch(setDeviceList(devices));
               dispatch(setConnectedgRPC({ selectedDevice: devices[0], isConnected: true }));
             }
@@ -101,7 +108,6 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
                 // Checking ROM name range
                 const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, "");
                 if (romName !== fetchedRomName) {
-                  console.log("ROM name changed:", fetchedRomName);
                   dispatch(setRomName(fetchedRomName));
                 }
               } else if (index === 1) {

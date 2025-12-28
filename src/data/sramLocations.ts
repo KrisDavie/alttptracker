@@ -1057,7 +1057,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.SwampPalace,
   },
   {
-    name: "Thieves' Town - Big Key Chest",
+    name: "Thieves Town - Big Key Chest",
     type: LocationType.Chest,
     wramAddress: 0xf5f1b6,
     mask: 0x20,
@@ -1065,7 +1065,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Map Chest",
+    name: "Thieves Town - Map Chest",
     type: LocationType.Chest,
     wramAddress: 0xf5f1b6,
     mask: 0x10,
@@ -1073,7 +1073,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Compass Chest",
+    name: "Thieves Town - Compass Chest",
     type: LocationType.Chest,
     wramAddress: 0xf5f1b8,
     mask: 0x10,
@@ -1081,7 +1081,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Ambush Chest",
+    name: "Thieves Town - Ambush Chest",
     type: LocationType.Chest,
     wramAddress: 0xf5f196,
     mask: 0x10,
@@ -1089,7 +1089,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Hallway Pot Key",
+    name: "Thieves Town - Hallway Pot Key",
     type: LocationType.Torch,
     wramAddress: 0xf5f178,
     mask: 0x400,
@@ -1097,7 +1097,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Spike Switch Pot Key",
+    name: "Thieves Town - Spike Switch Pot Key",
     type: LocationType.Torch,
     wramAddress: 0xf5f156,
     mask: 0x400,
@@ -1105,7 +1105,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Attic",
+    name: "Thieves Town - Attic",
     type: LocationType.Chest,
     wramAddress: 0xf5f0ca,
     mask: 0x10,
@@ -1113,7 +1113,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Big Chest",
+    name: "Thieves Town - Big Chest",
     type: LocationType.Chest,
     wramAddress: 0xf5f088,
     mask: 0x10,
@@ -1121,7 +1121,7 @@ export const UNDERWORLD_LOCATIONS: UnderworldLocation[] = [
     dungeon: Dungeon.ThievesTown,
   },
   {
-    name: "Thieves' Town - Blind's Cell",
+    name: "Thieves Town - Blind's Cell",
     type: LocationType.Chest,
     wramAddress: 0xf5f08a,
     mask: 0x10,
@@ -6437,7 +6437,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 7,
   },
   {
-    name: "Thieves' Town - Spike Switch Pot Key",
+    name: "Thieves Town - Spike Switch Pot Key",
     type: LocationType.KeyPot,
     wramAddress: 0xf6616e,
     mask: 0x8000,
@@ -6861,7 +6861,7 @@ export const POT_LOCATIONS: PotLocation[] = [
     potIndex: 0,
   },
   {
-    name: "Thieves' Town - Hallway Pot Key",
+    name: "Thieves Town - Hallway Pot Key",
     type: LocationType.KeyPot,
     wramAddress: 0xf66190,
     mask: 0x4000,
@@ -21163,7 +21163,7 @@ export const BOSS_PRIZE_LOCATIONS: BossPrizeLocation[] = [
     bossRoomId: 90,
   },
   {
-    name: "Thieves' Town - Prize",
+    name: "Thieves Town - Prize",
     type: LocationType.BossPrize,
     wramAddress: 0xf5f472,
     mask: 0x10,
@@ -21246,7 +21246,7 @@ export const MISC_LOCATIONS: SramLocation[] = [
     dungeon: Dungeon.SwampPalace,
   },
   {
-    name: "Thieves' Town - Boss",
+    name: "Thieves Town - Boss",
     type: LocationType.Misc,
     wramAddress: 0xf5f158,
     mask: 0x800,

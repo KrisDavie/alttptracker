@@ -1,5 +1,6 @@
 interface DungeonData {
   name: string;
+  boss?: "armos" | "lanmolas" | "moldorm" | "helmasaurking" | "arrghus" | "mothula" | "blind" | "kholdstare" | "vitreous" | "trinexx" | "agahnim" | "agahnim2" | "bnc";
   icon: string;
   defeatedIcon?: string;
   totalLocations?: {
@@ -20,6 +21,7 @@ interface DungeonData {
 export const DungeonsData: Record<string, DungeonData> = {
   ep: {
     name: "Eastern Palace",
+    boss: "armos", 
     icon: "/dungeons/armos.png",
     totalLocations: {
       chests: 6,
@@ -37,6 +39,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   dp: {
     name: "Desert Palace",
+    boss: "lanmolas",
     icon: "/dungeons/lanmolas.png",
     totalLocations: {
       chests: 6,
@@ -54,6 +57,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   toh: {
     name: "Tower of Hera",
+    boss: "moldorm",
     icon: "/dungeons/moldorm.png",
     totalLocations: {
       chests: 6,
@@ -71,6 +75,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   pod: {
     name: "Palace of Darkness",
+    boss: "helmasaurking",
     icon: "/dungeons/helmasaur_king.png",
     totalLocations: {
       chests: 14,
@@ -88,6 +93,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   sp: {
     name: "Swamp Palace",
+    boss: "arrghus",
     icon: "/dungeons/arrghus.png",
     totalLocations: {
       chests: 10,
@@ -105,6 +111,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   sw: {
     name: "Skull Woods",
+    boss: "mothula",
     icon: "/dungeons/mothula.png",
     totalLocations: {
       chests: 8,
@@ -122,6 +129,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   tt: {
     name: "Thieves' Town",
+    boss: "blind",
     icon: "/dungeons/blind.png",
     totalLocations: {
       chests: 8,
@@ -139,6 +147,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   ip: {
     name: "Ice Palace",
+    boss: "kholdstare",
     icon: "/dungeons/kholdstare.png",
     totalLocations: {
       chests: 8,
@@ -156,6 +165,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   mm: {
     name: "Misery Mire",
+    boss: "vitreous",
     icon: "/dungeons/vitreous.png",
     totalLocations: {
       chests: 8,
@@ -173,6 +183,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   tr: {
     name: "Turtle Rock",
+    boss: "trinexx",
     icon: "/dungeons/trinexx.png",
     totalLocations: {
       chests: 12,
@@ -190,6 +201,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   gt: {
     name: "Ganon's Tower",
+    boss: "agahnim2",
     icon: "/dungeons/agahnim20.png",
     defeatedIcon: "/dungeons/agahnim1.png",
     totalLocations: {
@@ -208,6 +220,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   ct: {
     name: "Castle Tower",
+    boss: "agahnim",
     icon: "/dungeons/agahnim0.png",
     defeatedIcon: "/dungeons/agahnim1.png",
     totalLocations: {
@@ -226,6 +239,7 @@ export const DungeonsData: Record<string, DungeonData> = {
   },
   hc: {
     name: "Hyrule Castle",
+    boss: "bnc",
     icon: "/dungeons/bnc.png",
     totalLocations: {
       chests: 8,

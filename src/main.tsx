@@ -6,13 +6,16 @@ import { Provider } from 'react-redux'
 import { store } from './store/store.ts'
 import { AutotrackerProvider } from './components/AutotrackerProvider.tsx'
 import { SettingsProvider } from './components/SettingsProvider.tsx'
+import LogicProvider from './components/LogicProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <SettingsProvider>
         <AutotrackerProvider>
-          <App />
+          <LogicProvider>
+            <App />
+          </LogicProvider>
         </AutotrackerProvider>
       </SettingsProvider>
     </Provider>

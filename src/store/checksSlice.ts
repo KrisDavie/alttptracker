@@ -1,12 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { locationsData } from "@/data/locationsData";
 import { entranceData } from "@/data/entranceData";
-
-export type Logic = "unavailable" | "available" | "possible" | "information" | "mixed";
+import type { LogicStatus } from "@/data/logic/logicTypes";
 
 export interface CheckStatus {
   checked: boolean;
-  logic: Logic;
+  logic: LogicStatus;
   manuallyChecked: boolean;
   scoutedItems: string[];
 }
@@ -62,8 +61,21 @@ export const checksSlice = createSlice({
         manuallyChecked: manual,
       };
     },
+    updateLogicStatuses: (state, action: PayloadAction<{ locationsLogic: Record<string, LogicStatus>; entrancesLogic: Record<string, LogicStatus> }>) => {
+      const { locationsLogic, entrancesLogic } = action.payload;
+      Object.entries(locationsLogic).forEach(([location, logicStatus]) => {
+        if (state.locationsChecks[location]) {
+          state.locationsChecks[location].logic = logicStatus;
+        }
+      });
+      Object.entries(entrancesLogic).forEach(([entrance, logicStatus]) => {
+        if (state.entranceChecks[entrance]) {
+          state.entranceChecks[entrance].logic = logicStatus;
+        }
+      });
+    },
   },
 });
 
-export const { setLocationChecked, setEntranceChecked, updateMultipleLocations } = checksSlice.actions;
+export const { setLocationChecked, setEntranceChecked, updateMultipleLocations, updateLogicStatuses } = checksSlice.actions;
 export default checksSlice.reducer;

@@ -4,6 +4,7 @@ import { DungeonsData } from "@/data/dungeonData";
 export interface DungeonState {
   collectedCount: number;
   bossDefeated: boolean;
+  boss: "unknown" | "armos" | "lanmolas" | "moldorm" | "helmasaurking" | "arrghus" | "mothula" | "blind" | "kholdstare" | "vitreous" | "trinexx" | "agahnim" | "agahnim2" | "bnc";
   prize: "unknown" | "crystal" | "pendant" | "redCrystal" | "greenPendant" | "map";
   prizeCollected: boolean;
   smallKeys: number;
@@ -23,6 +24,7 @@ export interface DungeonsState {
 const dungeonInitialState: DungeonState = {
   collectedCount: 0,
   bossDefeated: false,
+  boss: "unknown",
   prize: "unknown",
   prizeCollected: false,
   smallKeys: 0,
@@ -38,7 +40,8 @@ const dungeonInitialState: DungeonState = {
 const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
 
 const initialState: Record<string, DungeonState> = Object.keys(DungeonsData).reduce((acc, dungeon) => {
-  acc[dungeon] = { ...dungeonInitialState };
+  // TODO: If boss shuffle is enabled, always set boss to unknown
+  acc[dungeon] = { ...dungeonInitialState, boss: DungeonsData[dungeon].boss || "unknown" };
   return acc;
 }, {} as Record<string, DungeonState>);
 
