@@ -14,7 +14,7 @@ export const logic_dungeon: DungeonLogicData = {
         always: {
           allOf: [
             "canBreach|Desert Palace - Main",
-            "canKillOrExplodeMostEnemies",
+            "canKillHookableEneimies",
             {
               anyOf: ["keys|1", "canBreach|Desert Palace - North"],
             },
@@ -1064,7 +1064,7 @@ export const logic_dungeon: DungeonLogicData = {
       },
       "Swamp Palace - Entrance": {
         always: {
-          allOf: ["canBreach|Swamp Palace", "flippers", "canKillOrExplodeMostEnemies"],
+          allOf: ["canBreach|Swamp Palace", "flippers", "canKillHookableEneimies"],
         },
         logical: {
           allOf: ["canReach|Swamp Palace"],

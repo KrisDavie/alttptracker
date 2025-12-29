@@ -75,8 +75,14 @@ export class LogicEngine {
 
     // Handle Objects (allOf / anyOf)
     if (typeof req === "object" && req !== null) {
-      if ("allOf" in req) return req.allOf.every((r) => this.evaluateRequirement(r, ctx));
-      if ("anyOf" in req) return req.anyOf.some((r) => this.evaluateRequirement(r, ctx));
+      let result = true;
+      if ("allOf" in req && req.allOf) {
+        result = req.allOf.every((r) => this.evaluateRequirement(r, ctx));
+      }
+      if (result && "anyOf" in req && Array.isArray(req.anyOf)) {
+        result = req.anyOf.some((r) => this.evaluateRequirement(r, ctx));
+      }
+      return result;
     }
 
     return true;
@@ -174,7 +180,7 @@ export class LogicEngine {
       case "melee":
         return this.hasItem("sword") || this.hasItem("hammer");
       case "melee_bow":
-        return this.resolveSimple("melee", ctx) && this.resolveSimple("bow", ctx);
+        return this.resolveSimple("melee", ctx) || this.resolveSimple("bow", ctx);
       case "mitts":
         return items.glove.amount > 1;
       case "mirrorshield":
@@ -203,6 +209,8 @@ export class LogicEngine {
         return this.resolveSimple("melee_bow", ctx) || this.resolveSimple("cane", ctx) || this.resolveSimple("firerod", ctx);
       case "canKillOrExplodeMostEnemies":
         return this.resolveSimple("canKillMostEnemies", ctx) || this.resolveSimple("bomb", ctx);
+      case "canKillHookableEneimies":
+        return this.resolveSimple("canKillOrExplodeMostEnemies", ctx) || this.resolveSimple("hookshot", ctx);
       case "canFightAgahnim":
         killableBosses = this.bossesKillStatus();
         return killableBosses["agahnim"];
@@ -249,10 +257,10 @@ export class LogicEngine {
       case "canCrossEnergyBarrier":
         return this.hasItem("swordbeams") || this.hasItem("cape"); // || TODO: Add swordless logic
       case "canOpenGT":
-        return this.getCrystalCount() === 7;
+        return this.getCrystalCount() >= 7;
       case "canBuyBigBombMaybe":
       case "canBuyBigBomb":
-        return this.getRedCrystalCount() === 2;
+        return this.getRedCrystalCount() >= 2;
 
       case "canExitTurtleRockWestAndEnterEast":
         // TODO
@@ -264,12 +272,32 @@ export class LogicEngine {
         return this.resolveSimple("bomb", ctx);
 
       // TODO
-      case "canShockBlock":
-      case "canFakePowder":
-      case "canZoraSplashDelete":
       case "canDarkRoomNavigateBlind":
       case "canTorchRoomNavigateBlind":
+      case "canFairyReviveHover":
+      case "canOWFairyRevive":
+      case "canQirnJump":
+      case "canFakePowder":
+      case "canZoraSplashDelete":
+      case "canMirrorWrap":
+      case "canTombRaider":
+      case "canFairyBarrierRevive":
+      case "canShockBlock":
+      case "canHover":
+      case "canIceBreak":
+      case "canHookClip":
+      case "canBombJump":
+      case "canBombOrBonkCameraUnlock":
       case "canHoverAlot":
+      case "canSpeckyClip":
+      case "canBombSpooky":
+      case "canHeraPot":
+      case "canFireSpooky":
+      case "canMimicClip":
+      case "canPotionCameraUnlock":
+      case "canMoldormBounce":
+      case "canBunnyCitrus":
+      case "canTamSwam":
       case "canReachTurtleRockMiddle":
       case "canBreachMiseryMireMaybe":
       case "canBreachTurtleRockMainMaybe":
@@ -430,20 +458,14 @@ export class LogicEngine {
 
   private calculateDungeons(): Record<string, LogicStatus> {
     const dungeonStatuses: Record<string, LogicStatus> = {};
-    
+    const logicSet = this.state.settings.keyDrop ? this.logicSet.keydrop : this.logicSet.dungeon;
     // Main dungeon checks
-    Object.entries(this.logicSet.dungeon).forEach(([dungeonId, locations]) => {
+    Object.entries(logicSet).forEach(([dungeonId, locations]) => {
       Object.entries(locations).forEach(([locationName, logicState]) => {
         dungeonStatuses[locationName] = this.evaluateLogicState(logicState, { dungeonId });
       });
     });
 
-    // Keydrop checks
-    Object.entries(this.logicSet.keydrop).forEach(([dungeonId, locations]) => {
-      Object.entries(locations).forEach(([locationName, logicState]) => {
-        dungeonStatuses[locationName] = this.evaluateLogicState(logicState, { dungeonId });
-      });
-    });
 
     return dungeonStatuses;
   }

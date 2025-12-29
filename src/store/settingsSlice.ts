@@ -7,6 +7,7 @@ export interface SettingsState {
   wildBigKeys: boolean;
   wildMaps: boolean;
   wildCompasses: boolean;
+  keyDrop: boolean;
   entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity";
   bossShuffle: "none" | "simple" | "full" | "random";
   enemyShuffle: "none" | "shuffled" | "random";
@@ -25,6 +26,7 @@ const initialState: SettingsState = {
   wildBigKeys: false,
   wildMaps: false,
   wildCompasses: false,
+  keyDrop: false,
   entranceMode: "none",
   bossShuffle: "none",
   enemyShuffle: "none",
@@ -33,7 +35,7 @@ const initialState: SettingsState = {
   itemPool: "normal",
   activatedFlute: false,
   bonkShuffle: false,
-  autotracking: true,
+  autotracking: false,
 };
 
 export const settingsSlice = createSlice({

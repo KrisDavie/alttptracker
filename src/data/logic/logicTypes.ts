@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type LogicRequirement = string | { allOf: LogicRequirement[] } | { anyOf: LogicRequirement[] } | {};
+export type LogicRequirement = string | { allOf?: LogicRequirement[] } | { anyOf?: LogicRequirement[] } | {};
 
 export type LogicStatus = "unavailable" | "available" | "possible" | "information" | "ool";
 
