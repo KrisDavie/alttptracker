@@ -18,7 +18,7 @@ export interface ChecksState {
 
 const initialCheckStatus: CheckStatus = {
   checked: false,
-  logic: "available",
+  logic: "unavailable",
   manuallyChecked: false,
   scoutedItems: [],
 };

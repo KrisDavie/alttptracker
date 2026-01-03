@@ -8,6 +8,7 @@ export interface SettingsState {
   wildMaps: boolean;
   wildCompasses: boolean;
   keyDrop: boolean;
+  pottery: "none" |"keys" |"cave" |"cavekeys" |"reduced" |"clustered" |"nonempty" |"dungeon" |"lottery";
   entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity";
   bossShuffle: "none" | "simple" | "full" | "random";
   enemyShuffle: "none" | "shuffled" | "random";
@@ -27,6 +28,7 @@ const initialState: SettingsState = {
   wildMaps: false,
   wildCompasses: false,
   keyDrop: false,
+  pottery: "none",
   entranceMode: "none",
   bossShuffle: "none",
   enemyShuffle: "none",

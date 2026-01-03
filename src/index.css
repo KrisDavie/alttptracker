@@ -45,6 +45,10 @@ html, body {
   --font-arialblack: 'Arial Black', sans-serif;
   --text-2xs: 0.6rem;
   --text-2xs--line-height: 0.75rem;
+  --text-3xs: 0.5rem;
+  --text-3xs--line-height: 0.625rem;
+  --text-4xs: 0.4rem;
+  --text-4xs--line-height: 0.5rem;
 }
 
 @utility is-hatched {

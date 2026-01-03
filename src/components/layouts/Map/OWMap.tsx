@@ -38,6 +38,9 @@ function OWMap({ world = "lw" }: OWMapProps) {
         if (location.bonk) {
           itemType = "tree";
         }
+        if (location.isDungeon) {
+          itemType = "dungeon";
+        }
         return (
           <MapItemLocation
             key={locationKey}
