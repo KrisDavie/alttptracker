@@ -17,6 +17,25 @@ export interface WorldLogic {
   Entrance?: string[];
 }
 
+export interface ExitLogic {
+  [exitName: string]: {
+      to: string;
+      requirements: WorldLogic;
+    }
+}
+
+export interface OverworldRegionLogic {
+  type: string
+  locations: { [locationName: string]: {
+    requirements: WorldLogic;
+    type?: string;
+  } }
+  entrances: string[]
+  exits: ExitLogic
+}
+
+
 export type LogicData = Record<string, LogicState>;
 export type WorldLogicData = Record<string, WorldLogic>;
 export type DungeonLogicData = Record<string, LogicData>;
+

@@ -125,7 +125,7 @@ function MapItemLocation(props: MapItemLocationProps) {
                 {Object.entries(itemChecks).map(([name, check]) => (
                   <div key={name} className="flex justify-between gap-2 text-3xs whitespace-nowrap">
                     <span>{name}</span>
-                    <span className={check?.logic === "available" ? "text-green-400" : "text-red-400"}>
+                    <span className={check?.logic === "available" ? "text-green-400" : check?.logic === "possible" ? "text-yellow-400" : "text-red-400"}>
                       {check?.checked ? "Checked" : check?.logic}
                     </span>
                   </div>
