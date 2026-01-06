@@ -48,12 +48,12 @@ function MysteryModal() {
         <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
           <label className="font-medium">World State:</label>
           <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
+            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400"
             value={localSettings.worldState}
             onChange={(e) => handleInputChange("worldState", e.target.value)}
           >
             <option value="open">Open</option>
-            <option value="standard">Standard</option>
+            {/* <option value="standard">Standard</option> */}
             <option value="inverted">Inverted</option>
           </select>
 

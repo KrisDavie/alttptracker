@@ -260,8 +260,10 @@ export class LogicEngine {
           // Count available keys - include keys from "possible" regions since we could reach them with optimal play
           const inventoryKeys = this.state.dungeons[dungeonId]?.smallKeys || 0;
           const foundKeys = this.countReachableKeys(reachable, dungeonId, true); // includePossible = true
+          const guaranteedKeys = this.countReachableKeys(reachable, dungeonId, false); // only from "available" regions
           const spent = spentKeys[dungeonId] || 0;
           const availableKeys = inventoryKeys + foundKeys - spent;
+          const guaranteedAvailableKeys = inventoryKeys + guaranteedKeys - spent;
 
           if (availableKeys <= 0) continue;
 
@@ -270,6 +272,7 @@ export class LogicEngine {
             dungeonId,
             accessibleDoors,
             availableKeys,
+            guaranteedAvailableKeys,
             reachable,
             regions,
             branchingDungeons
@@ -386,6 +389,7 @@ export class LogicEngine {
     dungeonId: string,
     accessibleDoors: { exit: ExitLogic[string]; from: string; dungeonId: string }[],
     availableKeys: number,
+    guaranteedAvailableKeys: number,
     currentReachable: Set<string>,
     regions: Record<string, OverworldRegionLogic>,
     branchingDungeons: Set<string>
@@ -394,12 +398,12 @@ export class LogicEngine {
       return { regionsDiscovered: new Map(), keysUsed: 0 };
     }
 
-    const phase1 = this.analyzeKeyDoorStatusPhase1(dungeonId, accessibleDoors, availableKeys, currentReachable, regions);
+    const phase1 = this.analyzeKeyDoorStatusPhase1(dungeonId, accessibleDoors, availableKeys, guaranteedAvailableKeys, currentReachable, regions);
     if (phase1.isComplete) {
       return { regionsDiscovered: phase1.regionsDiscovered, keysUsed: phase1.keysUsed };
     }
 
-    const { regionsDiscovered, phase1Reachable, totalDoors, totalKeys } = phase1;
+    const { regionsDiscovered, phase1Reachable, totalDoors, totalKeys, guaranteedTotalKeys } = phase1;
     
     // Phase 2: Not enough keys for all doors
     const { regionMinDoors, doorsAtDepth, doorCluster } = this.analyzeKeyDoorStatusPhase2(dungeonId, accessibleDoors, currentReachable, regions);
@@ -409,6 +413,8 @@ export class LogicEngine {
       availableKeys,
       totalDoors,
       totalKeys,
+      guaranteedTotalKeys,
+      guaranteedAvailableKeys,
       currentReachable,
       regions,
       regionMinDoors,
@@ -1066,6 +1072,7 @@ export class LogicEngine {
     dungeonId: string,
     accessibleDoors: { exit: ExitLogic[string]; from: string; dungeonId: string }[],
     availableKeys: number,
+    guaranteedAvailableKeys: number,
     currentReachable: Set<string>,
     regions: Record<string, OverworldRegionLogic>
   ): { 
@@ -1074,6 +1081,7 @@ export class LogicEngine {
     phase1Reachable: Set<string>;
     totalDoors: number;
     totalKeys: number;
+    guaranteedTotalKeys: number;
     isComplete: boolean;
   } {
     const regionsDiscovered = new Map<string, LogicStatus>();
@@ -1144,17 +1152,25 @@ export class LogicEngine {
     
     const totalDoors = allDiscoveredDoorPairs.size;
     const totalKeys = availableKeys + totalKeysFound;
+    // For guaranteedTotalKeys, we can only count keys found behind doors if the dungeon is linear
+    // (i.e., only one path forward, so we're guaranteed to find those keys)
+    // For branching dungeons, keys behind doors are NOT guaranteed because player might go a different way
+    // We'll pass totalKeysFound down but Phase 2 will decide whether to count it based on dungeon structure
+    const guaranteedTotalKeys = guaranteedAvailableKeys + totalKeysFound;
     
-    if (totalKeys >= totalDoors) {
+    // Use guaranteedTotalKeys to determine if we can mark everything as "available".
+    // Keys from "possible" regions (counted in availableKeys but not guaranteedAvailableKeys) 
+    // can only help reach things as "possible", not as "available".
+    if (guaranteedTotalKeys >= totalDoors) {
       for (const region of phase1Reachable) {
         if (!currentReachable.has(region)) {
           regionsDiscovered.set(region, "available");
         }
       }
-      return { regionsDiscovered, keysUsed: totalDoors, phase1Reachable, totalDoors, totalKeys, isComplete: true };
+      return { regionsDiscovered, keysUsed: totalDoors, phase1Reachable, totalDoors, totalKeys, guaranteedTotalKeys, isComplete: true };
     }
 
-    return { regionsDiscovered, keysUsed: 0, phase1Reachable, totalDoors, totalKeys, isComplete: false };
+    return { regionsDiscovered, keysUsed: 0, phase1Reachable, totalDoors, totalKeys, guaranteedTotalKeys, isComplete: false };
   }
 
   private analyzeKeyDoorStatusPhase2(
@@ -1242,7 +1258,9 @@ export class LogicEngine {
     dungeonId: string,
     availableKeys: number,
     totalDoors: number,
-    totalKeys: number,
+    _totalKeys: number,
+    _guaranteedTotalKeys: number,
+    guaranteedAvailableKeys: number,
     currentReachable: Set<string>,
     regions: Record<string, OverworldRegionLogic>,
     regionMinDoors: Map<string, number>,
@@ -1309,9 +1327,10 @@ export class LogicEngine {
       
       effectiveKeys = keysAvailable + totalReachableKeys;
     } else {
-      // Branching dungeon - can't guarantee finding all keys
-      // Use total keys (bypassable doors don't consume keys, they're free)
-      effectiveKeys = totalKeys;
+      // Branching dungeon - can't guarantee finding keys behind doors
+      // because player might open the wrong door first.
+      // Only use keys that are guaranteed before any key doors (inventory + keys in reachable regions).
+      effectiveKeys = guaranteedAvailableKeys;
     }
     
     // Track keys used
@@ -1458,30 +1477,25 @@ export class LogicEngine {
           // Branching dungeon - player could waste keys on wrong paths
           // But still use critical path logic: regions on critical path are more likely to be reached
           // 
-          // For a critical path depth-1 region to be "available":
-          // Need enough keys to waste on ALL non-critical depth-1 doors, open this door,
-          // and still have keys for deeper critical path exploration
-          //
-          // For a non-critical path depth-1 region to be "available":
-          // Need enough keys for ALL doors (player might skip side branches)
+          // For both critical and non-critical depth-1 regions in branching dungeons:
+          // Need enough keys for ALL doors to guarantee reaching any specific region,
+          // since player could waste keys on wrong paths.
           const deeperDoors = totalDoors - depth1Doors;
           
           if (isOnCriticalPath || isInCriticalCluster) {
-            // Critical path region: needs special handling based on number of critical clusters
+            // Critical path region in branching dungeon:
             const nonCriticalDepth1 = depth1Doors - criticalClusters.size;
             
-            // When there's only 1 critical cluster: player knows which door to open
-            // When there are multiple critical clusters: player could waste keys on wrong critical path
-            // So with multiple critical clusters, we need keys for ALL other clusters + this one + deeper
             let keysNeeded: number;
             if (criticalClusters.size === 1) {
-              // Single critical path: can waste on non-critical + open this + have 1 for deeper
+              // Single critical path: can waste on non-critical + open this + have keys for deeper
+              // This is safe because there's only one "right" path to take
               keysNeeded = nonCriticalDepth1 + 1 + Math.min(1, deeperDoors);
             } else {
-              // Multiple critical paths: could go down wrong one and waste keys
-              // Need enough to open ALL depth-1 doors (cover the worst case)
-              // then still have keys for deeper exploration
-              keysNeeded = depth1Doors + Math.min(1, deeperDoors);
+              // Multiple critical paths: player could go down the wrong critical path
+              // and waste keys there before reaching this region.
+              // Need enough keys for ALL doors to guarantee reaching any specific critical region.
+              keysNeeded = totalDoors;
             }
             
             if (effectiveKeys >= keysNeeded) {
