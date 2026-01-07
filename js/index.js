@@ -335,7 +335,7 @@ function launch_tracker() {
 
   if (document.getElementById("remembersettings").checked == true) {
     var settings = "m-" + map + "|cc-" + chestcolor + "|s-" + sphere + "|a-" + autotracking + trackingport + "|ah-" + trackinghost + "|p-" + sprite + "|ms-" + mapStyle + "|sc-" + scale + "|ad-" + alwaysdisplay;
-    document.cookie = "settings=" + settings + "; expires=Sat, 3 Jan 2026 12:00:00 UTC";
+    document.cookie = "settings=" + settings + "; expires=Sat, 8 Feb 2027 12:00:00 UTC";
   } else {
     document.cookie = "settings=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
   }
@@ -420,12 +420,14 @@ function loadnamedpreset(name) {
       loadambrosiapreset();
       break;
     case "ambroz1a":
+    case "ladder/ambroz1a":
       loadambroz1apreset();
       break;
     case "bosshunt":
       loadbosshuntpreset();
       break;
     case "cabookey":
+    case "ladder/cabookey":
     case "kaesden/cabookey":
       loadcabookeypreset();
       break;
@@ -440,16 +442,19 @@ function loadnamedpreset(name) {
       break;
     case "crisscross":
     case "jem041/crisscross_zw":
+    case "ladder/xdhuntplus":
       loadcrisscrosspreset();
       break;
     case "crosshunt":
       loadcrosshuntpreset();
       break;
     case "crosskeys":
+    case "ladder/crosskeys":
       loadcrosskeyspreset();
       break;
     case "crosskeys2024":
     case "jem041/crosskeys2024":
+    case "ladder/crosskeys2024":
       loadcrosskeys2024preset();
       break;
     case "mfns./crosskeys_flute_ms_pb":
@@ -499,12 +504,17 @@ function loadnamedpreset(name) {
     case "hardopenplus":
       loadhardopenpluspreset();
       break;
+    case "ladder/hmg":
     case "hmg":
       loadhmgpreset();
       break;
     case "influkeys":
     case "alttprleague/influkeys":
       loadinflukeyspreset();
+      break;
+    case "ladder/inverted_startflute":
+    case "inverted_startflute":
+      loadinvertedflutepreset();
       break;
     case "inverted":
     case "invc2023":
@@ -534,6 +544,7 @@ function loadnamedpreset(name) {
       break;
     case "mystery":
     case "mmmmavid23":
+    case "mmmmladder":
       loadmysterypreset();
       break;
     case "nologic":
@@ -546,17 +557,23 @@ function loadnamedpreset(name) {
     case "open76":
       loadopen76preset();
       break;
+    case "ladder/openboots":
     case "openboots":
       loadopenbootspreset();
       break;
     case "openkeysanity":
       loadopenkeyspreset();
       break;
+    case "ladder/owg":
     case "owg":
       loadowgpreset();
       break;
+    case "ladder/owg_assured":
     case "owg_assured":
       loadowgassuredpreset();
+      break;
+    case "ladder/nologic_rods":
+      loadnologicpreset();
       break;
     case "patronparty":
       loadpatronpartypreset();
@@ -1669,6 +1686,36 @@ function loadinvertedpreset() {
     activatedfluteno: true,
     bonkshuffleno: true,
   });
+}
+
+function loadinvertedflutepreset() {
+  loadPreset({
+    gametypeinverted: true,
+    entrancenone: true,
+    doornone: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalganon: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: false,
+    shuffledcompasses: false,
+    shuffledsmallkeys: false,
+    shuffledbigkeys: false,
+    nonprogressivebowsno: true,
+    activatedfluteyes: true,
+    bonkshuffleno: true,
+  });
+  setstartingitem("flute", 14, "1");
 }
 
 function loadinvertedadkeyspreset() {

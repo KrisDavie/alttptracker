@@ -1,21 +1,21 @@
 <html>
   <head>
     <title>ALTTP Randomizer Community Tracker - Launcher</title>
-    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20251004"></script>
-    <script type="text/javascript" src="js/jquery.powertip.js?v=20251004"></script>
-    <script type="text/javascript" src="js/select2.min.js?v=20251004"></script>
-    <script type="text/javascript" src="js/util.js?v=20251004"></script>
-    <script type="text/javascript" src="js/index.js?v=20251004"></script>
-    <script type="text/javascript" src="js/autot.js?v=20251004"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js?v=20251004"></script>
-    <script type="text/javascript" src="js/kofi.js?v=20251004"></script>
-    <script type="text/javascript" src="js/header.js?v=20251004"></script>
-    <link href="css/jquery.powertip.css?v=20251004" rel="stylesheet" />
-    <link href="css/select2.min.css?v=20251004" rel="stylesheet" />
-    <link href="css/launcher.css?v=20251004" rel="stylesheet" />
-    <link href="css/fonts.css?v=20251004" rel="stylesheet" />
-    <link href="css/sprites.css?v=20251004" rel="stylesheet" />
-    <link href="css/toast.css?v=20251004" rel="stylesheet" />
+    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20260107"></script>
+    <script type="text/javascript" src="js/jquery.powertip.js?v=20260107"></script>
+    <script type="text/javascript" src="js/select2.min.js?v=20260107"></script>
+    <script type="text/javascript" src="js/util.js?v=20260107"></script>
+    <script type="text/javascript" src="js/index.js?v=20260107"></script>
+    <script type="text/javascript" src="js/autot.js?v=20260107"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js?v=20260107"></script>
+    <script type="text/javascript" src="js/kofi.js?v=20260107"></script>
+    <script type="text/javascript" src="js/header.js?v=20260107"></script>
+    <link href="css/jquery.powertip.css?v=20260107" rel="stylesheet" />
+    <link href="css/select2.min.css?v=20260107" rel="stylesheet" />
+    <link href="css/launcher.css?v=20260107" rel="stylesheet" />
+    <link href="css/fonts.css?v=20260107" rel="stylesheet" />
+    <link href="css/sprites.css?v=20260107" rel="stylesheet" />
+    <link href="css/toast.css?v=20260107" rel="stylesheet" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -93,6 +93,9 @@
             <span class="preset-btn-span">
               <input type="button" value="AD KEYSANITY" class="preset-btn" onclick="loadadkeyspreset()" />
             </span>
+            <span class="preset-btn-span">
+              <input type="button" value="MYSTERY" class="preset-btn" onclick="loadmysterypreset()" />
+            </span>
           </div>
           <div class="preset-header" style="cursor: default">
             Glitched Presets <a href="https://discord.gg/8ggH24gV8Y" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a>
@@ -109,23 +112,29 @@
             </span>
           </div>
           <div class="preset-header" style="cursor: default">
-            Main Tournament Presets <a href="https://discord.gg/cBRyu2hkBR" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a>
+            Tournament Presets || <span>Beer League </span><a href="https://discord.gg/s8ybdqDrRh" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a> || <span>German Tournament</span> <a href="https://discord.gg/5zuANcS" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a>
           </div>
           <div>
             <span class="preset-btn-span">
-              <input type="button" value="OPEN AD TLESWAP" class="preset-btn" onclick="loadadtileswappreset()" />
+              <input type="button" value="AD" class="preset-btn" onclick="loadadpreset()" />
+            </span>
+            <span class="preset-btn-span">
+              <input type="button" value="AMBROZ1A GANONHUNT" class="preset-btn" onclick="loadambroz1apreset()" />
+            </span>
+            <span class="preset-btn-span">
+              <input type="button" value="CASUAL BOOTS" class="preset-btn" onclick="loadcasualbootspreset()" />
             </span>
             <span class="preset-btn-span">
               <input type="button" value="ENEMIZER" class="preset-btn" onclick="loadenemizerpreset()" />
             </span>
             <span class="preset-btn-span">
-              <input type="button" value="CABOOKEY" class="preset-btn" onclick="loadcabookeypreset()" />
+              <input type="button" value="INVERTED (START FLUTE)" class="preset-btn" onclick="loadinvertedflutepreset()" />
             </span>
             <span class="preset-btn-span">
-              <input type="button" value="CROSSKEYS" class="preset-btn" onclick="loadcrosskeyspreset()" />
+              <input type="button" value="OPEN BOOTS" class="preset-btn" onclick="loadopenbootspreset()" />
             </span>
             <span class="preset-btn-span">
-              <input type="button" value="CASUAL BOOTS" class="preset-btn" onclick="loadcasualbootspreset()" />
+              <input type="button" value="STANDARD" class="preset-btn" onclick="loadstandardpreset()" />
             </span>
           </div>
           <div class="preset-header" style="cursor: default">All Presets</div>
@@ -165,6 +174,7 @@
                 <option value="Influkeys">Influkeys</option>
                 <option value="IntermediateDoors">Intermediate Doors</option>
                 <option value="Inverted">Inverted</option>
+                <option value="inverted_startflute">Inverted (Starting Flute)</option>
                 <option value="InvertedADKeysanity">Inverted AD Keysanity</option>
                 <option value="InvertedCrosskeys">Inverted Crosskeys</option>
                 <option value="InvertedKeysanity">Inverted Keysanity</option>
@@ -934,6 +944,7 @@
                   <option value="olde_man">Olde Man</option>
                   <option value="ori">Ori</option>
                   <option value="outline_link">Outline Link</option>
+                  <option value="ovi">Ovi</option>
                   <option value="paper_mario">Paper Mario</option>
                   <option value="parallel_worlds_link">Parallel Worlds Link</option>
                   <option value="patia">Patia</option>
@@ -1008,6 +1019,7 @@
                   <option value="santa_hat_link">Santa Hat Link</option>
                   <option value="santa_link">Santa Link</option>
                   <option value="saria">Saria</option>
+                  <option value="saria_alternate_mails">Saria (Alternate Mails)</option>
                   <option value="scholar">Scholar</option>
                   <option value="selan">Selan</option>
                   <option value="sevens1ns">SevenS1ns</option>
@@ -1078,6 +1090,7 @@
                   <option value="toad">Toad</option>
                   <option value="toadette">Toadette</option>
                   <option value="totemlinks">TotemLinks</option>
+                  <option value="totodile">Totodile</option>
                   <option value="tp_zelda">TP Zelda</option>
                   <option value="trogdor_the_burninator">Trogdor the Burninator</option>
                   <option value="tueffel">Tueffel</option>
@@ -1115,6 +1128,7 @@
                   <option value="zeck">Zeck</option>
                   <option value="zekrom">Zekrom</option>
                   <option value="zelda">Zelda</option>
+                  <option value="zero_shork">Zero Shork</option>
                   <option value="zero_suit_samus">Zero Suit Samus</option>
                   <option value="zora">Zora</option>
                 </select>

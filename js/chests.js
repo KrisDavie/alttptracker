@@ -453,6 +453,8 @@
       case "canTamSwam":
         return userLogicSettings[requirement];
 
+
+      // HERE
       case "canCrossEnergyBarrier":
         return items.sword > 1 || (flags.swordmode === "S" && items.hammer) || items.cape;
       case "canOpenGT":

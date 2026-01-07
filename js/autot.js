@@ -834,9 +834,9 @@ function autotrackDoTracking(data) {
         if (!flags.wildmaps && checkItem(data, dungeondata.map)) {
           newDungeonItemCount++;
         }
-        if (!flags.wildkeys) {
+        if (!flags.wildkeys && flags.doorshuffle === "N") {
           let keyCount = data["rooms_inv"][dungeondata.smallkeys];
-          if (dungeon === "toh") {
+          if (['dp', 'toh'].includes(dungeon)) {
             // Temporary fix for Tower of Hera small key being counted twice
             keyCount = Math.min(keyCount, 1);
           }

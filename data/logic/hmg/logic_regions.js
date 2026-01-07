@@ -459,7 +459,7 @@
         always: {
           anyOf: [
             {
-              allOf: ["canBreach|Dark World - West", "canBootsClip"],
+              allOf: ["canBreach|Dark World - West", "canBootsClip", "moonpearl"],
             },
             {
               allOf: ["flute", "mitts"],
