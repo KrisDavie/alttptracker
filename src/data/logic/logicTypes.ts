@@ -20,6 +20,7 @@ export interface WorldLogic {
 export interface ExitLogic {
   [exitName: string]: {
       to: string;
+      type: string;
       requirements: WorldLogic;
     }
 }

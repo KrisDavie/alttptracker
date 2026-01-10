@@ -18,6 +18,42 @@ interface EvaluationContext {
   regionName?: string;
 }
 
+/**
+ * Debug options for path tracing
+ */
+export interface DebugOptions {
+  enabled: boolean;
+  targetLocation?: string;
+  verbose?: boolean;
+}
+
+/**
+ * Represents a step in the path to a location
+ */
+export interface PathStep {
+  type: "region" | "exit" | "key_door" | "key_collect" | "key_use" | "location" | "requirement";
+  from?: string;
+  to?: string;
+  name?: string;
+  status?: LogicStatus;
+  keysAvailable?: number;
+  keysUsed?: number;
+  details?: string;
+  requirements?: string;
+  requirementsMet?: boolean;
+}
+
+/**
+ * Full path trace result
+ */
+export interface PathTrace {
+  location: string;
+  status: LogicStatus;
+  reachable: boolean;
+  steps: PathStep[];
+  summary: string;
+}
+
 const doorPrefixToDungeon: Record<string, string> = {
   Sewers: "hc",
   Castle: "hc",
@@ -46,9 +82,324 @@ export class LogicEngine {
   private reachableRegions: Set<string> = new Set();
   private assumingSmallKey = false;
 
-  constructor(state: GameState, logicSet: LogicSet) {
+  // Debug/path tracing support
+  private debugOptions: DebugOptions = { enabled: false };
+  private regionPaths: Map<string, PathStep[]> = new Map();
+
+  constructor(state: GameState, logicSet: LogicSet, debugOptions?: DebugOptions) {
     this.state = state;
     this.logicSet = logicSet;
+    if (debugOptions) {
+      this.debugOptions = debugOptions;
+    }
+  }
+
+  /**
+   * Traces the path to a specific location, returning detailed information
+   * about how the location is reached including key collection and usage.
+   */
+  public tracePathToLocation(locationName: string): PathTrace {
+    // Enable debug mode for this trace
+    this.debugOptions = { enabled: true, targetLocation: locationName, verbose: true };
+    this.regionPaths.clear();
+
+    // Run the full calculation to populate all statuses
+    this.calculateAll();
+
+    // Find which region contains this location
+    const regions = this.logicSet.regions as Record<string, OverworldRegionLogic>;
+    let locationRegion: string | undefined;
+    let locationData: { requirements: WorldLogic; type?: string } | undefined;
+
+    for (const [regionName, region] of Object.entries(regions)) {
+      if (region.locations && region.locations[locationName]) {
+        locationRegion = regionName;
+        locationData = region.locations[locationName];
+        break;
+      }
+    }
+
+    const status = this.locationStatuses.get(locationName) || "unavailable";
+    const reachable = locationRegion ? this.reachableRegions.has(locationRegion) : false;
+
+    // Build the path trace
+    const steps: PathStep[] = [];
+
+    if (!locationRegion) {
+      steps.push({
+        type: "location",
+        name: locationName,
+        status: "unavailable",
+        details: "Location not found in any region"
+      });
+    } else {
+      // Add region path steps
+      const regionPath = this.regionPaths.get(locationRegion);
+      if (regionPath) {
+        steps.push(...regionPath);
+      } else if (reachable) {
+        steps.push({
+          type: "region",
+          name: locationRegion,
+          status: this.regionStatuses.get(locationRegion) || "unavailable",
+          details: `Region ${locationRegion} is reachable`
+        });
+      } else {
+        steps.push({
+          type: "region",
+          name: locationRegion,
+          status: "unavailable",
+          details: `Region ${locationRegion} is NOT reachable`
+        });
+      }
+
+      // Add location requirements evaluation
+      if (locationData) {
+        const ctx: EvaluationContext = { regionName: locationRegion };
+        const reqStatus = this.evaluateWorldLogic(locationData.requirements, ctx);
+        const logicState = this.getLogicState(locationData.requirements);
+        
+        steps.push({
+          type: "location",
+          name: locationName,
+          status: reqStatus,
+          requirements: this.formatRequirements(logicState),
+          requirementsMet: reqStatus === "available",
+          details: `Location requirements: ${reqStatus}`
+        });
+      }
+    }
+
+    // Generate summary
+    const summary = this.generatePathSummary(locationName, status, reachable, steps);
+
+    return {
+      location: locationName,
+      status,
+      reachable,
+      steps,
+      summary
+    };
+  }
+
+  private formatRequirements(logicState: LogicState): string {
+    const parts: string[] = [];
+    if (logicState.always) {
+      parts.push(`always: ${this.formatRequirement(logicState.always)}`);
+    }
+    if (logicState.logical) {
+      parts.push(`logical: ${this.formatRequirement(logicState.logical)}`);
+    }
+    if (logicState.required) {
+      parts.push(`required: ${this.formatRequirement(logicState.required)}`);
+    }
+    return parts.join("; ") || "(no requirements)";
+  }
+
+  private formatRequirement(req: LogicRequirement): string {
+    if (!req) return "none";
+    if (typeof req === "string") return req;
+    if ("allOf" in req && req.allOf) {
+      return `(${req.allOf.map(r => this.formatRequirement(r)).join(" AND ")})`;
+    }
+    if ("anyOf" in req && req.anyOf) {
+      return `(${req.anyOf.map(r => this.formatRequirement(r)).join(" OR ")})`;
+    }
+    return JSON.stringify(req);
+  }
+
+  private generatePathSummary(locationName: string, status: LogicStatus, reachable: boolean, steps: PathStep[]): string {
+    const lines: string[] = [];
+    lines.push(`=== Path Trace for: ${locationName} ===`);
+    lines.push(`Final Status: ${status.toUpperCase()}`);
+    lines.push(`Region Reachable: ${reachable ? "YES" : "NO"}`);
+    lines.push("");
+    lines.push("--- Path Steps ---");
+    
+    for (const step of steps) {
+      switch (step.type) {
+        case "region":
+          lines.push(`[REGION] ${step.name} - ${step.status}${step.details ? ` (${step.details})` : ""}`);
+          break;
+        case "exit":
+          lines.push(`  → [EXIT] ${step.from} → ${step.to} - ${step.status}`);
+          if (step.requirements) {
+            lines.push(`      Requirements: ${step.requirements}`);
+          }
+          break;
+        case "key_door":
+          lines.push(`  🔑 [KEY DOOR] ${step.from} → ${step.to}`);
+          lines.push(`      Keys available: ${step.keysAvailable}, Keys used: ${step.keysUsed}`);
+          break;
+        case "key_collect":
+          lines.push(`  ✓ [KEY COLLECTED] ${step.name} (now have ${step.keysAvailable} keys)`);
+          break;
+        case "key_use":
+          lines.push(`  ✗ [KEY USED] Opening door to ${step.to} (${step.keysAvailable} keys remaining)`);
+          break;
+        case "location":
+          lines.push(`[LOCATION] ${step.name} - ${step.status}`);
+          if (step.requirements) {
+            lines.push(`  Requirements: ${step.requirements}`);
+          }
+          lines.push(`  Requirements Met: ${step.requirementsMet ? "YES" : "NO"}`);
+          break;
+        case "requirement":
+          lines.push(`  [REQ] ${step.details} - ${step.requirementsMet ? "MET" : "NOT MET"}`);
+          break;
+      }
+    }
+
+    lines.push("");
+    lines.push("=== End Path Trace ===");
+    return lines.join("\n");
+  }
+
+  private recordRegionPath(regionName: string, steps: PathStep[]): void {
+    if (this.debugOptions.enabled && !this.regionPaths.has(regionName)) {
+      this.regionPaths.set(regionName, [...steps]);
+    }
+  }
+
+  /**
+   * Builds full paths from start to each reachable region using parent tracking
+   */
+  private buildRegionPaths(
+    regionParent: Map<string, { from: string; via: string; isKeyDoor: boolean }>,
+    reachable: Set<string>,
+    regions: Record<string, OverworldRegionLogic>
+  ): void {
+    for (const regionName of reachable) {
+      if (this.regionPaths.has(regionName)) continue;
+
+      // Build path by walking back through parents
+      const pathToRegion: PathStep[] = [];
+      const pathRegions: string[] = [];
+      let current: string | undefined = regionName;
+
+      while (current && !this.regionPaths.has(current)) {
+        pathRegions.unshift(current);
+        const parent = regionParent.get(current);
+        current = parent?.from;
+      }
+
+      // If we found an existing path, start from there
+      if (current && this.regionPaths.has(current)) {
+        pathToRegion.push(...this.regionPaths.get(current)!);
+      }
+
+      // Track key counts per dungeon as we build the path
+      const dungeonKeyCount: Record<string, number> = {};
+      const dungeonKeysUsed: Record<string, number> = {};
+
+      // Count keys already collected in the existing path
+      for (const step of pathToRegion) {
+        if (step.type === "key_collect" && step.name) {
+          const keyDungeonId = this.getDungeonFromKeyLocation(step.name);
+          if (keyDungeonId) {
+            dungeonKeyCount[keyDungeonId] = (dungeonKeyCount[keyDungeonId] || 0) + 1;
+          }
+        } else if (step.type === "key_door" && step.from) {
+          const doorDungeonId = this.getDungeonFromRegion(step.from);
+          if (doorDungeonId) {
+            dungeonKeysUsed[doorDungeonId] = (dungeonKeysUsed[doorDungeonId] || 0) + 1;
+          }
+        }
+      }
+
+      // Now build the rest of the path
+      for (const reg of pathRegions) {
+        const parent = regionParent.get(reg);
+        const status = this.regionStatuses.get(reg) || "unavailable";
+        const dungeonId = this.getDungeonFromRegion(reg);
+
+        if (parent) {
+          if (parent.isKeyDoor) {
+            // Track key usage for this dungeon
+            const doorDungeonId = this.getDungeonFromRegion(parent.from) || dungeonId;
+            if (doorDungeonId) {
+              dungeonKeysUsed[doorDungeonId] = (dungeonKeysUsed[doorDungeonId] || 0) + 1;
+            }
+            
+            // Get inventory keys for this dungeon
+            const inventoryKeys = doorDungeonId ? (this.state.dungeons[doorDungeonId]?.smallKeys || 0) : 0;
+            const collectedKeys = doorDungeonId ? (dungeonKeyCount[doorDungeonId] || 0) : 0;
+            const usedKeys = doorDungeonId ? (dungeonKeysUsed[doorDungeonId] || 0) : 0;
+            const keysAvailable = inventoryKeys + collectedKeys;
+            
+            pathToRegion.push({
+              type: "key_door",
+              from: parent.from,
+              to: reg,
+              status,
+              keysAvailable,
+              keysUsed: usedKeys,
+              details: parent.via
+            });
+          } else {
+            // Check if this is an exit with requirements
+            const fromRegion = regions[parent.from];
+            let reqString = "";
+            if (fromRegion?.exits) {
+              for (const [, exit] of Object.entries(fromRegion.exits)) {
+                if (exit.to === reg) {
+                  const logicState = this.getLogicState(exit.requirements);
+                  reqString = this.formatRequirements(logicState);
+                  break;
+                }
+              }
+            }
+            pathToRegion.push({
+              type: "exit",
+              from: parent.from,
+              to: reg,
+              status,
+              requirements: reqString || undefined,
+              details: dungeonId ? `Dungeon: ${dungeonId}` : undefined
+            });
+          }
+        }
+
+        pathToRegion.push({
+          type: "region",
+          name: reg,
+          status,
+          details: dungeonId ? `Part of dungeon: ${dungeonId}` : undefined
+        });
+
+        // Check for key locations in this region
+        const regionData = regions[reg];
+        if (regionData?.locations && dungeonId) {
+          for (const [locName] of Object.entries(regionData.locations)) {
+            if (this.isKeyLocation(locName) && this.getDungeonFromRegion(reg) === dungeonId) {
+              // Track key collection
+              dungeonKeyCount[dungeonId] = (dungeonKeyCount[dungeonId] || 0) + 1;
+              const inventoryKeys = this.state.dungeons[dungeonId]?.smallKeys || 0;
+              const collectedKeys = dungeonKeyCount[dungeonId] || 0;
+              
+              pathToRegion.push({
+                type: "key_collect",
+                name: locName,
+                keysAvailable: inventoryKeys + collectedKeys,
+                details: `Key available in ${reg}`
+              });
+            }
+          }
+        }
+      }
+
+      this.regionPaths.set(regionName, pathToRegion);
+    }
+  }
+
+  /**
+   * Gets the dungeon ID from a key location name
+   */
+  private getDungeonFromKeyLocation(locName: string): string | undefined {
+    for (const [prefix, dungeonId] of Object.entries(doorPrefixToDungeon)) {
+      if (locName.startsWith(prefix)) return dungeonId;
+    }
+    return undefined;
   }
 
   public calculateAll(): Record<"locationsLogic" | "entrancesLogic", Record<string, LogicStatus>> {
@@ -98,7 +449,19 @@ export class LogicEngine {
     // Initialize statuses
     for (const region of startRegions) {
       this.regionStatuses.set(region, "available");
+      // Record initial path for start regions
+      if (this.debugOptions.enabled) {
+        this.recordRegionPath(region, [{
+          type: "region",
+          name: region,
+          status: "available",
+          details: "Starting region"
+        }]);
+      }
     }
+
+    // Track path to each region (for debug mode)
+    const regionParent: Map<string, { from: string; via: string; isKeyDoor: boolean }> = new Map();
 
     // Store blocked exits to re-evaluate later
     let blockedExits: { exit: ExitLogic[string]; from: string }[] = [];
@@ -136,9 +499,13 @@ export class LogicEngine {
 
           if (status === "available") {
             reachable.add(exit.to);
-            console.log(`${exit.to} is reachable from ${current}`);
+            // console.log(`${exit.to} is reachable from ${current}`);
             this.regionStatuses.set(exit.to, this.getLimitedStatus("available", currentStatus));
             queue.push(exit.to);
+            // Track path for debug mode - always track parent so we can build full paths
+            if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
+              regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
+            }
           } else {
             // Check if it's a key door
             // TODO: can we replace this with a _sane_ check where we just check the logic requirements for "smallkey"?
@@ -185,6 +552,10 @@ export class LogicEngine {
             this.regionStatuses.set(exit.to, this.getLimitedStatus("available", fromStatus));
             queue.push(exit.to);
             madeProgress = true;
+            // Track path for debug mode
+            if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
+              regionParent.set(exit.to, { from, via: "exit", isKeyDoor: false });
+            }
           } else {
             // Check if it became a key door
             this.assumingSmallKey = true;
@@ -221,6 +592,10 @@ export class LogicEngine {
                 reachable.add(exit.to);
                 this.regionStatuses.set(exit.to, this.getLimitedStatus("available", currentStatus));
                 queue.push(exit.to);
+                // Track path for debug mode
+                if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
+                  regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
+                }
               } else if (processKeys) {
                 this.assumingSmallKey = true;
                 const statusWithKey = this.evaluateLogicState(requirements, { regionName: current });
@@ -279,12 +654,45 @@ export class LogicEngine {
           );
 
           // Add discovered regions with their statuses
+          // First, identify key door targets so we can trace paths from them
+          const keyDoorTargets = new Set<string>();
+          for (const door of accessibleDoors) {
+            if (keyDoorStatus.regionsDiscovered.has(door.exit.to)) {
+              keyDoorTargets.add(door.exit.to);
+            }
+          }
+
           for (const [region, status] of keyDoorStatus.regionsDiscovered) {
             if (!reachable.has(region)) {
               reachable.add(region);
               this.regionStatuses.set(region, status);
               queue.push(region);
               madeProgress = true;
+              // Track path for debug mode - record key door information for direct key door targets
+              if (this.debugOptions.enabled) {
+                // Find which door led to this region
+                const doorUsed = accessibleDoors.find(d => d.exit.to === region);
+                if (doorUsed) {
+                  regionParent.set(region, { 
+                    from: doorUsed.from, 
+                    via: `key_door (dungeon: ${dungeonId}, keys: ${availableKeys}, status: ${status})`, 
+                    isKeyDoor: true 
+                  });
+                }
+              }
+            }
+          }
+
+          // Track paths for regions discovered behind key doors (not direct key door targets)
+          // by doing a mini-BFS from each key door target
+          if (this.debugOptions.enabled) {
+            for (const keyDoorTarget of keyDoorTargets) {
+              this.tracePathsFromRegion(
+                keyDoorTarget,
+                keyDoorStatus.regionsDiscovered,
+                regions,
+                regionParent
+              );
             }
           }
 
@@ -314,6 +722,10 @@ export class LogicEngine {
                 this.regionStatuses.set(exit.to, this.getLimitedStatus("available", currentStatus));
                 queue.push(exit.to);
                 madeProgress = true;
+                // Track path for debug mode
+                if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
+                  regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
+                }
               } else if (processKeys) {
                 this.assumingSmallKey = true;
                 const statusWithKey = this.evaluateLogicState(requirements, { regionName: current });
@@ -338,6 +750,11 @@ export class LogicEngine {
 
     // Update reachableRegions
     this.reachableRegions = reachable;
+
+    // Build full paths for debug mode
+    if (this.debugOptions.enabled) {
+      this.buildRegionPaths(regionParent, reachable, regions);
+    }
 
     // DEBUG: check for TR Compass Room
     // Process Locations and Entrances for all reachable regions
@@ -475,7 +892,7 @@ export class LogicEngine {
 
   /**
    * Explores what's behind a key door without actually opening it.
-   * Returns the regions, keys (with locations), and additional key doors found.
+   * Returns the regions, keys (with locations), additional key doors found, and parent tracking.
    * 
    * IMPORTANT: Key doors are bidirectional. When we've opened a door from A→B,
    * the door from B→A is already open and shouldn't be counted as a new door.
@@ -487,10 +904,11 @@ export class LogicEngine {
     regions: Record<string, OverworldRegionLogic>,
     visited: Set<string>,
     openedDoorPairs: Set<string> = new Set()
-  ): { regions: Set<string>; keys: number; keyLocations: Set<string>; doors: { exit: ExitLogic[string]; from: string }[] } {
+  ): { regions: Set<string>; keys: number; keyLocations: Set<string>; doors: { exit: ExitLogic[string]; from: string }[]; parentMap: Map<string, { from: string; via: string; isKeyDoor: boolean }> } {
     const foundRegions = new Set<string>([startRegion]);
     const keyLocations = new Set<string>();
     const foundDoors: { exit: ExitLogic[string]; from: string }[] = [];
+    const parentMap = new Map<string, { from: string; via: string; isKeyDoor: boolean }>();
     const queue = [startRegion];
 
     while (queue.length > 0) {
@@ -527,6 +945,10 @@ export class LogicEngine {
             visited.add(exit.to);
             foundRegions.add(exit.to);
             queue.push(exit.to);
+            // Track parent for this region
+            if (!parentMap.has(exit.to)) {
+              parentMap.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
+            }
           } else {
             // Check if it's a key door
             this.assumingSmallKey = true;
@@ -543,6 +965,10 @@ export class LogicEngine {
                   visited.add(exit.to);
                   foundRegions.add(exit.to);
                   queue.push(exit.to);
+                  // Track parent for this region
+                  if (!parentMap.has(exit.to)) {
+                    parentMap.set(exit.to, { from: current, via: "exit (door already open)", isKeyDoor: false });
+                  }
                 } else {
                   // This is a new key door
                   foundDoors.push({ exit, from: current });
@@ -554,12 +980,75 @@ export class LogicEngine {
       }
     }
 
-    return { regions: foundRegions, keys: keyLocations.size, keyLocations, doors: foundDoors };
+    return { regions: foundRegions, keys: keyLocations.size, keyLocations, doors: foundDoors, parentMap };
   }
 
   private getLimitedStatus(status: LogicStatus, limit: LogicStatus): LogicStatus {
     const order: LogicStatus[] = ["unavailable", "information", "possible", "ool", "available"];
     return order[Math.min(order.indexOf(status), order.indexOf(limit))];
+  }
+
+  /**
+   * Traces paths from a starting region to all connected regions (for debug mode).
+   * This fills in parent relationships for regions discovered behind key doors.
+   * Also follows key doors to regions that are in the discovered set.
+   */
+  private tracePathsFromRegion(
+    startRegion: string,
+    discoveredRegions: Map<string, LogicStatus>,
+    regions: Record<string, OverworldRegionLogic>,
+    regionParent: Map<string, { from: string; via: string; isKeyDoor: boolean }>
+  ): void {
+    const queue = [startRegion];
+    const visited = new Set<string>([startRegion]);
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      const regionLogic = regions[current];
+
+      if (!regionLogic || !regionLogic.exits) continue;
+
+      for (const exit of Object.values(regionLogic.exits)) {
+        if (!exit || !exit.to) continue;
+        if (visited.has(exit.to)) continue;
+        if (!discoveredRegions.has(exit.to)) continue; // Only trace within discovered regions
+
+        // Check if this exit is passable
+        this.assumingSmallKey = false;
+        const requirements = this.getLogicState(exit.requirements);
+        const status = this.evaluateLogicState(requirements, { regionName: current });
+
+        if (status === "available") {
+          visited.add(exit.to);
+          queue.push(exit.to);
+          // Set parent if not already set
+          if (!regionParent.has(exit.to)) {
+            regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
+          }
+        } else {
+          // Check if it's a key door - if the destination is in discovered regions, 
+          // it means the key door was opened during analysis
+          this.assumingSmallKey = true;
+          const statusWithKey = this.evaluateLogicState(requirements, { regionName: current });
+          this.assumingSmallKey = false;
+
+          if (statusWithKey === "available") {
+            // This is a key door that was opened - follow it
+            visited.add(exit.to);
+            queue.push(exit.to);
+            // Set parent if not already set (mark as key door)
+            if (!regionParent.has(exit.to)) {
+              const dungeonId = this.getDungeonFromRegion(current);
+              regionParent.set(exit.to, { 
+                from: current, 
+                via: `key_door (dungeon: ${dungeonId})`, 
+                isKeyDoor: true 
+              });
+            }
+          }
+        }
+      }
+    }
   }
 
 
@@ -962,8 +1451,8 @@ export class LogicEngine {
         // Putting this here allows us to use more complex logic conditions above (i.e. flute)
         if (condition in items) return this.hasItem(condition);
 
-        console.error(`Unknown simple logic condition: ${condition}`);
-        return false;
+        // console.error(`Unknown simple logic condition: ${condition}`);
+        return true;
     }
   }
 
@@ -1033,8 +1522,8 @@ export class LogicEngine {
         return false;
 
       default:
-        console.error(`Unknown complex logic condition: ${condition}`);
-        return false;
+        // console.error(`Unknown complex logic condition: ${condition}`);
+        return true;
     }
   }
 

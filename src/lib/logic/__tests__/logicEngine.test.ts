@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { LogicEngine } from "../logicEngine";
 import { getLogicSet } from "../logicMapper";
-import { gameState } from "./testHelpers";
+import { gameState, tracePathToLocation, compareLocationPaths, printDetailedPath } from "./testHelpers";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 describe("LogicEngine", () => {
@@ -17,12 +17,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      // Debug: print Desert Palace locations
-      const dpLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Desert Palace"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("Desert Palace locations:", dpLocations);
 
       // These locations should be available (no key required)
       expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
@@ -52,12 +46,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      // Debug: print Desert Palace locations
-      const dpLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Desert Palace"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("Desert Palace locations:", dpLocations);
 
       // These locations should be available (no key required)
       expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
@@ -96,11 +84,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const podLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Palace of Darkness"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("PoD locations:", podLocations);
-
       expect(result.locationsLogic['Palace of Darkness - Shooter Room']).toBe("available");
       expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("possible");
       expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("possible");
@@ -125,11 +108,6 @@ describe("LogicEngine", () => {
       // to back of pod (falling bridge)
       // With only 3 spent, could be locked out of any of those locations, so should all be possible, not available
 
-      const podLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Palace of Darkness"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("PoD locations:", podLocations);
-
       expect(result.locationsLogic['Palace of Darkness - Shooter Room']).toBe("available");
       expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("possible");
       expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("possible");
@@ -146,11 +124,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const podLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Palace of Darkness"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("PoD locations:", podLocations);
 
       expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("available");
       expect(result.locationsLogic['Palace of Darkness - Dark Maze - Bottom']).toBe("possible");
@@ -169,11 +142,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const podLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Palace of Darkness"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("PoD locations:", podLocations);
-
       expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("available");
       expect(result.locationsLogic['Palace of Darkness - Dark Maze - Bottom']).toBe("possible");
       expect(result.locationsLogic['Palace of Darkness - Big Key Chest']).toBe("possible");
@@ -189,11 +157,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const podLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Palace of Darkness"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("PoD locations:", podLocations);
 
       expect(result.locationsLogic['Palace of Darkness - Dark Maze - Bottom']).toBe("available");
       expect(result.locationsLogic['Palace of Darkness - Harmless Hellway']).toBe("available");
@@ -213,11 +176,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const spLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Swamp Palace"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("Sp locations:", spLocations);
-
       expect(result.locationsLogic['Swamp Palace - Entrance']).toBe("available");
       expect(result.locationsLogic['Swamp Palace - Big Chest']).toBe("unavailable");
       expect(result.locationsLogic['Swamp Palace - Boss']).toBe("unavailable");
@@ -233,16 +191,41 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const spLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Swamp Palace"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("Sp locations:", spLocations);
-
       expect(result.locationsLogic['Swamp Palace - Entrance']).toBe("available");
       expect(result.locationsLogic['Swamp Palace - Map Chest']).toBe("available");
       expect(result.locationsLogic['Swamp Palace - Big Chest']).toBe("available");
       expect(result.locationsLogic['Swamp Palace - Big Key Chest']).toBe("available");
       expect(result.locationsLogic['Swamp Palace - Boss']).toBe("available");
+    })
+  });
+
+  describe("IP Key Logic", () => {
+    it("should mark everything as available with 0 wild small keys", () => {
+      const state = gameState()
+        .withAllItems()
+        .withSettings({ wildSmallKeys: "wild" })
+        .withDungeon("ip", { smallKeys: 0, bigKey: true })
+        .build();
+
+      state.items.somaria.amount = 0; // Remove somaria to force key usage
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      const path = tracePathToLocation(
+        'Ice Palace - Boss',
+        state,
+        'noglitches'
+      );
+
+      printDetailedPath(path);
+
+      expect(result.locationsLogic['Ice Palace - Compass Chest']).toBe("available");
+      expect(result.locationsLogic['Ice Palace - Big Chest']).toBe("available");
+      expect(result.locationsLogic['Ice Palace - Big Key Chest']).toBe("available");
+      expect(result.locationsLogic['Ice Palace - Boss']).toBe("available");
+
+      tracePathToLocation("Ice Palace - Boss", state);
     })
   });
 
@@ -256,11 +239,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
 
       expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
       expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available");
@@ -279,11 +257,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
 
       // Start with 2 keys
       // Open TR Hub NW -> TR Hub (TR Pokey 1 SW) - now 1 key
@@ -314,11 +287,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
 
       // Start with 3 keys
       // Open TR Hub NW -> TR Hub (TR Pokey 1 SW) - now 2 keys
@@ -351,11 +319,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
-
       expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
       expect(result.locationsLogic['Turtle Rock - Pokey 1 Key Drop']).toBe("available");
       expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
@@ -383,11 +346,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
 
       expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("possible");
       expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available"); // Available because back of stairs is open without key
@@ -417,11 +375,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
-
       expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("possible");
       expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available"); // Available because back of stairs is open without key
       expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available"); // Available because we can directly reach it via inverted middle entrance
@@ -448,11 +401,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const trLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Turtle Rock"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("TR locations:", trLocations);
-
       expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
       expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
       expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available");
@@ -461,6 +409,61 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic['Turtle Rock - Boss']).toBe("available");
     })
   
+  });
+
+  describe("MM Key Logic", () => {
+    it("should mark everything as available with 3 wild small keys", () => {
+      const state = gameState()
+        .withAllItems()
+        .withSettings({ wildSmallKeys: "wild" })
+        .withDungeon("mm", { smallKeys: 3, bigKey: true })
+        .build();
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      expect(result.locationsLogic['Misery Mire - Main Lobby']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Big Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Map Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Spike Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Big Key Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Boss']).toBe("available");
+    })
+
+    it("should mark left side as possible with less than 2 wild small keys", () => {
+      const state = gameState()
+        .withAllItems()
+        .withSettings({ wildSmallKeys: "wild" })
+        .withDungeon("mm", { smallKeys: 0, bigKey: true })
+        .build();
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      // Start with 2 keys
+      // Collect Misery Mire - Spikes Pot Key - 3 keys
+      // Spend key to open Mire Spikes NW - 2 keys
+      // Collect Misery Mire - Fishbone Pot Key - 3 keys 
+      // Spend key to open Mire Fishbone SE - 2 keys
+      // Spend key to open Mire Hub Right EN - 1 key
+      // Spend key to open Mire Hub WS - 0 keys
+      // Collect Misery Mire - Conveyor Crystal Key Drop - 1 key
+      // Spend key to open Mire Dark Shooters SE - 0 keys
+      // Cannot open Mire Conveyor Crystal WS - needs another key
+      // Compass chest and Big Key chest are beyond this door
+
+      expect(result.locationsLogic['Misery Mire - Main Lobby']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Bridge Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Big Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Map Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Spike Chest']).toBe("available");
+      expect(result.locationsLogic['Misery Mire - Compass Chest']).toBe("possible");
+      expect(result.locationsLogic['Misery Mire - Big Key Chest']).toBe("possible");
+      expect(result.locationsLogic['Misery Mire - Boss']).toBe("available");
+
+      tracePathToLocation("Misery Mire - Compass Chest", state);
+    })
+
   });
 
   describe("GT Key Logic", () => {
@@ -482,11 +485,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const gtLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Ganons Tower"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("GT locations:", gtLocations);
 
       // There are three key drops/pots available without opening doors
       // Ganons Tower - Conveyor Cross Pot Key
@@ -540,11 +538,6 @@ describe("LogicEngine", () => {
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
 
-      const gtLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Ganons Tower"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("GT locations:", gtLocations);
-
       expect(result.locationsLogic['Ganons Tower - Hope Room - Left']).toBe("available");
       expect(result.locationsLogic['Ganons Tower - Mini Helmasaur Room - Left']).toBe("available");
       expect(result.locationsLogic['Ganons Tower - DMs Room - Top Left']).toBe("available");
@@ -569,11 +562,6 @@ describe("LogicEngine", () => {
       const logicSet = getLogicSet("noglitches");
       const engine = new LogicEngine(state, logicSet);
       const result = engine.calculateAll();
-
-      const gtLocations = Object.entries(result.locationsLogic)
-        .filter(([name]) => name.includes("Ganons Tower"))
-        .reduce((acc, [name, status]) => ({ ...acc, [name]: status }), {});
-      console.log("GT locations:", gtLocations);
 
       expect(result.locationsLogic['Ganons Tower - Hope Room - Left']).toBe("available");
       expect(result.locationsLogic['Ganons Tower - Mini Helmasaur Room - Left']).toBe("available");
@@ -666,6 +654,66 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Boss"]).toBe("available");
       // Use the actual location name from locationsData
       expect(result.locationsLogic["Ganons Tower - Validation Chest"]).toBe("available");
+    });
+  });
+
+  describe("Path Tracing", () => {
+    it("should trace path to Desert Palace Boss with detailed key information", () => {
+      const state = gameState()
+        .withAllItems()
+        .withSettings({ wildSmallKeys: "wild" })
+        .withDungeon("dp", { smallKeys: 0, bigKey: true })
+        .build();
+
+      // Use the path tracing helper
+      const trace = tracePathToLocation("Desert Palace - Boss", state);
+
+      // Verify the trace contains expected information
+      expect(trace.location).toBe("Desert Palace - Boss");
+      expect(trace.status).toBe("possible");
+      expect(trace.reachable).toBe(true);
+      expect(trace.steps.length).toBeGreaterThan(0);
+
+      // Should have path steps
+      const regionSteps = trace.steps.filter(s => s.type === "region");
+      expect(regionSteps.length).toBeGreaterThan(0);
+
+      // Should have location step at the end
+      const locationStep = trace.steps.find(s => s.type === "location");
+      expect(locationStep).toBeDefined();
+      expect(locationStep?.name).toBe("Desert Palace - Boss");
+    });
+
+    it("should compare multiple location paths", () => {
+      const state = gameState()
+        .withAllItems()
+        .withSettings({ wildSmallKeys: "wild" })
+        .withDungeon("dp", { smallKeys: 1, bigKey: true })
+        .build();
+
+      // This should print comparison info to console
+      compareLocationPaths([
+        "Desert Palace - Map Chest",
+        "Desert Palace - Compass Chest",
+        "Desert Palace - Boss"
+      ], state);
+
+      // Just verify it runs without error
+      expect(true).toBe(true);
+    });
+
+    it("should trace path to unavailable location", () => {
+      const state = gameState()
+        .withSettings({ wildSmallKeys: "wild" })
+        .withDungeon("dp", { smallKeys: 1, bigKey: true })
+        .build();
+
+      const trace = tracePathToLocation("Desert Palace - Boss", state);
+
+      expect(trace.location).toBe("Desert Palace - Boss");
+      expect(trace.status).toBe("unavailable");
+      // Region should not be reachable without required items
+      expect(trace.reachable).toBe(false);
     });
   });
 

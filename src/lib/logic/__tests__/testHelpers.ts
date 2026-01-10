@@ -5,6 +5,8 @@ import type { EntranceData, EntrancesState } from "@/store/entrancesSlice";
 import { DungeonsData } from "@/data/dungeonData";
 import ItemsData from "@/data/itemData";
 import { entranceData } from "@/data/entranceData";
+import { LogicEngine, type PathTrace, type PathStep } from "../logicEngine";
+import { getLogicSet, type LogicMode } from "../logicMapper";
 
 /**
  * Helper to create a default items state with all items at 0
@@ -263,3 +265,205 @@ export class GameStateBuilder {
 export function gameState(): GameStateBuilder {
   return new GameStateBuilder();
 }
+
+/**
+ * Traces the path to a location and prints it to the console.
+ * This is useful for debugging incorrect accessibilities.
+ * 
+ * @param locationName - The name of the location to trace
+ * @param state - The game state (from GameStateBuilder.build())
+ * @param logicMode - The logic mode to use (default: "noglitches")
+ * @returns The PathTrace object containing all path information
+ * 
+ * @example
+ * ```ts
+ * const state = gameState()
+ *   .withAllItems()
+ *   .withSettings({ wildSmallKeys: "wild" })
+ *   .withDungeon("dp", { smallKeys: 1, bigKey: true })
+ *   .build();
+ * 
+ * tracePathToLocation("Desert Palace - Boss", state);
+ * ```
+ */
+export function tracePathToLocation(
+  locationName: string,
+  state: ReturnType<GameStateBuilder["build"]>,
+  logicMode: LogicMode = "noglitches"
+): PathTrace {
+  const logicSet = getLogicSet(logicMode);
+  const engine = new LogicEngine(state, logicSet, { enabled: true, targetLocation: locationName, verbose: true });
+  const trace = engine.tracePathToLocation(locationName);
+  
+  // Print the summary to console
+  console.log(trace.summary);
+  
+  return trace;
+}
+
+/**
+ * Traces the path to a location and returns just the summary string without printing.
+ * Useful when you want to capture the output programmatically.
+ */
+export function getPathTraceSummary(
+  locationName: string,
+  state: ReturnType<GameStateBuilder["build"]>,
+  logicMode: LogicMode = "noglitches"
+): string {
+  const logicSet = getLogicSet(logicMode);
+  const engine = new LogicEngine(state, logicSet, { enabled: true, targetLocation: locationName, verbose: true });
+  const trace = engine.tracePathToLocation(locationName);
+  return trace.summary;
+}
+
+/**
+ * Traces paths to multiple locations and prints a comparison.
+ * Useful for understanding why different locations have different statuses.
+ */
+export function compareLocationPaths(
+  locationNames: string[],
+  state: ReturnType<GameStateBuilder["build"]>,
+  logicMode: LogicMode = "noglitches"
+): void {
+  const logicSet = getLogicSet(logicMode);
+  
+  console.log("=== Location Comparison ===\n");
+  
+  for (const locationName of locationNames) {
+    const engine = new LogicEngine(state, logicSet, { enabled: true, targetLocation: locationName, verbose: true });
+    const trace = engine.tracePathToLocation(locationName);
+    
+    console.log(`${locationName}: ${trace.status.toUpperCase()}`);
+    console.log(`  Reachable: ${trace.reachable}`);
+    
+    // Print key doors in path
+    const keyDoors = trace.steps.filter(s => s.type === "key_door");
+    if (keyDoors.length > 0) {
+      console.log(`  Key doors crossed: ${keyDoors.length}`);
+      for (const door of keyDoors) {
+        console.log(`    - ${door.from} → ${door.to} (${door.details})`);
+      }
+    }
+    
+    // Print location requirements
+    const locStep = trace.steps.find(s => s.type === "location");
+    if (locStep?.requirements) {
+      console.log(`  Requirements: ${locStep.requirements}`);
+    }
+    
+    console.log("");
+  }
+}
+
+/**
+ * Gets detailed key information for a dungeon.
+ * Useful for debugging key logic issues.
+ */
+export function getDungeonKeyInfo(
+  dungeonId: string,
+  state: ReturnType<GameStateBuilder["build"]>,
+  logicMode: LogicMode = "noglitches"
+): {
+  inventoryKeys: number;
+  potentialKeys: string[];
+  keyDoorsFound: string[];
+} {
+  const logicSet = getLogicSet(logicMode);
+  const engine = new LogicEngine(state, logicSet, { enabled: true, verbose: true });
+  
+  // Run calculation to populate internal state
+  engine.calculateAll();
+  
+  const inventoryKeys = state.dungeons[dungeonId]?.smallKeys || 0;
+  const potentialKeys: string[] = [];
+  const keyDoorsFound: string[] = [];
+  
+  // Scan regions for key locations
+  const regions = logicSet.regions as Record<string, { locations?: Record<string, unknown>; exits?: Record<string, { to: string }> }>;
+  
+  const dungeonPrefixes: Record<string, string[]> = {
+    "hc": ["Sewers", "Castle"],
+    "ep": ["Eastern"],
+    "dp": ["Desert"],
+    "toh": ["Hera"],
+    "ct": ["Tower"],
+    "pod": ["PoD"],
+    "sp": ["Swamp"],
+    "sw": ["Skull"],
+    "tt": ["Thieves"],
+    "ip": ["Ice"],
+    "mm": ["Mire"],
+    "tr": ["TR"],
+    "gt": ["GT"],
+  };
+  
+  const prefixes = dungeonPrefixes[dungeonId] || [];
+  
+  for (const [regionName, region] of Object.entries(regions)) {
+    const belongsToDungeon = prefixes.some(p => regionName.startsWith(p));
+    if (!belongsToDungeon) continue;
+    
+    // Check for key locations
+    if (region.locations) {
+      for (const locName of Object.keys(region.locations)) {
+        if (locName.includes("Pot Key") || locName.includes("Key Pot") || locName.includes("Key Drop")) {
+          potentialKeys.push(`${locName} (in ${regionName})`);
+        }
+      }
+    }
+    
+    // Check for key doors (exits that require small keys)
+    if (region.exits) {
+      for (const [exitName, exit] of Object.entries(region.exits)) {
+        // Simple check - key doors typically have "Key" or specific naming
+        if (exitName.includes("Key") || exitName.includes("Locked")) {
+          keyDoorsFound.push(`${regionName} → ${exit.to} (${exitName})`);
+        }
+      }
+    }
+  }
+  
+  console.log(`=== Key Info for ${dungeonId.toUpperCase()} ===`);
+  console.log(`Inventory Keys: ${inventoryKeys}`);
+  console.log(`Potential Key Locations (${potentialKeys.length}):`);
+  for (const key of potentialKeys) {
+    console.log(`  - ${key}`);
+  }
+  console.log(`Key Doors Found (${keyDoorsFound.length}):`);
+  for (const door of keyDoorsFound) {
+    console.log(`  - ${door}`);
+  }
+  
+  return { inventoryKeys, potentialKeys, keyDoorsFound };
+}
+
+/**
+ * Prints all steps in a path trace with full details.
+ * Useful for very detailed debugging.
+ */
+export function printDetailedPath(trace: PathTrace): void {
+  console.log(`\n=== Detailed Path for: ${trace.location} ===`);
+  console.log(`Status: ${trace.status}`);
+  console.log(`Reachable: ${trace.reachable}`);
+  console.log(`Total Steps: ${trace.steps.length}\n`);
+  
+  let stepNum = 1;
+  for (const step of trace.steps) {
+    console.log(`Step ${stepNum}:`);
+    console.log(`  Type: ${step.type}`);
+    if (step.name) console.log(`  Name: ${step.name}`);
+    if (step.from) console.log(`  From: ${step.from}`);
+    if (step.to) console.log(`  To: ${step.to}`);
+    if (step.status) console.log(`  Status: ${step.status}`);
+    if (step.requirements) console.log(`  Requirements: ${step.requirements}`);
+    if (step.requirementsMet !== undefined) console.log(`  Requirements Met: ${step.requirementsMet}`);
+    if (step.keysAvailable !== undefined) console.log(`  Keys Available: ${step.keysAvailable}`);
+    if (step.keysUsed !== undefined) console.log(`  Keys Used: ${step.keysUsed}`);
+    if (step.details) console.log(`  Details: ${step.details}`);
+    console.log("");
+    stepNum++;
+  }
+}
+
+// Re-export types for convenience
+export type { PathTrace, PathStep };
