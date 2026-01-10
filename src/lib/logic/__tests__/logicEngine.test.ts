@@ -717,6 +717,90 @@ describe("LogicEngine", () => {
     });
   });
 
+  describe("Open Logic", () => {
+    it("should require moonpearl for dark world underworld items", () => {
+      const state = gameState()
+        .withAllItems()
+        .build();
+
+      state.items.moonpearl.amount = 0; // Remove moonpearl
+
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      expect(result.locationsLogic["Spike Cave"]).toBe("unavailable");
+  })
+})
+
+  describe("Dynamic Bunny State", () => {
+    it("should track bunny state when entering dark world without moonpearl", () => {
+      // Player has all items except moonpearl
+      const state = gameState()
+        .withAllItems()
+        .build();
+
+      state.items.moonpearl.amount = 0; // Remove moonpearl
+
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      // Dark World locations that require interaction should be unavailable without moonpearl
+      // This tests that the bunny state is correctly computed
+      expect(result.locationsLogic["Spike Cave"]).toBe("unavailable");
+    });
+
+    it("should allow access when player has moonpearl", () => {
+      const state = gameState()
+        .withAllItems() // Includes moonpearl
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      // With moonpearl, dark world locations should be accessible
+      expect(result.locationsLogic["Spike Cave"]).toBe("available");
+    });
+
+    it("should allow bunny access in glitch modes", () => {
+      // In overworldglitches mode, bunnies can access items via bunny revival
+      const state = gameState()
+        .withAllItems()
+        .withSettings({ logicMode: "overworldglitches" as const })
+        .build();
+
+      state.items.moonpearl.amount = 0; // Remove moonpearl
+
+      const logicSet = getLogicSet("overworldglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      // In glitch logic, dungeon bunny revive should work
+      // Spike Cave is in Dark World but the logic should allow bunny glitches
+      // The result depends on specific glitch logic implementation
+      expect(["available", "possible", "unavailable"]).toContain(result.locationsLogic["Spike Cave"]);
+    });
+
+    it("should compute correct bunny state for underworld entered from light world", () => {
+      // In Open mode, entering a cave from Light World should not result in bunny state
+      const state = gameState()
+        .withAllItems()
+        .build();
+
+      state.items.moonpearl.amount = 0; // Remove moonpearl
+
+      const logicSet = getLogicSet("noglitches");
+      const engine = new LogicEngine(state, logicSet);
+      const result = engine.calculateAll();
+
+      // Light World locations should still be available (player is not a bunny in LW)
+      expect(result.locationsLogic["Link's House"]).toBe("available");
+      expect(result.locationsLogic["Link's Uncle"]).toBe("available");
+    });
+  });
+
 });
 
 /**

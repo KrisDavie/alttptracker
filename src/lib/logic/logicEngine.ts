@@ -16,6 +16,8 @@ interface GameState {
 interface EvaluationContext {
   dungeonId?: string;
   regionName?: string;
+  /** Whether the player is a bunny in this context (dynamically computed) */
+  isBunny?: boolean;
 }
 
 /**
@@ -81,6 +83,20 @@ export class LogicEngine {
   private entranceStatuses: Map<string, LogicStatus> = new Map();
   private reachableRegions: Set<string> = new Set();
   private assumingSmallKey = false;
+
+  /**
+   * Tracks whether each region can be reached without being a bunny.
+   * A region is marked as non-bunny (false) if ANY path to it allows non-bunny access.
+   * This handles multi-entrance caves where one entrance is in DW but the cave
+   * connects to LW, allowing the player to enter from LW without being a bunny.
+   */
+  private regionBunnyState: Map<string, boolean> = new Map();
+
+  /**
+   * Locations that can be obtained even as a bunny (no interaction required).
+   * These locations ignore the moon pearl requirement even if in bunny state.
+   */
+  private bunnyExemptLocations: Set<string> = new Set();
 
   // Debug/path tracing support
   private debugOptions: DebugOptions = { enabled: false };
@@ -406,6 +422,7 @@ export class LogicEngine {
     this.regionStatuses.clear();
     this.locationStatuses.clear();
     this.entranceStatuses.clear();
+    this.regionBunnyState.clear();
 
     // Pre-calculate all regions to populate cache
     // Object.keys(this.logicSet.regions).forEach((r) => this.evaluateRegion(r));
@@ -449,6 +466,9 @@ export class LogicEngine {
     // Initialize statuses
     for (const region of startRegions) {
       this.regionStatuses.set(region, "available");
+      // TOOD: Check is this matters
+      // Start regions (Menu, Flute Sky) are never bunny - they are meta-regions
+      this.regionBunnyState.set(region, false);
       // Record initial path for start regions
       if (this.debugOptions.enabled) {
         this.recordRegionPath(region, [{
@@ -490,7 +510,23 @@ export class LogicEngine {
         for (const exit of Object.values(regionLogic.exits)) {
           if (!exit || !exit.to) continue;
 
-          if (reachable.has(exit.to)) continue;
+          // Check if already reachable - but still update bunny state if we found a better path
+          if (reachable.has(exit.to)) {
+            // Even if already reachable, check if this path offers non-bunny access
+            const currentBunny = this.getRegionBunnyState(current);
+            const newBunny = this.computeBunnyStateForTransition(currentBunny, exit.type);
+            // Only update if this path is better (non-bunny) and exit is reachable
+            if (!newBunny && this.getRegionBunnyState(exit.to)) {
+              // Check if we can actually take this exit
+              this.assumingSmallKey = false;
+              const requirements = this.getLogicState(exit.requirements);
+              const status = this.evaluateLogicState(requirements, { regionName: current });
+              if (status === "available") {
+                this.updateRegionBunnyState(exit.to, false);
+              }
+            }
+            continue;
+          }
 
           // Check normal availability (no key assumption)
           this.assumingSmallKey = false;
@@ -502,6 +538,10 @@ export class LogicEngine {
             // console.log(`${exit.to} is reachable from ${current}`);
             this.regionStatuses.set(exit.to, this.getLimitedStatus("available", currentStatus));
             queue.push(exit.to);
+            // Compute and update bunny state for this transition
+            const currentBunny = this.getRegionBunnyState(current);
+            const newBunny = this.computeBunnyStateForTransition(currentBunny, exit.type);
+            this.updateRegionBunnyState(exit.to, newBunny);
             // Track path for debug mode - always track parent so we can build full paths
             if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
               regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
@@ -552,6 +592,10 @@ export class LogicEngine {
             this.regionStatuses.set(exit.to, this.getLimitedStatus("available", fromStatus));
             queue.push(exit.to);
             madeProgress = true;
+            // Compute and update bunny state for this transition
+            const currentBunny = this.getRegionBunnyState(from);
+            const newBunny = this.computeBunnyStateForTransition(currentBunny, exit.type);
+            this.updateRegionBunnyState(exit.to, newBunny);
             // Track path for debug mode
             if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
               regionParent.set(exit.to, { from, via: "exit", isKeyDoor: false });
@@ -592,6 +636,10 @@ export class LogicEngine {
                 reachable.add(exit.to);
                 this.regionStatuses.set(exit.to, this.getLimitedStatus("available", currentStatus));
                 queue.push(exit.to);
+                // Compute and update bunny state for this transition
+                const currentBunny = this.getRegionBunnyState(current);
+                const newBunny = this.computeBunnyStateForTransition(currentBunny, exit.type);
+                this.updateRegionBunnyState(exit.to, newBunny);
                 // Track path for debug mode
                 if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
                   regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
@@ -668,10 +716,16 @@ export class LogicEngine {
               this.regionStatuses.set(region, status);
               queue.push(region);
               madeProgress = true;
+              // For key door targets, compute bunny state from the door that led here
+              const doorUsed = accessibleDoors.find(d => d.exit.to === region);
+              if (doorUsed) {
+                const fromBunny = this.getRegionBunnyState(doorUsed.from);
+                const newBunny = this.computeBunnyStateForTransition(fromBunny, doorUsed.exit.type);
+                this.updateRegionBunnyState(region, newBunny);
+              }
               // Track path for debug mode - record key door information for direct key door targets
               if (this.debugOptions.enabled) {
                 // Find which door led to this region
-                const doorUsed = accessibleDoors.find(d => d.exit.to === region);
                 if (doorUsed) {
                   regionParent.set(region, { 
                     from: doorUsed.from, 
@@ -722,6 +776,10 @@ export class LogicEngine {
                 this.regionStatuses.set(exit.to, this.getLimitedStatus("available", currentStatus));
                 queue.push(exit.to);
                 madeProgress = true;
+                // Compute and update bunny state for this transition
+                const currentBunny = this.getRegionBunnyState(current);
+                const newBunny = this.computeBunnyStateForTransition(currentBunny, exit.type);
+                this.updateRegionBunnyState(exit.to, newBunny);
                 // Track path for debug mode
                 if (this.debugOptions.enabled && !regionParent.has(exit.to)) {
                   regionParent.set(exit.to, { from: current, via: "exit", isKeyDoor: false });
@@ -756,17 +814,29 @@ export class LogicEngine {
       this.buildRegionPaths(regionParent, reachable, regions);
     }
 
-    // DEBUG: check for TR Compass Room
     // Process Locations and Entrances for all reachable regions
     for (const current of reachable) {
       const regionLogic = regions[current];
       if (regionLogic) {
         const bestStatus = this.regionStatuses.get(current) || "unavailable";
+        const isBunny = this.getRegionBunnyState(current);
 
         // Process Locations
         if (regionLogic.locations) {
           for (const [locName, locData] of Object.entries(regionLogic.locations)) {
-            const status = this.evaluateWorldLogic(locData.requirements, { regionName: current });
+            // Pass bunny state to the evaluation context
+            const ctx: EvaluationContext = { regionName: current, isBunny };
+            let status = this.evaluateWorldLogic(locData.requirements, ctx);
+            
+            // If player is a bunny and location is not exempt, mark as unavailable
+            // unless the location explicitly allows bunny access or glitch logic applies
+            if (isBunny && !this.canObtainAsBunny(locName)) {
+              // Check for bunny-related glitches based on logic mode
+              const canBunnyRevive = this.resolveBunnyGlitch(locName, ctx);
+              if (!canBunnyRevive) {
+                status = "unavailable";
+              }
+            }
 
             this.locationStatuses.set(locName, this.getLimitedStatus(status, bestStatus));
           }
@@ -780,7 +850,7 @@ export class LogicEngine {
             if (regionLogic.exits && regionLogic.exits[entName]) {
               const exitData = regionLogic.exits[entName];
               const reqs = this.getLogicState(exitData.requirements);
-              status = this.evaluateLogicState(reqs, { regionName: current });
+              status = this.evaluateLogicState(reqs, { regionName: current, isBunny });
             }
             this.entranceStatuses.set(entName, this.getLimitedStatus(status, bestStatus));
           }
@@ -842,10 +912,6 @@ export class LogicEngine {
       branchingDungeons
     );
   }
-
-
-
-
 
   /**
    * Checks if an exit requires a small key to traverse.
@@ -1058,6 +1124,190 @@ export class LogicEngine {
     }
     return undefined;
   }
+
+  // ==================== BUNNY STATE COMPUTATION ====================
+  
+  /**
+   * Region types that are considered "underworld" - entering these preserves
+   * the bunny state from the previous overworld region.
+   */
+  private static readonly UNDERWORLD_TYPES = new Set(["Cave", "Dungeon"]);
+
+  /**
+   * Checks if an exit type leads to the "other world" (where player becomes bunny).
+   * In Open mode, DarkWorld is the "other world".
+   * In Inverted mode, LightWorld is the "other world".
+   */
+  private isOtherWorld(exitType: string): boolean {
+    const isInverted = this.state.settings.worldState === "inverted";
+    if (isInverted) {
+      return exitType === "LightWorld";
+    }
+    return exitType === "DarkWorld";
+  }
+
+  /**
+   * Checks if an exit type leads to the "home world" (where player is never a bunny).
+   * In Open mode, LightWorld is the "home world".
+   * In Inverted mode, DarkWorld is the "home world".
+   */
+  private isHomeWorld(exitType: string): boolean {
+    const isInverted = this.state.settings.worldState === "inverted";
+    if (isInverted) {
+      return exitType === "DarkWorld";
+    }
+    return exitType === "LightWorld";
+  }
+
+  /**
+   * Checks if an exit type leads to an underworld (Cave or Dungeon).
+   * Underworld areas preserve bunny state from the previous overworld.
+   */
+  private isUnderworld(exitType: string): boolean {
+    return LogicEngine.UNDERWORLD_TYPES.has(exitType);
+  }
+
+  /**
+   * Computes the bunny state after taking an exit.
+   * 
+   * Rules:
+   * 1. If player has moon pearl, they are never a bunny
+   * 2. Entering home world (LW in Open, DW in Inverted) → not bunny
+   * 3. Entering other world OW (DW in Open, LW in Inverted) without moon pearl → bunny
+   * 4. Entering underworld (Cave/Dungeon) → preserves previous bunny state
+   * 
+   * @param currentBunnyState Whether the player is currently a bunny
+   * @param exitType The type of the exit destination ("LightWorld", "DarkWorld", "Cave", "Dungeon")
+   * @returns Whether the player will be a bunny after taking this exit
+   */
+  private computeBunnyStateForTransition(currentBunnyState: boolean, exitType: string): boolean {
+    // Moon pearl always prevents bunny state
+    if (this.hasItem("moonpearl")) {
+      return false;
+    }
+
+    // Entering home world overworld → not bunny
+    if (this.isHomeWorld(exitType)) {
+      return false;
+    }
+
+    // Entering other world overworld → bunny
+    if (this.isOtherWorld(exitType)) {
+      return true;
+    }
+
+    // Entering underworld → preserve current bunny state
+    if (this.isUnderworld(exitType)) {
+      return currentBunnyState;
+    }
+
+    // Unknown type - assume not bunny (safer for logic)
+    return false;
+  }
+
+  /**
+   * Updates the bunny state for a region, using the "best case" rule:
+   * If ANY path to the region allows non-bunny access, the region is marked as non-bunny.
+   * 
+   * This handles the multi-entrance cave scenario:
+   * - Cave has DW entrance (bunny path) and connects to LW
+   * - Player can reach LW and enter from there without being a bunny
+   * - Therefore, all items in the cave are accessible without moon pearl
+   * 
+   * @param regionName The region being reached
+   * @param bunnyStateViaThisPath Whether the player is a bunny on this specific path
+   */
+  private updateRegionBunnyState(regionName: string, bunnyStateViaThisPath: boolean): void {
+    const existingState = this.regionBunnyState.get(regionName);
+    
+    if (existingState === undefined) {
+      // First time reaching this region
+      this.regionBunnyState.set(regionName, bunnyStateViaThisPath);
+    } else if (existingState === true && bunnyStateViaThisPath === false) {
+      // Found a non-bunny path to a region previously only reachable as bunny
+      this.regionBunnyState.set(regionName, false);
+    }
+    // If existingState is already false (non-bunny path exists), keep it
+    // If both are true (bunny), keep it as true
+  }
+
+  /**
+   * Gets the bunny state for a region.
+   * Returns false (not bunny) if the region hasn't been processed yet,
+   * which is the safe default for logic evaluation.
+   */
+  private getRegionBunnyState(regionName: string): boolean {
+    return this.regionBunnyState.get(regionName) ?? false;
+  }
+
+  /**
+   * Checks if a location can be obtained as a bunny.
+   * Some locations require no interaction and can be obtained in bunny form.
+   */
+  private canObtainAsBunny(locationName: string): boolean {
+    return this.bunnyExemptLocations.has(locationName);
+  }
+
+  /**
+   * Adds a location to the bunny-exempt list.
+   * Call this for locations that can be obtained without any interaction.
+   */
+  public addBunnyExemptLocation(locationName: string): void {
+    this.bunnyExemptLocations.add(locationName);
+  }
+
+  /**
+   * Clears the bunny-exempt locations list.
+   */
+  public clearBunnyExemptLocations(): void {
+    this.bunnyExemptLocations.clear();
+  }
+
+  /**
+   * Checks if a bunny can access a location through glitch techniques.
+   * This is used when the player is a bunny but glitch logic is enabled.
+   * 
+   * Supported bunny glitches:
+   * - canMirrorSuperBunny: Use mirror to become super bunny
+   * - canDungeonBunnyRevive: Revival in dungeons
+   * - canBunnyPocket: Store items as bunny with boots
+   * 
+   * @param _locationName The location being accessed (reserved for location-specific glitches)
+   * @param ctx The evaluation context
+   * @returns Whether the location can be accessed via bunny glitches
+   */
+  private resolveBunnyGlitch(_locationName: string, ctx: EvaluationContext): boolean {
+    // No glitches in noglitches mode
+    if (this.state.settings.logicMode === "noglitches") {
+      return false;
+    }
+
+    // All glitch modes allow bunny revival techniques
+    // Check if we're in a dungeon (for dungeon bunny revive)
+    const dungeonId = ctx.dungeonId || this.getDungeonFromRegion(ctx.regionName || "");
+    const isInDungeon = !!dungeonId;
+
+    // canDungeonBunnyRevive - can revive in dungeons through various means
+    if (isInDungeon) {
+      return true;
+    }
+
+    // canMirrorSuperBunny - use mirror to become super bunny and access items
+    if (this.hasItem("mirror")) {
+      return true;
+    }
+
+    // canBunnyPocket - store items as bunny (requires boots and bottle or mirror)
+    if (this.hasItem("boots")) {
+      if (this.hasItem("mirror") || this.getBottleCount() > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // ==================== END BUNNY STATE COMPUTATION ====================
 
   private countReachableKeys(reachable: Set<string>, dungeonId: string, includePossible: boolean = false): number {
     let count = 0;
