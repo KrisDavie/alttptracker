@@ -1,21 +1,21 @@
 <html>
   <head>
     <title>ALTTP Randomizer Community Tracker - Launcher</title>
-    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20260107"></script>
-    <script type="text/javascript" src="js/jquery.powertip.js?v=20260107"></script>
-    <script type="text/javascript" src="js/select2.min.js?v=20260107"></script>
-    <script type="text/javascript" src="js/util.js?v=20260107"></script>
-    <script type="text/javascript" src="js/index.js?v=20260107"></script>
-    <script type="text/javascript" src="js/autot.js?v=20260107"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js?v=20260107"></script>
-    <script type="text/javascript" src="js/kofi.js?v=20260107"></script>
-    <script type="text/javascript" src="js/header.js?v=20260107"></script>
-    <link href="css/jquery.powertip.css?v=20260107" rel="stylesheet" />
-    <link href="css/select2.min.css?v=20260107" rel="stylesheet" />
-    <link href="css/launcher.css?v=20260107" rel="stylesheet" />
-    <link href="css/fonts.css?v=20260107" rel="stylesheet" />
-    <link href="css/sprites.css?v=20260107" rel="stylesheet" />
-    <link href="css/toast.css?v=20260107" rel="stylesheet" />
+    <script type="text/javascript" src="js/jquery-3.3.1.js?v=20260131"></script>
+    <script type="text/javascript" src="js/jquery.powertip.js?v=20260131"></script>
+    <script type="text/javascript" src="js/select2.min.js?v=20260131"></script>
+    <script type="text/javascript" src="js/util.js?v=20260131"></script>
+    <script type="text/javascript" src="js/index.js?v=20260131"></script>
+    <script type="text/javascript" src="js/autot.js?v=20260131"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js?v=20260131"></script>
+    <script type="text/javascript" src="js/kofi.js?v=20260131"></script>
+    <script type="text/javascript" src="js/header.js?v=20260131"></script>
+    <link href="css/jquery.powertip.css?v=20260131" rel="stylesheet" />
+    <link href="css/select2.min.css?v=20260131" rel="stylesheet" />
+    <link href="css/launcher.css?v=20260131" rel="stylesheet" />
+    <link href="css/fonts.css?v=20260131" rel="stylesheet" />
+    <link href="css/sprites.css?v=20260131" rel="stylesheet" />
+    <link href="css/toast.css?v=20260131" rel="stylesheet" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -112,9 +112,12 @@
             </span>
           </div>
           <div class="preset-header" style="cursor: default">
-            Tournament Presets || <span>Beer League </span><a href="https://discord.gg/s8ybdqDrRh" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a> || <span>German Tournament</span> <a href="https://discord.gg/5zuANcS" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a>
+            Tournament Presets || <span>League </span><a href="https://discord.gg/yeJWJvT" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a> || <span>Beer League </span><a href="https://discord.gg/s8ybdqDrRh" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a> || <span>German Tournament</span> <a href="https://discord.gg/5zuANcS" target="_blank"><img src="./images/discord.png" style="width: 20px; vertical-align: middle" /></a>
           </div>
           <div>
+            <span class="preset-btn-span">
+              <input type="button" value="4/7 OPEN KEYS" class="preset-btn" onclick="loadopen47keyspreset()" />
+            </span>
             <span class="preset-btn-span">
               <input type="button" value="AD" class="preset-btn" onclick="loadadpreset()" />
             </span>
@@ -125,16 +128,29 @@
               <input type="button" value="CASUAL BOOTS" class="preset-btn" onclick="loadcasualbootspreset()" />
             </span>
             <span class="preset-btn-span">
+              <input type="button" value="CABOOKEYDROP" class="preset-btn" onclick="loadcabookeydroppreset()" />
+            </span>
+            <span class="preset-btn-span">
               <input type="button" value="ENEMIZER" class="preset-btn" onclick="loadenemizerpreset()" />
             </span>
             <span class="preset-btn-span">
               <input type="button" value="INVERTED (START FLUTE)" class="preset-btn" onclick="loadinvertedflutepreset()" />
             </span>
             <span class="preset-btn-span">
+              <input type="button" value="LOG ENEMIZER BOOTS" class="preset-btn" onclick="loadenemizerbootspreset()" />
+            </span>            
+            <span class="preset-btn-span">
+              <input type="button" value="MYSTERY" class="preset-btn" onclick="loadmysterypreset()" />
+            </span>
+            <span class="preset-btn-span">
               <input type="button" value="OPEN BOOTS" class="preset-btn" onclick="loadopenbootspreset()" />
             </span>
             <span class="preset-btn-span">
               <input type="button" value="STANDARD" class="preset-btn" onclick="loadstandardpreset()" />
+            </span>
+            <span class="preset-btn-span">
+              <input type="button" value="STANVERTED KEYS" class="preset-btn" onclick="loadstanvertedkeyspreset()" />
+              <span class="south tooltop-character" title="Press map icon and select &quot;Mixed Overworld&quot;, Press Start. Set the HC tile, Links House, and Lonk Rocks to normal. Flip every other tile.">[?]</span>
             </span>
           </div>
           <div class="preset-header" style="cursor: default">All Presets</div>
@@ -148,6 +164,7 @@
                 <option value="adkeydrop">AD Keydrop</option>
                 <option value="adkeydropshop">AD Keydrop Shop</option>
                 <option value="adkeysanity">(F)AD Keysanity</option>
+                <option value="adtileswap">AD Tile Swap</option>
                 <option value="Ambrosia">Ambrosia</option>
                 <option value="Ambroz1a">AmbroZ1a</option>
                 <option value="Bosshunt">Bosshunt</option>
@@ -159,6 +176,11 @@
                 <option value="Crosshunt">Crosshunt</option>
                 <option value="Crosskeys">Crosskeys</option>
                 <option value="Crosskeys2024">Crosskeys 2024/5/6</option>
+                <option value="mfns./crosskeys_flute_ms_pb">Crosskeys Flute MS PB</option>
+                <option value="mfns./crosskeys_kd_flute_inv_pb_zw">Crosskeys KD Flute Inv PB ZW</option>
+                <option value="mfns./crosskeys_kd_ms_pb_zw">Crosskeys KD MS PB ZW</option>
+                <option value="mfns./crosskeys_ms_pb_zw">Crosskeys MS PB ZW</option>
+                <option value="mfns./crosskeys_kd_ad">Crosskeys KD AD</option>
                 <option value="BeginnerDoors">Beginner Doors</option>
                 <option value="DoubleDown">Double Down</option>
                 <option value="Duality">Duality</option>
@@ -188,6 +210,8 @@
                 <option value="Open76">Open 7/6</option>
                 <option value="OpenBoots">Open Boots</option>
                 <option value="OpenKeysanity">Open Keysanity</option>
+                <option value="owg">OWG</option>
+                <option value="owg_assured">OWG Assured</option>
                 <option value="patronparty">Patron Party</option>
                 <option value="Potpourri">Potpourri</option>
                 <option value="Pots&Bones">Pots & Bones</option>

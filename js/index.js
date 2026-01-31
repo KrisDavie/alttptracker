@@ -401,6 +401,8 @@ function loadnamedpreset(name) {
       loadadenemizerpreset();
       break;
     case "adkdb":
+      loadadkdbpreset();
+      break;
     case "adkeydrop":
       loadadkeydroppreset();
       break;
@@ -430,6 +432,9 @@ function loadnamedpreset(name) {
     case "ladder/cabookey":
     case "kaesden/cabookey":
       loadcabookeypreset();
+      break;
+    case "cabookeydrop":
+      loadcabookeydroppreset();
       break;
     case "casualboots":
       loadcasualbootspreset();
@@ -631,6 +636,35 @@ function loadPreset(settings) {
   showToast();
 }
 
+function loadopen47keyspreset() {
+  loadPreset({
+    gametypeopen: true,
+    entrancenone: true,
+    doornone: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalganon: true,
+    goalcrystal: true,
+    towerselect: 4,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+}
+
 function loadadpreset() {
   loadPreset({
     gametypeopen: true,
@@ -745,6 +779,7 @@ function loadadkdbpreset() {
     activatedfluteno: true,
     bonkshuffleno: true,
   });
+  setstartingitem("boots", 22, "1");
 }
 
 function loadadkeydroppreset() {
@@ -774,7 +809,6 @@ function loadadkeydroppreset() {
     activatedfluteno: true,
     bonkshuffleno: true,
   });
-  setstartingitem("boots", 22, "1");
 }
 
 function loadadkeydropshoppreset() {
@@ -927,6 +961,36 @@ function loadcabookeypreset() {
     gametypestandard: true,
     entrancenone: true,
     doornone: true,
+    overworldno: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goaldungeons: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsassured: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+  setstartingitem("boots", 22, "1");
+}
+
+function loadcabookeydroppreset() {
+  loadPreset({
+    gametypestandard: true,
+    entrancenone: true,
+    doorpots: true,
     overworldno: true,
     bossnone: true,
     enemynone: true,
@@ -2364,6 +2428,35 @@ function loadstandardpreset() {
     shuffledcompasses: false,
     shuffledsmallkeys: false,
     shuffledbigkeys: false,
+    nonprogressivebowsno: true,
+    activatedfluteno: true,
+    bonkshuffleno: true,
+  });
+}
+
+function loadstanvertedkeyspreset() {
+  loadPreset({
+    gametypestandard: true,
+    entrancenone: true,
+    doornone: true,
+    overworldyes: true,
+    bossnone: true,
+    enemynone: true,
+    glitchesnone: true,
+    goalganon: true,
+    goalcrystal: true,
+    towerselect: 7,
+    ganoncrystal: true,
+    ganonselect: 7,
+    swordsrandomized: true,
+    unknownnone: true,
+    shopsanityno: true,
+    ambrosiano: true,
+    pseudobootsno: true,
+    shuffledmaps: true,
+    shuffledcompasses: true,
+    shuffledsmallkeys: true,
+    shuffledbigkeys: true,
     nonprogressivebowsno: true,
     activatedfluteno: true,
     bonkshuffleno: true,
