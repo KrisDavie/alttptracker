@@ -5,6 +5,7 @@ export interface EntranceData {
   checked: boolean;
   connector: boolean;
   connectorGroup: string | null;
+  to: string | null;
   oneway: boolean;
   medallion?: "unknown" | "bombos" | "ether" | "quake";
   manuallyChanged?: {
@@ -18,6 +19,7 @@ const entranceInitialState: EntranceData = {
   checked: false,
   connector: false,
   connectorGroup: null,
+  to: null,
   oneway: false,
   manuallyChanged: {
     medallion: false,

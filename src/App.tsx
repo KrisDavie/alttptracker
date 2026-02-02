@@ -8,6 +8,7 @@ function App() {
 
   useEffect(() => {
     const handleResize = () => {
+      // TODO: Adjust these base dimensions if the layout changes
       // The base width of the tracker (3 panels of 448px each)
       // 1344px width
       const baseWidth = 448 * 3;

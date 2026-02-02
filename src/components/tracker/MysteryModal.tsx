@@ -43,159 +43,124 @@ function MysteryModal() {
         </div>
       </div>
       {/* Page 1 */}
-      { page === 1 && (
-      <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
-        <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
-          <label className="font-medium">World State:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400"
-            value={localSettings.worldState}
-            onChange={(e) => handleInputChange("worldState", e.target.value)}
-          >
-            <option value="open">Open</option>
-            {/* <option value="standard">Standard</option> */}
-            <option value="inverted">Inverted</option>
-          </select>
+      {page === 1 && (
+        <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
+          <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
+            <label className="font-medium">World State:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.worldState} onChange={(e) => handleInputChange("worldState", e.target.value)}>
+              <option value="open">Open</option>
+              {/* <option value="standard">Standard</option> */}
+              <option value="inverted">Inverted</option>
+            </select>
 
-          <label className="font-medium">Entrance Shuffle:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
-            value={localSettings.entranceMode}
-            onChange={(e) => handleInputChange("entranceMode", e.target.value)}
-          >
-            <option value="none">None</option>
-            <option value="simple">Simple</option>
-            <option value="restricted">Restricted</option>
-            <option value="full">Full</option>
-            <option value="crossed">Crossed</option>
-            <option value="insanity">Insanity</option>
-          </select>
+            <label className="font-medium">Entrance Shuffle:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.entranceMode} onChange={(e) => handleInputChange("entranceMode", e.target.value)}>
+              <option value="none">None</option>
+              <option value="crossed">Crossed</option>
+              {/* <option value="lean">Lean</option>
+              <option value="lite">Lite</option>
+              <option value="dungeonssimple">Dungeons Simple</option>
+              <option value="dungeonsfull">Dungeons Full</option>
+              <option value="simple">Simple</option>
+              <option value="restricted">Restricted</option>
+              <option value="full">Full</option>
+              <option value="district">District</option>
+              <option value="swapped">Swapped</option>
+              <option value="insanity">Insanity</option> */}
+            </select>
 
-          <label className="font-medium">Boss Shuffle:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
-            value={localSettings.bossShuffle}
-            onChange={(e) => handleInputChange("bossShuffle", e.target.value)}
-          >
-            <option value="none">None</option>
-            <option value="simple">Simple</option>
-            <option value="full">Full</option>
-            <option value="random">Random</option>
-          </select>
+            <label className="font-medium">Boss Shuffle:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.bossShuffle} onChange={(e) => handleInputChange("bossShuffle", e.target.value)}>
+              <option value="none">None</option>
+              <option value="simple">Simple</option>
+              <option value="full">Full</option>
+              <option value="random">Random</option>
+            </select>
 
-          <label className="font-medium">Enemy Shuffle:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
-            value={localSettings.enemyShuffle}
-            onChange={(e) => handleInputChange("enemyShuffle", e.target.value)}
-          >
-            <option value="none">None</option>
-            <option value="shuffled">Shuffled</option>
-            <option value="random">Random</option>
-          </select>
+            <label className="font-medium">Enemy Shuffle:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.enemyShuffle} onChange={(e) => handleInputChange("enemyShuffle", e.target.value)}>
+              <option value="none">None</option>
+              <option value="shuffled">Shuffled</option>
+              <option value="random">Random</option>
+            </select>
 
-          <label className="font-medium self-start pt-1">Dungeon Items:</label>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1">
-            <label className="flex items-center space-x-1 cursor-pointer">
-              <input
-                type="checkbox"
-                className="accent-red-600"
-                checked={localSettings.wildMaps}
-                onChange={(e) => handleInputChange("wildMaps", e.target.checked)}
-              />
-              <span>Maps</span>
-            </label>
-            <label className="flex items-center space-x-1 cursor-pointer">
-              <input
-                type="checkbox"
-                className="accent-red-600"
-                checked={localSettings.wildCompasses}
-                onChange={(e) => handleInputChange("wildCompasses", e.target.checked)}
-              />
-              <span>Compasses</span>
-            </label>
-            <label className="flex items-center space-x-1 cursor-pointer">
-              <input
-                type="checkbox"
-                className="accent-red-600"
-                checked={localSettings.wildSmallKeys === "wild"}
-                onChange={(e) => handleInputChange("wildSmallKeys", e.target.checked ? "wild" : "inDungeon")}
-              />
-              <span>Small Keys</span>
-            </label>
-            <label className="flex items-center space-x-1 cursor-pointer">
-              <input
-                type="checkbox"
-                className="accent-red-600"
-                checked={localSettings.wildBigKeys}
-                onChange={(e) => handleInputChange("wildBigKeys", e.target.checked)}
-              />
-              <span>Big Keys</span>
-            </label>
-          </div>
+            <label className="font-medium self-start pt-1">Dungeon Items:</label>
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+              <label className="flex items-center space-x-1 cursor-pointer">
+                <input type="checkbox" className="accent-red-600" checked={localSettings.wildMaps} onChange={(e) => handleInputChange("wildMaps", e.target.checked)} />
+                <span>Maps</span>
+              </label>
+              <label className="flex items-center space-x-1 cursor-pointer">
+                <input type="checkbox" className="accent-red-600" checked={localSettings.wildCompasses} onChange={(e) => handleInputChange("wildCompasses", e.target.checked)} />
+                <span>Compasses</span>
+              </label>
+              <label className="flex items-center space-x-1 cursor-pointer">
+                <input type="checkbox" className="accent-red-600" checked={localSettings.wildSmallKeys === "wild"} onChange={(e) => handleInputChange("wildSmallKeys", e.target.checked ? "wild" : "inDungeon")} />
+                <span>Small Keys</span>
+              </label>
+              <label className="flex items-center space-x-1 cursor-pointer">
+                <input type="checkbox" className="accent-red-600" checked={localSettings.wildBigKeys} onChange={(e) => handleInputChange("wildBigKeys", e.target.checked)} />
+                <span>Big Keys</span>
+              </label>
+            </div>
 
-          <label className="font-medium">Goal:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
-            value={localSettings.goal}
-            onChange={(e) => handleInputChange("goal", e.target.value)}
-          >
-            <option value="fast_ganon">Fast Ganon</option>
-            <option value="ganon">Defeat Ganon</option>
-            <option value="dungeons">All Dungeons</option>
-            <option value="pedestal">Pedestal</option>
-            <option value="triforce_hunt">Triforce Hunt</option>
-          </select>
+            <label className="font-medium">Goal:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.goal} onChange={(e) => handleInputChange("goal", e.target.value)}>
+              <option value="fast_ganon">Fast Ganon</option>
+              <option value="ganon">Defeat Ganon</option>
+              <option value="dungeons">All Dungeons</option>
+              <option value="pedestal">Pedestal</option>
+              <option value="triforce_hunt">Triforce Hunt</option>
+            </select>
 
-          <label className="font-medium">Swords:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
-            value={localSettings.swords}
-            onChange={(e) => handleInputChange("swords", e.target.value)}
-          >
-            <option value="randomized">Randomized</option>
-            <option value="assured">Assured</option>
-            <option value="vanilla">Vanilla</option>
-            <option value="swordless">Swordless</option>
-          </select>
+            <label className="font-medium">Swords:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.swords} onChange={(e) => handleInputChange("swords", e.target.value)}>
+              <option value="randomized">Randomized</option>
+              <option value="assured">Assured</option>
+              <option value="vanilla">Vanilla</option>
+              <option value="swordless">Swordless</option>
+            </select>
 
-          <label className="font-medium">Item Pool:</label>
-          <select
-            className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled
-            value={localSettings.itemPool}
-            onChange={(e) => handleInputChange("itemPool", e.target.value)}
-          >
-            <option value="normal">Normal</option>
-            <option value="hard">Hard</option>
-            <option value="expert">Expert</option>
-          </select>
+            <label className="font-medium">Item Pool:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.itemPool} onChange={(e) => handleInputChange("itemPool", e.target.value)}>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+              <option value="expert">Expert</option>
+            </select>
 
-          <label className="font-medium self-start pt-1">Misc:</label>
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
-            <label className="flex items-center space-x-1 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={localSettings.activatedFlute}
-                className="disabled:bg-gray-400" disabled
-                onChange={(e) => handleInputChange("activatedFlute", e.target.checked)}
-              />
-              <span>Activated Flute</span>
-            </label>
-            <label className="flex items-center space-x-1 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={localSettings.bonkShuffle}
-                onChange={(e) => handleInputChange("bonkShuffle", e.target.checked)}
-              />
-              <span>Bonk Shuffle</span>
-            </label>
+            <label className="font-medium self-start pt-1">Misc:</label>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              <label className="flex items-center space-x-1 cursor-pointer">
+                <input type="checkbox" checked={localSettings.activatedFlute} className="disabled:bg-gray-400" disabled onChange={(e) => handleInputChange("activatedFlute", e.target.checked)} />
+                <span>Activated Flute</span>
+              </label>
+              <label className="flex items-center space-x-1 cursor-pointer">
+                <input type="checkbox" checked={localSettings.bonkShuffle} onChange={(e) => handleInputChange("bonkShuffle", e.target.checked)} />
+                <span>Bonk Shuffle</span>
+              </label>
+            </div>
           </div>
         </div>
-      </div>
       )}
-      { page === 2 && (
-        <div className={`row-span-5 p-4 overflow-y-auto`}>
-          <p>One day there will be more settings here.</p>
+      {page === 2 && (
+        <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
+          <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
+            <label className="font-medium">Pottery:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.pottery} onChange={(e) => handleInputChange("pottery", e.target.value)}>
+              <option value="none">None</option>
+              <option value="keys">Keys</option>
+              {/* <option value="cave" disabled>Cave</option>
+              <option value="cavekeys">Cavekeys</option>
+              <option value="reduced" disabled>Reduced</option>
+              <option value="clustered" disabled>Clustered</option>
+              <option value="nonempty" disabled>Nonempty</option>
+              <option value="dungeon" disabled>Dungeon</option>
+              <option value="lottery" disabled>Lottery</option> */}
+            </select>
+            <label className="font-medium">Keydrop:</label>
+                <input type="checkbox" className="accent-red-600" checked={localSettings.keyDrop} onChange={(e) => handleInputChange("keyDrop", e.target.checked)} />
+
+          </div>
         </div>
       )}
       {/* Footer */}

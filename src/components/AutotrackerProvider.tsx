@@ -132,7 +132,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     poll();
 
     return () => clearInterval(interval);
-  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch]);
+  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled]);
 
   // Actually process the data and mark things as checked etc. This will likely be very long
   useEffect(() => {
