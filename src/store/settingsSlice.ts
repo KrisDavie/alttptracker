@@ -18,6 +18,7 @@ export interface SettingsState {
   activatedFlute: boolean;
   bonkShuffle: boolean;
   autotracking: boolean;
+  includeDungeonItemsInCounter?: boolean;
 }
 
 const initialState: SettingsState = {
@@ -38,6 +39,7 @@ const initialState: SettingsState = {
   activatedFlute: false,
   bonkShuffle: false,
   autotracking: false,
+  includeDungeonItemsInCounter: false,
 };
 
 export const settingsSlice = createSlice({

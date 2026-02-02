@@ -7,7 +7,7 @@ interface SpriteDisplayProps {
   spriteName?: string;
 }
 
-function SpriteDisplay({ spriteName = "dark_link" }: SpriteDisplayProps) {
+function SpriteDisplay({ spriteName = "link" }: SpriteDisplayProps) {
   const dispatch = useDispatch();
   const key = "mail";
   const collected = useSelector((state: RootState) => state.items[key]?.amount ?? 0);

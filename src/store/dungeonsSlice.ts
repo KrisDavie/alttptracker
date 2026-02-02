@@ -64,11 +64,10 @@ export const dungeonsSlice = createSlice({
         state[dungeon].manuallyChanged.smallKeys = true;
       }
     },
-    incrementSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
-      const { dungeon, decrement } = action.payload;
+    incrementSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; maxCount: number; decrement: boolean }>) => {
+      const { dungeon, maxCount, decrement } = action.payload;
       const currentCount = state[dungeon].smallKeys;
-      const maxCount = DungeonsData[dungeon].totalLocations?.smallkeys || 0;
-
+      
       if (decrement) {
         state[dungeon].smallKeys = (currentCount - 1 + (maxCount + 1)) % (maxCount + 1);
       } else {

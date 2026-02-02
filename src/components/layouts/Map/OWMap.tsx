@@ -57,6 +57,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
         if (entranceMode === "none") return null;
         const location = entranceData[locationKey];
         if (location.world !== world) return null;
+        if (location.modes[entranceMode] === 'vanilla') return null;
         return (
           <MapEntranceLocation
             key={locationKey}

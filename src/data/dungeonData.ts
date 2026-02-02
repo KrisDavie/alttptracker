@@ -16,12 +16,13 @@ interface DungeonData {
     compass: boolean;
     prize: boolean;
   };
+  portals?: string[];
 }
 
 export const DungeonsData: Record<string, DungeonData> = {
   ep: {
     name: "Eastern Palace",
-    boss: "armos", 
+    boss: "armos",
     icon: "/dungeons/armos.png",
     totalLocations: {
       chests: 6,
@@ -36,6 +37,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Eastern Portal"],
   },
   dp: {
     name: "Desert Palace",
@@ -54,6 +56,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Desert West Portal", "Desert Back Portal", "Desert South Portal"],
   },
   toh: {
     name: "Tower of Hera",
@@ -72,6 +75,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Hera Portal"],
   },
   pod: {
     name: "Palace of Darkness",
@@ -90,6 +94,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Palace of Darkness Portal"],
   },
   sp: {
     name: "Swamp Palace",
@@ -108,6 +113,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Swamp Portal"],
   },
   sw: {
     name: "Skull Woods",
@@ -126,6 +132,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Skull 1 Portal", "Skull 2 East Portal", "Skull 2 West Portal", "Skull 3 Portal", "Skull Pinball", "Skull Left Drop", "Skull Pot Circle", "Skull Back Drop"],
   },
   tt: {
     name: "Thieves' Town",
@@ -144,6 +151,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Thieves Town Portal"],
   },
   ip: {
     name: "Ice Palace",
@@ -162,6 +170,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Ice Portal"],
   },
   mm: {
     name: "Misery Mire",
@@ -180,6 +189,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Mire Portal"],
   },
   tr: {
     name: "Turtle Rock",
@@ -198,6 +208,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
+    portals: ["Turtle Rock Main Portal", "Turtle Rock Lazy Eyes Portal", "Turtle Rock Chest Portal", "Turtle Rock Eye Bridge Portal"],
   },
   gt: {
     name: "Ganon's Tower",
@@ -217,6 +228,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: false,
     },
+    portals: ["Ganons Tower Portal"],
   },
   ct: {
     name: "Castle Tower",
@@ -236,6 +248,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: false,
       prize: false,
     },
+    portals: ["Agahnims Tower Portal"],
   },
   hc: {
     name: "Hyrule Castle",
@@ -254,6 +267,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: false,
       prize: false,
     },
+    portals: ["Sanctuary Portal", "Hyrule Castle South Portal", "Hyrule Castle West Portal", "Hyrule Castle East Portal", "Sewer Drop"],
   },
 };
 
