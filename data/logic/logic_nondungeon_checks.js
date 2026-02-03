@@ -1125,10 +1125,17 @@
       Open: {
         scout: {},
         always: {
-          allOf: ["canBreach|Dark World - East", "mirror", "moonpearl", "flippers"],
+          anyOf: [
+            {
+              allOf: ["canBreach|Dark World - East", "mirror", "moonpearl", "flippers"],
+            },
+            {
+              allOf: ["canBreach|Dark World - West", "mirror", "moonpearl", "boots", "canWaterWalk"],
+            },
+          ]
         },
         logical: {
-          allOf: ["canReach|Dark World - East"],
+          allOf: ["canReach|Dark World - East", "mirror", "moonpearl", "flippers"],
         },
       },
       Inverted: {
