@@ -167,6 +167,7 @@ export function createEmptyEntrances(): EntrancesState {
       checked: false,
       connector: false,
       connectorGroup: null,
+      to: null,
       oneway: false,
     };
   }

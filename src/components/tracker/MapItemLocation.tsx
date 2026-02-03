@@ -119,9 +119,16 @@ function MapItemLocation(props: MapItemLocationProps) {
         <div className={tooltipClasses}>
           <div className={tooltipInnerClasses}>
             {checksList.length === 1 ? (
-              <div className="font-bold flex gap-2 whitespace-nowrap">
+              <div className="font-bold flex gap-2 whitespace-nowrap items-baseline">
                 <span>{locName}</span>
-                <span className={checksList[0]?.checked ? "text-gray-500" : checksList[0]?.logic === "available" ? "text-green-400" : "text-red-400"}>{checksList[0]?.checked ? "Checked" : checksList[0]?.logic}</span>
+                <span
+                  className={cn(
+                    "w-12 text-right",
+                    checksList[0]?.checked ? "text-gray-500" : checksList[0]?.logic === "available" ? "text-green-400" : "text-red-400",
+                  )}
+                >
+                  {checksList[0]?.checked ? "checked" : checksList[0]?.logic}
+                </span>
               </div>
             ) : (
               <>
@@ -137,15 +144,26 @@ function MapItemLocation(props: MapItemLocationProps) {
                   {Object.entries(itemChecks).map(([key, info]) => (
                     <div
                       key={key}
-                      className="flex justify-between gap-2 text-3xs whitespace-nowrap hover:bg-gray-800 cursor-pointer px-0.5 rounded"
+                      className="flex justify-between gap-2 text-3xs whitespace-nowrap hover:bg-gray-800 cursor-pointer px-0.5 rounded items-baseline"
                       onClick={(e) => {
                         e.stopPropagation();
                         dispatch(setLocationChecked({ location: key, checked: !info.status.checked, manual: true }));
                       }}
                     >
-                      <span>{info.displayName}</span>
-                      <span className={info.status.checked ? "text-gray-500" : info.status.logic === "available" ? "text-green-400" : info.status.logic === "possible" ? "text-yellow-400" : "text-red-400"}>
-                        {info.status.checked ? "Checked" : info.status.logic}
+                      <span className="flex-1">{info.displayName}</span>
+                      <span
+                        className={cn(
+                          "w-10 text-right",
+                          info.status.checked
+                            ? "text-gray-500"
+                            : info.status.logic === "available"
+                              ? "text-green-400"
+                              : info.status.logic === "possible"
+                                ? "text-yellow-400"
+                                : "text-red-400",
+                        )}
+                      >
+                        {info.status.checked ? "checked" : info.status.logic}
                       </span>
                     </div>
                   ))}

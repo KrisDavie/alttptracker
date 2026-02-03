@@ -36,6 +36,7 @@ const doorPrefixToDungeon: Record<string, string> = {
 const portalToDungeon: Record<string, string> = {
   Sanctuary: "hc",
   "Hyrule Castle": "hc",
+  Sewer: "hc",
   "Agahnims Tower": "ct",
   Eastern: "ep",
   Desert: "dp",
@@ -64,12 +65,10 @@ export class OverworldTraverser {
   }
 
   public calculateAll() {
-
     const reachableRegions = this.traverse();
     const locationsLogic = this.evaluateLocations(reachableRegions);
     const entrancesLogic = this.evaluateEntrances(reachableRegions);
     return { locationsLogic, entrancesLogic };
-
   }
 
   private bunnyExemptLocations: Set<string> = new Set([
@@ -249,7 +248,7 @@ export class OverworldTraverser {
       if (dungeonId) {
         const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
         const newStatus = this.combineStatuses(fromRegionReachability.status, exitStatus);
-        
+
         // Get the key cost to reach this overworld region (if it was reached via a dungeon exit)
         const regionKeyCost = ctx.overworldKeyCost.get(fromRegion) ?? 0;
 
@@ -257,12 +256,12 @@ export class OverworldTraverser {
         if (!ctx.pendingDungeons.has(dungeonId)) {
           ctx.pendingDungeons.set(dungeonId, new Map());
         }
-        
+
         // Also track in allDiscoveredPortals for persistence across iterations
         if (!ctx.allDiscoveredPortals.has(dungeonId)) {
           ctx.allDiscoveredPortals.set(dungeonId, new Map());
         }
-        
+
         // Only add to pending if this is a NEW portal we haven't seen before
         if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { bunnyState: newBunnyState, status: newStatus, keyCost: regionKeyCost });
@@ -303,7 +302,7 @@ export class OverworldTraverser {
       // Use ALL discovered portals for this dungeon
       for (const [portalName, portalData] of allPortals) {
         entryMap.set(portalName, {
-          bunnyState: portalData.bunnyState
+          bunnyState: portalData.bunnyState,
         });
         entryStatus.set(portalName, portalData.status);
         entryKeyCost.set(portalName, portalData.keyCost);
@@ -317,13 +316,13 @@ export class OverworldTraverser {
       const canReachOverworldRegion = (regionName: string): LogicStatus => {
         const regionReach = ctx.reachable.get(regionName);
         if (!regionReach) return "unavailable";
-        
+
         // If the player is a bunny at this region, they can't interact
         // Return unavailable for bunny regions since canReach implies interaction
         if (regionReach.bunnyState) {
           return "unavailable";
         }
-        
+
         return regionReach.status;
       };
 
@@ -360,14 +359,14 @@ export class OverworldTraverser {
       // Also track the key cost to reach these overworld regions
       for (const [, exitInfo] of result.externalExits) {
         if (exitInfo.status === "unavailable") continue;
-        
+
         // Track the key cost for this overworld region
         // Use the minimum key cost if we've seen it before
         const existingKeyCost = ctx.overworldKeyCost.get(exitInfo.to);
         if (existingKeyCost === undefined || exitInfo.keysUsedToReach < existingKeyCost) {
           ctx.overworldKeyCost.set(exitInfo.to, exitInfo.keysUsedToReach);
         }
-        
+
         if (!ctx.reachable.has(exitInfo.to)) {
           const newBunny = this.computeBunnyStateForExit(exitInfo.bunnyState, this.regions[exitInfo.to]?.type ?? "LightWorld");
           ctx.reachable.set(exitInfo.to, {
