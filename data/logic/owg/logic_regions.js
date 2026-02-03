@@ -729,7 +729,7 @@
       Open: {
         always: {
           allOf: ["canBreach|Dark World - West", "firerod"],
-          anyOf: ["canBunnyPocket"],
+          anyOf: ["moonpearl", "canBunnyPocket"],
         },
         logical: {
           allOf: [
