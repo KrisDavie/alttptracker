@@ -5,13 +5,75 @@ import { gameState } from "./testHelpers";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 describe("LogicEngine", () => {
-    describe("Eastern Palace Key Logic", () => {
-    it("should mark entire front as available with no big key", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildBigKeys: true })
-        .withDungeon("ep", { bigKey: false })
-        .build();
+  describe("Hyrule Castle Key Logic", () => {
+    it("[SK Pottery KeyDrop] should mark key rat as possible when player has 1 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 1, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // 1 Key can be spent on ONE of the following doors:
+      // Sewers Secret Room Key Door S (Coming from Sewer Drop)
+      // Hyrule Dungeon Map Room Key Door S (Coming from Hyrule Castle Portals)
+      // Sewers Dark Cross Key Door N (Coming from Hyrule Castle Portals)
+      // Key Drop/Pots are wild, so none obtainable
+      expect(result.locationsLogic["Hyrule Castle - Map Guard Key Drop"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Dark Cross"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("possible");
+      expect(result.locationsLogic["Hyrule Castle - Key Rat Key Drop"]).toBe("possible");
+      expect(result.locationsLogic["Hyrule Castle - Big Key Drop"]).toBe("unavailable");
+    });
+
+    it("[SK Pottery KeyDrop] should mark key rat as possible when player has 2 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 2, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Hyrule Castle - Map Guard Key Drop"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Dark Cross"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("possible");
+      expect(result.locationsLogic["Hyrule Castle - Key Rat Key Drop"]).toBe("possible");
+      // Can now reach big key drop if keys used correctly
+      expect(result.locationsLogic["Hyrule Castle - Big Key Drop"]).toBe("possible");
+    });
+
+    it("[SK Pottery KeyDrop] should mark Big key drop as possible when player has 3 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 3, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Hyrule Castle - Map Guard Key Drop"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Dark Cross"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Key Rat Key Drop"]).toBe("available");
+      // Can now reach big key drop if keys used correctly
+      expect(result.locationsLogic["Hyrule Castle - Big Key Drop"]).toBe("possible");
+    });
+
+    it("[SK Pottery KeyDrop] should mark Big key drop as available when player has 4 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 4, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Hyrule Castle - Map Guard Key Drop"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Dark Cross"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Key Rat Key Drop"]).toBe("available");
+      // Can now reach big key drop if keys used correctly
+      expect(result.locationsLogic["Hyrule Castle - Big Key Drop"]).toBe("available");
+    });
+  });
+
+  describe("Eastern Palace Key Logic", () => {
+    it("[BK] should mark entire front as available with no big key", () => {
+      const state = gameState().withAllItems().withSettings({ wildBigKeys: true }).withDungeon("ep", { bigKey: false }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -23,12 +85,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("unavailable");
     });
 
-    it("should mark all as available when player has 1 wild small keys in pottery", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild", pottery: "keys" })
-        .withDungeon("ep", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK BK Pottery]should mark all as available when player has 1 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys" }).withDungeon("ep", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -38,12 +96,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Eastern Palace - Big Key Chest"]).toBe("available");
       expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("available");
     });
-    it("should mark sk locked as possible when player has 1 wild small keys in pottery and keydrop no BK", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true })
-        .withDungeon("ep", { smallKeys: 1, bigKey: false })
-        .build();
+    it("[SK BK Pottery KeyDrop] should mark sk locked as possible when player has 1 wild small keys and keydrop no BK", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("ep", { smallKeys: 1, bigKey: false }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -53,12 +107,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Eastern Palace - Big Key Chest"]).toBe("possible");
       expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("unavailable");
     });
-    it("should mark sk locked as possible when player has 1 wild small keys in pottery and keydrop w/BK", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true })
-        .withDungeon("ep", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK BK Pottery KeyDrop] should mark sk locked as possible when player has 1 wild small keys and keydrop w/BK", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("ep", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -71,13 +121,8 @@ describe("LogicEngine", () => {
   });
 
   describe("Desert Palace Key Logic", () => {
-
-    it("should mark boss as possible when player has 0 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("dp", { smallKeys: 0, bigKey: true })
-        .build();
+    it("[SK] should mark boss as possible when player has 0 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("dp", { smallKeys: 0, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -101,12 +146,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible");
     });
 
-    it("should mark boss as available when player has 1 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("dp", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK] should mark boss as available when player has 1 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("dp", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -123,12 +164,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available");
     });
 
-    it("should mark right side as possible with less than 4 wild small keys in pottery and keydrop", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true })
-        .withDungeon("dp", { smallKeys: 3, bigKey: true })
-        .build();
+    it("[SK BK Pottery KeyDrop] should mark right side as possible with less than 4 wild small keys and keydrop", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -149,11 +186,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible");
     });
 
-    it("should mark locations as unavailable when lacking required items", () => {
-      const state = gameState()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("dp", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK] should mark locations as unavailable when lacking required items", () => {
+      const state = gameState().withSettings({ wildSmallKeys: "wild" }).withDungeon("dp", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -164,14 +198,9 @@ describe("LogicEngine", () => {
     });
   });
 
-    describe("Hera  Key Logic", () => {
-
-    it("should mark all as available when player has 1 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild"})
-        .withDungeon("toh", { smallKeys: 1, bigKey: true })
-        .build();
+  describe("Hera Key Logic", () => {
+    it("[SK] should mark all as available when player has 1 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("toh", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -184,29 +213,21 @@ describe("LogicEngine", () => {
   });
 
   describe("PoD Key Logic", () => {
-    it("should mark back of PoD as possible with 1 wild small key and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("pod", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK] should mark back of PoD as possible with 1 wild small key and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("pod", { smallKeys: 1, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Palace of Darkness - Shooter Room']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Shooter Room"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Dark Basement - Left"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Boss"]).toBe("possible");
       // This location requires 2 keys to reach, PoD Arena Main NW and PoD Falling Bridge WN
-      expect(result.locationsLogic['Palace of Darkness - Dark Maze - Top']).toBe("unavailable");
-    })
+      expect(result.locationsLogic["Palace of Darkness - Dark Maze - Top"]).toBe("unavailable");
+    });
 
-    it("should mark back of PoD as possible with 3 wild small keys and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("pod", { smallKeys: 3, bigKey: true })
-        .build();
+    it("[SK] should mark back of PoD as possible with 3 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("pod", { smallKeys: 3, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -218,110 +239,121 @@ describe("LogicEngine", () => {
       // to back of pod (falling bridge)
       // With only 3 spent, could be locked out of any of those locations, so should all be possible, not available
 
-      expect(result.locationsLogic['Palace of Darkness - Shooter Room']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Shooter Room"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Dark Basement - Left"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Boss"]).toBe("possible");
       // This location requires 2 keys to reach, PoD Arena Main NW and PoD Falling Bridge WN
-      expect(result.locationsLogic['Palace of Darkness - Dark Maze - Top']).toBe("possible");
-    })
+      expect(result.locationsLogic["Palace of Darkness - Dark Maze - Top"]).toBe("possible");
+    });
 
-    it("should mark back of PoD as available with 4 wild small keys and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("pod", { smallKeys: 4, bigKey: true })
-        .build();
+    it("[SK] should mark back of PoD as available with 4 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("pod", { smallKeys: 4, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Dark Maze - Bottom']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Harmless Hellway']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Big Key Chest']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("possible");
-    })
+      expect(result.locationsLogic["Palace of Darkness - Dark Basement - Left"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Dark Maze - Bottom"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Harmless Hellway"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Boss"]).toBe("possible");
+    });
 
-    it("should mark dark basement as available but later checks as possible with 5 wild small keys", () => {
+    it("[SK] should mark dark basement as available but later checks as possible with 5 wild small keys", () => {
       // Small keys can be spent:
       // To pod arena
       // To boss
       // to big key chest
       // to back of pod (falling bridge)
       // Cannot spend a 5th key without opening back of pot to dark basement, so those checks are available
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("pod", { smallKeys: 5, bigKey: true })
-        .build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("pod", { smallKeys: 5, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Palace of Darkness - Dark Basement - Left']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Dark Maze - Bottom']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Big Key Chest']).toBe("possible");
-      expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("possible");
-    })
+      expect(result.locationsLogic["Palace of Darkness - Dark Basement - Left"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Dark Maze - Bottom"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Boss"]).toBe("possible");
+    });
 
-    it("should mark boss of PoD as available with 6 wild small keys and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("pod", { smallKeys: 6, bigKey: true })
-        .build();
+    it("[SK] should mark boss of PoD as available with 6 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("pod", { smallKeys: 6, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Palace of Darkness - Dark Maze - Bottom']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Harmless Hellway']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Big Key Chest']).toBe("available");
-      expect(result.locationsLogic['Palace of Darkness - Boss']).toBe("available");
-    })
+      expect(result.locationsLogic["Palace of Darkness - Dark Maze - Bottom"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Harmless Hellway"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Boss"]).toBe("available");
+    });
   });
 
   describe("Swamp Key Logic", () => {
-    it("should mark swamp entrance as available with 0 wild small keys and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("sp", { smallKeys: 0, bigKey: true })
-        .build();
+    it("[SK] should mark swamp entrance as available with 0 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("sp", { smallKeys: 0, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Swamp Palace - Entrance']).toBe("available");
-      expect(result.locationsLogic['Swamp Palace - Big Chest']).toBe("unavailable");
-      expect(result.locationsLogic['Swamp Palace - Boss']).toBe("unavailable");
-    })
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Big Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("unavailable");
+    });
 
-    it("should mark all of swamp as available with 1 wild small key and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("sp", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK] should mark all of swamp as available with 1 wild small key and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("sp", { smallKeys: 1, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Swamp Palace - Entrance']).toBe("available");
-      expect(result.locationsLogic['Swamp Palace - Map Chest']).toBe("available");
-      expect(result.locationsLogic['Swamp Palace - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Swamp Palace - Big Key Chest']).toBe("available");
-      expect(result.locationsLogic['Swamp Palace - Boss']).toBe("available");
-    })
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("available");
+    });
+
+    it("[SK Pottery KeyDrop] should mark front of swamp as available with 2 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true })
+      .withDungeon("sp", { smallKeys: 2, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
+    });
+
+    it("[SK Pottery KeyDrop] should a swamp boss as possible with 5 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true })
+      .withDungeon("sp", { smallKeys: 5, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Swamp Entrance Down Stairs
+      // Swamp Pot Row WS
+      // Swamp Trench 1 Key Ledge NW
+      // Swamp Hub North Ledge N
+      // 1 Key left, but 2 doors
+      // Swamp Hub WN - to West Chest and Big Key Chest
+      // Swamp Waterway NW - to Boss
+
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Waterway Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - West Chest"]).toBe("possible");
+      expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("possible");
+    });
   });
 
   describe("IP Key Logic", () => {
-    it("should mark the boss as possible with less than 2 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("ip", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK] should mark the boss as possible with less than 2 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("ip", { smallKeys: 1, bigKey: true }).build();
 
       state.items.somaria.amount = 0; // Remove somaria to force key usage
       // Start with 1 key
@@ -342,54 +374,84 @@ describe("LogicEngine", () => {
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Ice Palace - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Ice Palace - Boss']).toBe("possible");
+      expect(result.locationsLogic["Ice Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Ice Palace - Boss"]).toBe("possible");
+    });
 
-    })
-
-    it("should mark the boss as possible with less than 6 wild small keys with keydrop and potkey shuffle enabled", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true })
-        .withDungeon("ip", { smallKeys: 5, bigKey: true })
-        .build();
+    it("[SK Pottery KeyDrop] should mark the boss as possible with less than 6 wild small keys with keydrop and potkey shuffle enabled", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("ip", { smallKeys: 5, bigKey: true }).build();
 
       state.items.somaria.amount = 0; // Remove somaria to force key usage
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Ice Palace - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Ice Palace - Boss']).toBe("possible");
-
-    })
+      expect(result.locationsLogic["Ice Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Ice Palace - Boss"]).toBe("possible");
+    });
   });
 
-  describe("TR Key Logic", () => {
-    it("should mark everything as available with 4 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 4, bigKey: true })
-        .build();
+  describe("MM Key Logic", () => {
+    it("[SK] should mark everything as available with 3 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("mm", { smallKeys: 3, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Eye Bridge - Bottom Left']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("available");
-    })
+      expect(result.locationsLogic["Misery Mire - Main Lobby"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Spike Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Boss"]).toBe("available");
+    });
 
-    it("should mark big key chest and boss as possible with 2 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 2, bigKey: true })
-        .build();
+    it("[SK] should mark left side as possible with less than 2 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("mm", { smallKeys: 0, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Start with 2 keys
+      // Collect Misery Mire - Spikes Pot Key - 3 keys
+      // Spend key to open Mire Spikes NW - 2 keys
+      // Collect Misery Mire - Fishbone Pot Key - 3 keys
+      // Spend key to open Mire Fishbone SE - 2 keys
+      // Spend key to open Mire Hub Right EN - 1 key
+      // Spend key to open Mire Hub WS - 0 keys
+      // Collect Misery Mire - Conveyor Crystal Key Drop - 1 key
+      // Spend key to open Mire Dark Shooters SE - 0 keys
+      // Cannot open Mire Conveyor Crystal WS - needs another key
+      // Compass chest and Big Key chest are beyond this door
+
+      expect(result.locationsLogic["Misery Mire - Main Lobby"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Bridge Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Spike Chest"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Compass Chest"]).toBe("possible");
+      expect(result.locationsLogic["Misery Mire - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Misery Mire - Boss"]).toBe("available");
+    });
+  });
+  
+  describe("TR Key Logic", () => {
+    it("[SK] should mark everything as available with 4 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 4, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Eye Bridge - Bottom Left"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("available");
+    });
+
+    it("[SK] should mark big key chest and boss as possible with 2 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 2, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -406,20 +468,16 @@ describe("LogicEngine", () => {
       // TR Pokey 2 ES (TR Lava Island WS) - To the big key chest
       // Boss is unavailable because we don't have enough keys to open it even if we go to the back for eye bridge (because we use the key in crysttalroller)
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Eye Bridge - Bottom Left']).toBe("possible");
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("possible");
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("unavailable");
-    })
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Eye Bridge - Bottom Left"]).toBe("possible");
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("unavailable");
+    });
 
-    it("should mark big key chest and boss as possible with 3 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 3, bigKey: true })
-        .build();
+    it("[SK] should mark big key chest and boss as possible with 3 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 3, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -437,42 +495,34 @@ describe("LogicEngine", () => {
       // TR Dash Bridge WS (TR Crystal Maze ES) - To the boss
       // TR Pokey 2 ES (TR Lava Island WS) - To the big key chest
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Eye Bridge - Bottom Left']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("possible");
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("possible");
-    })
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Eye Bridge - Bottom Left"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("possible");
+    });
 
-    it("should mark only the front as available with 1 wild small key and full inventory", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 1, bigKey: true })
-        .build();
+    it("[SK] should mark only the front as available with 1 wild small key and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 1, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Pokey 1 Key Drop']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("unavailable");
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("unavailable");
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("unavailable");
-    })
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Pokey 1 Key Drop"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("unavailable");
+    });
 
-    it("[INVERTED] should mark most as possible, laser bridge and crystalroller as available with 0 wild small key and full inventory, no medallions", () => {
+    it("[INVERTED SK] should mark most as possible, laser bridge and crystalroller as available with 0 wild small key and full inventory, no medallions", () => {
       // In inverted, we can access TR from middle and back entrances.
       // This allows us to reach further into the dungeon even without keys.
       // Can navigate to Pokey 2 and collect its key drop
       // Can use this to open all small keys doors, but everything is still only available with all keys, due to wastage.
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ worldState: "inverted", wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 0, bigKey: true })
-        .build();
+      const state = gameState().withAllItems().withSettings({ worldState: "inverted", wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 0, bigKey: true }).build();
 
       // Remove medallions - without medallions, front of the dungeon needs keys to access
       state.items["bombos"] = { amount: 0 };
@@ -483,24 +533,20 @@ describe("LogicEngine", () => {
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("possible");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available"); // Available because back of stairs is open without key
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available"); // Available because we can directly reach it via inverted middle entrance
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("possible"); // Needs a small key
-      expect(result.locationsLogic['Turtle Rock - Eye Bridge - Bottom Left']).toBe("available"); // Available because we can directly reach it via inverted back entrance
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("possible"); // Needs a small key
-    })
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("possible");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available"); // Available because back of stairs is open without key
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("available"); // Available because we can directly reach it via inverted middle entrance
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("possible"); // Needs a small key
+      expect(result.locationsLogic["Turtle Rock - Eye Bridge - Bottom Left"]).toBe("available"); // Available because we can directly reach it via inverted back entrance
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("possible"); // Needs a small key
+    });
 
-    it("[INVERTED] should mark most as possible, laser bridge and crystalroller as available with 3 wild small key and full inventory, no medallions", () => {
+    it("[INVERTED SK] should mark most as possible, laser bridge and crystalroller as available with 3 wild small key and full inventory, no medallions", () => {
       // In inverted, we can access TR from middle and back entrances.
       // This allows us to reach further into the dungeon even without keys.
       // Can navigate to Pokey 2 and collect its key drop
       // Can use this to open all small keys doors, but everything is still only available with all keys, due to wastage.
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ worldState: "inverted", wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 3, bigKey: true })
-        .build();
+      const state = gameState().withAllItems().withSettings({ worldState: "inverted", wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 3, bigKey: true }).build();
 
       // Remove medallions - without medallions, front of the dungeon needs keys to access
       state.items["bombos"] = { amount: 0 };
@@ -511,22 +557,18 @@ describe("LogicEngine", () => {
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("possible");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available"); // Available because back of stairs is open without key
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available"); // Available because we can directly reach it via inverted middle entrance
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("possible"); // Needs a small key
-      expect(result.locationsLogic['Turtle Rock - Eye Bridge - Bottom Left']).toBe("available"); // Available because we can directly reach it via inverted back entrance
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("possible"); // Needs a small key
-    })
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("possible");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available"); // Available because back of stairs is open without key
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("available"); // Available because we can directly reach it via inverted middle entrance
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("possible"); // Needs a small key
+      expect(result.locationsLogic["Turtle Rock - Eye Bridge - Bottom Left"]).toBe("available"); // Available because we can directly reach it via inverted back entrance
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("possible"); // Needs a small key
+    });
 
-    it("[INVERTED] should mark everything available with 4 wild small key and full inventory", () => {
+    it("[INVERTED SK] should mark everything available with 4 wild small key and full inventory", () => {
       // In inverted, we can access TR from middle and back entrances.
       // This allows us to reach all of the dungeon checks without medallions
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ worldState: "inverted", wildSmallKeys: "wild" })
-        .withDungeon("tr", { smallKeys: 4, bigKey: true })
-        .build();
+      const state = gameState().withAllItems().withSettings({ worldState: "inverted", wildSmallKeys: "wild" }).withDungeon("tr", { smallKeys: 4, bigKey: true }).build();
 
       // Remove medallions - without medallions, front of the dungeon needs keys to access
       state.items["bombos"] = { amount: 0 };
@@ -537,80 +579,20 @@ describe("LogicEngine", () => {
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Turtle Rock - Compass Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Chain Chomps']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Big Key Chest']).toBe("available");
-      expect(result.locationsLogic['Turtle Rock - Eye Bridge - Bottom Left']).toBe("available"); 
-      expect(result.locationsLogic['Turtle Rock - Boss']).toBe("available");
-    })
-  
-  });
-
-  describe("MM Key Logic", () => {
-    it("should mark everything as available with 3 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("mm", { smallKeys: 3, bigKey: true })
-        .build();
-      const logicSet = getLogicSet("noglitches");
-      const traverser = new OverworldTraverser(state, logicSet);
-      const result = traverser.calculateAll();
-
-      expect(result.locationsLogic['Misery Mire - Main Lobby']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Map Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Spike Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Big Key Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Boss']).toBe("available");
-    })
-
-    it("should mark left side as possible with less than 2 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("mm", { smallKeys: 0, bigKey: true })
-        .build();
-      const logicSet = getLogicSet("noglitches");
-      const traverser = new OverworldTraverser(state, logicSet);
-      const result = traverser.calculateAll();
-
-      // Start with 2 keys
-      // Collect Misery Mire - Spikes Pot Key - 3 keys
-      // Spend key to open Mire Spikes NW - 2 keys
-      // Collect Misery Mire - Fishbone Pot Key - 3 keys 
-      // Spend key to open Mire Fishbone SE - 2 keys
-      // Spend key to open Mire Hub Right EN - 1 key
-      // Spend key to open Mire Hub WS - 0 keys
-      // Collect Misery Mire - Conveyor Crystal Key Drop - 1 key
-      // Spend key to open Mire Dark Shooters SE - 0 keys
-      // Cannot open Mire Conveyor Crystal WS - needs another key
-      // Compass chest and Big Key chest are beyond this door
-
-      expect(result.locationsLogic['Misery Mire - Main Lobby']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Bridge Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Map Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Spike Chest']).toBe("available");
-      expect(result.locationsLogic['Misery Mire - Compass Chest']).toBe("possible");
-      expect(result.locationsLogic['Misery Mire - Big Key Chest']).toBe("possible");
-      expect(result.locationsLogic['Misery Mire - Boss']).toBe("available");
-
-    })
-
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Chain Chomps"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Eye Bridge - Bottom Left"]).toBe("available");
+      expect(result.locationsLogic["Turtle Rock - Boss"]).toBe("available");
+    });
   });
 
   describe("GT Key Logic", () => {
     // GT is very complicated due to the different paths
 
-    it("should mark most as possible with 0 wild small keys", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("gt", { smallKeys: 0, bigKey: true })
-        .withAllPrizes()
-        .build();
+    it("[SK] should mark most as possible with 0 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("gt", { smallKeys: 0, bigKey: true }).withAllPrizes().build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -624,18 +606,18 @@ describe("LogicEngine", () => {
       // GT Torch EN, GT Hookshot ES and GT Mini Helmasaur Room WN. No more doors can be opened
       // We NEED to open either GT Double Switch EN or GT Tile Room EN to get to the rest of the basement, and GT Crystal Circles SW to get to Validation Chest
 
-      expect(result.locationsLogic['Ganons Tower - Hope Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Mini Helmasaur Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - DMs Room - Top Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Randomizer Room - Top Left']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Compass Room - Top Left']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Firesnake Room']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Big Chest']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Big Key Room - Left']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Validation Chest']).toBe("possible");
-    })
+      expect(result.locationsLogic["Ganons Tower - Hope Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Mini Helmasaur Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - DMs Room - Top Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Randomizer Room - Top Left"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Compass Room - Top Left"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Firesnake Room"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Big Chest"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Big Key Room - Left"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Validation Chest"]).toBe("possible");
+    });
 
-    it("should mark compass room as possible with 3 wild small keys", () => {
+    it("[SK] should mark compass room as possible with 3 wild small keys", () => {
       // There are four key drops/pots available
       // 1) Ganons Tower - Conveyor Cross Pot Key
       // 2) Ganons Tower - Double Switch Pot Key
@@ -643,12 +625,12 @@ describe("LogicEngine", () => {
       // 4) Ganons Tower - Conveyor Star Pits Pot Key - Behind compass room (tile room small key door must be open, not obtainable in this example)
       // If these are used in particular ways, other doors cannot be opened
       // i.e.
-      // 1) GT Torch EN, 
-      // 2) GT Hookshot ES, 
-      // 3) GT Double Switch EN, 
-      // 4) GT Firesnake Room SW, 
-      // 5) GT Mini Helmasaur Room WN, 
-      // 6) GT Crystal Circles SW 
+      // 1) GT Torch EN,
+      // 2) GT Hookshot ES,
+      // 3) GT Double Switch EN,
+      // 4) GT Firesnake Room SW,
+      // 5) GT Mini Helmasaur Room WN,
+      // 6) GT Crystal Circles SW
       // can all be opened leaving GT Tile Room EN not open and needing the fourth key and making compass room inaccessible
 
       const state = gameState()
@@ -667,15 +649,15 @@ describe("LogicEngine", () => {
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Ganons Tower - Hope Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Mini Helmasaur Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - DMs Room - Top Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Compass Room - Top Left']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Firesnake Room']).toBe("possible");
-      expect(result.locationsLogic['Ganons Tower - Validation Chest']).toBe("possible");
-    })
+      expect(result.locationsLogic["Ganons Tower - Hope Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Mini Helmasaur Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - DMs Room - Top Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Compass Room - Top Left"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Firesnake Room"]).toBe("possible");
+      expect(result.locationsLogic["Ganons Tower - Validation Chest"]).toBe("possible");
+    });
 
-    it("should mark all as available with 4 wild small keys", () => {
+    it("[SK] should mark all as available with 4 wild small keys", () => {
       const state = gameState()
         .withAllItems()
         .withSettings({ wildSmallKeys: "wild" })
@@ -692,28 +674,22 @@ describe("LogicEngine", () => {
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
 
-      expect(result.locationsLogic['Ganons Tower - Hope Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Mini Helmasaur Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - DMs Room - Top Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Randomizer Room - Top Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Compass Room - Top Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Firesnake Room']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Big Chest']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Big Key Room - Left']).toBe("available");
-      expect(result.locationsLogic['Ganons Tower - Validation Chest']).toBe("available");
-    })
-
-  
+      expect(result.locationsLogic["Ganons Tower - Hope Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Mini Helmasaur Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - DMs Room - Top Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Randomizer Room - Top Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Compass Room - Top Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Firesnake Room"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Big Key Room - Left"]).toBe("available");
+      expect(result.locationsLogic["Ganons Tower - Validation Chest"]).toBe("available");
+    });
   });
 
   describe("Simple Key Scenarios", () => {
-    it("1 key, 1 door should mark everything behind as available", () => {
+    it("[SK] 1 key, 1 door should mark everything behind as available", () => {
       // Tower of Hera has exactly 1 key door
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ wildSmallKeys: "wild" })
-        .withDungeon("toh", { smallKeys: 1, bigKey: true })
-        .build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("toh", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -724,7 +700,7 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Tower of Hera - Big Key Chest"]).toBe("available");
     });
 
-    it("2 keys, 2 doors with no additional doors should be available", () => {
+    it("[SK] 2 keys, 2 doors with no additional doors should be available", () => {
       // Scenario where keys match doors exactly
       const state = gameState()
         .withAllItems()
@@ -742,10 +718,7 @@ describe("LogicEngine", () => {
 
   describe("Region Reachability", () => {
     it("should mark Light World regions as reachable from start", () => {
-      const state = gameState()
-        .withItems({ moonpearl: 1 })
-        .withSettings({ wildSmallKeys: "wild" })
-        .build();
+      const state = gameState().withItems({ moonpearl: 1 }).withSettings({ wildSmallKeys: "wild" }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -756,10 +729,7 @@ describe("LogicEngine", () => {
     });
 
     it("should mark Dark World as unreachable without moon pearl and agahnim", () => {
-      const state = gameState()
-        .withItems({ sword: 1 })
-        .withSettings({ wildSmallKeys: "wild" })
-        .build();
+      const state = gameState().withItems({ sword: 1 }).withSettings({ wildSmallKeys: "wild" }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -772,9 +742,7 @@ describe("LogicEngine", () => {
 
   describe("No Logic Mode", () => {
     it("should mark all locations as available in nologic mode", () => {
-      const state = gameState()
-        .withSettings({ logicMode: "nologic" })
-        .build();
+      const state = gameState().withSettings({ logicMode: "nologic" }).build();
 
       const logicSet = getLogicSet("nologic");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -789,9 +757,7 @@ describe("LogicEngine", () => {
 
   describe("Open Logic", () => {
     it("should require moonpearl for dark world underworld items", () => {
-      const state = gameState()
-        .withAllItems()
-        .build();
+      const state = gameState().withAllItems().build();
 
       state.items.moonpearl.amount = 0; // Remove moonpearl
 
@@ -800,16 +766,12 @@ describe("LogicEngine", () => {
       const result = traverser.calculateAll();
 
       expect(result.locationsLogic["Spike Cave"]).toBe("unavailable");
-  })
-})
+    });
+  });
 
   describe("Inverted Logic", () => {
     it("all locations should be available with all items", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ worldState: "inverted" })
-        .withAllPrizes()
-        .build();
+      const state = gameState().withAllItems().withSettings({ worldState: "inverted" }).withAllPrizes().build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -818,16 +780,13 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Spike Cave"]).toBe("available");
       expect(result.locationsLogic["Pyramid Fairy - Left"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("available");
-  })
-})
-
+    });
+  });
 
   describe("Dynamic Bunny State", () => {
     it("should track bunny state when entering dark world without moonpearl", () => {
       // Player has all items except moonpearl
-      const state = gameState()
-        .withAllItems()
-        .build();
+      const state = gameState().withAllItems().build();
 
       state.items.moonpearl.amount = 0; // Remove moonpearl
 
@@ -874,9 +833,7 @@ describe("LogicEngine", () => {
 
     it("should compute correct bunny state for underworld entered from light world", () => {
       // In Open mode, entering a cave from Light World should not result in bunny state
-      const state = gameState()
-        .withAllItems()
-        .build();
+      const state = gameState().withAllItems().build();
 
       state.items.moonpearl.amount = 0; // Remove moonpearl
 
@@ -890,10 +847,7 @@ describe("LogicEngine", () => {
     });
 
     it("should compute correct bunny state for overworld items when in inverted mode", () => {
-      const state = gameState()
-        .withAllItems()
-        .withSettings({ worldState: "inverted" })
-        .build();
+      const state = gameState().withAllItems().withSettings({ worldState: "inverted" }).build();
 
       state.items.moonpearl.amount = 0; // Remove moonpearl
 
@@ -910,7 +864,6 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("unavailable");
     });
   });
-
 });
 
 /**
