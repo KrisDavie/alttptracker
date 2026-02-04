@@ -570,26 +570,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Lost Woods East Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Lost Woods Hideout Tree": {
@@ -692,20 +673,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lumberjack Area"
         ],
         "type": "LightWorld",
-        "locations": {
-            "Lumberjack Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            }
-        }
+        "locations": {}
     },
     "West Death Mountain (Top)": {
         "exits": {
@@ -1817,26 +1785,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Mountain Pass Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Mountain Pass Pull Tree": {
@@ -4386,14 +4335,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Hyrule Castle Tree": {
@@ -4914,15 +4856,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "agahnim",
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Eastern Palace Tree": {
@@ -7366,15 +7300,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "agahnim",
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -8143,25 +8069,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
-            },
-            "Desert Pass Area Crab Drop": {
-                "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "glove"
-                            ]
-                        }
-                    },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "glove",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
             }
         }
     },
@@ -8430,20 +8337,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From South Pass Area"
         ],
         "type": "LightWorld",
-        "locations": {
-            "South Pass Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            }
-        }
+        "locations": {}
     },
     "Octoballoon Area": {
         "exits": {
@@ -9547,13 +9441,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -9678,13 +9566,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -11615,13 +11497,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Pyramid Tree": {
@@ -14254,13 +14130,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Hype Cave Statue": {
@@ -15063,13 +14933,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -17128,13 +16992,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -34340,14 +34198,16 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {
                         "always": {
                             "allOf": [
-                                "flippers"
+                                "flippers",
+                                "canReach|Swamp Crystal Switch Inner"
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
                             "allOf": [
-                                "flippers"
+                                "flippers",
+                                "canReach|Swamp Crystal Switch Inner"
                             ]
                         }
                     }
@@ -34568,8 +34428,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Swamp Trench 2 Departure",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canReach|Swamp Crystal Switch Inner"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canReach|Swamp Crystal Switch Inner"
+                            ]
+                        }
+                    }
                 }
             },
             "Swamp West Shallows Push Blocks": {

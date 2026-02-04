@@ -164,6 +164,25 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available");
     });
 
+    it("[PARTIAL SK BK Pottery KeyDrop] should mark right side as possible with less than 4 wild small keys and keydrop and no glove", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
+      state.items.glove.amount = 0; // Remove gloves to prevent access to back
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // These locations should be available (no key required)
+      // Same test as above but without glove. Statuses of reachable locations should be unchanged because game logic assumes we have access to all inventory items
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Torch"]).toBe("available");
+
+    
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("unavailable");
+      expect(result.locationsLogic["Desert Palace - Compass Chest"]).toBe("possible");
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible");
+    });
+
     it("[SK BK Pottery KeyDrop] should mark right side as possible with less than 4 wild small keys and keydrop", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
 
@@ -346,7 +365,7 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Waterway Pot Key"]).toBe("available");
-      expect(result.locationsLogic["Swamp Palace - West Chest"]).toBe("possible");
+      expect(result.locationsLogic["Swamp Palace - Big Key Chest"]).toBe("possible");
       expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("possible");
     });
   });
