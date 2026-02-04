@@ -1,7 +1,41 @@
+/**
+ * DungeonTraverser - Computes reachability and key requirements for dungeon regions.
+ * 
+ * OVERVIEW:
+ * The traverser determines which regions within a dungeon are reachable given the player's
+ * current inventory (especially small keys) and settings. It handles key doors, crystal
+ * switches, and inter-dungeon dependencies (canReach requirements).
+ * 
+ * THREE-PHASE APPROACH (for wild small keys mode):
+ * 
+ * 1. DIJKSTRA (minKeysUsed): Finds the minimum keys needed to reach each region.
+ *    - Treats key doors as weight-1 edges
+ *    - Iterates until no new regions are discovered (handles canReach dependencies)
+ *    - Assumes unlimited keys for exploration
+ * 
+ * 2. BFS (maxKeysUsed): Finds the maximum keys that MIGHT be needed to reach each region.
+ *    - For each key door, defers it until all other options are exhausted
+ *    - Tracks which regions are exclusively behind that deferred door
+ *    - Used to detect key contention scenarios
+ * 
+ * 3. FINAL BFS: Computes actual accessibility status for each region.
+ *    - Uses fixed-point iteration to count accessible keys
+ *    - Compares available keys against min/maxKeysUsed to determine status
+ *    - Handles pottery/keyDrop mode by checking for door contention in branching dungeons
+ * 
+ * KEY CONCEPTS:
+ * - minKeysUsed: Optimal path key cost (always achievable if you have the keys)
+ * - maxKeysUsed: Worst-case path key cost (if you make suboptimal door choices)
+ * - A region is "possible" if minKeysUsed <= keys < maxKeysUsed (might get stuck)
+ * - A region is "available" if keys >= maxKeysUsed (guaranteed reachable)
+ * - Crystal switches toggle between orange/blue states, affecting certain exits
+ * - Big key doors paired with small key doors on the reverse side don't consume keys
+ */
+
 import { type CrystalSwitchState, type ExitLogic, type GameState, type LogicState, type LogicStatus, type RegionLogic } from "@/data/logic/logicTypes";
 import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
-import { getLogicStateForWorld } from "./logicHelpers";
+import { getLogicStateForWorld, createAllItemsState, isBetterStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
 
 export interface DungeonRegionState {
@@ -30,8 +64,14 @@ export class DungeonTraverser {
   private regions: Record<string, RegionLogic>;
   private dungeonId: string;
   private requirementEvaluator: RequirementEvaluator;
-  private protection: "partial" | "dangerous";
   private canReachOverworldRegion?: (regionName: string) => LogicStatus;
+  private protection: "partial" | "dangerous";
+  
+  // Cache for exit name -> source region mapping (built lazily)
+  private exitToSourceRegion?: Map<string, string>;
+  
+  // Set of region types that are overworld (exits to these are skipped during dungeon traversal)
+  private static readonly OVERWORLD_TYPES = new Set(["LightWorld", "DarkWorld"]);
 
   constructor(state: GameState, logicSet: LogicSet, dungeonId: string, protection: "partial" | "dangerous" = "partial") {
     this.state = state;
@@ -41,12 +81,12 @@ export class DungeonTraverser {
 
     this.requirementEvaluator = new RequirementEvaluator(state);
   }
-
+  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   private debugLog(..._args: any[]) {
-    if (this.dungeonId === "gt" || this.dungeonId === "dp") {
-      // console.log(`[DungeonTraverser - ${this.dungeonId}]`, ..._args);
-    }
+    // if (this.dungeonId === "dp") {
+    //   console.log(`[DungeonTraverser - ${this.dungeonId}]`, ..._args);
+    // }
   }
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
@@ -63,23 +103,30 @@ export class DungeonTraverser {
     entryKeyCost: Map<string, number> = new Map(),
     canReachOverworldRegion?: (regionName: string) => LogicStatus
   ): DungeonTraversalResult {
+    this.debugLog(`traverse() called with inventoryKeys=${inventoryKeys}`);
+    this.debugLog(`  Entry statuses:`, Array.from(entryStatus.entries()));
     const ctx = this.initializeDungeonContext(entryRegions, inventoryKeys, entryKeyCost);
 
     // Store the callback for use in finalBFS
     this.canReachOverworldRegion = canReachOverworldRegion;
 
-    // Use actual inventory for ALL calculations to ensure consistency
-    // Key counts should reflect paths that are actually traversable with current inventory
+    // For key counting phases (Dijkstra/BFS), use appropriate state based on protection mode:
+    // - partial: assumes all items are available (randomizer's assumption)
+    // - dangerous: uses actual player inventory
+    const keyCountingState = this.protection === "partial" ? createAllItemsState(this.state) : this.state;
+    const keyCountingEvaluator = new RequirementEvaluator(keyCountingState);
+    
+    // For final accessibility, always use actual inventory
     this.requirementEvaluator = new RequirementEvaluator(this.state);
 
     if (this.state.settings.wildSmallKeys === "wild") {
       // Min keys per region using Dijkstra
-      this.dijkstraMinKeys(ctx, entryRegions, entryKeyCost);
+      this.dijkstraMinKeys(ctx, entryRegions, entryKeyCost, keyCountingEvaluator);
       
       this.debugLog(`Pending key doors for ${this.dungeonId}:`, ctx.pendingKeyDoors);
       
       // Run BFS to find max keys per region
-      this.bfsMaxKeys(ctx, entryRegions, entryKeyCost);
+      this.bfsMaxKeys(ctx, entryRegions, entryKeyCost, keyCountingEvaluator);
       
       // Propagate maxKeysUsed through canReach dependencies
       // If region A requires canReach|B to reach it, and B has maxKeysUsed > A's minKeysUsed,
@@ -96,16 +143,16 @@ export class DungeonTraverser {
     }
 
     // Compile final reachable regions with statuses
-    this.finalBFS(ctx, entryRegions, entryStatus, inventoryKeys);
+    this.finalBFS(ctx, entryRegions, entryStatus, inventoryKeys, keyCountingEvaluator);
 
-    // Prepare results
+    // Collect external exits (dungeon -> overworld)
     const externalExits = new Map<string, { to: string; status: LogicStatus; bunnyState: boolean; keysUsedToReach: number }>();
     for (const [regionName, regionState] of ctx.reachable) {
       const regionLogic = this.regions[regionName];
       const minKeysForRegion = ctx.regionMinKeysUsed.get(regionName) ?? 0;
-      if (regionLogic && regionLogic.exits) {
+      if (regionLogic?.exits) {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
-          if (exit.to && ["LightWorld", "DarkWorld"].includes(this.regions[exit.to]?.type || "")) {
+          if (exit.to && DungeonTraverser.OVERWORLD_TYPES.has(this.regions[exit.to]?.type || "")) {
             externalExits.set(exitName, {
               to: exit.to,
               status: regionState.status,
@@ -132,12 +179,12 @@ export class DungeonTraverser {
 
   }
 
-  private dijkstraMinKeys(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryKeyCost: Map<string, number>) {
-    // Run dijkstra with weight of 1 for small key doors to find minimum keys needed to reach each region - assume infinite keys
-    // We run in a loop because canReach requirements may depend on regions discovered in the same pass
+  private dijkstraMinKeys(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator) {
+    // Dijkstra with key doors as weight-1 edges. Iterates until convergence
+    // because canReach requirements may depend on regions discovered in the same pass.
     let previousRegionCount = 0;
     let iterations = 0;
-    const maxIterations = 10; // Safety limit
+    const maxIterations = 10;
     
     while (iterations < maxIterations) {
       iterations++;
@@ -173,14 +220,13 @@ export class DungeonTraverser {
       if (regionLogic.exits) {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
           const targetType = this.regions[exit.to]?.type || "";
-          if (!exit.to || ["LightWorld", "DarkWorld"].includes(targetType)) {
+          if (!exit.to || DungeonTraverser.OVERWORLD_TYPES.has(targetType)) {
             this.debugLog(`  Exit ${exitName} skipped: to=${exit.to}, type=${targetType}`);
             continue;
           }
 
           const isSKDoor = this.requiresSmallKey(exit);
-          // Check if this small key door is paired with a big key door on the other side
-          // If so, it opens automatically when the big key door opens and shouldn't count
+          // Small key doors paired with big key doors open automatically and don't count
           const isPairedWithBigKey = isSKDoor && this.isSmallKeyDoorPairedWithBigKey(region, exit.to);
           const countsAsKeyDoor = isSKDoor && !isPairedWithBigKey;
           
@@ -189,13 +235,11 @@ export class DungeonTraverser {
             ctx.pendingKeyDoors.push(exitName);
           }
           
-          // Track the maximum minKeys from any canReach requirement
-          // This is needed because canReach|X means you need to have reached X first
+          // Track key cost from canReach requirements (need to reach target first)
           let canReachKeyCost = 0;
           
-          // Evaluate exit requirements, but assume small keys and big keys are available
-          // so we can see all key doors in the dungeon for key counting
-          const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, {
+          // Evaluate exit requirements, assuming keys available to see all doors
+          const status = evaluator.evaluateWorldLogic(exit.requirements, {
             regionName: region,
             dungeonId: this.dungeonId,
             crystalStates: new Set([crystalState]),
@@ -203,28 +247,21 @@ export class DungeonTraverser {
             assumeSmallKey: isSKDoor,
             assumeBigKey: true, // Ignore big key doors for key counting
             canReachRegion: (targetRegion: string) => {
-              // For Dijkstra key counting, check if the target region has been discovered
-              // We use ctx.regionMinKeysUsed which persists across iterations
               const targetRegionLogic = this.regions[targetRegion];
               if (targetRegionLogic?.type === "Dungeon") {
-                // Check if we've discovered this region in any iteration
+                // Check if discovered in any iteration
                 const targetMinKeys = ctx.regionMinKeysUsed.get(targetRegion);
                 if (targetMinKeys !== undefined) {
-                  // Track the key cost to reach this canReach target
                   canReachKeyCost = Math.max(canReachKeyCost, targetMinKeys);
                   return "available";
                 }
-                // Also check if it's been visited in THIS iteration
-                const visitedOrange = visited.has(`${targetRegion}|orange`);
-                const visitedBlue = visited.has(`${targetRegion}|blue`);
-                if (visitedOrange || visitedBlue) {
+                // Or visited in this iteration
+                if (visited.has(`${targetRegion}|orange`) || visited.has(`${targetRegion}|blue`)) {
                   return "available";
                 }
-                // Not discovered yet - can't use in canReach requirements
                 return "unavailable";
               }
-              // For overworld regions, assume reachable (handled by overworld traverser)
-              return "available";
+              return "available"; // Overworld regions assumed reachable
             },
           });
 
@@ -265,14 +302,17 @@ export class DungeonTraverser {
     }
   }
 
-  private bfsMaxKeys(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryKeyCost: Map<string, number>) {
-    // Run bfs with each key door at end of queue to find maximum keys needed to reach each region
-    // We do not need to consider partial vs dangerous here since we are counting max keys
-    // Start from entry regions
+  private bfsMaxKeys(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator) {
+    // BFS that defers each key door in turn to find worst-case key costs.
+    // For each pending door, we explore everything else first, then open that door last.
+    // Regions found only after opening the deferred door get maxKeysUsed set.
     this.debugLog(`BFS starting with ${ctx.pendingKeyDoors.length} pending key doors:`, ctx.pendingKeyDoors);
+    
+    // Track ALL regions that were reachable before ANY door was deferred across ALL iterations
+    // These regions should have maxKeysUsed = minKeysUsed because they are NOT exclusively behind doors
+    const regionsReachableBeforeAnyDoor = new Set<string>();
+    
     for (const pendingKeyDoor of ctx.pendingKeyDoors) {
-      // PriorityQueue stores exits. 
-      // We explicitly include 'isKeyDoor' to handle counting upon dequeue/processing.
       interface ExitQueueItem {
         from: string;
         exitName: string;
@@ -280,14 +320,11 @@ export class DungeonTraverser {
         crystalState: CrystalSwitchState;
         priority: number;
         isKeyDoor: boolean;
-        baseKeyCost: number;
       }
       
       const exitQueue = new PriorityQueue<ExitQueueItem>((a, b) => a.priority - b.priority);
       
-      // For maxKeysUsed calculation, only start from primary entry portals (keyCost=0)
-      // Secondary portals (keyCost > 0) are reached via dungeon exits, and their key cost
-      // is already accounted for in the paths from primary portals
+      // Only start from primary entry portals (keyCost=0)
       for (const [regionName] of entryRegions) {
         const startKeyCost = entryKeyCost.get(regionName) ?? 0;
         if (startKeyCost > 0) continue; // Skip secondary portals for maxKeysUsed
@@ -297,11 +334,9 @@ export class DungeonTraverser {
             to: regionName, 
             crystalState: "orange", 
             priority: startKeyCost, 
-            isKeyDoor: false,
-            baseKeyCost: startKeyCost
+            isKeyDoor: false
         });
       }
-      // this.debugLog(`Processing door: ${pendingKeyDoor}`);
 
       const visited = new Set<string>();
       const openedDoorPairs = new Set<string>();
@@ -328,6 +363,7 @@ export class DungeonTraverser {
         const doorKey = this.getDoorPairKey(from, region);
 
         if (isKeyDoor && pendingKeyDoor === exitName && !deferred && !openedDoorPairs.has(doorKey)) {
+            this.debugLog(`  🔒 Deferring key door ${exitName} to ${region} (pendingKeyDoor=${pendingKeyDoor})`);
             deferredExit = item;
             continue;
         }
@@ -367,43 +403,44 @@ export class DungeonTraverser {
 
           if (regionLogic.exits) {
             for (const [nextExitName, exit] of Object.entries(regionLogic.exits)) {
-              if (!exit.to || ["LightWorld", "DarkWorld"].includes(this.regions[exit.to]?.type || "")) continue;
+              if (!exit.to || DungeonTraverser.OVERWORLD_TYPES.has(this.regions[exit.to]?.type || "")) continue;
               const isSKDoor = this.requiresSmallKey(exit);
-              // Check if this small key door is paired with a big key door
               const isPairedWithBigKey = isSKDoor && this.isSmallKeyDoorPairedWithBigKey(region, exit.to);
               const countsAsKeyDoor = isSKDoor && !isPairedWithBigKey;
               
-              // Evaluate exit requirements with canReachRegion function
-              // Assume big keys are available so we can see all key doors
-              const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, {
+              // Track canReach key cost like Dijkstra does
+              let canReachKeyCost = 0;
+              
+              // Evaluate exit requirements (assume big keys available)
+              const status = evaluator.evaluateWorldLogic(exit.requirements, {
                 regionName: region,
                 dungeonId: this.dungeonId,
                 crystalStates: new Set([crystalState]),
                 isBunny: regionState?.bunnyState ?? false,
                 assumeSmallKey: isSKDoor,
-                assumeBigKey: true, // Ignore big key doors for key counting
+                assumeBigKey: true,
                 canReachRegion: (targetRegion: string) => {
-                  // For BFS, check if the target region has been visited in THIS iteration
-                  // This ensures canReach requirements properly track door dependencies
                   const targetRegionLogic = this.regions[targetRegion];
                   if (targetRegionLogic?.type === "Dungeon") {
-                    // Check if we've visited this region in THIS BFS iteration
-                    const visitedOrange = visited.has(`${targetRegion}|orange`);
-                    const visitedBlue = visited.has(`${targetRegion}|blue`);
-                    if (visitedOrange || visitedBlue) {
+                    const targetMinKeys = ctx.regionMinKeysUsed.get(targetRegion);
+                    if (targetMinKeys !== undefined) {
+                      canReachKeyCost = Math.max(canReachKeyCost, targetMinKeys);
                       return "available";
                     }
                     return "unavailable";
                   }
-                  // For overworld regions, assume reachable
                   return "available";
                 },
               });
 
               if (status !== "unavailable") {
+                // Calculate effective key cost including canReach requirements
+                const baseNextKeys = keysUsed + (countsAsKeyDoor ? 1 : 0);
+                const effectiveKeyCost = Math.max(baseNextKeys, canReachKeyCost);
+                
                 // Determine priority - put key doors at back by adding a cost
-                const priority = countsAsKeyDoor ? keysUsed + 100 : keysUsed;
-                exitQueue.enqueue({ from: region, exitName: nextExitName, to: exit.to, crystalState, priority, isKeyDoor: countsAsKeyDoor, baseKeyCost: 0 });
+                const priority = countsAsKeyDoor ? effectiveKeyCost + 100 : effectiveKeyCost;
+                exitQueue.enqueue({ from: region, exitName: nextExitName, to: exit.to, crystalState, priority, isKeyDoor: countsAsKeyDoor });
               }
             }
           }
@@ -415,7 +452,7 @@ export class DungeonTraverser {
                 crystalStates: new Set([crystalState]), 
                 isBunny: regionState?.bunnyState ?? false 
             })) {
-              exitQueue.enqueue({ from: region, exitName: "crystal_switch", to: region, crystalState: this.toggleCrystalState(crystalState), priority: keysUsed, isKeyDoor: false, baseKeyCost: 0 });
+              exitQueue.enqueue({ from: region, exitName: "crystal_switch", to: region, crystalState: this.toggleCrystalState(crystalState), priority: keysUsed, isKeyDoor: false });
             }
           }
         }
@@ -430,6 +467,14 @@ export class DungeonTraverser {
             Array.from(visited).map(visitKey => visitKey.split('|')[0])
           );
           
+          // Only for the FIRST door iteration, track regions reachable with 0 doors
+          // These are the only regions that should have maxKeysUsed = minKeysUsed = 0
+          if (regionsReachableBeforeAnyDoor.size === 0 && keysUsed === 0) {
+            for (const region of regionsReachableWithoutDeferredDoor) {
+              regionsReachableBeforeAnyDoor.add(region);
+            }
+          }
+          
           this.debugLog(`  🚪 Will defer door ${pendingKeyDoor} in ${deferredExit.to} to end of queue, keysUsed=${keysUsed}, regionsBeforeDoor=${regionsReachableWithoutDeferredDoor.size}`);
           
           // Clear visited for target so we can process it again
@@ -440,35 +485,63 @@ export class DungeonTraverser {
         }
       }
     }
+    
+    // After all BFS iterations, initialize maxKeysUsed = minKeysUsed for regions that 
+    // were reachable from entry without ANY doors (keysUsed = 0 when first door was deferred).
+    // These are the only regions whose maxKeysUsed is guaranteed to equal minKeysUsed.
+    this.debugLog(`Regions reachable before any door: ${regionsReachableBeforeAnyDoor.size}`);
+    for (const region of regionsReachableBeforeAnyDoor) {
+      const minKeys = ctx.regionMinKeysUsed.get(region);
+      if (minKeys !== undefined && !ctx.regionMaxKeysUsed.has(region)) {
+        ctx.regionMaxKeysUsed.set(region, minKeys);
+        this.debugLog(`  📊 Initializing maxKeysUsed for ${region}: ${minKeys} (no doors needed)`);
+      }
+    }
   }
 
-  private finalBFS(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryStatus: Map<string, LogicStatus>, inventoryKeys: number) {
-    // Three-phase approach:
-    // Phase 1: BFS to discover all traversable regions (ignoring key counts but respecting other requirements)
+  private finalBFS(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryStatus: Map<string, LogicStatus>, inventoryKeys: number, keyCountingEvaluator: RequirementEvaluator) {
+    // Phase 1: Discover all traversable regions (ignoring key counts)
     // Phase 2: Fixed-point iteration to count accessible keys
     // Phase 3: Compute final status based on total keys available
+    // In partial mode, use keyCountingEvaluator for discovery (assumes all items)
+    // so key contention logic applies even to regions the player can't currently reach.
 
-    // === PHASE 1: Discovery of traversable regions ===
+    // === PHASE 1: Discovery ===
     const visited = new Set<string>();
-    const queue: Array<{ region: string; crystalState: CrystalSwitchState }> = [];
+    const queue: Array<{ region: string; crystalState: CrystalSwitchState; fromEntryStatus: LogicStatus }> = [];
+    
+    // Track the best entry status that can reach each region
+    // This is used to propagate "unavailable" from unreachable portals
+    const regionEntryStatus = new Map<string, LogicStatus>();
 
     for (const [regionName, { bunnyState }] of entryRegions) {
-      queue.push({ region: regionName, crystalState: "orange" });
+      const thisEntryStatus = entryStatus.get(regionName) ?? "available";
+      queue.push({ region: regionName, crystalState: "orange", fromEntryStatus: thisEntryStatus });
       ctx.reachable.set(regionName, {
         status: "available", // Placeholder, will be updated in Phase 3
         bunnyState,
         crystalStates: new Set(["orange"]),
       });
+      // Use the best status if this region is also another entry portal
+      const currentStatus = regionEntryStatus.get(regionName);
+      if (!currentStatus || isBetterStatus(thisEntryStatus, currentStatus)) {
+        regionEntryStatus.set(regionName, thisEntryStatus);
+      }
     }
 
     // Phase 1: Explore all traversable regions (assuming unlimited keys for traversal)
     while (queue.length > 0) {
-      const { region, crystalState } = queue.shift()!;
-      const visitKey = `${region}|${crystalState}`;
+      const { region, crystalState, fromEntryStatus: queuedEntryStatus } = queue.shift()!;
+      
+      // Use the CURRENT entry status of this region, not the stale one from when it was queued
+      // This ensures we propagate upgrades correctly
+      const currentRegionEntryStatus = regionEntryStatus.get(region) ?? queuedEntryStatus;
+      
+      const visitKey = `${region}|${crystalState}|${currentRegionEntryStatus}`;
       if (visited.has(visitKey)) continue;
       visited.add(visitKey);
       
-      this.debugLogVerbose(`Visiting region: ${region}, crystalState: ${crystalState}`);
+      this.debugLogVerbose(`Visiting region: ${region}, crystalState: ${crystalState}, entryStatus: ${currentRegionEntryStatus}`);
 
       const regionState = ctx.reachable.get(region);
       const regionLogic = this.regions[region];
@@ -479,30 +552,25 @@ export class DungeonTraverser {
 
       if (regionLogic.exits) {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
-          if (!exit.to || ["LightWorld", "DarkWorld"].includes(this.regions[exit.to]?.type || "")) continue;
+          if (!exit.to || DungeonTraverser.OVERWORLD_TYPES.has(this.regions[exit.to]?.type || "")) continue;
 
           const isSKDoor = this.requiresSmallKey(exit);
 
-          // Evaluate requirement-based status for this exit (ignore small key requirement for key doors)
-          // Provide canReachRegion for overworld dependencies (e.g., canReach|Dam)
-          const requirementStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, {
+          // Evaluate exit requirements (ignore small key requirement for key doors)
+          // Use keyCountingEvaluator so in partial mode we discover all regions
+          const requirementStatus = keyCountingEvaluator.evaluateWorldLogic(exit.requirements, {
             regionName: region,
             dungeonId: this.dungeonId,
             crystalStates: new Set([crystalState]),
             isBunny: regionState?.bunnyState ?? false,
             assumeSmallKey: isSKDoor,
             canReachRegion: (targetRegion: string) => {
-              // For dungeon regions we're exploring, assume reachable
               const targetRegionLogic = this.regions[targetRegion];
               if (targetRegionLogic?.type === "Dungeon") {
-                return "available";
+                return "available"; // Assume dungeon regions reachable
               }
-              // For overworld regions, use the callback from overworld traverser
-              if (this.canReachOverworldRegion) {
-                return this.canReachOverworldRegion(targetRegion);
-              }
-              // If no callback, assume reachable (backwards compatibility)
-              return "available";
+              // For overworld, use callback or assume reachable
+              return this.canReachOverworldRegion?.(targetRegion) ?? "available";
             },
           });
           
@@ -518,14 +586,25 @@ export class DungeonTraverser {
               bunnyState,
               crystalStates: new Set([crystalState]),
             });
-            queue.push({ region: exit.to, crystalState });
+            regionEntryStatus.set(exit.to, currentRegionEntryStatus);
+            queue.push({ region: exit.to, crystalState, fromEntryStatus: currentRegionEntryStatus });
           } else {
             // Update crystal states if we've reached from a different crystal state
             const existing = ctx.reachable.get(exit.to)!;
             if (!existing.crystalStates.has(crystalState)) {
               existing.crystalStates.add(crystalState);
-              queue.push({ region: exit.to, crystalState });
+              queue.push({ region: exit.to, crystalState, fromEntryStatus: currentRegionEntryStatus });
             }
+          }
+          
+          // Always update entry status if we found a better (more available) path
+          // This is separate from the reachability check above
+          const currentEntryStatus = regionEntryStatus.get(exit.to);
+          if (currentEntryStatus && isBetterStatus(currentRegionEntryStatus, currentEntryStatus)) {
+            this.debugLog(`  UPGRADING ${exit.to} from ${currentEntryStatus} to ${currentRegionEntryStatus}`);
+            regionEntryStatus.set(exit.to, currentRegionEntryStatus);
+            // Re-add to queue so the upgrade propagates to children
+            queue.push({ region: exit.to, crystalState, fromEntryStatus: currentRegionEntryStatus });
           }
         }
       }
@@ -539,7 +618,7 @@ export class DungeonTraverser {
             isBunny: regionState?.bunnyState ?? false 
         })) {
           const newCrystalState = this.toggleCrystalState(crystalState);
-          queue.push({ region, crystalState: newCrystalState });
+          queue.push({ region, crystalState: newCrystalState, fromEntryStatus: currentRegionEntryStatus });
         }
       }
     }
@@ -585,6 +664,7 @@ export class DungeonTraverser {
     }
     
     this.debugLog(`Keys by threshold:`, Array.from(keysByThreshold.entries()).map(([k, v]) => `${k}: ${v.size}`));
+    this.debugLog(`Region entry statuses:`, Array.from(regionEntryStatus.entries()));
 
     // === PHASE 3: Compute final status for each region ===
     // Now we know the total keys available, compute status for each reachable region
@@ -595,6 +675,30 @@ export class DungeonTraverser {
     for (const [regionName] of ctx.reachable) {
       for (const keyLoc of this.smallKeysInRegion(regionName)) {
         keyToRegion.set(keyLoc, regionName);
+      }
+    }
+    
+    // Pre-compute pottery mode values once (not per-region)
+    const isPotteryKeyMode = this.state.settings.pottery === "keys" && this.state.settings.keyDrop === true;
+    const estimatedUniqueDoors = Math.ceil(ctx.pendingKeyDoors.length / 2);
+    
+    // Calculate doorsAtThreshold0 once - indicates if dungeon has branching paths from start
+    let doorsAtThreshold0 = 0;
+    if (isPotteryKeyMode) {
+      const seenDoorPairs = new Set<string>();
+      for (const doorName of ctx.pendingKeyDoors) {
+        const sourceRegion = this.findDoorSourceRegion(doorName);
+        if (!sourceRegion) continue;
+        
+        const sourceMinKeys = ctx.regionMinKeysUsed.get(sourceRegion);
+        if (sourceMinKeys === 0 || sourceMinKeys === undefined) {
+          const reverseDoor = this.findReverseDoor(doorName, ctx.pendingKeyDoors);
+          if (reverseDoor && seenDoorPairs.has(reverseDoor)) {
+            continue;
+          }
+          seenDoorPairs.add(doorName);
+          doorsAtThreshold0++;
+        }
       }
     }
     
@@ -612,20 +716,28 @@ export class DungeonTraverser {
           const minKeysUsed = ctx.regionMinKeysUsed.get(regionName)!;
           const maxKeysUsed = ctx.regionMaxKeysUsed.get(regionName);
           
-          // Calculate keys available BEFORE reaching this region
-          // We count ALL dungeon keys EXCEPT those that are:
-          // 1. DOWNSTREAM of this region (only reachable after passing through this region)
-          // 2. On a different branch (gated by a region at the same threshold that's not on the path to target)
+          // Count keys collectible BEFORE reaching this region (not downstream or on different branch)
           let keysAvailableBeforeRegion = inventoryKeys;
+          const effectiveMaxKeys = maxKeysUsed ?? minKeysUsed;
+          
           for (const [threshold, keys] of keysByThreshold) {
             for (const keyLoc of keys) {
               const keyRegion = keyToRegion.get(keyLoc);
               if (keyRegion) {
-                const isDownstream = this.isKeyDownstreamOf(keyRegion, regionName, ctx);
+                const keyMinKeys = ctx.regionMinKeysUsed.get(keyRegion) ?? 0;
+                
+                // Downstream: need >= maxKeysUsed to reach key, or gated without backtrack
+                const isDownstreamByThreshold = keyMinKeys >= effectiveMaxKeys;
+                const isGatedByTarget = !isDownstreamByThreshold && 
+                                        this.isRegionGatedBy(keyRegion, regionName, ctx) &&
+                                        !this.canReachEntryFromRegion(keyRegion, ctx);
+                const isDownstream = isDownstreamByThreshold || isGatedByTarget;
+                
+                // Different branch: same threshold but requires different door commitment
                 const isOnDifferentBranch = !isDownstream && this.isKeyOnDifferentBranch(keyRegion, regionName, ctx);
                 
-                if ((regionName.startsWith("GT ") && maxKeysUsed && maxKeysUsed >= 7) || regionName === "Desert Compass Room" || regionName.includes("Firesnake")) {
-                  this.debugLog(`  🔐 Key ${keyLoc} in region ${keyRegion} (threshold ${threshold}): isDownstream=${isDownstream}, isOnDifferentBranch=${isOnDifferentBranch}`);
+                if ((regionName.startsWith("GT ") && maxKeysUsed && maxKeysUsed >= 7) || regionName === "Desert Compass Room" || regionName.includes("Firesnake") || regionName === "Swamp Hub") {
+                  this.debugLog(`  🔐 Key ${keyLoc} in region ${keyRegion} (threshold ${threshold}, keyMinKeys=${keyMinKeys}, effectiveMaxKeys=${effectiveMaxKeys}): isDownstreamByThreshold=${isDownstreamByThreshold}, isGatedByTarget=${isGatedByTarget}, isOnDifferentBranch=${isOnDifferentBranch}`);
                 }
                 
                 if (!isDownstream && !isOnDifferentBranch) {
@@ -635,36 +747,39 @@ export class DungeonTraverser {
             }
           }
           
-          // First check: do we have enough keys to reach this region at all?
+          // Check if we have enough keys for worst-case path
           if (ctx.totalKeysAvailable < minKeysUsed) {
             keyStatus = "unavailable";
           } else if (maxKeysUsed !== undefined && maxKeysUsed > 0) {
-            // For maxKeysUsed comparison, use keys available BEFORE reaching this region
-            // This correctly handles keys that are behind the target region
-            if ((regionName.startsWith("GT ") && maxKeysUsed >= 7) || regionName === "Desert Compass Room") {
+            // Debug logging for specific regions
+            if ((regionName.startsWith("GT ") && maxKeysUsed >= 7) || regionName === "Desert Compass Room" || regionName === "Swamp Hub") {
               this.debugLog(`  📊 ${regionName}: minKeys=${minKeysUsed}, maxKeys=${maxKeysUsed}, keysAvailableBefore=${keysAvailableBeforeRegion}, result=${keysAvailableBeforeRegion >= maxKeysUsed ? "available" : "possible"}`);
             }
+            
             if (keysAvailableBeforeRegion >= maxKeysUsed) {
-              keyStatus = "available";
+              // Enough keys for worst-case path. In pottery mode with branching dungeons,
+              // check if player has enough keys to cover all door choices.
+              if (isPotteryKeyMode && doorsAtThreshold0 > 1 && ctx.totalKeysAvailable < estimatedUniqueDoors - 1) {
+                keyStatus = "possible";
+              } else {
+                keyStatus = "available";
+              }
             } else {
               keyStatus = "possible";
             }
           }
-          // If no maxKeysUsed but we have enough min keys, it's available
         }
       }
-      // When not in wild mode, keyStatus remains "available" as keys are assumed available
       
       if (regionName === "GT Compass Room") {
         this.debugLog(`  🏁 Final keyStatus for GT Compass Room: ${keyStatus}`);
       }
 
-      // Get entry status if this is an entry region
-      const entryRegionStatus = entryStatus.get(regionName);
-      const baseStatus = entryRegionStatus ?? "available";
+      // Get the best entry status for this region (propagated from entry portal)
+      const entryRegionStatus = regionEntryStatus.get(regionName) ?? "available";
 
       // Final status is the combination of entry status and key status
-      regionState.status = this.combineStatuses(baseStatus, keyStatus);
+      regionState.status = this.combineStatuses(entryRegionStatus, keyStatus);
     }
   }
 
@@ -702,10 +817,7 @@ export class DungeonTraverser {
 
   /**
    * Check if keyRegion is only reachable by going through gateRegion.
-   * This is used to determine if a key at the same minKeysUsed level as a target region
-   * is actually gated by that target region (and thus can't be used to reach it).
-   * 
-   * Uses a simple BFS from entry regions, excluding gateRegion, to see if keyRegion is reachable.
+   * Uses BFS from entry regions (minKeysUsed=0), excluding gateRegion.
    */
   private isRegionGatedBy(keyRegion: string, gateRegion: string, ctx: DungeonContext): boolean {
     // If they're the same region, it's trivially gated
@@ -748,59 +860,9 @@ export class DungeonTraverser {
     return true;
   }
 
-  /**
-   * Check if keyRegion is reachable starting FROM targetRegion without going
-   * back through lower-threshold regions. This determines if the key is
-   * "downstream" of the target region.
-   * 
-   * A key is downstream if you can reach it after reaching the target region,
-   * meaning it's on the same path (not a parallel branch).
-   */
-  private isKeyDownstreamOf(keyRegion: string, targetRegion: string, ctx: DungeonContext): boolean {
-    // If they're the same region, it's downstream
-    if (keyRegion === targetRegion) return true;
-    
-    const targetMinKeys = ctx.regionMinKeysUsed.get(targetRegion) ?? 0;
-    
-    // BFS from targetRegion, only following exits that don't go to lower-threshold regions
-    const visited = new Set<string>();
-    const queue: string[] = [targetRegion];
-    visited.add(targetRegion);
-    
-    while (queue.length > 0) {
-      const current = queue.shift()!;
-      
-      if (current === keyRegion) return true;
-      
-      const regionLogic = this.regions[current];
-      if (!regionLogic?.exits) continue;
-      
-      for (const exit of Object.values(regionLogic.exits)) {
-        if (!exit.to) continue;
-        if (visited.has(exit.to)) continue;
-        if (!ctx.reachable.has(exit.to)) continue;
-        
-        // Only follow exits to regions at the same or higher threshold
-        // This prevents going "back" to lower-threshold regions
-        const exitMinKeys = ctx.regionMinKeysUsed.get(exit.to) ?? 0;
-        if (exitMinKeys >= targetMinKeys) {
-          visited.add(exit.to);
-          queue.push(exit.to);
-        }
-      }
-    }
-    
-    return false;
-  }
-
-  /**
-   * Check if the key is on a different threshold-level branch from the target region.
-   * This catches keys that are ONLY reachable via a specific region at threshold >= 1,
-   * where that gating region is NOT on the path to the target.
-   * 
-   * For example, Conveyor Star Pits key is ONLY reachable via Compass Room (the warp).
-   * If target is Firesnake Room, and Compass Room is not reachable from Firesnake Room
-   * without going to lower thresholds, then the key is on a different branch.
+    /**
+   * Check if key is on a branch that requires committing to a different door than the target.
+   * For example, a key only reachable via a one-way warp that doesn't lead to the target.
    */
   private isKeyOnDifferentBranch(keyRegion: string, targetRegion: string, ctx: DungeonContext): boolean {
     if (keyRegion === targetRegion) return false;
@@ -863,12 +925,17 @@ export class DungeonTraverser {
   }
 
   /**
-   * Check if we can get from keyRegion back to an entry region (threshold 0)
-   * without using additional keys beyond what's needed to reach keyRegion.
-   * This detects if the key is on a one-way path (like a warp with no return).
+   * Check if we can return from keyRegion to an entry region (threshold 0)
+   * without using additional keys. Regions with no exits can save&quit, so return true.
    */
   private canReachEntryFromRegion(keyRegion: string, ctx: DungeonContext): boolean {
     const keyMinKeys = ctx.regionMinKeysUsed.get(keyRegion) ?? 0;
+    
+    // If keyRegion has no exits, consider it "can backtrack" (via save&quit)
+    const keyRegionLogic = this.regions[keyRegion];
+    if (!keyRegionLogic?.exits || Object.keys(keyRegionLogic.exits).length === 0) {
+      return true;
+    }
     
     // BFS from keyRegion, following exits that don't require additional keys
     const visited = new Set<string>();
@@ -906,13 +973,8 @@ export class DungeonTraverser {
   }
 
   private propagateMaxKeysThroughCanReach(ctx: DungeonContext): void {
-    // Propagate maxKeysUsed through canReach dependencies ONLY
-    // If exit A->B requires canReach|C, and C has elevated maxKeysUsed (maxKeys > minKeys),
-    // then B's maxKeysUsed should be at least C's maxKeysUsed
-    //
-    // We also need to propagate to direct children of regions with elevated maxKeysUsed
-    // if those children also have elevated maxKeysUsed (meaning they were found by BFS)
-    
+    // Propagate elevated maxKeysUsed through canReach dependencies and to children.
+    // If region A requires canReach|B, A's maxKeysUsed should be >= B's maxKeysUsed.
     let changed = true;
     let iterations = 0;
     const maxIterations = 20;
@@ -974,10 +1036,15 @@ export class DungeonTraverser {
           const childMinKeys = ctx.regionMinKeysUsed.get(exit.to);
           const childMaxKeys = ctx.regionMaxKeysUsed.get(exit.to);
           
-          // Only propagate if child's minKeys >= parent's minKeys
-          // This suggests child is not reachable via an earlier path
+          // Only propagate if:
+          // 1. Child's minKeys >= parent's minKeys (child is not reachable via an earlier path)
+          // 2. Child doesn't already have a maxKeysUsed value set by BFS
+          //    (if BFS set it, that represents an alternative path we should respect)
+          // The BFS-set value represents the minimum of worst-case paths, so don't overwrite it
           if (childMinKeys !== undefined && regionMinKeys !== undefined && childMinKeys >= regionMinKeys) {
-            if (childMaxKeys === undefined || regionMaxKeys > childMaxKeys) {
+            // Only set if child has NO maxKeysUsed yet
+            // If BFS already found a path with a certain maxKeys, respect that
+            if (childMaxKeys === undefined) {
               ctx.regionMaxKeysUsed.set(exit.to, regionMaxKeys);
               this.debugLog(`  📊 Propagating maxKeysUsed: ${exit.to} set to ${regionMaxKeys} (from parent ${regionName})`);
               changed = true;
@@ -1032,12 +1099,7 @@ export class DungeonTraverser {
 
   /**
    * Check if a small key door is paired with a big key door on the opposite side.
-   * In ALTTP, some doors have a big key lock on one side and small key lock on the other.
-   * When the big key door opens, the paired small key door opens automatically.
-   * 
-   * @param fromRegion The region the small key door is in
-   * @param toRegion The region the small key door leads to
-   * @returns true if the opposite side of this door requires a big key
+   * When the big key opens one side, the small key door opens automatically.
    */
   private isSmallKeyDoorPairedWithBigKey(fromRegion: string, toRegion: string): boolean {
     // Check if there's an exit from toRegion back to fromRegion that requires a big key
@@ -1074,23 +1136,6 @@ export class DungeonTraverser {
       if (r.logical && this.containsBigKey(r.logical)) return true;
       if (r.allOf && Array.isArray(r.allOf)) return r.allOf.some((x) => this.containsBigKey(x));
       if (r.anyOf && Array.isArray(r.anyOf)) return r.anyOf.some((x) => this.containsBigKey(x));
-    }
-    return false;
-  }
-
-  private isNever(req: LogicState | string | undefined): boolean {
-    // "always": {
-    //         "allOf": [
-    //             "never"
-    //         ]
-    //     }
-    // },
-    if (!req) return false;
-    if (req === "never") return true;
-    if (typeof req === "object" && req !== null) {
-      const r = req as Record<string, unknown>;
-      if (r.always && this.isNever(r.always)) return true;
-      if (r.allOf && Array.isArray(r.allOf)) return r.allOf.every((x) => this.isNever(x));
     }
     return false;
   }
@@ -1149,5 +1194,36 @@ export class DungeonTraverser {
   private combineStatuses(status1: LogicStatus, status2: LogicStatus): LogicStatus {
     const order: LogicStatus[] = ["information", "unavailable", "possible", "ool", "available"];
     return order[Math.min(order.indexOf(status1), order.indexOf(status2))];
+  }
+
+  /** Find the source region of a door exit using cached lookup (built lazily). */
+  private findDoorSourceRegion(doorExitName: string): string | undefined {
+    // Build cache on first access
+    if (!this.exitToSourceRegion) {
+      this.exitToSourceRegion = new Map();
+      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
+        if (regionLogic.exits) {
+          for (const exitName of Object.keys(regionLogic.exits)) {
+            this.exitToSourceRegion.set(exitName, regionName);
+          }
+        }
+      }
+    }
+    return this.exitToSourceRegion.get(doorExitName);
+  }
+
+  /** Find the reverse direction of a bidirectional key door based on naming patterns. */
+  private findReverseDoor(doorName: string, pendingDoors: string[]): string | undefined {
+    // Try to find a matching bidirectional door by checking if another door leads to the source region
+    // This is a heuristic based on door naming patterns
+    for (const otherDoor of pendingDoors) {
+      if (otherDoor === doorName) continue;
+      // Check if the doors share the same "Interior" or similar naming that indicates bidirectionality
+      if (doorName.includes("Interior") && otherDoor.includes("Interior") &&
+          doorName.replace(/ [NSEW]+$/, "") === otherDoor.replace(/ [NSEW]+$/, "")) {
+        return otherDoor;
+      }
+    }
+    return undefined;
   }
 }

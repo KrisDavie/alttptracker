@@ -1,7 +1,46 @@
+/**
+ * OverworldTraverser - Computes reachability for overworld regions and coordinates dungeon traversal.
+ * 
+ * OVERVIEW:
+ * The traverser determines which overworld regions are reachable given the player's current
+ * inventory and settings. It orchestrates dungeon traversal by collecting portal entries and
+ * processing dungeon exits that return to the overworld.
+ * 
+ * TRAVERSAL APPROACH:
+ * 
+ * 1. PORTAL DISCOVERY (partial mode): Before main traversal, discovers all dungeon portals
+ *    reachable with full inventory. This ensures key contention logic applies even to regions
+ *    the player can't currently reach. Portals discovered this way start with "unavailable" status.
+ * 
+ * 2. BFS TRAVERSAL: Starting from the initial region (Link's House or inverted equivalent),
+ *    explores all reachable overworld regions via exits. Each exit is evaluated against
+ *    the player's inventory to determine its status.
+ * 
+ * 3. DUNGEON COORDINATION: When a dungeon portal is found, it's collected into pendingDungeons.
+ *    After overworld BFS stabilizes, DungeonTraverser is called for each dungeon with all
+ *    discovered portals. Dungeon exits back to overworld update reachability and re-trigger BFS.
+ * 
+ * 4. FIXED-POINT ITERATION: The process repeats until no new regions are discovered.
+ *    Dungeons may unlock overworld regions that unlock new dungeon portals.
+ * 
+ * KEY CONCEPTS:
+ * - RegionReachability: Tracks status and bunnyState for each region
+ * - Portal discovery: In partial mode, finds all potential portals before main traversal
+ * - Entry status propagation: Portals inherit status from how they were reached (available/unavailable)
+ * - Bunny state: Tracks whether player is a bunny (in Dark World without Moon Pearl)
+ * - blockedExits: Exits that failed evaluation are re-checked when new items/regions unlock
+ * - overworldKeyCost: Tracks keys used to reach overworld regions via dungeon exits
+ * 
+ * PROTECTION MODES:
+ * - partial: Assumes all items for key counting/discovery, uses actual inventory for final status
+ * - dangerous: Uses actual inventory throughout (may miss key contention in unreachable areas)
+ */
+
 import { type RegionReachability, type ExitLogic, type GameState, type RegionLogic, type LogicStatus } from "@/data/logic/logicTypes";
 import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { DungeonTraverser } from "./dungeonTraverser";
+import { createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } from "./logicHelpers";
 
 interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
@@ -56,12 +95,22 @@ export class OverworldTraverser {
   private logicSet: LogicSet;
   private regions: Record<string, RegionLogic>;
   private requirementEvaluator: RequirementEvaluator;
+  private protection: "partial" | "dangerous";
+  // For partial mode, we also need an all-items evaluator for discovery
+  private allItemsEvaluator?: RequirementEvaluator;
 
-  constructor(state: GameState, logicSet: LogicSet) {
+  constructor(state: GameState, logicSet: LogicSet, protection: "partial" | "dangerous" = "partial") {
     this.state = state;
     this.logicSet = logicSet;
     this.regions = logicSet.regions as Record<string, RegionLogic>;
     this.requirementEvaluator = new RequirementEvaluator(state);
+    this.protection = protection;
+    
+    // In partial mode, create an all-items evaluator for discovering regions
+    if (protection === "partial") {
+      const allItemsState = createAllItemsState(this.state);
+      this.allItemsEvaluator = new RequirementEvaluator(allItemsState);
+    }
   }
 
   public calculateAll() {
@@ -189,15 +238,7 @@ export class OverworldTraverser {
     return currentBunnyState;
   }
 
-  private combineStatuses(status1: LogicStatus, status2: LogicStatus): LogicStatus {
-    const order: LogicStatus[] = ["unavailable", "possible", "ool", "available", "information"];
-    return order[Math.max(order.indexOf(status1), order.indexOf(status2))];
-  }
 
-  private minimumStatus(status1: LogicStatus, status2: LogicStatus): LogicStatus {
-    const order: LogicStatus[] = ["unavailable", "possible", "ool", "available", "information"];
-    return order[Math.min(order.indexOf(status1), order.indexOf(status2))];
-  }
 
   private updateIfBetter(regionName: string, newStatus: LogicStatus, newBunnyState: boolean, ctx: OverworldTraverserContext): void {
     const current = ctx.reachable.get(regionName)!;
@@ -206,12 +247,12 @@ export class OverworldTraverser {
     // No bunny is always better
     if (current.bunnyState && !newBunnyState) {
       ctx.reachable.set(regionName, {
-        status: this.combineStatuses(current.status, newStatus),
+        status: combineStatuses(current.status, newStatus),
         bunnyState: newBunnyState,
       });
     } else {
       // Not sure if this is required?
-      const combinedStatus = this.combineStatuses(current.status, newStatus);
+      const combinedStatus = combineStatuses(current.status, newStatus);
       if (combinedStatus !== current.status) {
         ctx.reachable.set(regionName, {
           status: combinedStatus,
@@ -222,7 +263,6 @@ export class OverworldTraverser {
   }
 
   private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext): LogicStatus {
-    // Placeholder logic evaluation - in a real implementation, this would be more complex
     const evalCtx: EvaluationContext = {
       regionName: fromRegion,
       canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
@@ -230,13 +270,29 @@ export class OverworldTraverser {
 
     return this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
   }
+  
+  /** Evaluate exit requirements using all-items evaluator for portal discovery in partial mode */
+  private evaluateExitRequirementsForDiscovery(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext): LogicStatus {
+    const evalCtx: EvaluationContext = {
+      regionName: fromRegion,
+      canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
+    };
+
+    // In partial mode, use all-items evaluator to discover more portals
+    const evaluator = this.allItemsEvaluator ?? this.requirementEvaluator;
+    return evaluator.evaluateWorldLogic(exit.requirements, evalCtx);
+  }
 
   private processExit(exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): void {
     if (!exit?.to) return;
 
     const currentReachability = ctx.reachable.get(exit.to);
 
-    const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx);
+    // For dungeon exits in partial mode, use all-items evaluator to discover portals
+    // that would be reachable with full inventory
+    const exitStatus = (exit.type === "Dungeon" && this.allItemsEvaluator)
+      ? this.evaluateExitRequirementsForDiscovery(exit, fromRegion, ctx)
+      : this.evaluateExitRequirements(exit, fromRegion, ctx);
 
     if (exitStatus === "unavailable") {
       ctx.blockedExits.push({ exit, from: fromRegion });
@@ -247,7 +303,7 @@ export class OverworldTraverser {
       const dungeonId = this.getDungeonIdFromPortal(exit.to);
       if (dungeonId) {
         const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-        const newStatus = this.combineStatuses(fromRegionReachability.status, exitStatus);
+        const newStatus = combineStatuses(fromRegionReachability.status, exitStatus);
 
         // Get the key cost to reach this overworld region (if it was reached via a dungeon exit)
         const regionKeyCost = ctx.overworldKeyCost.get(fromRegion) ?? 0;
@@ -262,17 +318,25 @@ export class OverworldTraverser {
           ctx.allDiscoveredPortals.set(dungeonId, new Map());
         }
 
-        // Only add to pending if this is a NEW portal we haven't seen before
-        if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
+        // Add or update portal status - the main traversal may find a better status
+        // than the discovery phase (which conservatively uses "unavailable" or "possible")
+        const existingPortal = ctx.allDiscoveredPortals.get(dungeonId)!.get(exit.to);
+        if (!existingPortal) {
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { bunnyState: newBunnyState, status: newStatus, keyCost: regionKeyCost });
           ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { bunnyState: newBunnyState, status: newStatus, keyCost: regionKeyCost });
+        } else if (isBetterStatus(newStatus, existingPortal.status)) {
+          // Update to better status
+          existingPortal.status = newStatus;
+          existingPortal.bunnyState = newBunnyState && existingPortal.bunnyState;
+          existingPortal.keyCost = Math.min(existingPortal.keyCost, regionKeyCost);
+          ctx.pendingDungeons.get(dungeonId)!.set(exit.to, existingPortal);
         }
       }
       return; // We process dungeon entrances separately
     }
 
     const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-    const newStatus = this.combineStatuses(fromRegionReachability.status, exitStatus);
+    const newStatus = combineStatuses(fromRegionReachability.status, exitStatus);
 
     if (!currentReachability) {
       ctx.reachable.set(exit.to, {
@@ -312,7 +376,8 @@ export class OverworldTraverser {
       const inventoryKeys = this.state.dungeons[dungeonId]?.smallKeys ?? 0;
 
       // Traverse the dungeon, providing a callback to check overworld region reachability
-      const dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId);
+      // Use partial key logic by default (assumes all items for key counting)
+      const dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId, "partial");
       const canReachOverworldRegion = (regionName: string): LogicStatus => {
         const regionReach = ctx.reachable.get(regionName);
         if (!regionReach) return "unavailable";
@@ -342,7 +407,7 @@ export class OverworldTraverser {
         } else {
           // Use minimum (worse) status - the dungeon traverser's key accessibility
           // analysis is authoritative, so we should not override "possible" with "available"
-          const newStatus = this.minimumStatus(existing.status, regionState.status);
+          const newStatus = minimumStatus(existing.status, regionState.status);
           if (newStatus !== existing.status) {
             ctx.reachable.set(regionName, {
               status: newStatus,
@@ -435,7 +500,7 @@ export class OverworldTraverser {
         };
 
         const locationStatus = this.requirementEvaluator.evaluateWorldLogic(locationLogic.requirements, evalCtx);
-        locationStatuses[locationName] = this.minimumStatus(regionReachability.status, locationStatus);
+        locationStatuses[locationName] = minimumStatus(regionReachability.status, locationStatus);
       }
     }
     return locationStatuses;
@@ -488,7 +553,7 @@ export class OverworldTraverser {
 
       if (exitStatus !== "unavailable") {
         const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-        const newStatus = this.combineStatuses(fromRegionReachability.status, exitStatus);
+        const newStatus = combineStatuses(fromRegionReachability.status, exitStatus);
 
         ctx.reachable.set(exit.to, {
           status: newStatus,
@@ -505,8 +570,111 @@ export class OverworldTraverser {
     return madeProgress;
   }
 
+  /**
+   * In partial mode, run a discovery-only BFS with all-items evaluator
+   * to find all dungeon portals that would be reachable with full inventory.
+   * This populates allDiscoveredPortals before the main traversal.
+   * 
+   * Portals discovered this way are used for KEY COUNTING (Dijkstra/BFS phases)
+   * but their entry status is set to "unavailable" since the player can't 
+   * actually reach them with current inventory. This allows key contention
+   * logic to work while still marking locations behind those portals as unreachable.
+   */
+  private discoverAllPortals(ctx: OverworldTraverserContext): void {
+    if (!this.allItemsEvaluator) return;
+    
+    // First, do a BFS with actual inventory to find which overworld regions are truly reachable
+    const actuallyReachable = new Set<string>();
+    const actualQueue = ["Menu", "Flute Sky"];
+    for (const r of actualQueue) actuallyReachable.add(r);
+    
+    while (actualQueue.length > 0) {
+      const current = actualQueue.shift()!;
+      const regionLogic = this.regions[current];
+      if (!regionLogic?.exits) continue;
+      
+      for (const exit of Object.values(regionLogic.exits)) {
+        if (!exit?.to || exit.type === "Dungeon") continue; // Skip dungeon portals for now
+        
+        const evalCtx: EvaluationContext = {
+          regionName: current,
+          canReachRegion: (name: string) => actuallyReachable.has(name) ? "available" : "unavailable",
+        };
+        const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
+        
+        if (status !== "unavailable" && !actuallyReachable.has(exit.to)) {
+          actuallyReachable.add(exit.to);
+          actualQueue.push(exit.to);
+        }
+      }
+    }
+    
+    // Now do a BFS with all-items to find ALL dungeon portals
+    const visited = new Set<string>();
+    const queue = ["Menu", "Flute Sky"];
+    
+    for (const region of queue) {
+      visited.add(region);
+    }
+    
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      const regionLogic = this.regions[current];
+      
+      if (!regionLogic?.exits) continue;
+      
+      for (const exit of Object.values(regionLogic.exits)) {
+        if (!exit?.to) continue;
+        
+        // Evaluate with all-items evaluator
+        const evalCtx: EvaluationContext = {
+          regionName: current,
+          canReachRegion: (name: string) => visited.has(name) ? "available" : "unavailable",
+        };
+        const status = this.allItemsEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
+        
+        if (status === "unavailable") continue;
+        
+        // If this is a dungeon portal, register it
+        if (exit.type === "Dungeon") {
+          const dungeonId = this.getDungeonIdFromPortal(exit.to);
+          if (dungeonId) {
+            if (!ctx.allDiscoveredPortals.has(dungeonId)) {
+              ctx.allDiscoveredPortals.set(dungeonId, new Map());
+            }
+            if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
+              // Entry status depends on whether the region leading to the portal
+              // is actually reachable with current inventory
+              // If not reachable, mark as "unavailable" so locations behind are correctly marked
+              const entryStatus = actuallyReachable.has(current) ? "possible" : "unavailable";
+              
+              ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { 
+                bunnyState: false, 
+                status: entryStatus,
+                keyCost: 0
+              });
+            }
+          }
+          continue;
+        }
+        
+        // For overworld regions, add to discovery queue
+        if (!visited.has(exit.to)) {
+          visited.add(exit.to);
+          queue.push(exit.to);
+        }
+      }
+    }
+  }
+
   public traverse(): Map<string, RegionReachability> {
     const ctx = this.initStartRegions();
+    
+    // In partial mode, first discover all reachable portals with all-items
+    if (this.protection === "partial") {
+      this.discoverAllPortals(ctx);
+    }
+    
     let madeProgress = true;
 
     while (madeProgress) {
