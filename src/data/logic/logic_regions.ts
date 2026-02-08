@@ -561,16 +561,16 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             },
-            "Lost Woods East Area Tree Pull": {
+            "Lost Woods East Area Crab Drop": {
                 "requirements": {
-                    "Open": {
+                    "Open": {},
+                    "Inverted": {
                         "always": {
                             "allOf": [
-                                "canKillMostEnemies"
+                                "moonpearl"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             },
             "Lost Woods Hideout Tree": {
@@ -586,6 +586,19 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Lost Woods East Area Tree Pull": {
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillMostEnemies",
                                 "moonpearl"
                             ]
                         }
@@ -673,7 +686,20 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lumberjack Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {
+            "Lumberjack Area Crab Drop": {
+                "requirements": {
+                    "Open": {},
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
     },
     "West Death Mountain (Top)": {
         "exits": {
@@ -1776,16 +1802,16 @@ export const logic_regions: Record<string, RegionLogic> = {
         ],
         "type": "LightWorld",
         "locations": {
-            "Mountain Pass Area Tree Pull": {
+            "Mountain Pass Area Crab Drop": {
                 "requirements": {
-                    "Open": {
+                    "Open": {},
+                    "Inverted": {
                         "always": {
                             "allOf": [
-                                "canKillMostEnemies"
+                                "moonpearl"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             },
             "Mountain Pass Pull Tree": {
@@ -1820,6 +1846,19 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Mountain Pass Area Tree Pull": {
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillMostEnemies",
                                 "moonpearl"
                             ]
                         }
@@ -4326,18 +4365,6 @@ export const logic_regions: Record<string, RegionLogic> = {
         ],
         "type": "LightWorld",
         "locations": {
-            "Hyrule Castle Courtyard Tree Pull": {
-                "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    },
-                    "Inverted": "never"
-                }
-            },
             "Hyrule Castle Tree": {
                 "requirements": {
                     "Open": {
@@ -4351,6 +4378,19 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Hyrule Castle Courtyard Tree Pull": {
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillMostEnemies",
                                 "moonpearl"
                             ]
                         }
@@ -4846,19 +4886,6 @@ export const logic_regions: Record<string, RegionLogic> = {
         ],
         "type": "LightWorld",
         "locations": {
-            "Eastern Palace Area Tree Pull": {
-                "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "agahnim"
-                            ]
-                        }
-                    },
-                    "Inverted": "never"
-                }
-            },
             "Eastern Palace Tree": {
                 "requirements": {
                     "Open": {
@@ -4873,6 +4900,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
+                                "agahnim",
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Eastern Palace Area Tree Pull": {
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillMostEnemies",
                                 "agahnim",
                                 "moonpearl"
                             ]
@@ -7292,15 +7333,16 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Statues Area Tree Pull": {
                 "requirements": {
-                    "Open": {
+                    "Open": "never",
+                    "Inverted": {
                         "always": {
                             "allOf": [
                                 "canKillMostEnemies",
-                                "agahnim"
+                                "agahnim",
+                                "moonpearl"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             }
         }
@@ -8069,6 +8111,25 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Desert Pass Area Crab Drop": {
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "glove"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "glove",
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
             }
         }
     },
@@ -8337,7 +8398,20 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From South Pass Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {
+            "South Pass Area Crab Drop": {
+                "requirements": {
+                    "Open": {},
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "moonpearl"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
     },
     "Octoballoon Area": {
         "exits": {
@@ -9433,15 +9507,14 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Turtle Rock Area Tree Pull": {
                 "requirements": {
-                    "Open": {
+                    "Open": "never",
+                    "Inverted": {
                         "always": {
                             "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
+                                "canKillMostEnemies"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             }
         }
@@ -9558,15 +9631,14 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Bumper Cave Area Tree Pull": {
                 "requirements": {
-                    "Open": {
+                    "Open": "never",
+                    "Inverted": {
                         "always": {
                             "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
+                                "canKillMostEnemies"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             }
         }
@@ -11487,19 +11559,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             },
-            "Pyramid Area Tree Pull": {
-                "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
-                            ]
-                        }
-                    },
-                    "Inverted": "never"
-                }
-            },
             "Pyramid Tree": {
                 "requirements": {
                     "Open": {
@@ -11514,6 +11573,18 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Pyramid Area Tree Pull": {
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillMostEnemies"
                             ]
                         }
                     }
@@ -14120,19 +14191,6 @@ export const logic_regions: Record<string, RegionLogic> = {
         ],
         "type": "DarkWorld",
         "locations": {
-            "Hype Cave Area Tree Pull": {
-                "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
-                            ]
-                        }
-                    },
-                    "Inverted": "never"
-                }
-            },
             "Hype Cave Statue": {
                 "requirements": {
                     "Open": {
@@ -14147,6 +14205,18 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Hype Cave Area Tree Pull": {
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillMostEnemies"
                             ]
                         }
                     }
@@ -14925,15 +14995,14 @@ export const logic_regions: Record<string, RegionLogic> = {
             },
             "Dark South Pass Area Tree Pull": {
                 "requirements": {
-                    "Open": {
+                    "Open": "never",
+                    "Inverted": {
                         "always": {
                             "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
+                                "canKillMostEnemies"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             }
         }
@@ -16985,14 +17054,14 @@ export const logic_regions: Record<string, RegionLogic> = {
             },
             "Snitch Lady (East) Tree Pull": {
                 "requirements": {
-                    "Open": {
+                    "Open": "never",
+                    "Inverted": {
                         "always": {
                             "allOf": [
                                 "canKillMostEnemies"
                             ]
                         }
-                    },
-                    "Inverted": "never"
+                    }
                 }
             }
         }
@@ -29984,7 +30053,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                 }
             },
             "PoD Arena Bridge Drop Down": {
-                "to": "PoD Arena Main",
+                "to": "PoD Arena Landing",
                 "type": "Dungeon",
                 "requirements": {
                     "Open": {},
@@ -34428,20 +34497,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Swamp Trench 2 Departure",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "canReach|Swamp Crystal Switch Inner"
-                            ]
-                        }
-                    },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canReach|Swamp Crystal Switch Inner"
-                            ]
-                        }
-                    }
+                    "Open": {},
+                    "Inverted": {}
                 }
             },
             "Swamp West Shallows Push Blocks": {

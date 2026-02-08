@@ -183,6 +183,25 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible");
     });
 
+    it("[DANGEROUS SK BK Pottery KeyDrop] should mark right side as available with less than 4 wild small keys and keydrop and no glove", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
+      state.items.glove.amount = 0; // Remove gloves to prevent access to back
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet, "dangerous");
+      const result = traverser.calculateAll();
+
+      // These locations should be available (no key required)
+      // Same test as above but without glove. Statuses of reachable locations should be unchanged because game logic assumes we have access to all inventory items
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Torch"]).toBe("available");
+
+    
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("unavailable");
+      expect(result.locationsLogic["Desert Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available");
+    });
+
     it("[SK BK Pottery KeyDrop] should mark right side as possible with less than 4 wild small keys and keydrop", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
 
@@ -451,6 +470,36 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Misery Mire - Compass Chest"]).toBe("possible");
       expect(result.locationsLogic["Misery Mire - Big Key Chest"]).toBe("possible");
       expect(result.locationsLogic["Misery Mire - Boss"]).toBe("available");
+    });
+
+    it("[PARTIAL SK BK KeyDrop Pottery] should mark lobby unavailable with 0 wild small keys (no crystals switches available)", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("mm", { smallKeys: 0, bigKey: false }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+      
+      // With 0 keys and no big key, crystal switches are not reachable
+      // So locations behind blue barriers are unavailable
+      expect(result.locationsLogic["Misery Mire - Map Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Misery Mire - Main Lobby"]).toBe("unavailable");
+      expect(result.locationsLogic["Misery Mire - Boss"]).toBe("unavailable");
+
+      expect(result.locationsLogic["Misery Mire - Conveyor Crystal Key Drop"]).toBe("unavailable");
+      expect(result.locationsLogic["Misery Mire - Fishbone Pot Key"]).toBe("unavailable");
+    });
+
+    it("[PARTIAL SK BK KeyDrop Pottery] should mark left side as possible with 1 wild small keys  (crystal switch available)", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("mm", { smallKeys: 1, bigKey: false }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+      
+      expect(result.locationsLogic["Misery Mire - Map Chest"]).toBe("possible");
+      expect(result.locationsLogic["Misery Mire - Main Lobby"]).toBe("possible");
+      expect(result.locationsLogic["Misery Mire - Boss"]).toBe("unavailable");
+
+      expect(result.locationsLogic["Misery Mire - Conveyor Crystal Key Drop"]).toBe("possible");
+      expect(result.locationsLogic["Misery Mire - Fishbone Pot Key"]).toBe("possible");
     });
   });
   
@@ -757,6 +806,29 @@ describe("LogicEngine", () => {
       // Bumper Cave Ledge requires Dark World access
       expect(result.locationsLogic["Bumper Cave Ledge"]).toBe("unavailable");
     });
+
+    it("should mark back of desert as reachable without flute", () => {
+      const state = gameState().withAllItems().withoutItems(['flute']).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+
+      // Back of Desert should be reachable without flute
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("available");
+    });
+
+    it("should traverse pod through the front", () => {
+      const state = gameState().withAllItems().withoutItems(['bomb', 'somaria']).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+      
+      // Player should be able to navigate through front of pod, and use bow/fire rod/ice rod/boomerang to hit a ranged switch to reach the back and compass 
+      expect(result.locationsLogic["Palace of Darkness - Compass Chest"]).toBe("available");
+    });
   });
 
   describe("No Logic Mode", () => {
@@ -799,6 +871,105 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Spike Cave"]).toBe("available");
       expect(result.locationsLogic["Pyramid Fairy - Left"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("available");
+    });
+  });
+
+  describe("Non-Wild Big Key Inference", () => {
+    // Default settings: wildBigKeys: false, wildSmallKeys: "inDungeon"
+    // When BK is NOT in the world pool, infer BK accessibility from non-BK locations
+
+    it("should mark BK-locked locations as available when all non-BK locations are reachable", () => {
+      // All items → all non-BK locations in Desert are reachable → BK guaranteed accessible
+      const state = gameState().withAllItems().build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Boss is behind the big key door (Desert Wall Slide NW → Desert Boss)
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("available");
+      // Big Chest requires BK to open
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
+      // Non-BK-locked locations should be unaffected
+      expect(result.locationsLogic["Desert Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Compass Chest"]).toBe("available");
+    });
+
+    it("should mark BK-locked locations as possible when not all non-BK locations are reachable", () => {
+      // Without boots → Desert Palace - Torch is unreachable → can't guarantee BK access
+      const state = gameState().withAllItems().withoutItems(["boots"]).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // BK-locked locations should be downgraded to "possible"
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("possible");
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("possible");
+      // Torch should be unavailable (requires boots)
+      expect(result.locationsLogic["Desert Palace - Torch"]).toBe("unavailable");
+      // Other non-BK locations should still be available
+      expect(result.locationsLogic["Desert Palace - Map Chest"]).toBe("available");
+    });
+
+    it("should mark BK-locked locations as unavailable when all reachable non-BK locations are checked", () => {
+      // Without boots, torch is unreachable.
+      // If all OTHER non-BK locations are checked and no BK found → BK must be on torch → unavailable
+      const state = gameState().withAllItems().withoutItems(["boots"]).withChecks([
+        "Desert Palace - Map Chest",
+        "Desert Palace - Compass Chest",
+        "Desert Palace - Big Key Chest",
+      ]).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("unavailable");
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("unavailable");
+    });
+
+    it("should keep BK-locked locations available when player has the big key", () => {
+      // Even without boots, if player has the BK → BK-locked stuff is available
+      const state = gameState().withAllItems().withoutItems(["boots"]).withDungeon("dp", { bigKey: true }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
+    });
+
+    it("should not apply BK inference when wildBigKeys is enabled", () => {
+      // With wildBigKeys: true, BK inference should NOT apply
+      // Instead, the explicit BK check controls Big Chest, and boss requires BK in inventory
+      const state = gameState().withAllItems().withoutItems(["boots"]).withSettings({ wildBigKeys: true }).withDungeon("dp", { bigKey: true }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // With wildBigKeys + BK in inventory, boss and big chest should be available
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
+    });
+
+    it("should apply BK inference to Eastern Palace with all items", () => {
+      // EP has BK-gated exits (Eastern Courtyard N, Eastern Big Key NE)
+      // With all items, all non-BK treasure locations are reachable → boss available
+      const state = gameState().withAllItems().build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // EP boss is behind the big key door, but BK inference says "available"
+      expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("available");
+      expect(result.locationsLogic["Eastern Palace - Big Chest"]).toBe("available");
+      // Non-BK locations should be unaffected
+      expect(result.locationsLogic["Eastern Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Eastern Palace - Big Key Chest"]).toBe("available");
     });
   });
 

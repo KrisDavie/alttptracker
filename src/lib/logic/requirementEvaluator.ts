@@ -324,7 +324,8 @@ export class RequirementEvaluator {
           return true;
         }
         if (ctx.dungeonId) {
-          return this.state.dungeons[ctx.dungeonId]?.bigKey ?? false;
+          const hasBigKey = this.state.dungeons[ctx.dungeonId]?.bigKey ?? false;
+          return hasBigKey;
         }
         return false;
       case "canAvoidLasers":
