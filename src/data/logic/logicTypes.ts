@@ -52,6 +52,7 @@ export interface RegionReachability {
 export interface DungeonTraversalResult {
   regionStatuses: Map<string, LogicStatus>; // Internal region statuses
   exitStatuses: Map<string, LogicStatus>; // Dungeon -> Overworld exits
+  bigKeyGatedRegions?: Set<string>; // Regions only reachable through a bigkey exit
 }
 
 export interface GameState {
@@ -59,6 +60,7 @@ export interface GameState {
   settings: SettingsState;
   dungeons: DungeonsState;
   entrances: EntrancesState;
+  checks?: Record<string, { checked: boolean }>;
 }
 
 

@@ -212,6 +212,7 @@ export class GameStateBuilder {
   private settings: SettingsState;
   private dungeons: DungeonsState;
   private entrances: EntrancesState;
+  private checks: Record<string, { checked: boolean }> = {};
 
   constructor() {
     this.items = createEmptyItems();
@@ -274,12 +275,20 @@ export class GameStateBuilder {
     return this;
   }
 
+  withChecks(checkedLocations: string[]): this {
+    for (const loc of checkedLocations) {
+      this.checks[loc] = { checked: true };
+    }
+    return this;
+  }
+
   build() {
     return {
       items: this.items,
       settings: this.settings,
       dungeons: this.dungeons,
       entrances: this.entrances,
+      checks: this.checks,
     };
   }
 }
