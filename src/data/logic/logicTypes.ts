@@ -53,6 +53,7 @@ export interface DungeonTraversalResult {
   regionStatuses: Map<string, LogicStatus>; // Internal region statuses
   exitStatuses: Map<string, LogicStatus>; // Dungeon -> Overworld exits
   bigKeyGatedRegions?: Set<string>; // Regions only reachable through a bigkey exit
+  smallKeyGatedRegions?: Set<string>; // Regions only reachable through a smallkey exit
 }
 
 export interface GameState {
