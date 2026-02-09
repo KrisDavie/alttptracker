@@ -1,28 +1,28 @@
 /**
  * OverworldTraverser - Computes reachability for overworld regions and coordinates dungeon traversal.
- * 
+ *
  * OVERVIEW:
  * The traverser determines which overworld regions are reachable given the player's current
  * inventory and settings. It orchestrates dungeon traversal by collecting portal entries and
  * processing dungeon exits that return to the overworld.
- * 
+ *
  * TRAVERSAL APPROACH:
- * 
+ *
  * 1. PORTAL DISCOVERY (partial mode): Before main traversal, discovers all dungeon portals
  *    reachable with full inventory. This ensures key contention logic applies even to regions
  *    the player can't currently reach. Portals discovered this way start with "unavailable" status.
- * 
+ *
  * 2. BFS TRAVERSAL: Starting from the initial region (Link's House or inverted equivalent),
  *    explores all reachable overworld regions via exits. Each exit is evaluated against
  *    the player's inventory to determine its status.
- * 
+ *
  * 3. DUNGEON COORDINATION: When a dungeon portal is found, it's collected into pendingDungeons.
  *    After overworld BFS stabilizes, DungeonTraverser is called for each dungeon with all
  *    discovered portals. Dungeon exits back to overworld update reachability and re-trigger BFS.
- * 
+ *
  * 4. FIXED-POINT ITERATION: The process repeats until no new regions are discovered.
  *    Dungeons may unlock overworld regions that unlock new dungeon portals.
- * 
+ *
  * KEY CONCEPTS:
  * - RegionReachability: Tracks status and bunnyState for each region
  * - Portal discovery: In partial mode, finds all potential portals before main traversal
@@ -30,7 +30,7 @@
  * - Bunny state: Tracks whether player is a bunny (in Dark World without Moon Pearl)
  * - blockedExits: Exits that failed evaluation are re-checked when new items/regions unlock
  * - overworldKeyCost: Tracks keys used to reach overworld regions via dungeon exits
- * 
+ *
  * PROTECTION MODES:
  * - partial: Assumes all items for key counting/discovery, uses actual inventory for final status
  * - dangerous: Uses actual inventory throughout (may miss key contention in unreachable areas)
@@ -41,6 +41,7 @@ import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { DungeonTraverser } from "./dungeonTraverser";
 import { createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } from "./logicHelpers";
+import { DungeonsData } from "@/data/dungeonData";
 
 interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
@@ -100,6 +101,8 @@ export class OverworldTraverser {
   private allItemsEvaluator?: RequirementEvaluator;
   // Per-dungeon set of regions that are only reachable via big key doors
   private dungeonBigKeyGatedRegions: Map<string, Set<string>> = new Map();
+  // Per-dungeon set of regions that are only reachable via small key doors
+  private dungeonSmallKeyGatedRegions: Map<string, Set<string>> = new Map();
 
   constructor(state: GameState, logicSet: LogicSet, protection: "partial" | "dangerous" = "partial") {
     this.state = state;
@@ -107,7 +110,7 @@ export class OverworldTraverser {
     this.regions = logicSet.regions as Record<string, RegionLogic>;
     this.requirementEvaluator = new RequirementEvaluator(state);
     this.protection = protection;
-    
+
     // In partial mode, create an all-items evaluator for discovering regions
     if (protection === "partial") {
       const allItemsState = createAllItemsState(this.state);
@@ -240,8 +243,6 @@ export class OverworldTraverser {
     return currentBunnyState;
   }
 
-
-
   private updateIfBetter(regionName: string, newStatus: LogicStatus, newBunnyState: boolean, ctx: OverworldTraverserContext): void {
     const current = ctx.reachable.get(regionName)!;
     if (!current) return; // Can't update non-existant region, shouldn't happen though
@@ -272,7 +273,7 @@ export class OverworldTraverser {
 
     return this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
   }
-  
+
   /** Evaluate exit requirements using all-items evaluator for portal discovery in partial mode */
   private evaluateExitRequirementsForDiscovery(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext): LogicStatus {
     const evalCtx: EvaluationContext = {
@@ -292,9 +293,7 @@ export class OverworldTraverser {
 
     // For dungeon exits in partial mode, use all-items evaluator to discover portals
     // that would be reachable with full inventory
-    const exitStatus = (exit.type === "Dungeon" && this.allItemsEvaluator)
-      ? this.evaluateExitRequirementsForDiscovery(exit, fromRegion, ctx)
-      : this.evaluateExitRequirements(exit, fromRegion, ctx);
+    const exitStatus = exit.type === "Dungeon" && this.allItemsEvaluator ? this.evaluateExitRequirementsForDiscovery(exit, fromRegion, ctx) : this.evaluateExitRequirements(exit, fromRegion, ctx);
 
     if (exitStatus === "unavailable") {
       ctx.blockedExits.push({ exit, from: fromRegion });
@@ -305,7 +304,11 @@ export class OverworldTraverser {
       const dungeonId = this.getDungeonIdFromPortal(exit.to);
       if (dungeonId) {
         const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-        const newStatus = combineStatuses(fromRegionReachability.status, exitStatus);
+        // For dungeon portals in partial mode, the exitStatus came from the all-items
+        // evaluator (for discovery). Compute actual status with real inventory so that
+        // medallion uncertainty and missing items are reflected in the portal's entry status.
+        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx) : exitStatus;
+        const newStatus = minimumStatus(fromRegionReachability.status, actualExitStatus === "unavailable" ? "unavailable" : actualExitStatus);
 
         // Get the key cost to reach this overworld region (if it was reached via a dungeon exit)
         const regionKeyCost = ctx.overworldKeyCost.get(fromRegion) ?? 0;
@@ -338,7 +341,7 @@ export class OverworldTraverser {
     }
 
     const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-    const newStatus = combineStatuses(fromRegionReachability.status, exitStatus);
+    const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
     if (!currentReachability) {
       ctx.reachable.set(exit.to, {
@@ -374,8 +377,6 @@ export class OverworldTraverser {
         entryKeyCost.set(portalName, portalData.keyCost);
       }
 
-
-
       // Get dungeon keys and big key status
       const inventoryKeys = this.state.dungeons[dungeonId]?.smallKeys ?? 0;
 
@@ -397,11 +398,18 @@ export class OverworldTraverser {
 
       const result = dungeonTraverser.traverse(entryMap, entryStatus, inventoryKeys, entryKeyCost, canReachOverworldRegion);
 
-      // Store big-key-gated region info for this dungeon (used in evaluateLocations)
-      if (result.bigKeyGatedRegions && result.bigKeyGatedRegions.size > 0) {
+      // Store key-gated region info from the FIRST traversal only.
+      // Re-traversals with additional entry portals (e.g., side portals discovered
+      // from dungeon exits) would make the gated set too permissive — regions behind
+      // key doors from the primary entry would appear non-gated because the side
+      // portal provides an alternative path. The first traversal (primary portals
+      // only) gives the most conservative and correct gated set for key inference.
+      if (result.bigKeyGatedRegions && !this.dungeonBigKeyGatedRegions.has(dungeonId)) {
         this.dungeonBigKeyGatedRegions.set(dungeonId, result.bigKeyGatedRegions);
       }
-
+      if (result.smallKeyGatedRegions && !this.dungeonSmallKeyGatedRegions.has(dungeonId)) {
+        this.dungeonSmallKeyGatedRegions.set(dungeonId, result.smallKeyGatedRegions);
+      }
 
       // Incorporate dungeon region statuses (for location evaluation later)
       // Always use the latest dungeon traverser result: re-traversals with more
@@ -514,7 +522,7 @@ export class OverworldTraverser {
     // When BK is NOT in the world pool, infer whether BK-locked locations are accessible
     // based on whether the player can reach all potential BK locations in the dungeon
     if (!this.state.settings.wildBigKeys) {
-      const bkAvailability = this.computeDungeonBigKeyAvailability(locationStatuses);
+      const bkAvailability = this.computeDungeonKeyAvailability(locationStatuses, "bigKey");
 
       for (const [regionName, regionLogic] of Object.entries(this.regions)) {
         if (!regionLogic.locations || regionLogic.type !== "Dungeon") continue;
@@ -527,6 +535,29 @@ export class OverworldTraverser {
         for (const locationName of Object.keys(regionLogic.locations)) {
           const isBKLocked = bkGated?.has(regionName) || locationName.includes("Big Chest");
           if (isBKLocked && locationStatuses[locationName] !== undefined) {
+            locationStatuses[locationName] = minimumStatus(locationStatuses[locationName], availability);
+          }
+        }
+      }
+    }
+
+    // Post-process: Apply small key inference for non-wild small keys
+    // When SK is NOT in the world pool (inDungeon), infer whether SK-locked locations are accessible
+    // based on whether the player can reach all potential SK locations in the dungeon
+    if (this.state.settings.wildSmallKeys === "inDungeon") {
+      const skAvailability = this.computeDungeonKeyAvailability(locationStatuses, "smallKey");
+
+      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
+        if (!regionLogic.locations || regionLogic.type !== "Dungeon") continue;
+        const dungeonId = this.getDungeonIdFromRegion(regionName);
+        if (!dungeonId) continue;
+        const availability = skAvailability.get(dungeonId);
+        if (!availability || availability === "available") continue;
+
+        const skGated = this.dungeonSmallKeyGatedRegions.get(dungeonId);
+        for (const locationName of Object.keys(regionLogic.locations)) {
+          const isSKLocked = skGated?.has(regionName);
+          if (isSKLocked && locationStatuses[locationName] !== undefined) {
             locationStatuses[locationName] = minimumStatus(locationStatuses[locationName], availability);
           }
         }
@@ -558,19 +589,27 @@ export class OverworldTraverser {
   }
 
   /**
-   * For each dungeon (when !wildBigKeys), determine if the BK is accessible.
-   * Returns a map of dungeonId -> LogicStatus indicating BK availability.
-   * 
+   * For each dungeon, determine if a key type (big or small) is accessible.
+   * Returns a map of dungeonId -> LogicStatus indicating key availability.
+   *
+   * "Shuffle pool" locations where a key could end up:
+   *   - Regular chest locations (always)
+   *   - Big Chest (SK only — BK can't be in the big chest, but a shuffled SK can)
+   *   - Key Drop locations (only when settings.keyDrop is enabled)
+   *   - Pot Key locations (only when settings.pottery is "keys" or "cavekeys")
+   *
    * Logic:
-   * 1. Player has BK (autotracked) → "available"
-   * 2. All non-BK-locked treasure locations reachable → "available"
-   * 3. Not all reachable, but all reachable ones checked → "unavailable"
-   * 4. Not all reachable, some unchecked → "possible"
+   * 1. (BK only) Player already has the key (autotracked) → "available"
+   * 2. (SK only) No keys are shuffled (0 chest keys + pot/drop not enabled) → "available"
+   * 3. All non-gated shuffle-pool locations reachable → "available"
+   * 4. (BK only) All reachable non-gated locations checked → "unavailable"
+   * 5. Not all reachable → "possible"
    */
-  private computeDungeonBigKeyAvailability(
-    locationStatuses: Record<string, LogicStatus>
-  ): Map<string, LogicStatus> {
+  private computeDungeonKeyAvailability(locationStatuses: Record<string, LogicStatus>, keyType: "bigKey" | "smallKey"): Map<string, LogicStatus> {
     const result = new Map<string, LogicStatus>();
+
+    const isBigKey = keyType === "bigKey";
+    const primaryGatedRegions = isBigKey ? this.dungeonBigKeyGatedRegions : this.dungeonSmallKeyGatedRegions;
 
     // Collect dungeon IDs from regions
     const dungeonIds = new Set<string>();
@@ -582,53 +621,85 @@ export class OverworldTraverser {
     }
 
     for (const dungeonId of dungeonIds) {
-      // Player already has BK → available
-      if (this.state.dungeons[dungeonId]?.bigKey) {
+      // For BK: player already has BK → available
+      if (isBigKey && this.state.dungeons[dungeonId]?.bigKey) {
         result.set(dungeonId, "available");
         continue;
       }
 
-      const bkGatedRegions = this.dungeonBigKeyGatedRegions.get(dungeonId) ?? new Set<string>();
+      const gatedRegions = primaryGatedRegions.get(dungeonId) ?? new Set<string>();
 
-      // Scan all non-BK-locked treasure locations in this dungeon
-      let allNonBKReachable = true;
-      let allReachableNonBKChecked = true;
-      let hasAnyNonBKLocation = false;
+      // For SK: if no SK-gated regions exist, everything is freely accessible
+      if (!isBigKey && gatedRegions.size === 0) {
+        result.set(dungeonId, "available");
+        continue;
+      }
+
+      // For SK: if no keys are shuffled, all keys are in their fixed pot/drop locations
+      // Chest keys are always shuffled; pot/drop keys only if their settings are enabled
+      if (!isBigKey) {
+        const dungeonData = DungeonsData[dungeonId]?.totalLocations;
+        const hasChestKeys = (dungeonData?.smallkeys ?? 0) > 0;
+        const hasPotteryKeys = ["keys", "cavekeys"].includes(this.state.settings.pottery) && (dungeonData?.keypots ?? 0) > 0;
+        const hasDropKeys = this.state.settings.keyDrop && (dungeonData?.keydrops ?? 0) > 0;
+        if (!hasChestKeys && !hasPotteryKeys && !hasDropKeys) {
+          result.set(dungeonId, "available");
+          continue;
+        }
+      }
+
+      // Regions to exclude: the primary gated set, plus BK-gated when checking SK
+      // (BK-gated regions are handled by BK inference separately)
+      const excludedRegions = new Set(gatedRegions);
+      if (!isBigKey) {
+        const bkGated = this.dungeonBigKeyGatedRegions.get(dungeonId);
+        if (bkGated) for (const r of bkGated) excludedRegions.add(r);
+      }
+
+      // Scan all non-gated treasure locations in this dungeon
+      let allNonGatedReachable = true;
+      let allReachableChecked = true; // Only used for BK
+      let hasAnyNonGatedLocation = false;
 
       for (const [regionName, regionLogic] of Object.entries(this.regions)) {
         if (regionLogic.type !== "Dungeon") continue;
         if (this.getDungeonIdFromRegion(regionName) !== dungeonId) continue;
-        if (bkGatedRegions.has(regionName)) continue; // Skip BK-gated regions
+        if (excludedRegions.has(regionName)) continue;
         if (!regionLogic.locations) continue;
 
         for (const locationName of Object.keys(regionLogic.locations)) {
-          // Skip non-treasure locations (can't contain BK)
+          // Common exclusions (non-treasure locations)
           if (locationName === "Crystal_Switch") continue;
-          if (locationName.includes("Big Chest")) continue; // BK-locked itself
-          if (locationName.includes("Key Drop")) continue;  // Small key pool only
-          if (locationName.endsWith("Pot Key")) continue;    // Small key pool only
-          if (/Pot #\d+$/.test(locationName)) continue;      // Pot drops, not treasure
-          if (/Enemy #\d+$/.test(locationName)) continue;    // Enemy drops, not treasure
-          if (locationName.endsWith("Boss Kill")) continue;   // Not a collectible item
-          if (locationName.endsWith("Prize")) continue;       // Dungeon prize, not BK source
+          if (locationName.endsWith("Boss Kill")) continue;
+          if (locationName.endsWith("Prize")) continue;
 
-          hasAnyNonBKLocation = true;
+          // TODO: Update when more pot/drop shuffles are enabled
+          if (/Pot #\d+$/.test(locationName)) continue;
+          if (/Enemy #\d+$/.test(locationName)) continue;
+
+          if (isBigKey && locationName.includes("Big Chest") && !["sp"].includes(dungeonId)) continue;
+          // Key Drop/Pot Key: when their respective settings are off, these locations
+          // have fixed keys and aren't part of the shuffle pool (applies to both BK and SK).
+          if (locationName.includes("Key Drop") && !this.state.settings.keyDrop) continue;
+          if (locationName.endsWith("Pot Key") && !["keys", "cavekeys"].includes(this.state.settings.pottery)) continue;
+
+          hasAnyNonGatedLocation = true;
           const status = locationStatuses[locationName];
           if (!status || status === "unavailable") {
-            allNonBKReachable = false;
-          } else {
-            // Reachable location — check if player has collected it
+            allNonGatedReachable = false;
+          } else if (isBigKey) {
+            // BK tracks whether all reachable locations were checked
             const checkData = this.state.checks?.[locationName];
             if (!checkData?.checked) {
-              allReachableNonBKChecked = false;
+              allReachableChecked = false;
             }
           }
         }
       }
 
-      if (!hasAnyNonBKLocation || allNonBKReachable) {
+      if (!hasAnyNonGatedLocation || allNonGatedReachable) {
         result.set(dungeonId, "available");
-      } else if (allReachableNonBKChecked) {
+      } else if (isBigKey && allReachableChecked) {
         // All reachable non-BK locations checked without finding BK → unreachable
         result.set(dungeonId, "unavailable");
       } else {
@@ -665,7 +736,7 @@ export class OverworldTraverser {
 
       if (exitStatus !== "unavailable") {
         const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-        const newStatus = combineStatuses(fromRegionReachability.status, exitStatus);
+        const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
         ctx.reachable.set(exit.to, {
           status: newStatus,
@@ -686,67 +757,67 @@ export class OverworldTraverser {
    * In partial mode, run a discovery-only BFS with all-items evaluator
    * to find all dungeon portals that would be reachable with full inventory.
    * This populates allDiscoveredPortals before the main traversal.
-   * 
+   *
    * Portals discovered this way are used for KEY COUNTING (Dijkstra/BFS phases)
-   * but their entry status is set to "unavailable" since the player can't 
+   * but their entry status is set to "unavailable" since the player can't
    * actually reach them with current inventory. This allows key contention
    * logic to work while still marking locations behind those portals as unreachable.
    */
   private discoverAllPortals(ctx: OverworldTraverserContext): void {
     if (!this.allItemsEvaluator) return;
-    
+
     // First, do a BFS with actual inventory to find which overworld regions are truly reachable
     const actuallyReachable = new Set<string>();
     const actualQueue = ["Menu", "Flute Sky"];
     for (const r of actualQueue) actuallyReachable.add(r);
-    
+
     while (actualQueue.length > 0) {
       const current = actualQueue.shift()!;
       const regionLogic = this.regions[current];
       if (!regionLogic?.exits) continue;
-      
+
       for (const exit of Object.values(regionLogic.exits)) {
         if (!exit?.to || exit.type === "Dungeon") continue; // Skip dungeon portals for now
-        
+
         const evalCtx: EvaluationContext = {
           regionName: current,
-          canReachRegion: (name: string) => actuallyReachable.has(name) ? "available" : "unavailable",
+          canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
         };
         const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
-        
+
         if (status !== "unavailable" && !actuallyReachable.has(exit.to)) {
           actuallyReachable.add(exit.to);
           actualQueue.push(exit.to);
         }
       }
     }
-    
+
     // Now do a BFS with all-items to find ALL dungeon portals
     const visited = new Set<string>();
     const queue = ["Menu", "Flute Sky"];
-    
+
     for (const region of queue) {
       visited.add(region);
     }
-    
+
     while (queue.length > 0) {
       const current = queue.shift()!;
       const regionLogic = this.regions[current];
-      
+
       if (!regionLogic?.exits) continue;
-      
+
       for (const exit of Object.values(regionLogic.exits)) {
         if (!exit?.to) continue;
-        
+
         // Evaluate with all-items evaluator
         const evalCtx: EvaluationContext = {
           regionName: current,
-          canReachRegion: (name: string) => visited.has(name) ? "available" : "unavailable",
+          canReachRegion: (name: string) => (visited.has(name) ? "available" : "unavailable"),
         };
         const status = this.allItemsEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
-        
+
         if (status === "unavailable") continue;
-        
+
         // If this is a dungeon portal, register it
         if (exit.type === "Dungeon") {
           const dungeonId = this.getDungeonIdFromPortal(exit.to);
@@ -758,18 +829,28 @@ export class OverworldTraverser {
               // Entry status depends on whether the region leading to the portal
               // is actually reachable with current inventory
               // If not reachable, mark as "unavailable" so locations behind are correctly marked
-              const entryStatus = actuallyReachable.has(current) ? "possible" : "unavailable";
-              
-              ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { 
-                bunnyState: false, 
+              let entryStatus: LogicStatus = "unavailable";
+              if (actuallyReachable.has(current)) {
+                // Region is reachable — evaluate the exit with actual inventory to capture
+                // medallion uncertainty and other item-gated statuses
+                const actualEvalCtx: EvaluationContext = {
+                  regionName: current,
+                  canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
+                };
+                const actualStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, actualEvalCtx);
+                entryStatus = actualStatus === "unavailable" ? "unavailable" : actualStatus;
+              }
+
+              ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
+                bunnyState: false,
                 status: entryStatus,
-                keyCost: 0
+                keyCost: 0,
               });
             }
           }
           continue;
         }
-        
+
         // For overworld regions, add to discovery queue
         if (!visited.has(exit.to)) {
           visited.add(exit.to);
@@ -781,12 +862,12 @@ export class OverworldTraverser {
 
   public traverse(): Map<string, RegionReachability> {
     const ctx = this.initStartRegions();
-    
+
     // In partial mode, first discover all reachable portals with all-items
     if (this.protection === "partial") {
       this.discoverAllPortals(ctx);
     }
-    
+
     let madeProgress = true;
 
     while (madeProgress) {

@@ -10,6 +10,9 @@ export interface EvaluationContext {
   assumeSmallKey?: boolean;
   assumeBigKey?: boolean;
   canReachRegion?: (regionName: string) => LogicStatus;
+  /** Set by checkMedallion when the required medallion is unknown and the player
+   *  has 1-2 of the 3 medallions. The evaluator uses this to cap "available" → "possible". */
+  uncertainMedallion?: boolean;
 }
 
 export class RequirementEvaluator {
@@ -24,7 +27,15 @@ export class RequirementEvaluator {
     if (!logicState) {
       return "unavailable";
     }
-    return this.evaluateLogicState(logicState, ctx);
+    // Reset the flag before evaluation — checkMedallion may set it
+    ctx.uncertainMedallion = false;
+    const result = this.evaluateLogicState(logicState, ctx);
+    // If medallion was uncertain and the requirement otherwise passed,
+    // cap to "possible" since the player might have the wrong medallion
+    if (ctx.uncertainMedallion && result === "available") {
+      return "possible";
+    }
+    return result;
   }
 
   public evaluateLogicState(logicState: LogicState, ctx: EvaluationContext): LogicStatus {
@@ -87,17 +98,9 @@ export class RequirementEvaluator {
 
   private bossesKillStatus() {
     const killableBosses: Record<string, boolean> = {};
-    killableBosses["armos"] =
-      this.resolveSimple("melee_bow", {}) ||
-      this.resolveSimple("boomerang", {}) ||
-      this.resolveSimple("cane", {}) ||
-      this.resolveSimple("rod", {});
+    killableBosses["armos"] = this.resolveSimple("melee_bow", {}) || this.resolveSimple("boomerang", {}) || this.resolveSimple("cane", {}) || this.resolveSimple("rod", {});
 
-    killableBosses["lanmolas"] =
-      this.resolveSimple("melee_bow", {}) ||
-      this.resolveSimple("somaria", {}) ||
-      (this.resolveSimple("bomb", {}) && this.resolveSimple("byrna", {})) ||
-      this.resolveSimple("rod", {});
+    killableBosses["lanmolas"] = this.resolveSimple("melee_bow", {}) || this.resolveSimple("somaria", {}) || (this.resolveSimple("bomb", {}) && this.resolveSimple("byrna", {})) || this.resolveSimple("rod", {});
 
     killableBosses["moldorm"] = this.resolveSimple("melee", {});
 
@@ -107,27 +110,27 @@ export class RequirementEvaluator {
     killableBosses["arrghus"] =
       this.resolveSimple("hookshot", {}) &&
       (this.resolveSimple("melee", {}) ||
-        (this.resolveSimple("bow", {}) && this.resolveSimple("rod", {})) || 
-        (this.resolveSimple("bomb", {}) && this.resolveSimple("rod", {}) && (this.getBottleCount() > 1 || (this.getBottleCount() > 0 && this.resolveSimple("magic", {}))))); 
+        (this.resolveSimple("bow", {}) && this.resolveSimple("rod", {})) ||
+        (this.resolveSimple("bomb", {}) && this.resolveSimple("rod", {}) && (this.getBottleCount() > 1 || (this.getBottleCount() > 0 && this.resolveSimple("magic", {})))));
 
     killableBosses["mothula"] = this.resolveSimple("melee", {}) || (this.resolveComplex("canExtendMagic|10", {}) && this.resolveSimple("firerod", {})) || (this.resolveComplex("canExtendMagic|16", {}) && this.resolveSimple("cane", {}));
 
     killableBosses["blind"] = this.resolveSimple("melee", {}) || this.resolveSimple("cane", {});
 
-    killableBosses["kholdstare"] = this.resolveSimple("canBurnThingsMaybeSwordless", {}) && ((this.resolveSimple("firerod", {}) && this.resolveComplex("canExtendMagic|20", {})) || (this.resolveSimple("melee", {})));
+    killableBosses["kholdstare"] = this.resolveSimple("canBurnThingsMaybeSwordless", {}) && ((this.resolveSimple("firerod", {}) && this.resolveComplex("canExtendMagic|20", {})) || this.resolveSimple("melee", {}));
     // TODO: Add swordless logic
 
-    killableBosses["vitreous"] = this.resolveSimple("melee", {}) || (this.resolveSimple("bow", {}) && this.resolveSimple("bomb", {})) 
+    killableBosses["vitreous"] = this.resolveSimple("melee", {}) || (this.resolveSimple("bow", {}) && this.resolveSimple("bomb", {}));
 
     killableBosses["trinexx"] =
-      this.resolveSimple("firerod", {}) && this.resolveSimple("icerod", {}) && (
-        this.resolveSimple("hammer", {}) ||
+      this.resolveSimple("firerod", {}) &&
+      this.resolveSimple("icerod", {}) &&
+      (this.resolveSimple("hammer", {}) ||
         this.state.items.sword.amount > 2 ||
         (this.state.items.sword.amount == 2 && this.resolveComplex("canExtendMagic|16", {})) ||
-        (this.state.items.sword.amount == 1 && this.resolveComplex("canExtendMagic|32", {}))
-      ); 
+        (this.state.items.sword.amount == 1 && this.resolveComplex("canExtendMagic|32", {})));
 
-    killableBosses["agahnim"] = this.resolveSimple("melee", {}) || this.resolveSimple("net", {}); 
+    killableBosses["agahnim"] = this.resolveSimple("melee", {}) || this.resolveSimple("net", {});
     killableBosses["agahnim2"] = this.resolveSimple("melee", {}) || this.resolveSimple("net", {});
     killableBosses["bnc"] = true;
 
@@ -176,9 +179,9 @@ export class RequirementEvaluator {
         // TODO: CanActivateFlute logic
         return items.flute.amount > 0;
       case "cane":
-        return this.hasItem("somaria") || this.hasItem("byrna")
+        return this.hasItem("somaria") || this.hasItem("byrna");
       case "rod":
-        return this.hasItem("firerod") || this.hasItem("icerod") 
+        return this.hasItem("firerod") || this.hasItem("icerod");
       case "melee":
         return this.hasItem("sword") || this.hasItem("hammer");
       case "melee_bow":
@@ -403,13 +406,23 @@ export class RequirementEvaluator {
     }
   }
 
-  private checkMedallion(dungeonId: string): boolean {
+  private checkMedallion(dungeonId: string, ctx: EvaluationContext): boolean {
     const entrance = this.state.entrances[dungeonId === "tr" ? "Turtle Rock" : "Misery Mire"];
     const requiredMedallion = entrance?.medallion;
 
     if (!requiredMedallion || requiredMedallion === "unknown") {
-      // Unknown - check if we have all three
-      return this.hasItem("bombos") && this.hasItem("ether") && this.hasItem("quake");
+      // Unknown medallion: pass if player has at least one.
+      // If they have all 3, the result is certain ("available").
+      // If they have 1-2, flag as uncertain so the caller can cap to "possible".
+      const hasBombos = this.hasItem("bombos");
+      const hasEther = this.hasItem("ether");
+      const hasQuake = this.hasItem("quake");
+      if (hasBombos && hasEther && hasQuake) return true;
+      if (hasBombos || hasEther || hasQuake) {
+        ctx.uncertainMedallion = true;
+        return true;
+      }
+      return false;
     }
 
     return this.hasItem(requiredMedallion);
@@ -443,7 +456,7 @@ export class RequirementEvaluator {
       }
 
       case "medallion": {
-        return this.checkMedallion(conditionParts[1]);
+        return this.checkMedallion(conditionParts[1], ctx);
       }
 
       case "canExtendMagic": {
