@@ -32,7 +32,7 @@
 import { type CrystalSwitchState, type ExitLogic, type GameState, type LogicState, type LogicStatus, type RegionLogic } from "@/data/logic/logicTypes";
 import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
-import { getLogicStateForWorld, createAllItemsState, isBetterStatus } from "./logicHelpers";
+import { getLogicStateForWorld, createAllItemsState, isBetterStatus, minimumStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
 
 export interface DungeonRegionState {
@@ -156,6 +156,8 @@ export class DungeonTraverser {
     this.finalBFS(ctx, entryRegions, entryStatus, inventoryKeys, keyCountingEvaluator);
 
     // Collect external exits (dungeon -> overworld)
+    // Evaluate exit requirements to filter out exits that aren't traversable
+    // (e.g., "Agahnims Tower Exit (Inverted)" is "never" in Open mode)
     const externalExits = new Map<string, { to: string; status: LogicStatus; bunnyState: boolean; keysUsedToReach: number }>();
     for (const [regionName, regionState] of ctx.reachable) {
       const regionLogic = this.regions[regionName];
@@ -163,9 +165,20 @@ export class DungeonTraverser {
       if (regionLogic?.exits) {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
           if (exit.to && DungeonTraverser.OVERWORLD_TYPES.has(this.regions[exit.to]?.type || "")) {
+            const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, {
+              regionName,
+              dungeonId: this.dungeonId,
+              isBunny: regionState.bunnyState,
+              crystalStates: regionState.crystalStates,
+              canReachRegion: (target: string) => {
+                if (ctx.reachable.has(target)) return ctx.reachable.get(target)!.status;
+                return canReachOverworldRegion?.(target) ?? "available";
+              },
+            });
+            if (exitStatus === "unavailable") continue;
             externalExits.set(exitName, {
               to: exit.to,
-              status: regionState.status,
+              status: minimumStatus(regionState.status, exitStatus),
               bunnyState: regionState.bunnyState,
               keysUsedToReach: minKeysForRegion,
             });
