@@ -24,7 +24,8 @@ function MapItemLocation(props: MapItemLocationProps) {
     const checks: Record<string, { displayName: string; status: CheckStatus }> = {};
     itemLocations.forEach((itemLoc) => {
       let _iloc = itemLoc;
-      if (type === "dungeon") {
+      // if (type === "dungeon") {
+      if (itemLoc.includes(" - ")) {
         _iloc = itemLoc.split(" - ").slice(1).join(" - "); // For dungeons, use dungeon name only
       }
       checks[itemLoc] = {
@@ -56,17 +57,21 @@ function MapItemLocation(props: MapItemLocationProps) {
   const maxLogicStatus = checksList.reduce((best, check) => {
     if (check?.checked) return best;
     if (check?.logic === "available") return "available";
-    if (check?.logic === "ool" && best !== "available") return "ool";
+    if (check?.logic === "possible" && best !== "available") return "possible";
+
     return best;
   }, "unavailable" as LogicStatus);
 
   const xPercent = (location.x / 512) * 100;
   const yPercent = (location.y / 512) * 100;
 
+  // GT has so many items, so we need to shift the tooltip more to the left to keep it on screen
+  const tooltipXClasses = locName == "Ganon's Tower" ? "left-3/9 -translate-x-5/9" : xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2";
+
   const tooltipClasses = cn(
     "invisible group-hover:visible absolute z-50 w-max select-none",
     yPercent < 25 ? "top-full pt-1" : "bottom-full pb-1",
-    xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2",
+    tooltipXClasses,
   );
 
   const tooltipInnerClasses = "px-2 py-1 bg-black text-white text-2xs rounded border border-gray-600";
@@ -103,7 +108,7 @@ function MapItemLocation(props: MapItemLocationProps) {
           ? "bg-gray-500/70"
           : maxLogicStatus === "available"
             ? "bg-green-500"
-            : maxLogicStatus === "ool"
+            : maxLogicStatus === "possible"
               ? "bg-yellow-500"
               : "bg-red-500",
         status === "some" && "is-hatched",
@@ -140,11 +145,11 @@ function MapItemLocation(props: MapItemLocationProps) {
                 >
                   {locName}
                 </div>
-                <div className={checksList.length > 6 ? "grid grid-cols-2 gap-x-4" : ""}>
+                <div className={checksList.length > 6 ? "grid grid-cols-2 gap-x-2" : ""}>
                   {Object.entries(itemChecks).map(([key, info]) => (
                     <div
                       key={key}
-                      className="flex justify-between gap-2 text-3xs whitespace-nowrap hover:bg-gray-800 cursor-pointer px-0.5 rounded items-baseline"
+                      className="flex justify-between gap-1 text-4xs whitespace-nowrap hover:bg-gray-800 cursor-pointer rounded items-baseline"
                       onClick={(e) => {
                         e.stopPropagation();
                         dispatch(setLocationChecked({ location: key, checked: !info.status.checked, manual: true }));
@@ -153,7 +158,7 @@ function MapItemLocation(props: MapItemLocationProps) {
                       <span className="flex-1">{info.displayName}</span>
                       <span
                         className={cn(
-                          "w-10 text-right",
+                          "w-8 text-right",
                           info.status.checked
                             ? "text-gray-500"
                             : info.status.logic === "available"

@@ -411,7 +411,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Agahnims Tower": {
+  "Castle Tower": {
     x: 255.5,
     y: 205.0,
     world: "lw",
@@ -507,7 +507,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Hyrule Castle Secret Entrance Drop": {
+  "Hyrule Castle Secret Entrance": {
     x: 304.5,
     y: 213.0,
     world: "lw",
@@ -585,7 +585,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Kakariko Well Drop": {
+  "Kakariko Well": {
     x: 11.5,
     y: 218.0,
     world: "lw",
@@ -611,7 +611,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Bat Cave Drop": {
+  "Bat Cave": {
     x: 167.5,
     y: 292.0,
     world: "lw",
@@ -637,7 +637,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Lost Woods Hideout Drop": {
+  "Lost Woods Hideout": {
     x: 96.5,
     y: 67.0,
     world: "lw",
@@ -793,7 +793,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Thieves Town": {
+  "Thieves' Town": {
     x: 63.5,
     y: 248.5,
     world: "dw",
@@ -817,7 +817,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Skull Woods Final Section": {
+  "Skull Woods": {
     x: 19.5,
     y: 26.0,
     world: "dw",
@@ -885,7 +885,7 @@ export const locationsData: Record<string, LocationData> = {
       "Misery Mire - Boss",
     ],
     open: true,
-    isDungeon: false,
+    isDungeon: true,
     overworld: false,
     shopsanity: false,
     pots: false,
@@ -1107,7 +1107,7 @@ export const locationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Ganons Tower": {
+  "Ganon's Tower": {
     x: 287.5,
     y: 10.0,
     world: "dw",
