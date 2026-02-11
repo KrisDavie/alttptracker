@@ -4,9 +4,10 @@ import { setBigKey } from "@/store/dungeonsSlice";
 
 interface BigKeyTrackerProps {
   dungeon: string;
+  size?: "1x1" | "1x2";
 }
 
-function BigKeyTracker({ dungeon}: BigKeyTrackerProps) {
+function BigKeyTracker({ dungeon, size = "1x2" }: BigKeyTrackerProps) {
   const dispatch = useDispatch();
   const collectedBigKey = useSelector((state: RootState) => state.dungeons[dungeon]?.bigKey);
 
@@ -16,7 +17,7 @@ function BigKeyTracker({ dungeon}: BigKeyTrackerProps) {
   }
   return (
     <div
-      className="flex flex-row w-8 h-8 relative"
+      className={`flex flex-row ${size === "1x1" ? "w-4 h-4" : "w-8 h-8"} relative`}
       onClick={() => toggleBigKey()}
       onContextMenu={(e) => {
         e.preventDefault();
