@@ -14,7 +14,7 @@ interface MapItemLocationProps {
 }
 
 function MapItemLocation(props: MapItemLocationProps) {
-  const { name: locName, location, type } = props;
+  const { name: locName, location } = props;
   const dispatch = useDispatch();
   const showTooltip = props.tooltip ?? false;
 
