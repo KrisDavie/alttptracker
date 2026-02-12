@@ -282,8 +282,22 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Palace of Darkness - Dark Maze - Top"]).toBe("possible");
     });
 
-    it("[SK] should mark back of PoD as available with 4 wild small keys and full inventory", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("pod", { smallKeys: 4, bigKey: true }).build();
+    it("[SK BK] should mark back of PoD as available with 4 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true}).withDungeon("pod", { smallKeys: 4, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Palace of Darkness - Dark Basement - Left"]).toBe("available");
+      expect(result.locationsLogic["Palace of Darkness - Dark Maze - Bottom"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Harmless Hellway"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Palace of Darkness - Boss"]).toBe("possible");
+    });
+
+    it("[SK BK Pottery KeyDrop] should mark back of PoD as available with 4 wild small keys and full inventory", () => {
+      // This test should result inthe exact same as above as pottery and keydrop don't affect PoD
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("pod", { smallKeys: 4, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -362,7 +376,40 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
     });
 
-    it("[SK Pottery KeyDrop] should a swamp boss as possible with 5 wild small keys and full inventory", () => {
+    it("[SK Pottery KeyDrop] should mark swamp back as available with 4 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 4, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Waterfall Room"]).toBe("possible");
+      expect(result.locationsLogic["Swamp Palace - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("unavailable");
+
+    });
+
+    it("[SK Pottery KeyDrop] should mark swamp big chest as available with 3 wild small keys and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 3, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Swamp Entrance Down Stairs
+      // Swamp Pot Row WS
+      // Swamp Trench 1 Key Ledge NW
+      // Now have access to big chest
+
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Big Chest"]).toBe("available");
+    });
+
+    it("[SK Pottery KeyDrop] should mark swamp boss as possible with 5 wild small keys and full inventory", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 5, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -410,6 +457,18 @@ describe("LogicEngine", () => {
 
       expect(result.locationsLogic["Ice Palace - Compass Chest"]).toBe("available");
       expect(result.locationsLogic["Ice Palace - Boss"]).toBe("possible");
+    });
+
+    it("[SK Pottery KeyDrop] should mark the compass chest as available with 1 wild small key with keydrop and potkey shuffle enabled", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("ip", { smallKeys: 1}).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Compass chest is immediately available after using the one key to open the first door (Ice Jelly Key Down Stairs)
+      expect(result.locationsLogic["Ice Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Ice Palace - Boss"]).toBe("unavailable");
     });
 
     it("[SK Pottery KeyDrop] should mark the boss as possible with less than 6 wild small keys with keydrop and potkey shuffle enabled", () => {
@@ -466,6 +525,24 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Misery Mire - Compass Chest"]).toBe("possible");
       expect(result.locationsLogic["Misery Mire - Big Key Chest"]).toBe("possible");
       expect(result.locationsLogic["Misery Mire - Boss"]).toBe("available");
+    });
+
+    it("[PARTIAL SK BK KeyDrop Pottery] should mark lobby unavailable with 0 wild small keys and a big key (crystals switch available, but can't get back)", () => {
+      const state = gameState().withAllItems().withoutItems(['hookshot']).withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("mm", { smallKeys: 0, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // With 0 keys and a big key, crystal switches are reachable (in the basement), 
+      // but you cannot get back up to the lobby to access any of the locations there or beyond without the hookshot
+      // Mire Left Bridge -> Mire Left Bridge Hook Path
+      // There shouldn't be a path back to the lobby with 0 small keys and without hookshot with crystal state blue
+      expect(result.locationsLogic["Misery Mire - Fishbone Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Misery Mire - Map Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Misery Mire - Main Lobby"]).toBe("unavailable");
+      expect(result.locationsLogic["Misery Mire - Boss"]).toBe("available");
+
+      expect(result.locationsLogic["Misery Mire - Conveyor Crystal Key Drop"]).toBe("unavailable");
     });
 
     it("[PARTIAL SK BK KeyDrop Pottery] should mark lobby unavailable with 0 wild small keys (no crystals switches available)", () => {
@@ -792,8 +869,8 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Bottle Merchant"]).toBe("available");
     });
 
-    it("should mark Dark World as unreachable without moon pearl and agahnim", () => {
-      const state = gameState().withItems({ sword: 1 }).withSettings({ wildSmallKeys: "wild" }).build();
+    it("should mark Dark World as unavailable without moon pearl and agahnim", () => {
+      const state = gameState().withAllItems().withoutItems(["moonpearl", "agahnim"]).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -801,6 +878,9 @@ describe("LogicEngine", () => {
 
       // Bumper Cave Ledge requires Dark World access
       expect(result.locationsLogic["Bumper Cave Ledge"]).toBe("unavailable");
+
+      // All dark world dungeons require moon pearl because you are a bunny when entering them without pearl.
+      expect(result.locationsLogic["Ice Palace - Compass Chest"]).toBe("unavailable");
     });
 
     it("should mark back of desert as reachable without flute", () => {
@@ -903,6 +983,30 @@ describe("LogicEngine", () => {
 
       // Main portal is blocked → locations only reachable from main portal should be unavailable
       // But locations reachable from other portals (if any) may still be accessible
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("unavailable");
+    });
+
+    it("should not be able to access TR without a hammer in open mode", () => {
+      const state = gameState().withAllItems().withoutItems(["hammer"]).build();
+      state.entrances["Turtle Rock"].medallion = "ether";
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // A hammer is required to actually reach the medallion pad
+      expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("unavailable");
+    });
+
+        it("should not be able to access TR without a sword in open mode", () => {
+      const state = gameState().withAllItems().withoutItems(["sword"]).build();
+      state.entrances["Turtle Rock"].medallion = "ether";
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // A sword is required to use the medallion to open the main portal. OR it has to be swordless mode (NYI)
       expect(result.locationsLogic["Turtle Rock - Compass Chest"]).toBe("unavailable");
     });
 

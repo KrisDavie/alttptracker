@@ -38,7 +38,7 @@ const initialState: SettingsState = {
   itemPool: "normal",
   activatedFlute: false,
   bonkShuffle: false,
-  autotracking: false,
+  autotracking: true,
   includeDungeonItemsInCounter: false,
 };
 

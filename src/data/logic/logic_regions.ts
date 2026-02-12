@@ -564,13 +564,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lost Woods East Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Lost Woods Hideout Tree": {
@@ -690,13 +684,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lumberjack Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -1805,13 +1793,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mountain Pass Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Mountain Pass Pull Tree": {
@@ -8121,14 +8103,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "glove",
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -8402,13 +8377,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "South Pass Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         }
@@ -13492,17 +13461,14 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {
                         "always": {
                             "allOf": [
-                                "sword",
-                                "medallion|mm",
-                                "moonpearl"
+                                "canOpenMM"
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
                             "allOf": [
-                                "sword",
-                                "medallion|mm"
+                                "canOpenMM"
                             ]
                         }
                     }
@@ -18274,7 +18240,12 @@ export const logic_regions: Record<string, RegionLogic> = {
                                 },
                                 {
                                     "allOf": [
-                                        "hammer"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
                                 }
                             ]
@@ -18303,7 +18274,12 @@ export const logic_regions: Record<string, RegionLogic> = {
                                 },
                                 {
                                     "allOf": [
-                                        "hammer"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
                                 }
                             ]
@@ -18315,43 +18291,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18361,43 +18365,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18407,43 +18439,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18453,43 +18513,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18499,43 +18587,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18545,43 +18661,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18591,43 +18735,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18637,43 +18809,71 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "anyOf": [
+                            "allOf": [
                                 {
-                                    "allOf": [
-                                        "hammer",
-                                        "glove",
-                                        "cape",
-                                        "canExtendMagic|16"
+                                    "anyOf": [
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove",
+                                                "cape",
+                                                "canExtendMagic|16"
+                                            ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                "byrna",
+                                                "canExtendMagic|12"
+                                            ]
+                                        },
+                                        "boots"
                                     ]
                                 },
                                 {
                                     "allOf": [
-                                        "byrna",
-                                        "canExtendMagic|12"
+                                        {
+                                            "allOf": [
+                                                "hammer",
+                                                "glove"
+                                            ]
+                                        }
                                     ]
-                                },
-                                "boots"
+                                }
                             ]
                         }
                     }
@@ -18703,6 +18903,12 @@ export const logic_regions: Record<string, RegionLogic> = {
                                         },
                                         "boots"
                                     ]
+                                },
+                                {
+                                    "allOf": [
+                                        "hammer",
+                                        "glove"
+                                    ]
                                 }
                             ]
                         }
@@ -18728,6 +18934,12 @@ export const logic_regions: Record<string, RegionLogic> = {
                                             ]
                                         },
                                         "boots"
+                                    ]
+                                },
+                                {
+                                    "allOf": [
+                                        "hammer",
+                                        "glove"
                                     ]
                                 }
                             ]
