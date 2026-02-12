@@ -147,7 +147,7 @@ export class OverworldTraverser {
     "Blacksmith",
     "Master Sword Pedestal",
     "Bottle Merchant",
-    "Sunken Treasure",
+    "Sunken Treasure", // TODO - Only if dam can be pulled
     "Desert Ledge",
     "Stumpy",
     "Murahdahla",
@@ -640,6 +640,7 @@ export class OverworldTraverser {
       if (!isBigKey) {
         const dungeonData = DungeonsData[dungeonId]?.totalLocations;
         const hasChestKeys = (dungeonData?.smallkeys ?? 0) > 0;
+        // TODO: Extract keys, cavekeys - use POT_KEY_SHUFFLE_MODES
         const hasPotteryKeys = ["keys", "cavekeys"].includes(this.state.settings.pottery) && (dungeonData?.keypots ?? 0) > 0;
         const hasDropKeys = this.state.settings.keyDrop && (dungeonData?.keydrops ?? 0) > 0;
         if (!hasChestKeys && !hasPotteryKeys && !hasDropKeys) {
@@ -767,9 +768,10 @@ export class OverworldTraverser {
     if (!this.allItemsEvaluator) return;
 
     // First, do a BFS with actual inventory to find which overworld regions are truly reachable
-    const actuallyReachable = new Set<string>();
+    // Track bunny state per region so portal entries get correct bunny state
+    const actuallyReachable = new Map<string, boolean>(); // region -> bunnyState
     const actualQueue = ["Menu", "Flute Sky"];
-    for (const r of actualQueue) actuallyReachable.add(r);
+    for (const r of actualQueue) actuallyReachable.set(r, false);
 
     while (actualQueue.length > 0) {
       const current = actualQueue.shift()!;
@@ -786,7 +788,9 @@ export class OverworldTraverser {
         const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
         if (status !== "unavailable" && !actuallyReachable.has(exit.to)) {
-          actuallyReachable.add(exit.to);
+          const currentBunny = actuallyReachable.get(current) ?? false;
+          const newBunny = this.computeBunnyStateForExit(currentBunny, exit.type ?? "LightWorld");
+          actuallyReachable.set(exit.to, newBunny);
           actualQueue.push(exit.to);
         }
       }
@@ -841,8 +845,13 @@ export class OverworldTraverser {
                 entryStatus = actualStatus === "unavailable" ? "unavailable" : actualStatus;
               }
 
+              // Compute bunny state based on the region leading to the portal
+              const portalBunny = actuallyReachable.has(current)
+                ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, exit.type ?? "Dungeon")
+                : false;
+
               ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
-                bunnyState: false,
+                bunnyState: portalBunny,
                 status: entryStatus,
                 keyCost: 0,
               });

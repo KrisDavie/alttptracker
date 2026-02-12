@@ -13,6 +13,9 @@ export interface EvaluationContext {
   /** Set by checkMedallion when the required medallion is unknown and the player
    *  has 1-2 of the 3 medallions. The evaluator uses this to cap "available" → "possible". */
   uncertainMedallion?: boolean;
+  /** Set by canReach when the target region is reachable but with a degraded status
+   *  ("possible" or "ool" instead of "available"). The evaluator caps the final result. */
+  degradedReach?: boolean;
 }
 
 export class RequirementEvaluator {
@@ -27,12 +30,13 @@ export class RequirementEvaluator {
     if (!logicState) {
       return "unavailable";
     }
-    // Reset the flag before evaluation — checkMedallion may set it
+    // Reset the flags before evaluation — checkMedallion/canReach may set them
     ctx.uncertainMedallion = false;
+    ctx.degradedReach = false;
     const result = this.evaluateLogicState(logicState, ctx);
-    // If medallion was uncertain and the requirement otherwise passed,
-    // cap to "possible" since the player might have the wrong medallion
-    if (ctx.uncertainMedallion && result === "available") {
+    // If medallion was uncertain or a canReach resolved to a degraded status,
+    // and the requirement otherwise passed, cap to "possible"
+    if ((ctx.uncertainMedallion || ctx.degradedReach) && result === "available") {
       return "possible";
     }
     return result;
@@ -202,7 +206,8 @@ export class RequirementEvaluator {
         return this.getPendantCount() >= 3;
       case "canUseSilverArrows":
         return items.bow.amount >= 4;
-
+      case "canUseMedallionPad":
+        return this.hasItem("sword") // || TODO: Add swordless logic
       // Enemies and Bosses
       case "canKillSomeBosses":
         killableBosses = this.bossesKillStatus();
@@ -262,8 +267,9 @@ export class RequirementEvaluator {
       case "canBuyBigBomb":
         return this.getRedCrystalCount() >= 2;
       case "canOpenTR":
-        return this.resolveComplex("medallion|tr", ctx) && this.resolveComplex("canReach|Death Mountain TR Pegs Ledge", ctx);
-
+        return this.resolveComplex("medallion|tr", ctx) && this.resolveComplex("canReach|Turtle Rock Ledge", ctx) && this.resolveSimple("canUseMedallionPad", ctx);
+      case "canOpenMM":
+        return this.resolveComplex("medallion|mm", ctx) && this.resolveComplex("canReach|Mire Area", ctx) && this.resolveSimple("canUseMedallionPad", ctx);
       // Followers
       case "canCollectOldMan":
         // TODO Follower shuffle logic
@@ -438,6 +444,9 @@ export class RequirementEvaluator {
       case "canBreach": {
         if (ctx.canReachRegion) {
           const status = ctx.canReachRegion(conditionParts[1]);
+          if (status === "possible" || status === "ool") {
+            ctx.degradedReach = true;
+          }
           return status === "available" || status === "possible" || status === "ool";
         }
         return true; // If no function provided, assume reachable
