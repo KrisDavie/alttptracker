@@ -29,7 +29,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   let maxCount = dungeonData && totLocs ? (totLocs.chests) : 0
   let totSKeys = dungeonData && totLocs ? (totLocs.smallkeys) : 0;
 
-  // TOOD: Other pottery modes
+  // TODO: Other pottery modes
 
   if (['keys', 'cavekeys'].includes(settings.pottery)) {
     totSKeys += dungeonData?.totalLocations?.keypots || 0;

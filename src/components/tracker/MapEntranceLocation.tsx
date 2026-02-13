@@ -36,7 +36,6 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
   function handleConnectorClick(e: React.MouseEvent) {
     if (e.button === 1) {
       e.stopPropagation();
-      console.log("Connector click on", locName);
     }
   }
 

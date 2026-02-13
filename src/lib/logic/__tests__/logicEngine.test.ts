@@ -432,6 +432,86 @@ describe("LogicEngine", () => {
     });
   });
 
+  describe("Thieves Town Logic", () => {
+    it("[SK Pottery KeyDrop] should mark boss as possible with 2 wild small keys, big key and full inventory", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("tt", { smallKeys: 2, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Thieves' Town - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Thieves' Town - Big Chest"]).toBe("possible");
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("possible");
+      expect(result.locationsLogic["Thieves' Town - Boss"]).toBe("possible");
+    });
+
+    it("[SK] should mark boss as at most as available as attic with 1 wild small key (no pottery)", () => {
+      // Boss requires canRevealBlind -> canOpenTTAttic -> canReach|Thieves Attic
+      // So boss can never be more available than the attic
+      // With 1 wild key + 2 in-dungeon pot keys (no pottery = pot keys in place): 3 keys total
+      // Door 1 (Hallway WS, threshold 0): 1 key
+      // Door 2 (Spike Switch Up Stairs, threshold 1): 1 key
+      // Door 3 (Conveyor Bridge WS, threshold 1): 1 key
+      // All 3 doors can be opened. Attic = available, Boss = available
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true }).withDungeon("tt", { smallKeys: 1, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("available");
+      expect(result.locationsLogic["Thieves' Town - Boss"]).toBe("available");
+    });
+
+    it("[SK] should cap boss availability to attic availability with 0 wild small keys (no pottery)", () => {
+      // With 0 wild keys + 2 in-dungeon pot keys (no pottery): 2 keys total
+      // Door 1 (Hallway WS): 1 key → reach Pot Alcove Mid
+      // Door 2 (Spike Switch Up Stairs, threshold 1): 1 key → reach Attic
+      // Door 3 (Conveyor Bridge WS, threshold 1): would need a 3rd key
+      // Doors 2 and 3 branch from after door 1 → contention with 2 keys → attic = possible
+      // Boss requires canReach|Thieves Attic → boss should also be possible
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true }).withDungeon("tt", { smallKeys: 0, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("possible");
+      expect(result.locationsLogic["Thieves' Town - Boss"]).toBe("possible");
+    });
+
+    it("[SK Pottery KeyDrop] should cap boss to possible when attic is possible with 2 wild small keys", () => {
+      // With pottery/keydrop: pot keys shuffled out, no in-dungeon keys
+      // 2 wild keys available for 3 doors → contention between doors 2 and 3
+      // Attic (behind doors 1+2) is "possible" due to door contention with door 3
+      // Boss requires canReach|Thieves Attic via canRevealBlind → should also be "possible"
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("tt", { smallKeys: 2, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      const atticStatus = result.locationsLogic["Thieves' Town - Attic"];
+      const bossStatus = result.locationsLogic["Thieves' Town - Boss"];
+
+      // Attic should be possible due to key contention
+      expect(atticStatus).toBe("possible");
+      // Boss should be at most as available as the attic (canReach dependency)
+      expect(bossStatus).toBe("possible");
+    });
+
+    it("[SK Pottery KeyDrop] should mark boss unavailable when attic is unreachable with 1 wild small key", () => {
+      // With pottery/keydrop: no in-dungeon keys
+      // 1 wild key for 3 doors → can only open door 1
+      // Attic requires doors 1+2 → unreachable with 1 key
+      // Boss requires canReach|Thieves Attic → should be unavailable
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("tt", { smallKeys: 1, bigKey: true }).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("unavailable");
+      expect(result.locationsLogic["Thieves' Town - Boss"]).toBe("unavailable");
+    });
+  });
+
   describe("IP Key Logic", () => {
     it("[SK] should mark the boss as possible with less than 2 wild small keys", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("ip", { smallKeys: 1, bigKey: true }).build();
