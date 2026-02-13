@@ -247,14 +247,12 @@ export class OverworldTraverser {
     const current = ctx.reachable.get(regionName)!;
     if (!current) return; // Can't update non-existant region, shouldn't happen though
 
-    // No bunny is always better
     if (current.bunnyState && !newBunnyState) {
       ctx.reachable.set(regionName, {
         status: combineStatuses(current.status, newStatus),
         bunnyState: newBunnyState,
       });
     } else {
-      // Not sure if this is required?
       const combinedStatus = combineStatuses(current.status, newStatus);
       if (combinedStatus !== current.status) {
         ctx.reachable.set(regionName, {
