@@ -285,7 +285,7 @@ export class RequirementEvaluator {
         return this.resolveSimple("canCollectKiki", ctx) && this.resolveComplex("canReach|Palace of Darkness Area", ctx);
       case "canCollectFrog":
         // TODO Follower shuffle logic
-        return this.resolveComplex("canReach|Frog Area", ctx);
+        return this.resolveComplex("canReach|Frog Prison", ctx);
       case "canRescueBlacksmith":
         return this.resolveSimple("canCollectFrog", ctx) && this.resolveComplex("canReach|Blacksmiths Hut", ctx);
       case "canCollectPurpleChest":
