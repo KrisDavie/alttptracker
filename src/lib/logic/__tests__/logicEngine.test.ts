@@ -40,6 +40,32 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Hyrule Castle - Big Key Drop"]).toBe("possible");
     });
 
+    it("[SK] should back of escape as possible when player has 0 wild small keys and no glove", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withoutItems(['glove']).withDungeon("hc", { smallKeys: 0}).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // With no glove, cannot use the Sanctuary Grave entrance. 
+      // Logically needs a key to reach the back of escape without stealing one from a guard drop
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Dark Cross"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Secret Room - Left"]).toBe("possible");
+    });
+
+    it("[SK] should back of escape as unavailable when player has 0 wild small keys, no glove and no lantern", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withoutItems(['glove', 'lantern']).withDungeon("hc", { smallKeys: 0}).build();
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // With no glove, cannot use the Sanctuary Grave entrance. 
+      // Logically needs lamp to navigate to the back.
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Sewers - Dark Cross"]).toBe("unavailable");
+      expect(result.locationsLogic["Sewers - Secret Room - Left"]).toBe("unavailable");
+    });
+
     it("[SK Pottery KeyDrop] should mark Big key drop as possible when player has 3 wild small keys", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 3, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
