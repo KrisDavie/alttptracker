@@ -1159,6 +1159,21 @@ describe("LogicEngine", () => {
     });
   });
 
+  describe("Blacksmith", () => {
+    it("all locations should be available with all items", () => {
+      const state = gameState().withAllItems().withAllPrizes().build();
+      state.items.glove.amount = 1
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Blacksmith requires mitts to reach frog
+      expect(result.locationsLogic["Blacksmith"]).toBe("unavailable");
+
+    });
+  });
+
   describe("Inverted Logic", () => {
     it("all locations should be available with all items", () => {
       const state = gameState().withAllItems().withSettings({ worldState: "inverted" }).withAllPrizes().build();
