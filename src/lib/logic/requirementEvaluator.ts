@@ -208,6 +208,8 @@ export class RequirementEvaluator {
         return items.bow.amount >= 4;
       case "canUseMedallionPad":
         return this.hasItem("sword") // || TODO: Add swordless logic
+      case "canTakeDamage":
+        return true; // TODO: Add logic for OHKO
       // Enemies and Bosses
       case "canKillSomeBosses":
         killableBosses = this.bossesKillStatus();
@@ -469,8 +471,25 @@ export class RequirementEvaluator {
       }
 
       case "canExtendMagic": {
-        // TODO - implement proper magic logic
-        return this.resolveSimple("magic", ctx) || this.getBottleCount() > 1;
+        let base
+        switch (this.state.items.magic.amount) {
+          case 0:
+            base = 8;
+            break;
+          case 1:
+            base = 16;
+            break;
+          case 2:
+            base = 32;
+            break;
+          default:
+            base = 0;
+        }
+        base = base + (base * this.getBottleCount())
+        return base >= parseInt(conditionParts[1]);
+      }
+      case "hearts": {
+        return true
       }
       case "exception":
         return false;

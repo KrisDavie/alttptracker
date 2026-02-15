@@ -302,9 +302,8 @@ export class OverworldTraverser {
       const dungeonId = this.getDungeonIdFromPortal(exit.to);
       if (dungeonId) {
         const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
-        // For dungeon portals in partial mode, the exitStatus came from the all-items
-        // evaluator (for discovery). Compute actual status with real inventory so that
-        // medallion uncertainty and missing items are reflected in the portal's entry status.
+        // For dungeon portals in partial mode, compute actual status with real
+        // inventory (the exitStatus came from the all-items evaluator for discovery).
         const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx) : exitStatus;
         const newStatus = minimumStatus(fromRegionReachability.status, actualExitStatus === "unavailable" ? "unavailable" : actualExitStatus);
 
@@ -321,8 +320,7 @@ export class OverworldTraverser {
           ctx.allDiscoveredPortals.set(dungeonId, new Map());
         }
 
-        // Add or update portal status - the main traversal may find a better status
-        // than the discovery phase (which conservatively uses "unavailable" or "possible")
+        // Add or update portal status (main traversal may find a better status)
         const existingPortal = ctx.allDiscoveredPortals.get(dungeonId)!.get(exit.to);
         if (!existingPortal) {
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { bunnyState: newBunnyState, status: newStatus, keyCost: regionKeyCost });
@@ -356,9 +354,7 @@ export class OverworldTraverser {
     let madeProgress = false;
 
     for (const dungeonId of ctx.pendingDungeons.keys()) {
-      // When processing a dungeon, use ALL discovered portals for that dungeon,
-      // not just the new ones. This ensures correct status calculation when
-      // a dungeon is reached from multiple entrances across different iterations.
+      // Use ALL discovered portals (not just new ones) for correct multi-entry status.
       const allPortals = ctx.allDiscoveredPortals.get(dungeonId);
       if (!allPortals || allPortals.size === 0) continue;
 
@@ -378,8 +374,7 @@ export class OverworldTraverser {
       // Get dungeon keys and big key status
       const inventoryKeys = this.state.dungeons[dungeonId]?.smallKeys ?? 0;
 
-      // Traverse the dungeon, providing a callback to check overworld region reachability
-      // Use partial key logic by default (assumes all items for key counting)
+      // Traverse the dungeon with a canReach callback for overworld regions.
       const dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId, "partial");
       const canReachOverworldRegion = (regionName: string): LogicStatus => {
         const regionReach = ctx.reachable.get(regionName);
@@ -396,12 +391,7 @@ export class OverworldTraverser {
 
       const result = dungeonTraverser.traverse(entryMap, entryStatus, inventoryKeys, entryKeyCost, canReachOverworldRegion);
 
-      // Store key-gated region info from the FIRST traversal only.
-      // Re-traversals with additional entry portals (e.g., side portals discovered
-      // from dungeon exits) would make the gated set too permissive — regions behind
-      // key doors from the primary entry would appear non-gated because the side
-      // portal provides an alternative path. The first traversal (primary portals
-      // only) gives the most conservative and correct gated set for key inference.
+      // Store key-gated regions from first traversal only (most conservative set).
       if (result.bigKeyGatedRegions && !this.dungeonBigKeyGatedRegions.has(dungeonId)) {
         this.dungeonBigKeyGatedRegions.set(dungeonId, result.bigKeyGatedRegions);
       }
@@ -409,9 +399,7 @@ export class OverworldTraverser {
         this.dungeonSmallKeyGatedRegions.set(dungeonId, result.smallKeyGatedRegions);
       }
 
-      // Incorporate dungeon region statuses (for location evaluation later)
-      // Always use the latest dungeon traverser result: re-traversals with more
-      // entry portals are strictly more accurate than earlier runs.
+      // Incorporate dungeon region statuses (always use latest traversal).
       for (const [regionName, regionState] of result.regionStatuses) {
         const existing = ctx.reachable.get(regionName);
         if (!existing) {
@@ -431,9 +419,7 @@ export class OverworldTraverser {
         }
       }
 
-      // Process external exits - these lead back to the overworld
-      // Only add reachable exits (not "unavailable") to the queue
-      // Also track the key cost to reach these overworld regions
+      // Process external exits (dungeon -> overworld)
       for (const [, exitInfo] of result.externalExits) {
         if (exitInfo.status === "unavailable") continue;
 
@@ -753,21 +739,15 @@ export class OverworldTraverser {
   }
 
   /**
-   * In partial mode, run a discovery-only BFS with all-items evaluator
-   * to find all dungeon portals that would be reachable with full inventory.
-   * This populates allDiscoveredPortals before the main traversal.
-   *
-   * Portals discovered this way are used for KEY COUNTING (Dijkstra/BFS phases)
-   * but their entry status is set to "unavailable" since the player can't
-   * actually reach them with current inventory. This allows key contention
-   * logic to work while still marking locations behind those portals as unreachable.
+   * In partial mode, discover all dungeon portals reachable with full inventory.
+   * Portals found this way have entry status based on actual reachability —
+   * "unavailable" if the player can't currently reach them.
    */
   private discoverAllPortals(ctx: OverworldTraverserContext): void {
     if (!this.allItemsEvaluator) return;
 
-    // First, do a BFS with actual inventory to find which overworld regions are truly reachable
-    // Track bunny state per region so portal entries get correct bunny state
-    const actuallyReachable = new Map<string, boolean>(); // region -> bunnyState
+    // BFS with actual inventory to find truly reachable overworld regions
+    const actuallyReachable = new Map<string, boolean>();
     const actualQueue = ["Menu", "Flute Sky"];
     for (const r of actualQueue) actuallyReachable.set(r, false);
 
@@ -794,7 +774,7 @@ export class OverworldTraverser {
       }
     }
 
-    // Now do a BFS with all-items to find ALL dungeon portals
+    // BFS with all-items to find ALL dungeon portals
     const visited = new Set<string>();
     const queue = ["Menu", "Flute Sky"];
 
@@ -828,13 +808,9 @@ export class OverworldTraverser {
               ctx.allDiscoveredPortals.set(dungeonId, new Map());
             }
             if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
-              // Entry status depends on whether the region leading to the portal
-              // is actually reachable with current inventory
-              // If not reachable, mark as "unavailable" so locations behind are correctly marked
+              // Entry status from actual inventory (captures medallion uncertainty, etc.)
               let entryStatus: LogicStatus = "unavailable";
               if (actuallyReachable.has(current)) {
-                // Region is reachable — evaluate the exit with actual inventory to capture
-                // medallion uncertainty and other item-gated statuses
                 const actualEvalCtx: EvaluationContext = {
                   regionName: current,
                   canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
