@@ -9,9 +9,13 @@ import TrackerItem from "../../tracker/TrackerItem";
 import MagicAgaSquare from "./components/MagicAgaSquare";
 import AgaOrCastleCountsSquare from "./components/AgaOrCastleCountsSquare";
 import MysteryModal from "@/components/tracker/MysteryModal";
+import { useImagePreloader } from "@/hooks/useImagePreloader";
 
 function CommunityLayoutItems() {
   const modalOpen = useSelector((state: RootState) => state.trackerState.modalOpen);
+
+  // Preload all item and sprite images
+  useImagePreloader("dark_link");
 
   // Regular community tracker layout:
   // +-----------+-----------------------+

@@ -284,4 +284,13 @@ const ItemsData: Record<string, ItemData> = {
   },
 };
 
+export const PrizeImages: Record<string, string> = {
+  unknown: "/dungeons/prize_unknown.png",
+  greenPendant: "/dungeons/green_pendant.png",
+  pendant: "/dungeons/pendant.png",
+  map: "/dungeons/map.png",
+  redCrystal: "/dungeons/red_crystal.png",
+  crystal: "/dungeons/crystal.png",
+};
+
 export default ItemsData;

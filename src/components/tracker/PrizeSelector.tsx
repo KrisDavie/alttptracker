@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { incrementPrizeCount } from "@/store/dungeonsSlice";
 import { cn } from "@/lib/utils";
+import { PrizeImages } from "@/data/itemData";
 
 interface PrizeSelectorProps {
   dungeon: string;
@@ -13,15 +14,6 @@ function PrizeSelector({ dungeon, className }: PrizeSelectorProps) {
   const prize = useSelector((state: RootState) => state.dungeons[dungeon]?.prize || "unknown");
   const prizeCollected = useSelector((state: RootState) => state.dungeons[dungeon]?.prizeCollected || false);
 
-  const prizeImages: Record<string, string> = {
-    unknown: "/dungeons/prize_unknown.png",
-    greenPendant: "/dungeons/green_pendant.png",
-    pendant: "/dungeons/pendant.png",
-    map: "/dungeons/map.png",
-    redCrystal: "/dungeons/red_crystal.png",
-    crystal: "/dungeons/crystal.png",
-  };
-
   return (
     <div
       key={`${dungeon}-prize`}
@@ -32,7 +24,7 @@ function PrizeSelector({ dungeon, className }: PrizeSelectorProps) {
         dispatch(incrementPrizeCount({ dungeon, decrement: true }));
       }}
       style={{
-        backgroundImage: `url(${prizeImages[prize]})`,
+        backgroundImage: `url(${PrizeImages[prize]})`,
         opacity: prizeCollected ? 1 : 0.7,
         backgroundPosition: "center",
         backgroundSize: (prize === "greenPendant" || prize === "pendant") ? "90%" : "110%",

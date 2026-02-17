@@ -104,6 +104,7 @@ export function createDefaultSettings(): SettingsState {
     itemPool: "normal",
     activatedFlute: false,
     bonkShuffle: false,
+    mapMode: "off",
     autotracking: false,
   };
 }

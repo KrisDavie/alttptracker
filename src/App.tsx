@@ -1,27 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "./store/store";
 import "./App.css";
 import CommunityLayoutItems from "./components/layouts/CommunityTracker/CommunityLayoutItems";
 import OWMap from "./components/layouts/Map/OWMap";
 
+const TILE = 448;
+
+function getLayoutDimensions(mapMode: "off" | "normal" | "compact" | "vertical") {
+  switch (mapMode) {
+    case "off":
+      return { width: TILE, height: TILE };
+    case "normal":
+      return { width: TILE * 3, height: TILE };
+    case "compact":
+      return { width: TILE, height: TILE * 1.5 };
+    case "vertical":
+      return { width: TILE, height: TILE * 3 };
+  }
+}
+
 function App() {
   const [scale, setScale] = useState(1);
+  const mapMode = useSelector((state: RootState) => state.settings.mapMode);
+  const { width, height } = useMemo(() => getLayoutDimensions(mapMode), [mapMode]);
 
   useEffect(() => {
     const handleResize = () => {
-      // TODO: Adjust these base dimensions if the layout changes
-      // The base width of the tracker (3 panels of 448px each)
-      // 1344px width
-      const baseWidth = 448 * 3;
-      const baseHeight = 448;
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      
-      // Calculate scale for both width and height to ensure it fits
-      const scaleW = windowWidth / baseWidth;
-      const scaleH = windowHeight / baseHeight;
-      
-      // Use the smaller scale factor to ensure it fits in both dimensions
-      // but don't scale up beyond 1.0 unless desired
+      const scaleW = window.innerWidth / width;
+      const scaleH = window.innerHeight / height;
       setScale(Math.min(scaleW, scaleH, 1));
     };
 
@@ -29,23 +36,39 @@ function App() {
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [width, height]);
+
+  const showMaps = mapMode !== "off";
+  const isVertical = mapMode === "vertical";
+  const isCompact = mapMode === "compact";
 
   return (
     <div className="h-screen w-screen bg-neutral-900 flex items-start justify-start overflow-hidden fixed inset-0">
-      <div 
-        style={{ 
+      <div
+        style={{
           transform: `scale(${scale})`,
           transformOrigin: "top left",
-          width: `${448 * 3}px`,
-          height: `448px`,
-          flexShrink: 0
+          width: `${width}px`,
+          height: `${height}px`,
+          flexShrink: 0,
         }}
-        className="flex flex-row items-start shadow-2xl"
+        className={`flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
       >
-        <CommunityLayoutItems />
-        <OWMap world="lw"/>
-        <OWMap world="dw"/>
+        <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }}>
+          <CommunityLayoutItems />
+        </div>
+        {showMaps && (
+          <div
+            className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start`}
+            style={{
+              width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
+              height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
+            }}
+          >
+            <OWMap world="lw" />
+            <OWMap world="dw" />
+          </div>
+        )}
       </div>
     </div>
   );

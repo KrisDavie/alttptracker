@@ -13,11 +13,26 @@ interface OWMapProps {
 function OWMap({ world = "lw" }: OWMapProps) {
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const bonkShuffle = useSelector((state: RootState) => state.settings.bonkShuffle);
+  const mapMode = useSelector((state: RootState) => state.settings.mapMode);
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
+
+  let fullSize: string, smallSize: string;
+
+  switch (mapMode) {
+    case "vertical":
+    case "normal":
+      fullSize = "h-4 w-4";
+      smallSize = "h-2.5 w-2.5";
+      break;
+    case "compact":
+      fullSize = "h-2.5 w-2.5";
+      smallSize = "h-1.5 w-1.5";
+      break;
+  }
   return (
     <div
-      className="w-112 h-112 relative"
+      className="w-full h-full relative"
       key={world}
       style={{
         backgroundImage: `url("${bgimg}")`,
@@ -47,7 +62,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
             name={locationKey}
             location={location}
             type={itemType as "dungeon" | "item" | "tree"}
-            className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? "h-2.5 w-2.5" : "h-4 w-4"}`}
+            className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? smallSize : fullSize}`}
             tooltip={true}
           />
         );
