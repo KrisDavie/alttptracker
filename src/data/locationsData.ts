@@ -1482,7 +1482,7 @@ export const locationsData: Record<string, LocationData> = {
   "Qirn Jump West Tree": {
     x: 341.8,
     y: 173.5,
-    world: "lw",
+    world: "dw",
     itemLocations: ["Qirn Jump West Tree"],
     open: true,
     isDungeon: false,
@@ -1495,7 +1495,7 @@ export const locationsData: Record<string, LocationData> = {
   "Qirn Jump East Tree": {
     x: 371.4,
     y: 157.9,
-    world: "lw",
+    world: "dw",
     itemLocations: ["Qirn Jump East Tree"],
     open: true,
     isDungeon: false,

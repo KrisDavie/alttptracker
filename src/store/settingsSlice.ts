@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface SettingsState {
+  // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
   worldState: "open" | "standard" | "inverted";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
@@ -17,7 +18,10 @@ export interface SettingsState {
   itemPool: "normal" | "hard" | "expert";
   activatedFlute: boolean;
   bonkShuffle: boolean;
+
+  // UI settings
   autotracking: boolean;
+  mapMode: "off" | "normal" | "compact" | "vertical";
   includeDungeonItemsInCounter?: boolean;
 }
 
@@ -40,6 +44,7 @@ const initialState: SettingsState = {
   bonkShuffle: false,
   autotracking: true,
   includeDungeonItemsInCounter: false,
+  mapMode: "normal",
 };
 
 export const settingsSlice = createSlice({
@@ -54,6 +59,9 @@ export const settingsSlice = createSlice({
     },
     toggleWildBigKeys: (state) => {
       state.wildBigKeys = !state.wildBigKeys;
+    },
+    setMapMode: (state, action: { payload: "off" | "normal" | "compact" | "vertical" }) => {
+      state.mapMode = action.payload;
     },
   },
 });

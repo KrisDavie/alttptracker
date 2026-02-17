@@ -37,8 +37,11 @@ function MysteryModal() {
           <div className={`font-roboto text-sm border-black ${page === 1 ? "border-b-2 pb-1 mr-4 cursor-pointer" : "text-gray-500 mr-4 cursor-pointer"}`} onClick={() => setPage(1)}>
             Main flags
           </div>
-          <div className={`font-roboto text-sm border-black ${page === 2 ? "border-b-2 pb-1 cursor-pointer" : "text-gray-500 cursor-pointer"}`} onClick={() => setPage(2)}>
+          <div className={`font-roboto text-sm border-black ${page === 2 ? "border-b-2 pb-1 mr-4 cursor-pointer" : "text-gray-500 mr-4 cursor-pointer"}`} onClick={() => setPage(2)}>
             Extra settings
+          </div>
+          <div className={`font-roboto text-sm border-black ${page === 3 ? "border-b-2 pb-1 cursor-pointer" : "text-gray-500 cursor-pointer"}`} onClick={() => setPage(3)}>
+            UI settings
           </div>
         </div>
       </div>
@@ -142,6 +145,7 @@ function MysteryModal() {
           </div>
         </div>
       )}
+
       {page === 2 && (
         <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
           <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
@@ -149,17 +153,22 @@ function MysteryModal() {
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.pottery} onChange={(e) => handleInputChange("pottery", e.target.value)}>
               <option value="none">None</option>
               <option value="keys">Keys</option>
-              {/* <option value="cave" disabled>Cave</option>
-              <option value="cavekeys">Cavekeys</option>
-              <option value="reduced" disabled>Reduced</option>
-              <option value="clustered" disabled>Clustered</option>
-              <option value="nonempty" disabled>Nonempty</option>
-              <option value="dungeon" disabled>Dungeon</option>
-              <option value="lottery" disabled>Lottery</option> */}
             </select>
             <label className="font-medium">Keydrop:</label>
                 <input type="checkbox" className="accent-red-600" checked={localSettings.keyDrop} onChange={(e) => handleInputChange("keyDrop", e.target.checked)} />
-
+          </div>
+        </div>
+      )}
+      {page === 3 && (
+        <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
+          <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
+            <label className="font-medium">Map Mode:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.mapMode} onChange={(e) => handleInputChange("mapMode", e.target.value)}>
+              <option value="none">None</option>
+              <option value="normal">Normal</option>
+              <option value="compact">Compact</option>
+              <option value="vertical">Vertical</option>
+            </select>
           </div>
         </div>
       )}
