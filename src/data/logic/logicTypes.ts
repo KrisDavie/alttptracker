@@ -20,6 +20,7 @@ export interface LogicState {
 export interface WorldLogic {
   Open?: LogicState | LogicRequirement;
   Inverted?: LogicState | LogicRequirement;
+  Inverted_1?: LogicState | LogicRequirement;
   Standard?: LogicState | LogicRequirement;
   Entrance?: string[];
 }
@@ -40,6 +41,8 @@ export interface RegionLogic {
   } }
   entrances: string[]
   exits: ExitLogic
+  owid?: number | null;
+  tileid?: number;
 }
 
 
