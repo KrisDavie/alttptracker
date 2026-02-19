@@ -63,9 +63,27 @@ export function createAllItemsState(baseState: GameState): GameState {
 }
 
 export function getLogicStateForWorld(state: GameState, worldLogic: WorldLogic ) {
-  // TODO add Inverted 1.0 logic handling
-  const mode = state.settings.worldState === "inverted" ? "Inverted" : "Open"
-  const requirements = worldLogic[mode] || worldLogic.Standard || {};
+  const ws = state.settings.worldState;
+  let mode: "Open" | "Inverted" | "Inverted_1" | "Standard";
+  switch (ws) {
+    case "open":
+    case "standard":
+      mode = "Open";
+      break;
+    case "inverted":
+      mode = "Inverted";
+      break;
+    case "inverted_1":
+      mode = "Inverted_1";
+      break;
+    default:
+      mode = "Open";
+  }
+  // Fallback to Inverted logic if Inverted_1 logic is not defined
+  if (ws === "inverted_1" && !worldLogic.Inverted_1) {
+    mode = "Inverted";
+  }
+  const requirements = worldLogic[mode] || {};
 
   // Handle case where requirements is a direct LogicRequirement instead of LogicState
   if (

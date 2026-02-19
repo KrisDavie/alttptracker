@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface SettingsState {
   // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
-  worldState: "open" | "standard" | "inverted";
+  worldState: "open" | "standard" | "inverted" |  "inverted_1";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
   wildMaps: boolean;

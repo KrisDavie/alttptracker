@@ -234,7 +234,7 @@ export class OverworldTraverser {
   private computeBunnyStateForExit(currentBunnyState: boolean, exitType: string): boolean {
     if (this.state.items.moonpearl.amount > 0) return false; //Never a bunny if we have moon pearl
 
-    const isInverted = this.state.settings.worldState === "inverted";
+    const isInverted = ["inverted", "inverted_1"].includes(this.state.settings.worldState);
 
     // We only change bunny state if we're transitioning to the overworld
     if (exitType === "LightWorld") return isInverted;
