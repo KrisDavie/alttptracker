@@ -9,7 +9,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": "never"
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             },
             "Sanctuary S&Q": {
@@ -37,7 +38,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                                 "canRescueOldMan"
                             ]
                         }
-                    }
+                    },
+                    "Inverted_1": "never"
                 }
             },
             "Other World S&Q": {
@@ -60,7 +62,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": "never",
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Sanctuary S&Q (Inverted)": {
@@ -85,11 +88,27 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Old Man S&Q (Inverted_1)": {
+                "to": "West Dark Death Mountain (Bottom)",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {
+                        "always": {
+                            "allOf": [
+                                "canRescueOldMan"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [],
         "type": "Menu",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Flute Sky": {
         "exits": {
@@ -216,7 +235,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                                 "canFlute"
                             ]
                         }
-                    }
+                    },
+                    "Inverted_1": "never"
                 }
             },
             "Flute Spot 2 (Inverted)": {
@@ -316,6 +336,21 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Flute Spot 1 (Inverted_1)": {
+                "to": "West Dark Death Mountain (Bottom)",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {
+                        "always": {
+                            "allOf": [
+                                "canFlute"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [],
@@ -356,7 +391,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 128
     },
     "Lost Woods West Area": {
         "exits": {
@@ -447,7 +483,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror To Skull Woods Portal Entry"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 0
     },
     "Lost Woods East Area": {
         "exits": {
@@ -564,7 +601,13 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lost Woods East Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": "never"
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "moonpearl"
+                            ]
+                        }
+                    }
                 }
             },
             "Lost Woods Hideout Tree": {
@@ -599,7 +642,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 0
     },
     "Lumberjack Area": {
         "exits": {
@@ -684,10 +728,17 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lumberjack Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": "never"
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "moonpearl"
+                            ]
+                        }
+                    }
                 }
             }
-        }
+        },
+        "owid": 2
     },
     "West Death Mountain (Top)": {
         "exits": {
@@ -771,7 +822,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 3
     },
     "Spectacle Rock Ledge": {
         "exits": {
@@ -824,7 +876,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 3
     },
     "West Death Mountain (Bottom)": {
         "exits": {
@@ -833,7 +886,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Old Man House (Bottom)": {
@@ -921,6 +975,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Old Man Cave (East Inverted_1)": {
+                "to": "Death Mountain Return Cave (left)",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -972,7 +1035,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 3
     },
     "Old Man Drop Off": {
         "exits": {},
@@ -997,7 +1061,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 3
     },
     "East Death Mountain (Top West)": {
         "exits": {
@@ -1049,7 +1114,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From East Death Mountain (Top West)"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "East Death Mountain (Top East)": {
         "exits": {
@@ -1143,6 +1209,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Mimic Cave Drop (Inverted_1)": {
+                "to": "Mimic Cave Ledge",
+                "type": "LightWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -1172,7 +1247,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 5
     },
     "Death Mountain Floating Island": {
         "exits": {
@@ -1217,7 +1293,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 5
     },
     "Spiral Cave Ledge": {
         "exits": {
@@ -1266,7 +1343,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Spiral Cave Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "Mimic Cave Ledge": {
         "exits": {
@@ -1307,7 +1385,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Mimic Cave Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "Spiral Mimic Ledge Extend": {
         "exits": {
@@ -1316,7 +1395,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "LightWorld",
                 "requirements": {
                     "Open": "never",
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Mimic Ledge Approach": {
@@ -1324,7 +1404,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "LightWorld",
                 "requirements": {
                     "Open": "never",
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Spiral Mimic Ledge Drop": {
@@ -1332,7 +1413,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "LightWorld",
                 "requirements": {
                     "Open": "never",
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             }
         },
@@ -1342,7 +1424,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Spiral Mimic Ledge Drop"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "Fairy Ascension Ledge": {
         "exits": {
@@ -1382,7 +1465,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Fairy Ascension Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "Fairy Ascension Plateau": {
         "exits": {
@@ -1443,7 +1527,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Fairy Ascension Plateau"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "East Death Mountain (Bottom Left)": {
         "exits": {
@@ -1495,7 +1580,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From East Death Mountain (Bottom Left)"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "East Death Mountain (Bottom)": {
         "exits": {
@@ -1610,7 +1696,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From East Death Mountain (Bottom)"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 5
     },
     "Death Mountain TR Pegs Area": {
         "exits": {
@@ -1662,7 +1749,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Death Mountain TR Pegs Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 7
     },
     "Death Mountain TR Pegs Ledge": {
         "exits": {
@@ -1729,7 +1817,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Death Mountain TR Pegs Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 7
     },
     "Mountain Pass Area": {
         "exits": {
@@ -1793,7 +1882,13 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mountain Pass Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": "never"
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "moonpearl"
+                            ]
+                        }
+                    }
                 }
             },
             "Mountain Pass Pull Tree": {
@@ -1847,7 +1942,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 10
     },
     "Mountain Pass Ledge": {
         "exits": {
@@ -1856,7 +1952,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Mountain Pass Ledge Drop": {
@@ -1880,6 +1977,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Death Mountain Return Cave (West Inverted_1)": {
+                "to": "Bumper Cave (top)",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -1887,7 +1993,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Mountain Pass Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 10
     },
     "Mountain Pass Entry": {
         "exits": {
@@ -1896,7 +2003,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Mountain Pass Rock (Inner)": {
@@ -1941,6 +2049,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Old Man Cave (West Inverted_1)": {
+                "to": "Bumper Cave (bottom)",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -1948,7 +2065,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Mountain Pass Entry"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 10
     },
     "Zora Waterfall Area": {
         "exits": {
@@ -2008,7 +2126,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Zora Waterfall Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 15
     },
     "Zora Waterfall Water": {
         "exits": {
@@ -2052,7 +2171,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 15
     },
     "Zora Waterfall Entryway": {
         "exits": {
@@ -2096,7 +2216,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Waterfall of Wishing"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 15
     },
     "Zoras Domain": {
         "exits": {
@@ -2143,7 +2264,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 129
     },
     "Lost Woods Pass West Area": {
         "exits": {
@@ -2202,7 +2324,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 16
     },
     "Lost Woods Pass East Top Area": {
         "exits": {
@@ -2274,7 +2397,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 16
     },
     "Lost Woods Pass Portal Area": {
         "exits": {
@@ -2353,7 +2477,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lost Woods Pass Portal Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 16
     },
     "Lost Woods Pass East Bottom Area": {
         "exits": {
@@ -2405,7 +2530,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lost Woods Pass East Bottom Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 16
     },
     "Kakariko Fortune Area": {
         "exits": {
@@ -2508,7 +2634,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 17
     },
     "Kakariko Pond Area": {
         "exits": {
@@ -2630,7 +2757,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 18
     },
     "Sanctuary Area": {
         "exits": {
@@ -2698,7 +2826,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 19
     },
     "Bonk Rock Ledge": {
         "exits": {
@@ -2781,7 +2910,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 19
     },
     "Graveyard Area": {
         "exits": {
@@ -2878,7 +3008,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Graveyard Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 20
     },
     "Graveyard Ledge": {
         "exits": {
@@ -2933,7 +3064,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Graveyard Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 20
     },
     "Kings Grave Area": {
         "exits": {
@@ -2999,7 +3131,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Kings Grave Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 20
     },
     "River Bend Area": {
         "exits": {
@@ -3105,7 +3238,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 21
     },
     "River Bend East Bank": {
         "exits": {
@@ -3193,7 +3327,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 21
     },
     "River Bend Water": {
         "exits": {
@@ -3252,7 +3387,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 21
     },
     "Potion Shop Area": {
         "exits": {
@@ -3342,7 +3478,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Potion Shop Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 22
     },
     "Potion Shop Northeast": {
         "exits": {
@@ -3415,7 +3552,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Potion Shop Northeast"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 22
     },
     "Potion Shop Water": {
         "exits": {
@@ -3450,7 +3588,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 22
     },
     "Zora Approach Area": {
         "exits": {
@@ -3537,7 +3676,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Zora Approach Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 23
     },
     "Zora Approach Ledge": {
         "exits": {
@@ -3603,7 +3743,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Zora Approach Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 23
     },
     "Zora Approach Water": {
         "exits": {
@@ -3624,7 +3765,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 23
     },
     "Kakariko Village": {
         "exits": {
@@ -3892,7 +4034,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 24
     },
     "Kakariko Southwest": {
         "exits": {
@@ -3951,7 +4094,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Kakariko Southwest"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 24
     },
     "Kakariko Bush Yard": {
         "exits": {
@@ -3997,7 +4141,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Kakariko Bush Yard"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 24
     },
     "Forgotten Forest Area": {
         "exits": {
@@ -4095,7 +4240,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 26
     },
     "Hyrule Castle Area": {
         "exits": {
@@ -4227,7 +4373,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror To Pyramid Pass"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 27
     },
     "Hyrule Castle Southwest": {
         "exits": {
@@ -4272,7 +4419,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Hyrule Castle Southwest"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 27
     },
     "Hyrule Castle Courtyard": {
         "exits": {
@@ -4379,7 +4527,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 27
     },
     "Hyrule Castle Courtyard Northeast": {
         "exits": {
@@ -4425,7 +4574,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Hyrule Castle Courtyard Northeast"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 27
     },
     "Hyrule Castle Ledge": {
         "exits": {
@@ -4537,7 +4687,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Hyrule Castle Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 27
     },
     "Hyrule Castle East Entry": {
         "exits": {
@@ -4589,13 +4740,15 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Hyrule Castle East Entry"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 27
     },
     "Hyrule Castle Water": {
         "exits": {},
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 27
     },
     "Wooden Bridge Area": {
         "exits": {
@@ -4723,7 +4876,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 29
     },
     "Wooden Bridge Northeast": {
         "exits": {
@@ -4789,7 +4943,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Wooden Bridge Northeast"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 29
     },
     "Wooden Bridge Water": {
         "exits": {
@@ -4810,7 +4965,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 29
     },
     "Eastern Palace Area": {
         "exits": {
@@ -4903,7 +5059,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 30
     },
     "Eastern Cliff": {
         "exits": {
@@ -4974,7 +5131,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": null
     },
     "Blacksmith Area": {
         "exits": {
@@ -5059,7 +5217,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror To Hammer Pegs Entry"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 34
     },
     "Blacksmith Ledge": {
         "exits": {
@@ -5110,7 +5269,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 34
     },
     "Sand Dunes Area": {
         "exits": {
@@ -5157,7 +5317,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Sand Dunes Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 37
     },
     "Maze Race Area": {
         "exits": {
@@ -5188,7 +5349,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Maze Race Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 40
     },
     "Maze Race Ledge": {
         "exits": {
@@ -5234,7 +5396,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Maze Race Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 40
     },
     "Maze Race Prize": {
         "exits": {
@@ -5262,7 +5425,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 40
     },
     "Kakariko Suburb Area": {
         "exits": {
@@ -5366,7 +5530,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror To Archery Game Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 41
     },
     "Flute Boy Area": {
         "exits": {
@@ -5459,7 +5624,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 42
     },
     "Flute Boy Pass": {
         "exits": {
@@ -5498,7 +5664,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Flute Boy Pass"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 42
     },
     "Central Bonk Rocks Area": {
         "exits": {
@@ -5603,7 +5770,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 43
     },
     "Links House Area": {
         "exits": {
@@ -5612,7 +5780,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Links House NE": {
@@ -5676,6 +5845,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Big Bomb Shop": {
+                "to": "Big Bomb Shop",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -5703,7 +5881,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 44
     },
     "Stone Bridge North Area": {
         "exits": {
@@ -5750,7 +5929,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Stone Bridge North Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 45
     },
     "Stone Bridge South Area": {
         "exits": {
@@ -5797,7 +5977,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Stone Bridge South Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 45
     },
     "Stone Bridge Water": {
         "exits": {
@@ -5848,7 +6029,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Stone Bridge Water"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 45
     },
     "Hobo Bridge": {
         "exits": {
@@ -5882,7 +6064,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 128
     },
     "Central Cliffs": {
         "exits": {
@@ -6071,7 +6254,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": null
     },
     "Tree Line Area": {
         "exits": {
@@ -6170,7 +6354,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 46
     },
     "Tree Line Water": {
         "exits": {
@@ -6205,7 +6390,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 46
     },
     "Eastern Nook Area": {
         "exits": {
@@ -6281,7 +6467,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 47
     },
     "Desert Area": {
         "exits": {
@@ -6350,7 +6537,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Desert Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 48
     },
     "Desert Ledge": {
         "exits": {
@@ -6418,7 +6606,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 48
     },
     "Desert Ledge Keep": {
         "exits": {
@@ -6471,7 +6660,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Desert Ledge Keep"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 48
     },
     "Desert Checkerboard Ledge": {
         "exits": {
@@ -6533,7 +6723,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Desert Checkerboard Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 48
     },
     "Desert Stairs": {
         "exits": {
@@ -6565,7 +6756,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Desert Stairs"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 48
     },
     "Desert Mouth": {
         "exits": {
@@ -6590,7 +6782,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Desert Palace Entrance (East)"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 48
     },
     "Desert Teleporter Ledge": {
         "exits": {
@@ -6619,7 +6812,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 48
     },
     "Desert Northern Cliffs": {
         "exits": {
@@ -6714,7 +6908,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": null
     },
     "Bombos Tablet Ledge": {
         "exits": {
@@ -6758,7 +6953,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 48
     },
     "Flute Boy Approach Area": {
         "exits": {
@@ -6871,7 +7067,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 50
     },
     "Flute Boy Bush Entry": {
         "exits": {
@@ -6916,7 +7113,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Flute Boy Bush Entry"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 50
     },
     "Cave 45 Ledge": {
         "exits": {
@@ -6965,7 +7163,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Cave 45 Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 50
     },
     "C Whirlpool Area": {
         "exits": {
@@ -7075,7 +7274,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From C Whirlpool Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 51
     },
     "C Whirlpool Portal Area": {
         "exits": {
@@ -7117,7 +7317,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 51
     },
     "C Whirlpool Water": {
         "exits": {
@@ -7154,7 +7355,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 51
     },
     "C Whirlpool Outer Area": {
         "exits": {
@@ -7214,7 +7416,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From C Whirlpool Outer Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 51
     },
     "Statues Area": {
         "exits": {
@@ -7327,7 +7530,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 52
     },
     "Statues Water": {
         "exits": {
@@ -7356,7 +7560,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 52
     },
     "Lake Hylia Northwest Bank": {
         "exits": {
@@ -7426,7 +7631,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lake Hylia Northwest Bank"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 53
     },
     "Lake Hylia Northeast Bank": {
         "exits": {
@@ -7478,7 +7684,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lake Hylia Northeast Bank"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 53
     },
     "Lake Hylia South Shore": {
         "exits": {
@@ -7575,7 +7782,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror To Ice Lake Southeast Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 53
     },
     "Lake Hylia Central Island": {
         "exits": {
@@ -7642,7 +7850,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lake Hylia Central Island"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 53
     },
     "Lake Hylia Island": {
         "exits": {
@@ -7683,7 +7892,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 53
     },
     "Lake Hylia Water": {
         "exits": {
@@ -7768,7 +7978,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lake Hylia Island Pier"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 53
     },
     "Lake Hylia Water D": {
         "exits": {
@@ -7812,7 +8023,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lake Hylia Water D"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 53
     },
     "Ice Cave Area": {
         "exits": {
@@ -7937,7 +8149,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 55
     },
     "Ice Cave Water": {
         "exits": {
@@ -7966,7 +8179,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 55
     },
     "Desert Pass Area": {
         "exits": {
@@ -8103,10 +8317,18 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": "never"
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "glove",
+                                "moonpearl"
+                            ]
+                        }
+                    }
                 }
             }
-        }
+        },
+        "owid": 58
     },
     "Middle Aged Man": {
         "exits": {},
@@ -8143,7 +8365,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 58
     },
     "Desert Pass Southeast": {
         "exits": {
@@ -8195,7 +8418,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Desert Pass Southeast"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 58
     },
     "Desert Pass Ledge": {
         "exits": {
@@ -8243,7 +8467,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Desert Pass Ledge"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 58
     },
     "Dam Area": {
         "exits": {
@@ -8326,7 +8551,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 59
     },
     "South Pass Area": {
         "exits": {
@@ -8377,10 +8603,17 @@ export const logic_regions: Record<string, RegionLogic> = {
             "South Pass Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": "never"
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "moonpearl"
+                            ]
+                        }
+                    }
                 }
             }
-        }
+        },
+        "owid": 60
     },
     "Octoballoon Area": {
         "exits": {
@@ -8440,7 +8673,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Octoballoon Area"
         ],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 63
     },
     "Octoballoon Water": {
         "exits": {
@@ -8477,7 +8711,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 63
     },
     "Octoballoon Water Ledge": {
         "exits": {
@@ -8519,7 +8754,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "LightWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 63
     },
     "Skull Woods Forest": {
         "exits": {
@@ -8641,7 +8877,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 64
     },
     "Skull Woods Portal Entry": {
         "exits": {
@@ -8691,7 +8928,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 64
     },
     "Skull Woods Forest (West)": {
         "exits": {
@@ -8759,7 +8997,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Skull Woods Final Section"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 64
     },
     "Skull Woods Forgotten Path (Southwest)": {
         "exits": {
@@ -8802,7 +9041,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 64
     },
     "Skull Woods Forgotten Path (Northeast)": {
         "exits": {
@@ -8859,7 +9099,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 64
     },
     "Dark Lumberjack Area": {
         "exits": {
@@ -8926,7 +9167,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 66
     },
     "West Dark Death Mountain (Top)": {
         "exits": {
@@ -8977,7 +9219,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 67
     },
     "GT Stairs": {
         "exits": {
@@ -9023,7 +9266,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Ganons Tower"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 67
     },
     "West Dark Death Mountain (Bottom)": {
         "exits": {
@@ -9040,7 +9284,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "West Dark Death Mountain ES": {
@@ -9072,6 +9317,24 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": "never",
                     "Inverted": {}
                 }
+            },
+            "West Dark Death Mountain Ladder (Inverted_1)": {
+                "to": "West Dark Death Mountain (Top)",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
+            },
+            "Dark Death Mountain Fairy (Inverted_1)": {
+                "to": "Old Man Cave (East)",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -9080,7 +9343,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Dark Death Mountain Teleporter (West)"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 67
     },
     "East Dark Death Mountain (Top)": {
         "exits": {
@@ -9171,7 +9435,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Hookshot Cave"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 69
     },
     "Dark Death Mountain Floating Island": {
         "exits": {
@@ -9210,7 +9475,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Hookshot Cave Back Entrance"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 69
     },
     "Dark Death Mountain Ledge": {
         "exits": {
@@ -9264,7 +9530,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Dark Death Mountain Ledge (East)"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 69
     },
     "Dark Death Mountain Isolated Ledge": {
         "exits": {
@@ -9295,7 +9562,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Turtle Rock Isolated Ledge Entrance"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 69
     },
     "East Dark Death Mountain (Bottom)": {
         "exits": {
@@ -9363,7 +9631,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 69
     },
     "East Dark Death Mountain (Bushes)": {
         "exits": {
@@ -9384,7 +9653,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 69
     },
     "East Dark Death Mountain (Bottom Left)": {
         "exits": {
@@ -9413,7 +9683,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 69
     },
     "Turtle Rock Area": {
         "exits": {
@@ -9486,7 +9757,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 71
     },
     "Turtle Rock Ledge": {
         "exits": {
@@ -9539,7 +9811,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 71
     },
     "Bumper Cave Area": {
         "exits": {
@@ -9610,7 +9883,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 74
     },
     "Bumper Cave Ledge": {
         "exits": {
@@ -9619,7 +9893,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Bumper Cave Ledge Drop": {
@@ -9661,6 +9936,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                     },
                     "Inverted": "never"
                 }
+            },
+            "Bumper Cave (Top Inverted_1)": {
+                "to": "Dark Death Mountain Healer Fairy",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
@@ -9674,7 +9958,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 74
     },
     "Bumper Cave Entry": {
         "exits": {
@@ -9683,7 +9968,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Bumper Cave Rock (Inner)": {
@@ -9728,13 +10014,23 @@ export const logic_regions: Record<string, RegionLogic> = {
                     },
                     "Inverted": "never"
                 }
+            },
+            "Bumper Cave (Bottom Inverted_1)": {
+                "to": "Old Man Cave Ledge",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
             "Bumper Cave (Bottom)"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 74
     },
     "Catfish Area": {
         "exits": {
@@ -9795,7 +10091,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 79
     },
     "Skull Woods Pass West Area": {
         "exits": {
@@ -9846,7 +10143,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 80
     },
     "Skull Woods Pass East Top Area": {
         "exits": {
@@ -9903,7 +10201,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 80
     },
     "Skull Woods Pass Portal Area": {
         "exits": {
@@ -9975,7 +10274,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "West Dark World Teleporter"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 80
     },
     "Skull Woods Pass East Bottom Area": {
         "exits": {
@@ -10025,7 +10325,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 80
     },
     "Dark Fortune Area": {
         "exits": {
@@ -10146,7 +10447,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 81
     },
     "Outcast Pond Area": {
         "exits": {
@@ -10223,7 +10525,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 82
     },
     "Dark Chapel Area": {
         "exits": {
@@ -10312,7 +10615,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 83
     },
     "Dark Graveyard Area": {
         "exits": {
@@ -10383,7 +10687,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 84
     },
     "Dark Graveyard North": {
         "exits": {
@@ -10471,7 +10776,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 84
     },
     "Qirn Jump Area": {
         "exits": {
@@ -10568,7 +10874,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 85
     },
     "Qirn Jump East Bank": {
         "exits": {
@@ -10654,7 +10961,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 85
     },
     "Qirn Jump Water": {
         "exits": {
@@ -10705,7 +11013,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 85
     },
     "Dark Witch Area": {
         "exits": {
@@ -10814,7 +11123,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 86
     },
     "Dark Witch Northeast": {
         "exits": {
@@ -10885,7 +11195,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 86
     },
     "Dark Witch Water": {
         "exits": {
@@ -10920,7 +11231,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 86
     },
     "Catfish Approach Area": {
         "exits": {
@@ -11005,7 +11317,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 87
     },
     "Catfish Approach Ledge": {
         "exits": {
@@ -11069,7 +11382,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 87
     },
     "Catfish Approach Water": {
         "exits": {
@@ -11090,7 +11404,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 87
     },
     "Village of Outcasts": {
         "exits": {
@@ -11241,7 +11556,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 88
     },
     "Village of Outcasts Bush Yard": {
         "exits": {
@@ -11293,7 +11609,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Dark World Shop"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 88
     },
     "Shield Shop Area": {
         "exits": {
@@ -11358,7 +11675,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 90
     },
     "Shield Shop Fence": {
         "exits": {
@@ -11397,7 +11715,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Red Shield Shop"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 90
     },
     "Pyramid Area": {
         "exits": {
@@ -11561,7 +11880,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 91
     },
     "Pyramid Crack": {
         "exits": {
@@ -11578,7 +11898,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Pyramid Fairy"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 91
     },
     "Pyramid Exit Ledge": {
         "exits": {
@@ -11617,7 +11938,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Pyramid Entrance"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 91
     },
     "Pyramid Pass": {
         "exits": {
@@ -11670,13 +11992,15 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Post Aga Teleporter"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 91
     },
     "Pyramid Water": {
         "exits": {},
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 91
     },
     "Broken Bridge Area": {
         "exits": {
@@ -11753,7 +12077,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 93
     },
     "Broken Bridge Northeast": {
         "exits": {
@@ -11851,7 +12176,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 93
     },
     "Broken Bridge West": {
         "exits": {
@@ -11901,7 +12227,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 93
     },
     "Broken Bridge Water": {
         "exits": {
@@ -11922,7 +12249,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 93
     },
     "Palace of Darkness Area": {
         "exits": {
@@ -12030,7 +12358,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 94
     },
     "Dark Palace Button": {
         "exits": {},
@@ -12055,7 +12384,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 94
     },
     "Darkness Cliff": {
         "exits": {
@@ -12126,7 +12456,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": null
     },
     "Hammer Pegs Area": {
         "exits": {
@@ -12224,7 +12555,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 98
     },
     "Hammer Pegs Entry": {
         "exits": {
@@ -12274,7 +12606,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 98
     },
     "Dark Dunes Area": {
         "exits": {
@@ -12319,7 +12652,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 101
     },
     "Dig Game Area": {
         "exits": {
@@ -12382,7 +12716,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 104
     },
     "Dig Game Ledge": {
         "exits": {
@@ -12419,7 +12754,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 104
     },
     "Frog Area": {
         "exits": {
@@ -12498,7 +12834,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 105
     },
     "Frog Prison": {
         "exits": {
@@ -12539,7 +12876,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 105
     },
     "Archery Game Area": {
         "exits": {
@@ -12615,7 +12953,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Archery Game"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 105
     },
     "Stumpy Area": {
         "exits": {
@@ -12651,7 +12990,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "owid": 106
     },
     "Stumpy Pass": {
         "exits": {
@@ -12688,7 +13028,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 106
     },
     "Dark Bonk Rocks Area": {
         "exits": {
@@ -12772,7 +13113,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Bonk Fairy (Dark)"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 107
     },
     "Big Bomb Shop Area": {
         "exits": {
@@ -12781,7 +13123,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "Cave",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Big Bomb Shop NE": {
@@ -12845,13 +13188,23 @@ export const logic_regions: Record<string, RegionLogic> = {
                     },
                     "Inverted": "never"
                 }
+            },
+            "Links House": {
+                "to": "Links House",
+                "type": "Cave",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
             "Big Bomb Shop"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 108
     },
     "Hammer Bridge North Area": {
         "exits": {
@@ -12930,7 +13283,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 109
     },
     "Hammer Bridge South Area": {
         "exits": {
@@ -12988,7 +13342,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 109
     },
     "Hammer Bridge Water": {
         "exits": {
@@ -13031,7 +13386,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 109
     },
     "Dark Central Cliffs": {
         "exits": {
@@ -13220,7 +13576,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": null
     },
     "Dark Tree Line Area": {
         "exits": {
@@ -13333,7 +13690,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 110
     },
     "Dark Tree Line Water": {
         "exits": {
@@ -13368,7 +13726,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 110
     },
     "Darkness Nook Area": {
         "exits": {
@@ -13444,7 +13803,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 111
     },
     "Mire Area": {
         "exits": {
@@ -13570,7 +13930,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mire Hint"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 112
     },
     "Mire Teleporter Ledge": {
         "exits": {
@@ -13601,7 +13962,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mire Teleporter"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 112
     },
     "Mire Northern Cliffs": {
         "exits": {
@@ -13728,7 +14090,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Dark Checkerboard Cliff Ledge Drop"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": null
     },
     "Stumpy Approach Area": {
         "exits": {
@@ -13779,7 +14142,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 114
     },
     "Stumpy Approach Bush Entry": {
         "exits": {
@@ -13822,7 +14186,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 114
     },
     "Dark C Whirlpool Area": {
         "exits": {
@@ -13930,7 +14295,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 115
     },
     "Dark C Whirlpool Portal Area": {
         "exits": {
@@ -13974,7 +14340,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "South Dark World Teleporter"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 115
     },
     "Dark C Whirlpool Water": {
         "exits": {
@@ -14003,7 +14370,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 115
     },
     "Dark C Whirlpool Outer Area": {
         "exits": {
@@ -14061,7 +14429,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 115
     },
     "Hype Cave Area": {
         "exits": {
@@ -14190,7 +14559,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 116
     },
     "Hype Cave Water": {
         "exits": {
@@ -14219,7 +14589,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 116
     },
     "Ice Lake Northwest Bank": {
         "exits": {
@@ -14279,7 +14650,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Dark Lake Hylia Shop"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Ice Lake Northeast Bank": {
         "exits": {
@@ -14349,7 +14721,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Ice Lake Southwest Ledge": {
         "exits": {
@@ -14399,7 +14772,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Ice Lake Southeast Ledge": {
         "exits": {
@@ -14449,7 +14823,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Ice Lake Water": {
         "exits": {
@@ -14502,11 +14877,39 @@ export const logic_regions: Record<string, RegionLogic> = {
                     },
                     "Inverted": "never"
                 }
+            },
+            "Ice Lake Iceberg": {
+                "to": "Ice Lake Iceberg",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "moonpearlflippers"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "flippers"
+                            ]
+                        }
+                    },
+                    "Inverted_1": {
+                        "always": {
+                            "allOf": [
+                                "flippers"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Ice Lake Iceberg": {
         "exits": {
@@ -14592,13 +14995,50 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
+            },
+            "Ice Palace (Inverted)": {
+                "to": "Ice Palace Area",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
+            },
+            "Ice Lake Water": {
+                "to": "Ice Lake Water",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "moonpearlflippers"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "flippers"
+                            ]
+                        }
+                    },
+                    "Inverted_1": {
+                        "always": {
+                            "allOf": [
+                                "flippers"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [
             "Ice Lake Teleporter"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Ice Palace Area": {
         "exits": {
@@ -14623,13 +15063,23 @@ export const logic_regions: Record<string, RegionLogic> = {
                     },
                     "Inverted": "never"
                 }
+            },
+            "Ice Lake Iceberg": {
+                "to": "Ice Lake Iceberg",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
+                }
             }
         },
         "entrances": [
             "Ice Palace"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 117
     },
     "Shopping Mall Area": {
         "exits": {
@@ -14733,7 +15183,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Dark Lake Hylia Ledge Spike Cave"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 119
     },
     "Shopping Mall Water": {
         "exits": {
@@ -14762,7 +15213,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 119
     },
     "Swamp Nook Area": {
         "exits": {
@@ -14833,7 +15285,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 122
     },
     "Swamp Area": {
         "exits": {
@@ -14896,7 +15349,8 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Swamp Palace"
         ],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 123
     },
     "Dark South Pass Area": {
         "exits": {
@@ -14973,7 +15427,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "owid": 124
     },
     "Bomber Corner Area": {
         "exits": {
@@ -15031,7 +15486,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 127
     },
     "Bomber Corner Water": {
         "exits": {
@@ -15068,7 +15524,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 127
     },
     "Bomber Corner Water Ledge": {
         "exits": {
@@ -15110,7 +15567,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {}
+        "locations": {},
+        "owid": 127
     },
     "Lost Woods Gamble": {
         "exits": {},
@@ -15276,7 +15734,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                                 "lantern"
                             ]
                         }
-                    }
+                    },
+                    "Inverted_1": "never"
                 }
             },
             "Old Man Cave W": {
@@ -15291,6 +15750,21 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     },
                     "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "lantern"
+                            ]
+                        }
+                    }
+                }
+            },
+            "Old Man Cave Exit (East Inverted_1)": {
+                "to": "West Dark Death Mountain (Bottom)",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {
                         "always": {
                             "allOf": [
                                 "lantern"
@@ -15329,20 +15803,9 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Mountain Pass Entry",
                 "type": "LightWorld",
                 "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "never"
-                            ]
-                        }
-                    },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "never"
-                            ]
-                        }
-                    }
+                    "Open": {},
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Old Man Cave Dropdown": {
@@ -15351,6 +15814,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {},
                     "Inverted": {}
+                }
+            },
+            "Old Man Cave Exit (West Inverted_1)": {
+                "to": "Bumper Cave Entry",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             }
         },
@@ -15545,7 +16017,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                                 "lantern"
                             ]
                         }
-                    }
+                    },
+                    "Inverted_1": "never"
                 }
             },
             "Death Mountain Return Cave E": {
@@ -15566,6 +16039,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     }
+                }
+            },
+            "Death Mountain Return Cave Exit (West Inverted_1)": {
+                "to": "West Death Mountain (Bottom)",
+                "type": "LightWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             }
         },
@@ -17646,7 +18128,17 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "LightWorld",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
+                }
+            },
+            "Links House Exit (Inverted_1)": {
+                "to": "Big Bomb Shop Area",
+                "type": "DarkWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             }
         },
@@ -19450,7 +19942,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "DarkWorld",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Bumper Cave Bottom to Top": {
@@ -19471,6 +19964,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     }
+                }
+            },
+            "Bumper Cave Exit (Inverted_1)": {
+                "to": "Mountain Pass Entry",
+                "type": "LightWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             }
         },
@@ -19530,7 +20032,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "DarkWorld",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
                 }
             },
             "Bumper Cave Top To Bottom": {
@@ -19553,6 +20056,15 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     }
+                }
+            },
+            "Bumper Cave Exit (Top Inverted_1)": {
+                "to": "Mountain Pass Ledge",
+                "type": "LightWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             }
         },
@@ -19990,7 +20502,17 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "type": "DarkWorld",
                 "requirements": {
                     "Open": {},
-                    "Inverted": {}
+                    "Inverted": {},
+                    "Inverted_1": "never"
+                }
+            },
+            "Big Bomb Shop Exit (Inverted_1)": {
+                "to": "Links House Area",
+                "type": "LightWorld",
+                "requirements": {
+                    "Open": "never",
+                    "Inverted": "never",
+                    "Inverted_1": {}
                 }
             }
         },
@@ -20458,7 +20980,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Desert South Portal": {
         "exits": {
@@ -20504,7 +21027,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Desert Back Portal": {
         "exits": {
@@ -20527,7 +21051,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Portal": {
         "exits": {
@@ -20696,7 +21221,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Skull 3 Portal": {
         "exits": {
@@ -20719,7 +21245,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Thieves Town Portal": {
         "exits": {
@@ -20846,7 +21373,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Turtle Rock Chest Portal": {
         "exits": {
@@ -20869,7 +21397,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Turtle Rock Eye Bridge Portal": {
         "exits": {
@@ -20892,7 +21421,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ganons Tower Portal": {
         "exits": {
@@ -20992,7 +21522,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenKnifeGuard"
             }
-        }
+        },
+        "tileid": 97
     },
     "Hyrule Castle West Lobby": {
         "exits": {
@@ -21051,7 +21582,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 96
     },
     "Hyrule Castle East Lobby": {
         "exits": {
@@ -21118,7 +21650,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenGuard"
             }
-        }
+        },
+        "tileid": 98
     },
     "Hyrule Castle East Hall": {
         "exits": {
@@ -21183,7 +21716,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenKnifeGuard"
             }
-        }
+        },
+        "tileid": 82
     },
     "Hyrule Castle West Hall": {
         "exits": {
@@ -21240,7 +21774,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenKnifeGuard"
             }
-        }
+        },
+        "tileid": 80
     },
     "Hyrule Castle Back Hall": {
         "exits": {
@@ -21271,7 +21806,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 1
     },
     "Hyrule Castle Throne Room": {
         "exits": {
@@ -21309,7 +21845,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 81
     },
     "Hyrule Castle Behind Tapestry": {
         "exits": {
@@ -21332,7 +21869,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hyrule Dungeon Map Room": {
         "exits": {
@@ -21380,7 +21918,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 114
     },
     "Hyrule Dungeon North Abyss": {
         "exits": {
@@ -21423,7 +21962,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 114
     },
     "Hyrule Dungeon North Abyss Catwalk": {
         "exits": {
@@ -21446,7 +21986,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hyrule Dungeon South Abyss": {
         "exits": {
@@ -21509,7 +22050,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 130
     },
     "Hyrule Dungeon South Abyss Catwalk": {
         "exits": {
@@ -21532,7 +22074,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 130
     },
     "Hyrule Dungeon Guardroom": {
         "exits": {
@@ -21578,7 +22121,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenGuard"
             }
-        }
+        },
+        "tileid": 129
     },
     "Hyrule Dungeon Armory Main": {
         "exits": {
@@ -21629,7 +22173,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenGuard"
             }
-        }
+        },
+        "tileid": 113
     },
     "Hyrule Dungeon Armory Boomerang": {
         "exits": {
@@ -21657,7 +22202,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 113
     },
     "Hyrule Dungeon Armory North Branch": {
         "exits": {
@@ -21692,7 +22238,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 113
     },
     "Hyrule Dungeon Staircase": {
         "exits": {
@@ -21715,7 +22262,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 112
     },
     "Hyrule Dungeon Cellblock": {
         "exits": {
@@ -21782,7 +22330,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenGuard"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hyrule Dungeon Cell": {
         "exits": {
@@ -21810,7 +22359,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Sewers Behind Tapestry": {
         "exits": {
@@ -22006,7 +22556,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 65
     },
     "Sewers Rope Room": {
         "exits": {
@@ -22168,7 +22719,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Snake"
             }
-        }
+        },
+        "tileid": 66
     },
     "Sewers Dark Cross": {
         "exits": {
@@ -22311,7 +22863,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Snake"
             }
-        }
+        },
+        "tileid": 50
     },
     "Sewers Water": {
         "exits": {
@@ -22494,7 +23047,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 34
     },
     "Sewers Dark Aquabats": {
         "exits": {
@@ -22726,7 +23280,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 33
     },
     "Sewers Key Rat": {
         "exits": {
@@ -22832,7 +23387,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 33
     },
     "Sewers Secret Room Blocked Path": {
         "exits": {
@@ -22847,7 +23403,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 17
     },
     "Sewers Rat Path": {
         "exits": {
@@ -22969,7 +23526,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 17
     },
     "Sewers Secret Room": {
         "exits": {
@@ -23047,7 +23605,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 17
     },
     "Sewers Yet More Rats": {
         "exits": {
@@ -23130,7 +23689,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 2
     },
     "Sewers Pull Switch": {
         "exits": {
@@ -23168,7 +23728,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 2
     },
     "Sanctuary": {
         "exits": {
@@ -23196,7 +23757,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 18
     },
     "Eastern Lobby": {
         "exits": {
@@ -23248,7 +23810,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 201
     },
     "Eastern Lobby Bridge": {
         "exits": {
@@ -23293,7 +23856,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo2"
             }
-        }
+        },
+        "tileid": 201
     },
     "Eastern Lobby Left Ledge": {
         "exits": {
@@ -23308,7 +23872,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 201
     },
     "Eastern Lobby Right Ledge": {
         "exits": {
@@ -23323,7 +23888,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 201
     },
     "Eastern Cannonball": {
         "exits": {
@@ -23377,7 +23943,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 185
     },
     "Eastern Cannonball Ledge": {
         "exits": {
@@ -23412,7 +23979,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 185
     },
     "Eastern Courtyard Ledge": {
         "exits": {
@@ -23468,7 +24036,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 169
     },
     "Eastern East Wing": {
         "exits": {
@@ -23535,7 +24104,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo2"
             }
-        }
+        },
+        "tileid": 170
     },
     "Eastern Pot Switch": {
         "exits": {
@@ -23583,7 +24153,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 170
     },
     "Eastern Map Balcony": {
         "exits": {
@@ -23637,7 +24208,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Eastern Map Room": {
         "exits": {
@@ -23667,7 +24239,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Eastern West Wing": {
         "exits": {
@@ -23719,7 +24292,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 168
     },
     "Eastern Stalfos Spawn": {
         "exits": {
@@ -23773,7 +24347,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 168
     },
     "Eastern Compass Room": {
         "exits": {
@@ -23803,7 +24378,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 168
     },
     "Eastern Hint Tile": {
         "exits": {
@@ -23826,7 +24402,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 168
     },
     "Eastern Hint Tile Blocked Path": {
         "exits": {
@@ -23861,7 +24438,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Eastern Courtyard": {
         "exits": {
@@ -23971,7 +24549,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": -1
     },
     "Eastern Fairies": {
         "exits": {
@@ -23986,7 +24565,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Eastern Map Valley": {
         "exits": {
@@ -24009,7 +24589,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 170
     },
     "Eastern Dark Square": {
         "exits": {
@@ -24117,7 +24698,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo2"
             }
-        }
+        },
+        "tileid": 186
     },
     "Eastern Dark Pots": {
         "exits": {
@@ -24346,7 +24928,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 186
     },
     "Eastern Big Key": {
         "exits": {
@@ -24435,7 +25018,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 184
     },
     "Eastern Darkness": {
         "exits": {
@@ -24694,7 +25278,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo2"
             }
-        }
+        },
+        "tileid": 153
     },
     "Eastern Rupees": {
         "exits": {
@@ -24721,7 +25306,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 153
     },
     "Eastern Attic Start": {
         "exits": {
@@ -24775,7 +25361,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 218
     },
     "Eastern False Switches": {
         "exits": {
@@ -24832,7 +25419,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenEyegore"
             }
-        }
+        },
+        "tileid": 217
     },
     "Eastern Cannonball Hell": {
         "exits": {
@@ -24855,7 +25443,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 217
     },
     "Eastern Single Eyegore": {
         "exits": {
@@ -24912,7 +25501,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 216
     },
     "Eastern Duo Eyegores": {
         "exits": {
@@ -25028,7 +25618,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo"
             }
-        }
+        },
+        "tileid": 216
     },
     "Eastern Boss": {
         "exits": {
@@ -25055,7 +25646,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Eastern Boss Spoils": {
         "exits": {},
@@ -25196,7 +25788,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": -1
     },
     "Desert Left Alcove": {
         "exits": {
@@ -25227,7 +25820,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": -1
     },
     "Desert Right Alcove": {
         "exits": {
@@ -25266,7 +25860,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": -1
     },
     "Desert Dead End": {
         "exits": {
@@ -25296,7 +25891,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 116
     },
     "Desert East Lobby": {
         "exits": {
@@ -25319,7 +25915,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Desert East Wing": {
         "exits": {
@@ -25418,7 +26015,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 133
     },
     "Desert Compass Room": {
         "exits": {
@@ -25481,7 +26079,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo2"
             }
-        }
+        },
+        "tileid": 133
     },
     "Desert Cannonball": {
         "exits": {
@@ -25503,7 +26102,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 117
     },
     "Desert Arrow Pot Corner": {
         "exits": {
@@ -25574,7 +26174,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 117
     },
     "Desert Trap Room": {
         "exits": {
@@ -25625,7 +26226,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 117
     },
     "Desert North Hall": {
         "exits": {
@@ -25695,7 +26297,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Debirando"
             }
-        }
+        },
+        "tileid": 116
     },
     "Desert Map Room": {
         "exits": {
@@ -25789,7 +26392,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 116
     },
     "Desert Sandworm Corner": {
         "exits": {
@@ -25857,7 +26461,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 115
     },
     "Desert Bonk Torch": {
         "exits": {
@@ -25891,7 +26496,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 115
     },
     "Desert Circle of Pots": {
         "exits": {
@@ -25969,7 +26575,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 115
     },
     "Desert Big Chest Room": {
         "exits": {
@@ -25991,7 +26598,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 115
     },
     "Desert West Wing": {
         "exits": {
@@ -26088,7 +26696,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Leever"
             }
-        }
+        },
+        "tileid": 131
     },
     "Desert West Lobby": {
         "exits": {
@@ -26119,7 +26728,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 131
     },
     "Desert Fairy Fountain": {
         "exits": {
@@ -26134,7 +26744,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 131
     },
     "Desert Back Lobby": {
         "exits": {
@@ -26157,7 +26768,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 99
     },
     "Desert Tiles 1": {
         "exits": {
@@ -26229,7 +26841,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 99
     },
     "Desert Bridge": {
         "exits": {
@@ -26264,7 +26877,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 83
     },
     "Desert Four Statues": {
         "exits": {
@@ -26316,7 +26930,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo"
             }
-        }
+        },
+        "tileid": 83
     },
     "Desert Beamos Hall": {
         "exits": {
@@ -26411,7 +27026,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo"
             }
-        }
+        },
+        "tileid": 83
     },
     "Desert Tiles 2": {
         "exits": {
@@ -26483,7 +27099,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 67
     },
     "Desert Wall Slide": {
         "exits": {
@@ -26564,7 +27181,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedEyegore"
             }
-        }
+        },
+        "tileid": 67
     },
     "Desert Boss": {
         "exits": {
@@ -26591,7 +27209,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Desert Boss Spoils": {
         "exits": {},
@@ -26671,7 +27290,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Lobby - Crystal": {
         "exits": {
@@ -26705,7 +27325,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Front": {
         "exits": {
@@ -26860,7 +27481,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Front - Crystal": {
         "exits": {
@@ -26894,7 +27516,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Down Stairs Landing": {
         "exits": {
@@ -26951,7 +27574,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Down Stairs Landing - Ranged Crystal": {
         "exits": {
@@ -26985,7 +27609,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Up Stairs Landing": {
         "exits": {
@@ -27042,7 +27667,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Up Stairs Landing - Ranged Crystal": {
         "exits": {
@@ -27076,7 +27702,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Back": {
         "exits": {
@@ -27177,7 +27804,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Kodongo"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Back - Ranged Crystal": {
         "exits": {
@@ -27211,7 +27839,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Basement Cage": {
         "exits": {
@@ -27274,7 +27903,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 135
     },
     "Hera Basement Cage - Crystal": {
         "exits": {
@@ -27308,7 +27938,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Tile Room": {
         "exits": {
@@ -27410,7 +28041,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 135
     },
     "Hera Tridorm": {
         "exits": {
@@ -27499,7 +28131,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniMoldorm"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Tridorm - Crystal": {
         "exits": {
@@ -27533,7 +28166,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Torches": {
         "exits": {
@@ -27593,7 +28227,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 135
     },
     "Hera Beetles": {
         "exits": {
@@ -27684,7 +28319,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Startile Corner": {
         "exits": {
@@ -27757,7 +28393,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Startile Wide": {
         "exits": {
@@ -27849,7 +28486,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Startile Wide - Crystal": {
         "exits": {
@@ -27883,7 +28521,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera 4F": {
         "exits": {
@@ -28073,7 +28712,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Kodongo"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera Big Chest Landing": {
         "exits": {
@@ -28103,7 +28743,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera 5F": {
         "exits": {
@@ -28206,7 +28847,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "Hera 5F Pot Block": {
         "exits": {},
@@ -28300,7 +28942,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Boss": {
         "exits": {
@@ -28351,7 +28994,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Hera Boss Spoils": {
         "exits": {},
@@ -28399,7 +29043,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 224
     },
     "Tower Gold Knights": {
         "exits": {
@@ -28437,7 +29082,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BallNChain"
             }
-        }
+        },
+        "tileid": 224
     },
     "Tower Room 03": {
         "exits": {
@@ -28493,7 +29139,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BluesainBolt"
             }
-        }
+        },
+        "tileid": 224
     },
     "Tower Lone Statue": {
         "exits": {
@@ -28560,7 +29207,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BluesainBolt"
             }
-        }
+        },
+        "tileid": 208
     },
     "Tower Dark Maze": {
         "exits": {
@@ -28811,7 +29459,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 208
     },
     "Tower Dark Chargers": {
         "exits": {
@@ -28899,7 +29548,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BluesainBolt"
             }
-        }
+        },
+        "tileid": 208
     },
     "Tower Dual Statues": {
         "exits": {
@@ -28985,7 +29635,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 192
     },
     "Tower Dark Pits": {
         "exits": {
@@ -29162,7 +29813,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 192
     },
     "Tower Dark Archers": {
         "exits": {
@@ -29268,7 +29920,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueArcher"
             }
-        }
+        },
+        "tileid": 192
     },
     "Tower Red Spears": {
         "exits": {
@@ -29306,7 +29959,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedJavelinGuard"
             }
-        }
+        },
+        "tileid": 176
     },
     "Tower Red Guards": {
         "exits": {
@@ -29344,7 +29998,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedSpearGuard"
             }
-        }
+        },
+        "tileid": 176
     },
     "Tower Circle of Pots": {
         "exits": {
@@ -29477,7 +30132,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedSpearGuard"
             }
-        }
+        },
+        "tileid": 176
     },
     "Tower Pacifist Run": {
         "exits": {
@@ -29534,7 +30190,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedJavelinGuard"
             }
-        }
+        },
+        "tileid": 176
     },
     "Tower Push Statue": {
         "exits": {
@@ -29579,7 +30236,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueArcher"
             }
-        }
+        },
+        "tileid": 64
     },
     "Tower Catwalk": {
         "exits": {
@@ -29617,7 +30275,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 64
     },
     "Tower Antechamber": {
         "exits": {
@@ -29640,7 +30299,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 48
     },
     "Tower Altar": {
         "exits": {
@@ -29687,7 +30347,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 48
     },
     "Tower Agahnim 1": {
         "exits": {},
@@ -29700,7 +30361,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 32
     },
     "PoD Lobby": {
         "exits": {
@@ -29739,7 +30401,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 74
     },
     "PoD Left Cage": {
         "exits": {
@@ -29788,7 +30451,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": 74
     },
     "PoD Middle Cage": {
         "exits": {
@@ -29877,7 +30541,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": 74
     },
     "PoD Shooter Room": {
         "exits": {
@@ -29911,7 +30576,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 9
     },
     "PoD Pit Room": {
         "exits": {
@@ -30003,7 +30669,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Pit Room Blocked": {
         "exits": {
@@ -30034,7 +30701,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Arena Main": {
         "exits": {
@@ -30205,7 +30873,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena Main - Ranged Crystal": {
         "exits": {
@@ -30239,7 +30908,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena North": {
         "exits": {
@@ -30302,7 +30972,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena Bridge": {
         "exits": {
@@ -30360,7 +31031,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena Bridge - Ranged Crystal": {
         "exits": {
@@ -30394,7 +31066,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena Landing": {
         "exits": {
@@ -30481,7 +31154,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Arena Right": {
         "exits": {
@@ -30536,7 +31210,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Arena Right - Ranged Crystal": {
         "exits": {
@@ -30582,7 +31257,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena Ledge": {
         "exits": {
@@ -30636,7 +31312,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Arena Ledge - Ranged Crystal": {
         "exits": {
@@ -30682,7 +31359,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Sexy Statue": {
         "exits": {
@@ -30754,7 +31432,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 43
     },
     "PoD Map Balcony": {
         "exits": {
@@ -30891,7 +31570,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": 43
     },
     "PoD Map Balcony - Ranged Crystal": {
         "exits": {
@@ -30925,7 +31605,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Fairy Pool": {
         "exits": {
@@ -30940,7 +31621,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 43
     },
     "PoD Conveyor": {
         "exits": {
@@ -30985,7 +31667,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 59
     },
     "PoD Mimics 1": {
         "exits": {
@@ -31056,7 +31739,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenEyegore"
             }
-        }
+        },
+        "tileid": 75
     },
     "PoD Jelly Hall": {
         "exits": {
@@ -31129,7 +31813,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 75
     },
     "PoD Warp Hint": {
         "exits": {
@@ -31166,7 +31851,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Warp Room": {
         "exits": {
@@ -31189,7 +31875,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Stalfos Basement": {
         "exits": {
@@ -31249,7 +31936,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Basement Ledge": {
         "exits": {
@@ -31297,7 +31985,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 10
     },
     "PoD Big Key Landing": {
         "exits": {
@@ -31327,7 +32016,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Falling Bridge Ledge": {
         "exits": {
@@ -31383,7 +32073,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Falling Bridge Mid": {
         "exits": {
@@ -31421,7 +32112,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Falling Bridge": {
         "exits": {
@@ -31469,7 +32161,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Maze": {
         "exits": {
@@ -31633,7 +32326,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Kodongo"
             }
-        }
+        },
+        "tileid": 25
     },
     "PoD Big Chest Balcony": {
         "exits": {
@@ -31667,7 +32361,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 26
     },
     "PoD Compass Room": {
         "exits": {
@@ -31753,7 +32448,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": 26
     },
     "PoD Dark Basement": {
         "exits": {
@@ -31837,7 +32533,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 106
     },
     "PoD Harmless Hellway": {
         "exits": {
@@ -31891,7 +32588,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 26
     },
     "PoD Mimics 2": {
         "exits": {
@@ -31948,7 +32646,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "GreenEyegore"
             }
-        }
+        },
+        "tileid": 27
     },
     "PoD Bow Statue Left": {
         "exits": {
@@ -32051,7 +32750,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Bow Statue Left - Crystal": {
         "exits": {
@@ -32085,7 +32785,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Bow Statue Right": {
         "exits": {
@@ -32152,7 +32853,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 27
     },
     "PoD Bow Statue Right - Ranged Crystal": {
         "exits": {
@@ -32186,7 +32888,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Pegs Landing": {
         "exits": {
@@ -32257,7 +32960,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Dark Pegs Right": {
         "exits": {
@@ -32334,7 +33038,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Pegs Middle": {
         "exits": {
@@ -32443,7 +33148,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Pegs Left": {
         "exits": {
@@ -32569,7 +33275,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Pegs Landing - Ranged Crystal": {
         "exits": {
@@ -32603,7 +33310,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Pegs Middle - Ranged Crystal": {
         "exits": {
@@ -32637,7 +33345,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Dark Pegs Left - Ranged Crystal": {
         "exits": {
@@ -32671,7 +33380,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "PoD Lonely Turtle": {
         "exits": {
@@ -32740,7 +33450,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": 11
     },
     "PoD Turtle Party": {
         "exits": {
@@ -32906,7 +33617,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": 11
     },
     "PoD Dark Alley": {
         "exits": {
@@ -33012,7 +33724,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Terrorpin"
             }
-        }
+        },
+        "tileid": 106
     },
     "PoD Callback": {
         "exits": {
@@ -33059,7 +33772,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Boss": {
         "exits": {
@@ -33086,7 +33800,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "PoD Boss Spoils": {
         "exits": {},
@@ -33150,7 +33865,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Swamp Entrance": {
         "exits": {
@@ -33227,7 +33943,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Pot Row": {
         "exits": {
@@ -33328,7 +34045,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": 56
     },
     "Swamp Map Ledge": {
         "exits": {
@@ -33376,7 +34094,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 55
     },
     "Swamp Trench 1 Approach": {
         "exits": {
@@ -33477,7 +34196,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Trench 1 Nexus": {
         "exits": {
@@ -33532,7 +34252,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Swamp Trench 1 Alcove": {
         "exits": {
@@ -33554,7 +34275,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 55
     },
     "Swamp Trench 1 Key Ledge": {
         "exits": {
@@ -33640,7 +34362,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 55
     },
     "Swamp Trench 1 Departure": {
         "exits": {
@@ -33703,7 +34426,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 55
     },
     "Swamp Hammer Switch": {
         "exits": {
@@ -33783,7 +34507,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 55
     },
     "Swamp Hub": {
         "exits": {
@@ -33909,7 +34634,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Hub Side Ledges": {
         "exits": {},
@@ -33992,7 +34718,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 54
     },
     "Swamp Hub North Ledge": {
         "exits": {
@@ -34040,7 +34767,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Donut Top": {
         "exits": {
@@ -34077,7 +34805,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": 70
     },
     "Swamp Donut Bottom": {
         "exits": {
@@ -34121,7 +34850,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": 70
     },
     "Swamp Compass Donut": {
         "exits": {
@@ -34151,7 +34881,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Crystal Switch Outer": {
         "exits": {
@@ -34287,7 +35018,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Crystal Switch Outer - Ranged Crystal": {
         "exits": {
@@ -34321,7 +35053,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Crystal Switch Inner": {
         "exits": {
@@ -34417,7 +35150,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Crystal Switch Inner - Crystal": {
         "exits": {
@@ -34451,7 +35185,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Shortcut": {
         "exits": {
@@ -34486,7 +35221,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Swamp Trench 2 Pots": {
         "exits": {
@@ -34609,7 +35345,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Trench 2 Blocks": {
         "exits": {
@@ -34632,7 +35369,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 53
     },
     "Swamp Trench 2 Alcove": {
         "exits": {
@@ -34654,7 +35392,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 53
     },
     "Swamp Trench 2 Departure": {
         "exits": {
@@ -34703,7 +35442,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 53
     },
     "Swamp Big Key Ledge": {
         "exits": {
@@ -34755,7 +35495,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 53
     },
     "Swamp West Shallows": {
         "exits": {
@@ -34807,7 +35548,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp West Block Path": {
         "exits": {
@@ -34838,7 +35580,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp West Ledge": {
         "exits": {
@@ -34880,7 +35623,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Barrier Ledge": {
         "exits": {
@@ -34948,7 +35692,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Barrier": {
         "exits": {
@@ -34983,7 +35728,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Swamp Attic": {
         "exits": {
@@ -35060,7 +35806,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Push Statue": {
         "exits": {
@@ -35138,7 +35885,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 38
     },
     "Swamp Shooters": {
         "exits": {
@@ -35195,7 +35943,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 38
     },
     "Swamp Left Elbow": {
         "exits": {
@@ -35218,7 +35967,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 38
     },
     "Swamp Right Elbow": {
         "exits": {
@@ -35249,7 +35999,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": 38
     },
     "Swamp Drain Left": {
         "exits": {
@@ -35284,7 +36035,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 118
     },
     "Swamp Drain Right": {
         "exits": {
@@ -35320,7 +36072,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 118
     },
     "Swamp Flooded Room": {
         "exits": {
@@ -35358,7 +36111,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Flooded Spot": {
         "exits": {
@@ -35418,7 +36172,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Swamp Basement Shallows": {
         "exits": {
@@ -35464,7 +36219,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": 118
     },
     "Swamp Waterfall Room": {
         "exits": {
@@ -35530,7 +36286,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": 102
     },
     "Swamp Refill": {
         "exits": {
@@ -35589,7 +36346,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Hover"
             }
-        }
+        },
+        "tileid": 102
     },
     "Swamp Behind Waterfall": {
         "exits": {
@@ -35651,7 +36409,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 102
     },
     "Swamp C": {
         "exits": {
@@ -35696,7 +36455,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 22
     },
     "Swamp Waterway": {
         "exits": {
@@ -35786,7 +36546,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 22
     },
     "Swamp I": {
         "exits": {
@@ -35869,7 +36630,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 22
     },
     "Swamp T": {
         "exits": {
@@ -35904,7 +36666,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 22
     },
     "Swamp Boss": {
         "exits": {
@@ -35931,7 +36694,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Swamp Boss Spoils": {
         "exits": {},
@@ -36007,7 +36771,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": 88
     },
     "Skull Map Room": {
         "exits": {
@@ -36056,7 +36821,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 88
     },
     "Skull Pot Circle": {
         "exits": {
@@ -36178,7 +36944,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "Skull Pull Switch": {
         "exits": {
@@ -36238,7 +37005,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 88
     },
     "Skull Big Chest": {
         "exits": {
@@ -36306,7 +37074,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniMoldorm"
             }
-        }
+        },
+        "tileid": -1
     },
     "Skull Pinball": {
         "exits": {
@@ -36459,7 +37228,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": 104
     },
     "Skull Pot Prison": {
         "exits": {
@@ -36553,7 +37323,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": 87
     },
     "Skull Compass Room": {
         "exits": {
@@ -36635,7 +37406,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 103
     },
     "Skull Left Drop": {
         "exits": {
@@ -36722,7 +37494,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 103
     },
     "Skull 2 East Lobby": {
         "exits": {
@@ -36794,7 +37567,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 87
     },
     "Skull Big Key": {
         "exits": {
@@ -36870,7 +37644,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": 87
     },
     "Skull Lone Pot": {
         "exits": {
@@ -36904,7 +37679,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 87
     },
     "Skull Small Hall": {
         "exits": {
@@ -36935,7 +37711,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 86
     },
     "Skull Back Drop": {
         "exits": {
@@ -36989,7 +37766,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "Skull 2 West Lobby": {
         "exits": {
@@ -37052,7 +37830,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 86
     },
     "Skull 2 West Lobby Ledge": {
         "exits": {
@@ -37087,7 +37866,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Skull X Room": {
         "exits": {
@@ -37196,7 +37976,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": 86
     },
     "Skull 3 Lobby": {
         "exits": {
@@ -37266,7 +38047,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniMoldorm"
             }
-        }
+        },
+        "tileid": 89
     },
     "Skull East Bridge": {
         "exits": {
@@ -37323,7 +38105,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": 89
     },
     "Skull West Bridge Nook": {
         "exits": {
@@ -37345,7 +38128,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 89
     },
     "Skull Star Pits": {
         "exits": {
@@ -37456,7 +38240,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 73
     },
     "Skull Torch Room": {
         "exits": {
@@ -37532,7 +38317,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": 73
     },
     "Skull Vines": {
         "exits": {
@@ -37596,7 +38382,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": 73
     },
     "Skull Spike Corner": {
         "exits": {
@@ -37683,7 +38470,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 57
     },
     "Skull Final Drop": {
         "exits": {
@@ -37731,7 +38519,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Skull Boss": {
         "exits": {
@@ -37758,7 +38547,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Skull Boss Spoils": {
         "exits": {},
@@ -37893,7 +38683,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueZazak"
             }
-        }
+        },
+        "tileid": 219
     },
     "Thieves Ambush": {
         "exits": {
@@ -38041,7 +38832,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 203
     },
     "Thieves Rail Ledge": {
         "exits": {
@@ -38111,7 +38903,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves BK Corner": {
         "exits": {
@@ -38232,7 +39025,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 204
     },
     "Thieves Compass Room": {
         "exits": {
@@ -38351,7 +39145,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 220
     },
     "Thieves Big Chest Nook": {
         "exits": {
@@ -38373,7 +39168,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 219
     },
     "Thieves Hallway": {
         "exits": {
@@ -38470,7 +39266,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 188
     },
     "Thieves Boss": {
         "exits": {
@@ -38485,7 +39282,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Revealing Light": {
         "exits": {
@@ -38535,7 +39333,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Boss Spoils": {
         "exits": {},
@@ -38634,7 +39433,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedZazak"
             }
-        }
+        },
+        "tileid": 188
     },
     "Thieves Pot Alcove Bottom": {
         "exits": {
@@ -38674,7 +39474,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 188
     },
     "Thieves Pot Alcove Top": {
         "exits": {
@@ -38702,7 +39503,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 188
     },
     "Thieves Conveyor Maze": {
         "exits": {
@@ -38788,7 +39590,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueZazak"
             }
-        }
+        },
+        "tileid": 188
     },
     "Thieves Spike Track": {
         "exits": {
@@ -38834,7 +39637,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibo"
             }
-        }
+        },
+        "tileid": 187
     },
     "Thieves Hellway": {
         "exits": {
@@ -38911,7 +39715,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibo"
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Hellway N Crystal": {
         "exits": {
@@ -38946,7 +39751,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 187
     },
     "Thieves Hellway S Crystal": {
         "exits": {
@@ -38981,7 +39787,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 187
     },
     "Thieves Triple Bypass": {
         "exits": {
@@ -39070,7 +39877,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibo"
             }
-        }
+        },
+        "tileid": 187
     },
     "Thieves Spike Switch": {
         "exits": {
@@ -39137,7 +39945,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 171
     },
     "Thieves Attic": {
         "exits": {
@@ -39220,7 +40029,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Attic Switch": {
         "exits": {
@@ -39266,7 +40076,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Attic Hint": {
         "exits": {
@@ -39312,7 +40123,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Cricket Hall Left": {
         "exits": {
@@ -39350,7 +40162,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 100
     },
     "Thieves Cricket Hall Right": {
         "exits": {
@@ -39388,7 +40201,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 101
     },
     "Thieves Attic Window": {
         "exits": {
@@ -39461,7 +40275,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "CricketRat"
             }
-        }
+        },
+        "tileid": 101
     },
     "Thieves Basement Block": {
         "exits": {
@@ -39556,7 +40371,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Blocked Entry": {
         "exits": {
@@ -39591,7 +40407,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 69
     },
     "Thieves Lonely Zazak": {
         "exits": {
@@ -39630,7 +40447,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedZazak"
             }
-        }
+        },
+        "tileid": 69
     },
     "Thieves Blind's Cell": {
         "exits": {
@@ -39680,7 +40498,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedZazak"
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Blind's Cell Interior": {
         "exits": {
@@ -39753,7 +40572,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueZazak"
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Conveyor Bridge": {
         "exits": {
@@ -39856,7 +40676,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Thieves Conveyor Block": {
         "exits": {
@@ -39891,7 +40712,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 68
     },
     "Thieves Big Chest Room": {
         "exits": {
@@ -39937,7 +40759,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 68
     },
     "Thieves Trap": {
         "exits": {
@@ -39974,7 +40797,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 68
     },
     "Ice Lobby": {
         "exits": {
@@ -40009,7 +40833,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 14
     },
     "Ice Jelly Key": {
         "exits": {
@@ -40065,7 +40890,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 14
     },
     "Ice Floor Switch": {
         "exits": {
@@ -40103,7 +40929,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 30
     },
     "Ice Cross Left": {
         "exits": {
@@ -40126,7 +40953,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Cross Bottom": {
         "exits": {
@@ -40157,7 +40985,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Cross Right": {
         "exits": {
@@ -40188,7 +41017,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Cross Top": {
         "exits": {
@@ -40219,7 +41049,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Compass Room": {
         "exits": {
@@ -40283,7 +41114,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pengator"
             }
-        }
+        },
+        "tileid": 46
     },
     "Ice Pengator Switch": {
         "exits": {
@@ -40355,7 +41187,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pengator"
             }
-        }
+        },
+        "tileid": 31
     },
     "Ice Dead End": {
         "exits": {
@@ -40370,7 +41203,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 31
     },
     "Ice Big Key": {
         "exits": {
@@ -40412,7 +41246,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 31
     },
     "Ice Bomb Drop": {
         "exits": {
@@ -40486,7 +41321,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Bomb Drop - Top": {
         "exits": {
@@ -40530,7 +41366,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Stalfos Hint": {
         "exits": {
@@ -40584,7 +41421,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "StalfosKnight"
             }
-        }
+        },
+        "tileid": 62
     },
     "Ice Conveyor": {
         "exits": {
@@ -40707,7 +41545,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 62
     },
     "Ice Conveyor - Crystal": {
         "exits": {
@@ -40741,7 +41580,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Bomb Jump Ledge": {
         "exits": {
@@ -40788,7 +41628,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Bomb Jump Catwalk": {
         "exits": {
@@ -40842,7 +41683,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 78
     },
     "Ice Narrow Corridor": {
         "exits": {
@@ -40893,7 +41735,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 78
     },
     "Ice Pengator Trap": {
         "exits": {
@@ -40952,7 +41795,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pengator"
             }
-        }
+        },
+        "tileid": 110
     },
     "Ice Spike Cross": {
         "exits": {
@@ -41003,7 +41847,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 94
     },
     "Ice Firebar": {
         "exits": {
@@ -41026,7 +41871,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 94
     },
     "Ice Falling Square": {
         "exits": {
@@ -41086,7 +41932,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Spike Room": {
         "exits": {
@@ -41227,7 +42074,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 95
     },
     "Ice Right H": {
         "exits": {
@@ -41294,7 +42142,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "StalfosKnight"
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Hammer Block": {
         "exits": {
@@ -41457,7 +42306,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "StalfosKnight"
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Tongue Pull": {
         "exits": {
@@ -41480,7 +42330,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 63
     },
     "Ice Freezors": {
         "exits": {
@@ -41542,7 +42393,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Freezors Ledge": {
         "exits": {
@@ -41565,7 +42417,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Tall Hint": {
         "exits": {
@@ -41641,7 +42494,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pengator"
             }
-        }
+        },
+        "tileid": 126
     },
     "Ice Hookshot Ledge": {
         "exits": {
@@ -41717,7 +42571,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Hookshot Balcony": {
         "exits": {
@@ -41752,7 +42607,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Spikeball": {
         "exits": {
@@ -41775,7 +42631,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 127
     },
     "Ice Lonely Freezor": {
         "exits": {
@@ -41865,7 +42722,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 142
     },
     "Iced T": {
         "exits": {
@@ -41909,7 +42767,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 174
     },
     "Ice Catwalk": {
         "exits": {
@@ -41932,7 +42791,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 175
     },
     "Ice Many Pots": {
         "exits": {
@@ -42074,7 +42934,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Babasu"
             }
-        }
+        },
+        "tileid": 159
     },
     "Ice Crystal Right": {
         "exits": {
@@ -42149,7 +43010,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Crystal Left": {
         "exits": {
@@ -42206,7 +43068,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Crystal Block": {
         "exits": {
@@ -42236,7 +43099,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Big Chest View": {
         "exits": {
@@ -42251,7 +43115,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 158
     },
     "Ice Big Chest Landing": {
         "exits": {
@@ -42273,7 +43138,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Backwards Room": {
         "exits": {
@@ -42357,7 +43223,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Anti-Fairy": {
         "exits": {
@@ -42380,7 +43247,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 190
     },
     "Ice Switch Room": {
         "exits": {
@@ -42473,7 +43341,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 190
     },
     "Ice Refill": {
         "exits": {
@@ -42629,7 +43498,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Refill - Crystal": {
         "exits": {
@@ -42663,7 +43533,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Fairy": {
         "exits": {
@@ -42678,7 +43549,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Antechamber": {
         "exits": {
@@ -42828,7 +43700,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "Ice Boss": {
         "exits": {
@@ -42855,7 +43728,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Ice Boss Spoils": {
         "exits": {},
@@ -42953,7 +43827,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Post-Gap": {
         "exits": {
@@ -42990,7 +43865,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 152
     },
     "Mire 2": {
         "exits": {
@@ -43077,7 +43953,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo"
             }
-        }
+        },
+        "tileid": 210
     },
     "Mire Hub": {
         "exits": {
@@ -43197,7 +44074,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Hub Right": {
         "exits": {
@@ -43251,7 +44129,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Hub Top": {
         "exits": {
@@ -43286,7 +44165,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Hub Switch": {
         "exits": {
@@ -43340,7 +44220,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Lone Shooter": {
         "exits": {
@@ -43363,7 +44244,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 195
     },
     "Mire Failure Bridge": {
         "exits": {
@@ -43398,7 +44280,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 195
     },
     "Mire Falling Bridge - Failure": {
         "exits": {
@@ -43441,7 +44324,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Falling Bridge - Primary": {
         "exits": {
@@ -43498,7 +44382,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Falling Bridge - Chest": {
         "exits": {
@@ -43520,7 +44405,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 195
     },
     "Mire Map Spike Side": {
         "exits": {
@@ -43575,7 +44461,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Map Spot": {
         "exits": {
@@ -43629,7 +44516,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Crystal Dead End": {
         "exits": {
@@ -43684,7 +44572,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 195
     },
     "Mire Hidden Shooters": {
         "exits": {
@@ -43738,7 +44627,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Popo"
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Hidden Shooters Blocked": {
         "exits": {
@@ -43761,7 +44651,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Cross": {
         "exits": {
@@ -43813,7 +44704,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Sluggula"
             }
-        }
+        },
+        "tileid": 178
     },
     "Mire Minibridge": {
         "exits": {
@@ -43836,7 +44728,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 178
     },
     "Mire BK Door Room": {
         "exits": {
@@ -43915,7 +44808,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Wizzrobe"
             }
-        }
+        },
+        "tileid": 178
     },
     "Mire Spikes": {
         "exits": {
@@ -44014,7 +44908,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 179
     },
     "Mire Ledgehop": {
         "exits": {
@@ -44057,7 +44952,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 179
     },
     "Mire Bent Bridge": {
         "exits": {
@@ -44080,7 +44976,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 163
     },
     "Mire Over Bridge": {
         "exits": {
@@ -44103,7 +45000,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 162
     },
     "Mire Right Bridge": {
         "exits": {
@@ -44125,7 +45023,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 162
     },
     "Mire Left Bridge": {
         "exits": {
@@ -44175,7 +45074,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Fishbone": {
         "exits": {
@@ -44286,7 +45186,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire South Fish": {
         "exits": {
@@ -44384,7 +45285,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 161
     },
     "Mire Spike Barrier": {
         "exits": {
@@ -44440,7 +45342,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 177
     },
     "Mire Square Rail": {
         "exits": {
@@ -44497,7 +45400,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Wizzrobe"
             }
-        }
+        },
+        "tileid": 177
     },
     "Mire Lone Warp": {
         "exits": {
@@ -44520,7 +45424,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Wizzrobe Bypass": {
         "exits": {
@@ -44571,7 +45476,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 193
     },
     "Mire Conveyor Crystal": {
         "exits": {
@@ -44667,7 +45573,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "FloatingSkull"
             }
-        }
+        },
+        "tileid": 193
     },
     "Mire Conveyor - Crystal": {
         "exits": {
@@ -44701,7 +45608,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Tile Room": {
         "exits": {
@@ -44756,7 +45664,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 193
     },
     "Mire Compass Room": {
         "exits": {
@@ -44807,7 +45716,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Compass Chest": {
         "exits": {
@@ -44829,7 +45739,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Neglected Room": {
         "exits": {
@@ -44884,7 +45795,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Sluggula"
             }
-        }
+        },
+        "tileid": 209
     },
     "Mire Chest View": {
         "exits": {
@@ -44899,7 +45811,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 209
     },
     "Mire Conveyor Barrier": {
         "exits": {
@@ -44963,7 +45876,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Sluggula"
             }
-        }
+        },
+        "tileid": 209
     },
     "Mire BK Chest Ledge": {
         "exits": {
@@ -44985,7 +45899,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 209
     },
     "Mire Warping Pool": {
         "exits": {
@@ -45020,7 +45935,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Torches Top": {
         "exits": {
@@ -45051,7 +45967,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Torches Bottom": {
         "exits": {
@@ -45082,7 +45999,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Attic Hint": {
         "exits": {
@@ -45117,7 +46035,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Dark Shooters": {
         "exits": {
@@ -45226,7 +46145,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 147
     },
     "Mire Key Rupees": {
         "exits": {
@@ -45255,7 +46175,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 147
     },
     "Mire Block X": {
         "exits": {
@@ -45361,7 +46282,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 147
     },
     "Mire Tall Dark and Roomy": {
         "exits": {
@@ -45523,7 +46445,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Tall Dark and Roomy - Ranged Crystal": {
         "exits": {
@@ -45557,7 +46480,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "Mire Crystal Right": {
         "exits": {
@@ -45604,7 +46528,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Crystal Mid": {
         "exits": {
@@ -45693,7 +46618,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 146
     },
     "Mire Crystal Left": {
         "exits": {
@@ -45740,7 +46666,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 146
     },
     "Mire Crystal Top": {
         "exits": {
@@ -45788,7 +46715,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 146
     },
     "Mire Shooter Rupees": {
         "exits": {
@@ -45817,7 +46745,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 146
     },
     "Mire Falling Foes": {
         "exits": {
@@ -45871,7 +46800,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 145
     },
     "Mire Firesnake Skip": {
         "exits": {
@@ -45906,7 +46836,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Antechamber": {
         "exits": {
@@ -45953,7 +46884,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 160
     },
     "Mire Boss": {
         "exits": {
@@ -45980,7 +46912,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "Mire Boss Spoils": {
         "exits": {},
@@ -46053,7 +46986,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 214
     },
     "TR Lobby Ledge": {
         "exits": {
@@ -46088,7 +47022,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Compass Room": {
         "exits": {
@@ -46110,7 +47045,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 214
     },
     "TR Hub": {
         "exits": {
@@ -46259,7 +47195,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Hub Ledges": {
         "exits": {
@@ -46348,7 +47285,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Torches Ledge": {
         "exits": {
@@ -46376,7 +47314,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 199
     },
     "TR Torches": {
         "exits": {
@@ -46426,7 +47365,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 199
     },
     "TR Roller Room": {
         "exits": {
@@ -46460,7 +47400,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 183
     },
     "TR Tile Room": {
         "exits": {
@@ -46483,7 +47424,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 182
     },
     "TR Refill": {
         "exits": {
@@ -46505,7 +47447,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 182
     },
     "TR Pokey 1": {
         "exits": {
@@ -46573,7 +47516,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 182
     },
     "TR Chain Chomps Top": {
         "exits": {
@@ -46661,7 +47605,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Chain Chomps Top - Crystal": {
         "exits": {
@@ -46695,7 +47640,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Chain Chomps Bottom": {
         "exits": {
@@ -46764,7 +47710,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Chain Chomps Bottom - Ranged Crystal": {
         "exits": {
@@ -46798,7 +47745,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Pipe Pit": {
         "exits": {
@@ -46891,7 +47839,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pokey"
             }
-        }
+        },
+        "tileid": 21
     },
     "TR Pipe Ledge": {
         "exits": {
@@ -46933,7 +47882,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Lava Dual Pipes": {
         "exits": {
@@ -46964,7 +47914,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 20
     },
     "TR Lava Island": {
         "exits": {
@@ -47006,7 +47957,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 20
     },
     "TR Lava Escape": {
         "exits": {
@@ -47029,7 +47981,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 20
     },
     "TR Pokey 2 Top": {
         "exits": {
@@ -47084,7 +48037,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Pokey 2 Top - Crystal": {
         "exits": {
@@ -47118,7 +48072,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Pokey 2 Bottom": {
         "exits": {
@@ -47208,7 +48163,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "FloatingSkull"
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Pokey 2 Bottom - Ranged Crystal": {
         "exits": {
@@ -47242,7 +48198,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Twin Pokeys": {
         "exits": {
@@ -47312,7 +48269,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pokey"
             }
-        }
+        },
+        "tileid": 36
     },
     "TR Hallway": {
         "exits": {
@@ -47343,7 +48301,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 36
     },
     "TR Dodgers": {
         "exits": {
@@ -47398,7 +48357,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 36
     },
     "TR Big View": {
         "exits": {
@@ -47413,7 +48373,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 36
     },
     "TR Big Chest": {
         "exits": {
@@ -47457,7 +48418,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 36
     },
     "TR Big Chest Entrance": {
         "exits": {
@@ -47494,7 +48456,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Lazy Eyes": {
         "exits": {
@@ -47560,7 +48523,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 35
     },
     "TR Dash Room": {
         "exits": {
@@ -47651,7 +48615,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Pokey"
             }
-        }
+        },
+        "tileid": 4
     },
     "TR Tongue Pull": {
         "exits": {
@@ -47708,7 +48673,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Blob"
             }
-        }
+        },
+        "tileid": 4
     },
     "TR Rupees": {
         "exits": {
@@ -47723,7 +48689,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 4
     },
     "TR Crystaroller Bottom": {
         "exits": {
@@ -47800,7 +48767,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 4
     },
     "TR Crystaroller Middle": {
         "exits": {
@@ -47929,7 +48897,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Crystaroller Top": {
         "exits": {
@@ -47996,7 +48965,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Crystaroller Top - Crystal": {
         "exits": {
@@ -48030,7 +49000,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Crystaroller Chest": {
         "exits": {
@@ -48064,7 +49035,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Crystaroller Middle - Ranged Crystal": {
         "exits": {
@@ -48098,7 +49070,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Crystaroller Bottom - Ranged Crystal": {
         "exits": {
@@ -48132,7 +49105,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Dark Ride North Platform": {
         "exits": {
@@ -48203,7 +49177,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Dark Ride South Platform": {
         "exits": {
@@ -48254,7 +49229,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Dark Ride Ledges": {
         "exits": {
@@ -48384,7 +49360,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Dash Bridge": {
         "exits": {
@@ -48435,7 +49412,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": 197
     },
     "TR Eye Bridge": {
         "exits": {
@@ -48538,7 +49516,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 213
     },
     "TR Crystal Maze Start": {
         "exits": {
@@ -48605,7 +49584,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Crystal Maze Start - Crystal": {
         "exits": {
@@ -48639,7 +49619,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Crystal Maze Interior": {
         "exits": {
@@ -48824,7 +49805,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Crystal Maze End": {
         "exits": {
@@ -48879,7 +49861,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Crystal Maze End - Ranged Crystal": {
         "exits": {
@@ -48913,7 +49896,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Final Abyss Balcony": {
         "exits": {
@@ -48961,7 +49945,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "TR Final Abyss Ledge": {
         "exits": {
@@ -49008,7 +49993,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Boss": {
         "exits": {
@@ -49035,7 +50021,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "TR Boss Spoils": {
         "exits": {},
@@ -49099,7 +50086,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 12
     },
     "GT Bob's Torch": {
         "exits": {
@@ -49195,7 +50183,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 140
     },
     "GT Hope Room": {
         "exits": {
@@ -49269,7 +50258,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 140
     },
     "GT Big Chest": {
         "exits": {
@@ -49299,7 +50289,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 140
     },
     "GT Blocked Stairs": {
         "exits": {
@@ -49322,7 +50313,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Bob's Room": {
         "exits": {
@@ -49394,7 +50386,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Tile Room": {
         "exits": {
@@ -49436,7 +50429,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 141
     },
     "GT Speed Torch": {
         "exits": {
@@ -49501,7 +50495,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Speed Torch Upper": {
         "exits": {
@@ -49564,7 +50559,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Pots n Blocks": {
         "exits": {
@@ -49598,7 +50594,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 141
     },
     "GT Crystal Conveyor": {
         "exits": {
@@ -49663,7 +50660,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Crystal Conveyor Corner": {
         "exits": {
@@ -49780,7 +50778,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Crystal Conveyor Left": {
         "exits": {
@@ -49835,7 +50834,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Gibdo"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Crystal Conveyor - Ranged Crystal": {
         "exits": {
@@ -49869,7 +50869,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Crystal Conveyor Corner - Ranged Crystal": {
         "exits": {
@@ -49903,7 +50904,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Compass Room": {
         "exits": {
@@ -49977,7 +50979,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Invisible Bridges": {
         "exits": {
@@ -50014,7 +51017,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 157
     },
     "GT Invisible Catwalk": {
         "exits": {
@@ -50100,7 +51104,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 156
     },
     "GT Conveyor Cross": {
         "exits": {
@@ -50155,7 +51160,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Conveyor Cross Across Pits": {
         "exits": {
@@ -50190,7 +51196,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 139
     },
     "GT Hookshot East Platform": {
         "exits": {
@@ -50227,7 +51234,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Hookshot Mid Platform": {
         "exits": {
@@ -50305,7 +51313,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Hookshot North Platform": {
         "exits": {
@@ -50342,7 +51351,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Hookshot South Platform": {
         "exits": {
@@ -50489,7 +51499,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Hookshot South Entry": {
         "exits": {
@@ -50546,7 +51557,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Hookshot South Entry - Ranged Crystal": {
         "exits": {
@@ -50580,7 +51592,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Map Room": {
         "exits": {
@@ -50626,7 +51639,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 139
     },
     "GT Double Switch Entry": {
         "exits": {
@@ -50701,7 +51715,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Double Switch Entry - Ranged Switches": {
         "exits": {
@@ -50747,7 +51762,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Double Switch Left": {
         "exits": {
@@ -50876,7 +51892,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Double Switch Left - Crystal": {
         "exits": {
@@ -50910,7 +51927,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Double Switch Pot Corners": {
         "exits": {
@@ -50990,7 +52008,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Double Switch Pot Corners - Ranged Switches": {
         "exits": {
@@ -51036,7 +52055,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Double Switch Exit": {
         "exits": {
@@ -51083,7 +52103,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Spike Crystal Left": {
         "exits": {
@@ -51195,7 +52216,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Spike Crystal Right": {
         "exits": {
@@ -51249,7 +52271,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Warp Maze - Left Section": {
         "exits": {
@@ -51264,7 +52287,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Warp Maze - Mid Section": {
         "exits": {
@@ -51300,7 +52324,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Warp Maze - Right Section": {
         "exits": {
@@ -51315,7 +52340,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Warp Maze - Pit Section": {
         "exits": {
@@ -51345,7 +52371,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Warp Maze - Pit Exit Warp Spot": {
         "exits": {
@@ -51360,7 +52387,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Warp Maze Exit Section": {
         "exits": {
@@ -51383,7 +52411,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Firesnake Room": {
         "exits": {
@@ -51429,7 +52458,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Firesnake Room Ledge": {
         "exits": {
@@ -51463,7 +52493,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 125
     },
     "GT Warp Maze - Rail Choice": {
         "exits": {
@@ -51506,7 +52537,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Warp Maze - Rando Rail": {
         "exits": {
@@ -51541,7 +52573,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Warp Maze - Main Rails": {
         "exits": {
@@ -51588,7 +52621,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Warp Maze - Pot Rail": {
         "exits": {
@@ -51610,7 +52644,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Petting Zoo": {
         "exits": {
@@ -51666,7 +52701,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 125
     },
     "GT Conveyor Star Pits": {
         "exits": {
@@ -51738,7 +52774,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 123
     },
     "GT Hidden Star": {
         "exits": {
@@ -51769,7 +52806,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": -1
     },
     "GT DMs Room": {
         "exits": {
@@ -51878,7 +52916,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 123
     },
     "GT Falling Bridge": {
         "exits": {
@@ -51945,7 +52984,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "HardhatBeetle"
             }
-        }
+        },
+        "tileid": 124
     },
     "GT Randomizer Room": {
         "exits": {
@@ -52011,7 +53051,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueBari"
             }
-        }
+        },
+        "tileid": 124
     },
     "GT Ice Armos": {
         "exits": {
@@ -52034,7 +53075,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 28
     },
     "GT Big Key Room": {
         "exits": {
@@ -52068,7 +53110,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 28
     },
     "GT Four Torches": {
         "exits": {
@@ -52125,7 +53168,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 28
     },
     "GT Fairy Abyss": {
         "exits": {
@@ -52154,7 +53198,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 28
     },
     "GT Crystal Paths": {
         "exits": {
@@ -52246,7 +53291,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 107
     },
     "GT Mimics 1": {
         "exits": {
@@ -52284,7 +53330,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedEyegore"
             }
-        }
+        },
+        "tileid": 107
     },
     "GT Mimics 2": {
         "exits": {
@@ -52334,7 +53381,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedEyegore"
             }
-        }
+        },
+        "tileid": 107
     },
     "GT Dash Hall": {
         "exits": {
@@ -52369,7 +53417,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 107
     },
     "GT Hidden Spikes": {
         "exits": {
@@ -52437,7 +53486,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": 91
     },
     "GT Cannonball Bridge": {
         "exits": {
@@ -52482,7 +53532,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 92
     },
     "GT Refill": {
         "exits": {
@@ -52558,7 +53609,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 92
     },
     "GT Gauntlet 1": {
         "exits": {
@@ -52610,7 +53662,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 93
     },
     "GT Gauntlet 2": {
         "exits": {
@@ -52679,7 +53732,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Stalfos"
             }
-        }
+        },
+        "tileid": 93
     },
     "GT Gauntlet 3": {
         "exits": {
@@ -52748,7 +53802,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueZazak"
             }
-        }
+        },
+        "tileid": 93
     },
     "GT Gauntlet 4": {
         "exits": {
@@ -52786,7 +53841,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedZazak"
             }
-        }
+        },
+        "tileid": 109
     },
     "GT Gauntlet 5": {
         "exits": {
@@ -52848,7 +53904,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedZazak"
             }
-        }
+        },
+        "tileid": 109
     },
     "GT Beam Dash": {
         "exits": {
@@ -52871,7 +53928,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 108
     },
     "GT Lanmolas 2": {
         "exits": {
@@ -52894,7 +53952,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 108
     },
     "GT Quad Pot": {
         "exits": {
@@ -52954,7 +54013,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 108
     },
     "GT Wizzrobes 1": {
         "exits": {
@@ -52999,7 +54059,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Wizzrobe"
             }
-        }
+        },
+        "tileid": 165
     },
     "GT Dashing Bridge": {
         "exits": {
@@ -53037,7 +54098,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "BlueGuard"
             }
-        }
+        },
+        "tileid": 165
     },
     "GT Wizzrobes 2": {
         "exits": {
@@ -53089,7 +54151,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "Wizzrobe"
             }
-        }
+        },
+        "tileid": 165
     },
     "GT Conveyor Bridge": {
         "exits": {
@@ -53141,7 +54204,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "RedSpearGuard"
             }
-        }
+        },
+        "tileid": 149
     },
     "GT Torch Cross": {
         "exits": {
@@ -53213,7 +54277,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 150
     },
     "GT Staredown": {
         "exits": {
@@ -53249,7 +54314,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 150
     },
     "GT Falling Torches": {
         "exits": {
@@ -53304,7 +54370,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Mini Helmasaur Room": {
         "exits": {
@@ -53377,7 +54444,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": 61
     },
     "GT Bomb Conveyor": {
         "exits": {
@@ -53424,7 +54492,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 61
     },
     "GT Crystal Circles": {
         "exits": {
@@ -53515,7 +54584,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Crystal Inner Circle": {
         "exits": {
@@ -53585,7 +54655,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Crystal Circles - Ranged Crystal": {
         "exits": {
@@ -53619,7 +54690,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Left Moldorm Ledge": {
         "exits": {
@@ -53654,7 +54726,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 77
     },
     "GT Right Moldorm Ledge": {
         "exits": {
@@ -53677,7 +54750,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Moldorm": {
         "exits": {
@@ -53712,7 +54786,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": -1
     },
     "GT Moldorm Pit": {
         "exits": {
@@ -53727,7 +54802,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 166
     },
     "GT Validation": {
         "exits": {
@@ -53749,7 +54825,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": -1
     },
     "GT Validation Door": {
         "exits": {
@@ -53764,7 +54841,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 77
     },
     "GT Frozen Over": {
         "exits": {
@@ -53815,7 +54893,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                 },
                 "type": "MiniHelmasaur"
             }
-        }
+        },
+        "tileid": 76
     },
     "GT Brightly Lit Hall": {
         "exits": {
@@ -53850,7 +54929,8 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "Dungeon",
-        "locations": {}
+        "locations": {},
+        "tileid": 29
     },
     "GT Agahnim 2": {
         "exits": {},
@@ -53863,6 +54943,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Inverted": {}
                 }
             }
-        }
+        },
+        "tileid": 13
     }
 };

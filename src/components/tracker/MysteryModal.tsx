@@ -53,7 +53,8 @@ function MysteryModal() {
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.worldState} onChange={(e) => handleInputChange("worldState", e.target.value)}>
               <option value="open">Open</option>
               {/* <option value="standard">Standard</option> */}
-              <option value="inverted">Inverted</option>
+              <option value="inverted_1">Inverted 1.0</option>
+              <option value="inverted">Inverted 2.0</option>
             </select>
 
             <label className="font-medium">Entrance Shuffle:</label>
@@ -164,7 +165,7 @@ function MysteryModal() {
           <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
             <label className="font-medium">Map Mode:</label>
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.mapMode} onChange={(e) => handleInputChange("mapMode", e.target.value)}>
-              <option value="none">None</option>
+              <option value="off">None</option>
               <option value="normal">Normal</option>
               <option value="compact">Compact</option>
               <option value="vertical">Vertical</option>
