@@ -3,6 +3,8 @@ import type { RootState } from "../../store/store";
 import { setEntranceChecked } from "../../store/checksSlice";
 import { cn } from "@/lib/utils";
 import type { LocationData } from "@/data/locationsData";
+import { LocationTooltip } from "./LocationTooltip";
+import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 
 interface MapEntranceLocationProps {
   name: string;
@@ -18,16 +20,10 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
 
   const entranceCheck = useSelector((state: RootState) => state.checks.entranceChecks[locName]);
 
-  const status: "all" | "none" = entranceCheck.checked ? "all" : "none";
+  const { itemLocations, itemChecks, displayList, handleCheckClick, handleGroupExpand, resetGroups, targetName } = useLocationTooltipData(locName);
 
   const xPercent = (location.x / 512) * 100;
   const yPercent = (location.y / 512) * 100;
-
-  const tooltipClasses = cn(
-    "invisible group-hover:visible absolute z-50 px-2 py-1 bg-black text-white text-2xs whitespace-nowrap rounded pointer-events-none border border-gray-600",
-    yPercent < 12.5 ? "top-full mt-1" : "bottom-full mb-1",
-    xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2"
-  );
 
   function handleClick() {
     dispatch(setEntranceChecked({ entrance: locName, checked: !entranceCheck.checked, manual: true }));
@@ -44,11 +40,11 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
       key={locName}
       className={cn(
         `absolute
-           ${status === "all" ? "bg-gray-500 opacity-70" : "bg-green-500"}
+           ${entranceCheck.checked ? "bg-gray-500 opacity-70" : "bg-green-500"}
            rounded-full
            border border-black left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2
            group z-10 hover:z-20`,
-        props.className
+        props.className,
       )}
       style={{
         top: `${yPercent}%`,
@@ -56,8 +52,29 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
       }}
       onClick={handleClick}
       onAuxClick={handleConnectorClick}
+      onMouseLeave={resetGroups}
     >
-      {showTooltip && <div className={tooltipClasses}>{locName}</div>}
+      {showTooltip && (
+        <LocationTooltip
+          name={targetName === locName ? locName : `${locName} → ${targetName}`}
+          xPercent={xPercent}
+          yPercent={yPercent}
+          items={itemLocations.length > 1 ? displayList : undefined}
+          singleCheck={
+            itemLocations.length === 1
+              ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] }
+              : itemLocations.length === 0
+                ? {
+                    key: locName,
+                    status: entranceCheck,
+                    displayName: locName,
+                  }
+                : undefined
+          }
+          onCheckClick={handleCheckClick}
+          onGroupExpand={handleGroupExpand}
+        />
+      )}
     </div>
   );
 }
