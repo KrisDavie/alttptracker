@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { locationsData } from "@/data/locationsData";
-import { entranceData } from "@/data/entranceData";
+import { getAllPossibleLocationNames } from "@/lib/logic/locationMapper";
+import { entranceLocations } from "@/data/locationsData";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 export interface CheckStatus {
@@ -24,13 +24,13 @@ const initialCheckStatus: CheckStatus = {
 };
 
 const initialState: ChecksState = {
-  locationsChecks: Object.values(locationsData).reduce((acc, loc) => {
-    loc.itemLocations.forEach((location) => {
-      acc[location] = { ...initialCheckStatus };
-    });
+  // Initialize with ALL possible locations (including pots, enemies, key drops, etc.)
+  // so that autotracking and logic can reference any location regardless of settings.
+  locationsChecks: getAllPossibleLocationNames().reduce((acc, location) => {
+    acc[location] = { ...initialCheckStatus };
     return acc;
   }, {} as Record<string, CheckStatus>),
-  entranceChecks: Object.keys(entranceData).reduce((acc, loc) => {
+  entranceChecks: Object.keys(entranceLocations).reduce((acc, loc) => {
     acc[loc] = { ...initialCheckStatus };
     return acc;
   }, {} as Record<string, CheckStatus>),

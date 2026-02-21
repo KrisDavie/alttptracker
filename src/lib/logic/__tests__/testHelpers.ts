@@ -4,7 +4,7 @@ import type { DungeonState, DungeonsState } from "@/store/dungeonsSlice";
 import type { EntranceData, EntrancesState } from "@/store/entrancesSlice";
 import { DungeonsData } from "@/data/dungeonData";
 import ItemsData from "@/data/itemData";
-import { entranceData } from "@/data/entranceData";
+import { entranceLocations } from "@/data/locationsData";
 import { OverworldTraverser } from "../overworldTraverser";
 import { getLogicSet, type LogicMode } from "../logicMapper";
 
@@ -94,7 +94,7 @@ export function createDefaultSettings(): SettingsState {
     wildBigKeys: false,
     wildMaps: false,
     wildCompasses: false,
-    keyDrop: false,
+    enemyDrop: "none",
     pottery: "none",
     entranceMode: "none",
     bossShuffle: "none",
@@ -163,7 +163,7 @@ export function createDungeons(config: Record<string, Partial<DungeonState>>): D
  */
 export function createEmptyEntrances(): EntrancesState {
   const entrances: EntrancesState = {};
-  for (const entranceName of Object.keys(entranceData)) {
+  for (const entranceName of Object.keys(entranceLocations)) {
     entrances[entranceName] = {
       checked: false,
       connector: false,

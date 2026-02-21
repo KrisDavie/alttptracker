@@ -1424,13 +1424,14 @@ export class DungeonTraverser {
   }
 
   private isKeyLocation(name: string): boolean {
+    // Inverse logic here, when ARE keys here?
     const pottery = this.state.settings.pottery;
-    const drops = this.state.settings.keyDrop;
+    const drops = this.state.settings.enemyDrop;
     if (name.endsWith("Pot Key") || name.includes("Hammer Block Key Drop")) {
       return !(pottery === "keys" || pottery === "cavekeys");
     }
     if (name.includes("Key Drop") && !name.includes("Hammer Block Key Drop") && !name.includes("Big Key Drop")) {
-      return !drops;
+      return drops === "none";
     }
     return false;
   }
@@ -1442,7 +1443,7 @@ export class DungeonTraverser {
    */
   private shuffledKeysInDungeon(ctx: DungeonContext): number {
     const pottery = this.state.settings.pottery;
-    const drops = this.state.settings.keyDrop;
+    const drops = this.state.settings.enemyDrop;
     let count = 0;
     for (const regionName of ctx.reachable.keys()) {
       const region = this.regions[regionName];
@@ -1451,7 +1452,7 @@ export class DungeonTraverser {
         if (locationName.endsWith("Pot Key") || locationName.includes("Hammer Block Key Drop")) {
           if (pottery === "keys" || pottery === "cavekeys") count++;
         } else if (locationName.includes("Key Drop") && !locationName.includes("Hammer Block Key Drop")) {
-          if (drops) count++;
+          if (drops !== "none") count++;
         }
       }
     }

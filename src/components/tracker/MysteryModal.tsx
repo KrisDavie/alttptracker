@@ -154,9 +154,17 @@ function MysteryModal() {
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.pottery} onChange={(e) => handleInputChange("pottery", e.target.value)}>
               <option value="none">None</option>
               <option value="keys">Keys</option>
+              <option value="cave">Cave</option>
+              <option value="cavekeys">Cavekeys</option>
+              <option value="dungeon">Dungeon</option>
+              <option value="lottery">Lottery</option>
             </select>
-            <label className="font-medium">Keydrop:</label>
-                <input type="checkbox" className="accent-red-600" checked={localSettings.keyDrop} onChange={(e) => handleInputChange("keyDrop", e.target.checked)} />
+            <label className="font-medium">Enemy Drop:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.enemyDrop} onChange={(e) => handleInputChange("enemyDrop", e.target.value)}>
+              <option value="none">None</option>
+              <option value="keys">Keys</option>
+              <option value="underworld">Underworld</option>
+            </select>
           </div>
         </div>
       )}
