@@ -7,7 +7,7 @@ import type { LogicStatus } from "@/data/logic/logicTypes";
 describe("LogicEngine", () => {
   describe("Hyrule Castle Key Logic", () => {
     it("[SK Pottery KeyDrop] should mark key rat as possible when player has 1 wild small keys", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 1, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("hc", { smallKeys: 1, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -26,7 +26,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark key rat as possible when player has 2 wild small keys", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 2, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("hc", { smallKeys: 2, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -67,7 +67,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark Big key drop as possible when player has 3 wild small keys", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 3, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("hc", { smallKeys: 3, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -82,7 +82,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark Big key drop as available when player has 4 wild small keys", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("hc", { smallKeys: 4, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("hc", { smallKeys: 4, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -123,7 +123,7 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("available");
     });
     it("[SK BK Pottery KeyDrop] should mark sk locked as possible when player has 1 wild small keys and keydrop no BK", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("ep", { smallKeys: 1, bigKey: false }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("ep", { smallKeys: 1, bigKey: false }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -134,7 +134,7 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("unavailable");
     });
     it("[SK BK Pottery KeyDrop] should mark sk locked as possible when player has 1 wild small keys and keydrop w/BK", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("ep", { smallKeys: 1, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("ep", { smallKeys: 1, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -191,7 +191,7 @@ describe("LogicEngine", () => {
     });
 
     it("[PARTIAL SK BK Pottery KeyDrop] should mark right side as possible with less than 4 wild small keys and keydrop and no glove", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
       state.items.glove.amount = 0; // Remove gloves to prevent access to back
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -209,7 +209,7 @@ describe("LogicEngine", () => {
     });
 
     it("[DANGEROUS SK BK Pottery KeyDrop] should mark right side as available with less than 4 wild small keys and keydrop and no glove", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
       state.items.glove.amount = 0; // Remove gloves to prevent access to back
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet, "dangerous");
@@ -227,7 +227,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK BK Pottery KeyDrop] should mark right side as possible with less than 4 wild small keys and keydrop", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("dp", { smallKeys: 3, bigKey: true }).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -323,7 +323,7 @@ describe("LogicEngine", () => {
 
     it("[SK BK Pottery KeyDrop] should mark back of PoD as available with 4 wild small keys and full inventory", () => {
       // This test should result inthe exact same as above as pottery and keydrop don't affect PoD
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("pod", { smallKeys: 4, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("pod", { smallKeys: 4, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -392,7 +392,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark front of swamp as available with 2 wild small keys and full inventory", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 2, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("sp", { smallKeys: 2, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -403,7 +403,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark swamp back as available with 4 wild small keys and full inventory", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 4, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("sp", { smallKeys: 4, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -419,7 +419,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark swamp big chest as available with 3 wild small keys and full inventory", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 3, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("sp", { smallKeys: 3, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -436,7 +436,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark swamp boss as possible with 5 wild small keys and full inventory", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("sp", { smallKeys: 5, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("sp", { smallKeys: 5, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -460,7 +460,7 @@ describe("LogicEngine", () => {
 
   describe("Thieves Town Logic", () => {
     it("[SK Pottery KeyDrop] should mark boss as possible with 2 wild small keys, big key and full inventory", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("tt", { smallKeys: 2, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys", wildBigKeys: true }).withDungeon("tt", { smallKeys: 2, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -509,7 +509,7 @@ describe("LogicEngine", () => {
       // 2 wild keys available for 3 doors → contention between doors 2 and 3
       // Attic (behind doors 1+2) is "possible" due to door contention with door 3
       // Boss requires canReach|Thieves Attic via canRevealBlind → should also be "possible"
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("tt", { smallKeys: 2, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys", wildBigKeys: true }).withDungeon("tt", { smallKeys: 2, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -528,7 +528,7 @@ describe("LogicEngine", () => {
       // 1 wild key for 3 doors → can only open door 1
       // Attic requires doors 1+2 → unreachable with 1 key
       // Boss requires canReach|Thieves Attic → should be unavailable
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("tt", { smallKeys: 1, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys", wildBigKeys: true }).withDungeon("tt", { smallKeys: 1, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -566,7 +566,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark the compass chest as available with 1 wild small key with keydrop and potkey shuffle enabled", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true, wildBigKeys: true }).withDungeon("ip", { smallKeys: 1}).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys", wildBigKeys: true }).withDungeon("ip", { smallKeys: 1}).build();
 
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
@@ -578,7 +578,7 @@ describe("LogicEngine", () => {
     });
 
     it("[SK Pottery KeyDrop] should mark the boss as possible with less than 6 wild small keys with keydrop and potkey shuffle enabled", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", keyDrop: true }).withDungeon("ip", { smallKeys: 5, bigKey: true }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" }).withDungeon("ip", { smallKeys: 5, bigKey: true }).build();
 
       state.items.somaria.amount = 0; // Remove somaria to force key usage
       const logicSet = getLogicSet("noglitches");
@@ -634,7 +634,7 @@ describe("LogicEngine", () => {
     });
 
     it("[PARTIAL SK BK KeyDrop Pottery] should mark lobby unavailable with 0 wild small keys and a big key (crystals switch available, but can't get back)", () => {
-      const state = gameState().withAllItems().withoutItems(['hookshot']).withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("mm", { smallKeys: 0, bigKey: true }).build();
+      const state = gameState().withAllItems().withoutItems(['hookshot']).withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("mm", { smallKeys: 0, bigKey: true }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -652,7 +652,7 @@ describe("LogicEngine", () => {
     });
 
     it("[PARTIAL SK BK KeyDrop Pottery] should mark lobby unavailable with 0 wild small keys (no crystals switches available)", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("mm", { smallKeys: 0, bigKey: false }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("mm", { smallKeys: 0, bigKey: false }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();
@@ -668,7 +668,7 @@ describe("LogicEngine", () => {
     });
 
     it("[PARTIAL SK BK KeyDrop Pottery] should mark left side as possible with 1 wild small keys  (crystal switch available)", () => {
-      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", keyDrop: true }).withDungeon("mm", { smallKeys: 1, bigKey: false }).build();
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("mm", { smallKeys: 1, bigKey: false }).build();
       const logicSet = getLogicSet("noglitches");
       const traverser = new OverworldTraverser(state, logicSet);
       const result = traverser.calculateAll();

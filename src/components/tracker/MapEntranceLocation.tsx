@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setEntranceChecked } from "../../store/checksSlice";
 import { cn } from "@/lib/utils";
-import type { EntranceInfo } from "@/data/entranceData";
+import type { LocationData } from "@/data/locationsData";
 
 interface MapEntranceLocationProps {
   name: string;
-  location: EntranceInfo;
+  location: LocationData;
   className?: string;
   tooltip?: boolean;
 }

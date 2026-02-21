@@ -3,8 +3,13 @@ import type { RootState } from "../../../store/store";
 
 import MapItemLocation from "@/components/tracker/MapItemLocation";
 import MapEntranceLocation from "@/components/tracker/MapEntranceLocation";
-import { entranceData } from "@/data/entranceData";
-import { locationsData } from "@/data/locationsData";
+import { locationsData, entranceLocations } from "@/data/locationsData";
+import {
+  getActiveLocations,
+  getDungeonIdForEntry,
+  isSecondaryEntrance,
+  isReplacedByEntrances,
+} from "@/lib/logic/locationMapper";
 
 interface OWMapProps {
   world?: "lw" | "dw";
@@ -14,6 +19,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const bonkShuffle = useSelector((state: RootState) => state.settings.bonkShuffle);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
+  const settings = useSelector((state: RootState) => state.settings);
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
 
@@ -44,18 +50,35 @@ function OWMap({ world = "lw" }: OWMapProps) {
         justifyContent: "center",
       }}
     >
+      {/* Item location dots */}
       {Object.keys(locationsData).map((locationKey) => {
         const location = locationsData[locationKey];
         if (location.world !== world) return null;
-        if (entranceMode !== "none" && !location.overworld) return null;
         if (!bonkShuffle && location.bonk) return null;
+
+        if (entranceMode !== "none") {
+          // Entrance mode: show individual entrance markers, hide unified parent entries
+          if (isReplacedByEntrances(locationKey)) return null;
+          // Skip entrances whose mode is vanilla in current entrance mode
+          if (location.entrance && location.entrance_modes?.[entranceMode] === "vanilla") return null;
+        } else {
+          // Non-entrance mode: show unified entries, hide secondary entrances
+          if (isSecondaryEntrance(locationKey)) return null;
+        }
+
+        // Only filter: entries with 0 active item locations are hidden
+        const activeLocations = getActiveLocations(locationKey, settings);
+        if (activeLocations.length === 0) return null;
+
+        // Determine dot type
         let itemType = "item";
         if (location.bonk) {
           itemType = "tree";
         }
-        if (location.isDungeon) {
+        if (location.isDungeon || getDungeonIdForEntry(locationKey)) {
           itemType = "dungeon";
         }
+
         return (
           <MapItemLocation
             key={locationKey}
@@ -68,11 +91,18 @@ function OWMap({ world = "lw" }: OWMapProps) {
         );
       })}
 
-      {Object.keys(entranceData).map((locationKey) => {
+      {/* Entrance tracking dots (green/gray) - only in entrance mode, for 0-item entrances */}
+      {Object.keys(entranceLocations).map((locationKey) => {
         if (entranceMode === "none") return null;
-        const location = entranceData[locationKey];
+        const location = entranceLocations[locationKey];
         if (location.world !== world) return null;
-        if (location.modes[entranceMode] === 'vanilla') return null;
+        if (location.entrance_modes?.[entranceMode] === "vanilla") return null;
+
+        // Only show entrance-only markers for entries with 0 item locations
+        // (entries WITH items are already shown as MapItemLocation dots above)
+        const activeLocations = getActiveLocations(locationKey, settings);
+        if (activeLocations.length > 0) return null;
+
         return (
           <MapEntranceLocation
             key={locationKey}

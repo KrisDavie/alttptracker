@@ -12,7 +12,7 @@ function SpriteSquare() {
   const dispatch = useDispatch();
   const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
-  const keyDrop = useSelector((state: RootState) => state.settings.keyDrop);
+  const keyDrop = useSelector((state: RootState) => state.settings.enemyDrop) !== "none";
   const autotracking = useSelector((state: RootState) => state.settings.autotracking);
   const doors = false;
 

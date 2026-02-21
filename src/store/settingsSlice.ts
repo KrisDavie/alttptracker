@@ -3,13 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface SettingsState {
   // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
-  worldState: "open" | "standard" | "inverted" |  "inverted_1";
+  worldState: "open" | "standard" | "inverted" | "inverted_1";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
   wildMaps: boolean;
   wildCompasses: boolean;
-  keyDrop: boolean;
-  pottery: "none" |"keys" |"cave" |"cavekeys" |"reduced" |"clustered" |"nonempty" |"dungeon" |"lottery";
+  pottery: "none" | "keys" | "cave" | "cavekeys" | "reduced" | "clustered" | "nonempty" | "dungeon" | "lottery";
+  enemyDrop: "none" | "keys" | "underworld";
   entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity";
   bossShuffle: "none" | "simple" | "full" | "random";
   enemyShuffle: "none" | "shuffled" | "random";
@@ -32,8 +32,8 @@ const initialState: SettingsState = {
   wildBigKeys: false,
   wildMaps: false,
   wildCompasses: false,
-  keyDrop: false,
   pottery: "none",
+  enemyDrop: "none",
   entranceMode: "none",
   bossShuffle: "none",
   enemyShuffle: "none",

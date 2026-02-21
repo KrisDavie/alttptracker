@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { entranceData } from "@/data/entranceData";
+import { entranceLocations } from "@/data/locationsData";
 
 export interface EntranceData {
   checked: boolean;
@@ -30,7 +30,7 @@ export interface EntrancesState {
   [key: string]: EntranceData;
 }
 
-const initialState: Record<string, EntranceData> = Object.keys(entranceData).reduce((acc, entrance) => {
+const initialState: Record<string, EntranceData> = Object.keys(entranceLocations).reduce((acc, entrance) => {
   acc[entrance] = { ...entranceInitialState };
   return acc;
 }, {} as Record<string, EntranceData>);

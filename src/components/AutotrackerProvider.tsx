@@ -8,6 +8,7 @@ import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
 import { ALL_SRAM_LOCATIONS_MAP, INVENTORY_LOCATIONS } from "@/data/sramLocations";
+import { getAllPossibleLocations } from "@/lib/logic/locationMapper";
 import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
 import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
@@ -134,165 +135,117 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     return () => clearInterval(interval);
   }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled]);
 
-  // Actually process the data and mark things as checked etc. This will likely be very long
+  // Actually process the data and mark things as checked etc.
   useEffect(() => {
-    if (Object.keys(autoTrackingData).length === 0) {
-      return;
-    }
+    if (Object.keys(autoTrackingData).length === 0) return;
+
+    const getByte = (addr: number) => {
+      const range = getRangeFromAddress(addr);
+      const data = range && autoTrackingData[range.name];
+      return data ? data[addr - range.start] || 0 : null;
+    };
+
+    const getWord = (addr: number) => {
+      const range = getRangeFromAddress(addr);
+      const data = range && autoTrackingData[range.name];
+      if (!data) return null;
+      const offset = addr - range.start;
+      return (data[offset] || 0) | ((data[offset + 1] || 0) << 8);
+    };
 
     const updates: Record<string, CheckStatus> = {};
     const itemUpdates: Record<string, number> = {};
     const dungeonUpdates: Record<string, Partial<DungeonState>> = {};
 
-    // Item locations
-    Object.values(locationsData).forEach((locData) => {
-      locData.itemLocations.forEach((itemLoc) => {
+    // Item locations — use ALL possible locations for autotracking
+    // (we want to track anything the player picks up, even if settings don't show it)
+    Object.keys(locationsData).forEach((entryKey) => {
+      getAllPossibleLocations(entryKey).forEach((locInfo) => {
+        const itemLoc = locInfo.name;
         const locationState = checksRef.current[itemLoc];
-        if (!locationState || locationState.manuallyChecked || locationState.checked) {
-          return;
-        }
+        if (!locationState || locationState.manuallyChecked || locationState.checked) return;
 
         const sramLoc = ALL_SRAM_LOCATIONS_MAP[itemLoc];
-        if (!sramLoc) return;
+        const val = sramLoc ? getWord(sramLoc.wramAddress) : null;
+        if (val === null) return;
 
-        const memRange = getRangeFromAddress(sramLoc.wramAddress);
-        if (!memRange) return;
-
-        const data = autoTrackingData[memRange.name];
-        if (!data) return;
-
-        const offset = sramLoc.wramAddress - memRange.start;
-        const byte1 = data[offset] || 0;
-        const byte2 = data[offset + 1] || 0;
-        const value = byte1 + (byte2 << 8);
-
-        const isChecked = (value & sramLoc.mask) !== 0;
-
-        if (isChecked) {
+        if ((val & sramLoc!.mask) !== 0) {
           updates[itemLoc] = { ...locationState, checked: true, manuallyChecked: false };
         }
       });
     });
 
-    // Inventory items - covers most things
+    // Inventory items
     INVENTORY_LOCATIONS.forEach((sramLoc) => {
       const itemName = sramLoc.name.replace("Inventory - ", "");
       const currentAmount = itemsRef.current[itemName]?.amount ?? 0;
+      const val = getByte(sramLoc.wramAddress);
+      if (val === null) return;
 
-      const memRange = getRangeFromAddress(sramLoc.wramAddress);
-      if (!memRange) return;
+      let newValue = sramLoc.mask === 0 ? val : (val & sramLoc.mask) !== 0 ? 1 : 0;
+      if (itemName.startsWith("bottle")) newValue = Math.max(0, newValue - 1);
 
-      const data = autoTrackingData[memRange.name];
-      if (!data) return;
-
-      const offset = sramLoc.wramAddress - memRange.start;
-      const value = data[offset] || 0;
-
-      let newValue = 0;
-      if (sramLoc.mask === 0) {
-        newValue = value;
-      } else {
-        newValue = (value & sramLoc.mask) !== 0 ? 1 : 0;
-      }
-
-      if (itemName.startsWith("bottle")) {
-        newValue = Math.max(0, newValue - 1);
-      }
-
-      if (newValue !== currentAmount) {
-        itemUpdates[itemName] = newValue;
-      }
+      if (newValue !== currentAmount) itemUpdates[itemName] = newValue;
     });
 
-    // Special handling for some items, either different in PH or complex checks needed
+    // Special items
     SPECIAL_HANDLE_INVENTORY_ITEMS.forEach((sramLoc) => {
       const itemName = sramLoc.name.replace("Inventory - ", "");
-      
-      // TODO: Re-add handling for practice hack
-
-      const memRange = getRangeFromAddress(sramLoc.wramAddress);
-      if (!memRange) return;
-
-      const data = autoTrackingData[memRange.name];
-      if (!data) return;
-
-      const offset = sramLoc.wramAddress - memRange.start;
-      const value = data[offset] || 0;
+      const val = getByte(sramLoc.wramAddress);
+      if (val === null) return;
 
       switch (itemName) {
         case "bow": {
-          const bits = value & 0xc0;
-          if (bits === 0x00) { break; }
-          // TODO, add non prog bows flag
-          // Index up by one because empty bow no quiver
-          itemUpdates["bow"] = bits === 0x40 ? 2 : bits === 0x80 ? 3 : 4;
+          const bits = val & 0xc0;
+          if (bits !== 0) itemUpdates["bow"] = bits === 0x40 ? 2 : bits === 0x80 ? 3 : 4;
           break;
         }
         case "boomerang": {
-          const bits = value & 0xc0;
-          if (bits === 0x00) { break; }
-          itemUpdates["boomerang"] = bits === 0x80 ? 1 : bits === 0x40 ? 2 : 3;
+          const bits = val & 0xc0;
+          if (bits !== 0) itemUpdates["boomerang"] = bits === 0x80 ? 1 : bits === 0x40 ? 2 : 3;
           break;
         }
-        case "bombs":
-          itemUpdates["bomb"] = value > 0 ? 1 : 0;
-          break;
+        case "bombs": itemUpdates["bomb"] = val > 0 ? 1 : 0; break;
         case "mushroom": {
-          const bits = value & 0x28;
+          const bits = val & 0x28;
           itemUpdates["mushroom"] = bits & 0x28 ? 1 : bits & 0x08 ? 2 : 0;
           break;
         }
         case "powder":
-        case "shovel":
-          itemUpdates[itemName] = (value & sramLoc.mask) !== 0 ? 1 : 0;
-          break;
+        case "shovel": itemUpdates[itemName] = (val & sramLoc.mask) !== 0 ? 1 : 0; break;
         case "flute": {
-          const fluteState = value & 0x03;
-          itemUpdates["flute"] = fluteState == 0x01 || fluteState == 0x03 ? 2 : fluteState === 0x02 ? 1 : 0;
+          const fluteState = val & 0x03;
+          itemUpdates["flute"] = fluteState === 1 || fluteState === 3 ? 2 : fluteState === 2 ? 1 : 0;
           break;
         }
-        default:
       }
     });
 
     // Dungeon items and info
-    DUNGEON_ITEMS.forEach((dungeonItem) => {
-      const dungeon = dungeonItem.dungeon;
-      const newDungeonState: Partial<DungeonState> = {};
-      Object.keys(dungeonItem.datas).forEach((key) => {
-        const itemData = dungeonItem.datas[key as DungeonInfo];
-        const memRange = getRangeFromAddress(itemData.wramAddress);
-        if (!memRange) return;
-        const data = autoTrackingData[memRange.name]
-        const offset = itemData.wramAddress - memRange.start;
-        const value = data[offset] || 0;
-        if (key === "smallKeys") {
-          newDungeonState.smallKeys = value;
-        } else if (key === "bigKey") {
-          newDungeonState.bigKey = (value & itemData.mask) !== 0;
-        } else if (key === "compass") {
-          newDungeonState.compass = (value & itemData.mask) !== 0;
-        } else if (key === "map") {
-          newDungeonState.map = (value & itemData.mask) !== 0;
+    DUNGEON_ITEMS.forEach(({ dungeon, datas }) => {
+      const newState: Partial<DungeonState> = {};
+      Object.entries(datas).forEach(([key, item]) => {
+        const val = getByte(item.wramAddress);
+        if (val === null) return;
+        const isSet = (val & item.mask) !== 0;
+
+        switch (key as DungeonInfo) {
+          case "smallKeys": newState.smallKeys = val; break;
+          case "bigKey":    newState.bigKey = isSet; break;
+          case "compass":   newState.compass = isSet; break;
+          case "map":       newState.map = isSet; break;
+          case "prize":     newState.prizeCollected = isSet; break;
+          case "boss":      newState.bossDefeated = isSet; break;
         }
-      })
-      dungeonUpdates[dungeon] = newDungeonState;
+      });
+      dungeonUpdates[dungeon] = newState;
     });
 
-
-    if (Object.keys(updates).length > 0) {
-      dispatch(updateMultipleLocations(updates));
-    }
-
-    if (Object.keys(itemUpdates).length > 0) {
-      dispatch(updateMultipleItems(itemUpdates));
-    }
-
-    if (Object.keys(dungeonUpdates).length > 0) {
-      Object.entries(dungeonUpdates).forEach(([dungeon, newState]) => {
-        dispatch(updateDungeonState({ dungeon, newState }));
-      });
-    }
+    if (Object.keys(updates).length > 0) dispatch(updateMultipleLocations(updates));
+    if (Object.keys(itemUpdates).length > 0) dispatch(updateMultipleItems(itemUpdates));
+    Object.entries(dungeonUpdates).forEach(([dungeon, newState]) => {
+      if (Object.keys(newState).length > 0) dispatch(updateDungeonState({ dungeon, newState }));
+    });
   }, [autoTrackingData, dispatch]);
 
   return <>{children}</>;

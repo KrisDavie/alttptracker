@@ -18,7 +18,7 @@ function SmallKeyTracker({ dungeon, size = "1x2", showTotal = true }: SmallKeyTr
   if (["keys", "cavekeys"].includes(settings.pottery)) {
     maxSmallKeys += dungeonData?.totalLocations?.keypots || 0;
   }
-  if (settings.keyDrop) {
+  if (settings.enemyDrop !== "none") {
     maxSmallKeys += dungeonData?.totalLocations?.keydrops || 0;
   }
 

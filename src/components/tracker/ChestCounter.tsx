@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setDungeonCollectedCount } from "../../store/dungeonsSlice";
 import DungeonsData from "@/data/dungeonData";
-import { locationsData } from "@/data/locationsData";
+import { getActiveLocations } from "@/lib/logic/locationMapper";
 
 interface ChestCounterProps {
   dungeon: string;
@@ -17,35 +17,34 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const dungeonState = useSelector((state: RootState) => state.dungeons[dungeon]);
 
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
-  const dungeonChecks = locationsData[dungeonData.name as keyof typeof locationsData]?.itemLocations || [];
+
+  // Dynamically compute active item locations based on current settings
+  const dungeonChecks = getActiveLocations(dungeonData.name, settings);
+  if (dungeonData.name === 'Hyrule Castle') {
+    // Also need to include sanctuary and sanctuary grave locations
+    dungeonChecks.push(...getActiveLocations("Sanctuary", settings));
+    dungeonChecks.push(...getActiveLocations("Sanctuary Grave", settings));
+  }
+
+  let maxCount = dungeonChecks.length;
   let numChecks = dungeonChecks.map((loc) => checks.locationsChecks[loc])?.filter((check) => check?.checked).length || 0;
 
   const wildBigKeys = settings.wildBigKeys;
-  const wildSmallKeys = settings.wildSmallKeys
+  const wildSmallKeys = settings.wildSmallKeys;
   const wildCompasses = settings.wildCompasses;
   const wildMaps = settings.wildMaps;
   const totLocs = dungeonData?.totalLocations;
 
-  let maxCount = dungeonData && totLocs ? (totLocs.chests) : 0
-  let totSKeys = dungeonData && totLocs ? (totLocs.smallkeys) : 0;
-
-  // TODO: Other pottery modes
-
-  if (['keys', 'cavekeys'].includes(settings.pottery)) {
-    totSKeys += dungeonData?.totalLocations?.keypots || 0;
-    maxCount += dungeonData?.totalLocations?.keypots || 0;
-  }
-
-  if (settings.keyDrop) {
-    totSKeys += dungeonData?.totalLocations?.keydrops || 0;
-    maxCount += dungeonData?.totalLocations?.keydrops || 0;
-  }
+  // Count small keys in the active location set
+  const totSKeys = dungeonChecks.filter(
+    (loc) => loc.includes("Key Drop") || loc.includes("Pot Key")
+  ).length + (totLocs?.smallkeys || 0);
 
   // Adjust maxCount based on settings
-  // Maxcount starts as total locations, then we subtract out items that are not shuffled
+  // Subtract out dungeon items that are not shuffled into the pool
   if (!settings.includeDungeonItemsInCounter) {
     maxCount -= ((wildBigKeys ? 0 : (totLocs?.bigkey ? 1 : 0))
-      + (wildSmallKeys === "wild" ? 0 : (totSKeys))
+      + (wildSmallKeys === "wild" ? 0 : totSKeys)
       + (wildCompasses ? 0 : (totLocs?.compass ? 1 : 0))
       + (wildMaps ? 0 : (totLocs?.map ? 1 : 0)));
 
@@ -53,7 +52,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     numChecks -= dungeonState.smallKeys && !wildSmallKeys ? dungeonState.smallKeys : 0;
     numChecks -= dungeonState.bigKey && !wildBigKeys ? 1 : 0;
     numChecks -= dungeonState.compass && !wildCompasses ? 1 : 0;
-    numChecks -= dungeonState.map && !wildMaps ? 1 : 0;      
+    numChecks -= dungeonState.map && !wildMaps ? 1 : 0;
   }
 
   // TODO: Collected can be more than maxCount when settings are toggle off after collecting items.
@@ -88,7 +87,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
         onContextMenu={(e) => { e.preventDefault(); setCount(collected - 1); }}
       >
         <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 bg-white bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
-          <div className={`text-black ${small ? "": "text-4xl"} select-none font-roboto font-black`} onClick={(e) => { e.stopPropagation(); setCount(collected + 1); }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setCount(collected - 1); }}>
+          <div className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`} onClick={(e) => { e.stopPropagation(); setCount(collected + 1); }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setCount(collected - 1); }}>
             {checksRemaining}
           </div>
         </div>
