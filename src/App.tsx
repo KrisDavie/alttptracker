@@ -43,7 +43,7 @@ function App() {
   const isCompact = mapMode === "compact";
 
   return (
-    <div className="h-screen w-screen bg-neutral-900 flex items-start justify-start overflow-hidden fixed inset-0">
+    <div className="h-screen w-screen bg-neutral-900 flex items-start justify-start overflow-hidden fixed inset-0" onContextMenu={(e) => e.preventDefault()}>
       <div
         style={{
           transform: `scale(${scale})`,

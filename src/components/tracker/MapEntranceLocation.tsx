@@ -2,9 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setEntranceChecked } from "../../store/checksSlice";
 import { cn } from "@/lib/utils";
-import type { LocationData } from "@/data/locationsData";
+import { locationsData, type LocationData } from "@/data/locationsData";
 import { LocationTooltip } from "./LocationTooltip";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
+import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
+import { setEntranceLink } from "@/store/entrancesSlice";
 
 interface MapEntranceLocationProps {
   name: string;
@@ -18,20 +20,39 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
   const dispatch = useDispatch();
   const showTooltip = props.tooltip ?? false;
 
+  const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
+  const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
+
+  const to = useSelector((state: RootState) => state.entrances[locName]?.to);
+  const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
+
+  const selectedEntranceGroup = selectedEntrance? locationsData[selectedEntrance]?.entrance_modes?.[entranceMode || "none"] : null
+  const selfEntranceGroup = locationsData[locName]?.entrance_modes?.[entranceMode || "none"];
+
   const entranceCheck = useSelector((state: RootState) => state.checks.entranceChecks[locName]);
 
-  const { itemLocations, itemChecks, displayList, handleCheckClick, handleGroupExpand, resetGroups, targetName } = useLocationTooltipData(locName);
+  const { itemLocations, itemChecks, displayList, handleCheckClick, handleGroupExpand, resetGroups, targetName } = useLocationTooltipData(to ?? '');
 
   const xPercent = (location.x / 512) * 100;
   const yPercent = (location.y / 512) * 100;
 
   function handleClick() {
-    dispatch(setEntranceChecked({ entrance: locName, checked: !entranceCheck.checked, manual: true }));
+    if (currentMode === "connect" && selectedEntrance && selectedEntrance !== locName) {
+      dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));
+      dispatch(setSelectedEntrance(null));
+      dispatch(setCurrentMode("none"));
+    } else {
+      dispatch(setEntranceChecked({ entrance: locName, checked: !entranceCheck.checked, manual: true }));
+    }
   }
 
   function handleConnectorClick(e: React.MouseEvent) {
     if (e.button === 1) {
       e.stopPropagation();
+    }
+    if (e.button === 2) {
+      e.preventDefault();
+      dispatch(setSelectedEntrance(locName));
     }
   }
 
@@ -39,12 +60,12 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
     <div
       key={locName}
       className={cn(
-        `absolute
-           ${entranceCheck.checked ? "bg-gray-500 opacity-70" : "bg-green-500"}
-           rounded-full
-           border border-black left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2
-           group z-10 hover:z-20`,
+        "absolute border border-black left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20 rounded-full",
+        entranceCheck.checked ? "bg-gray-500/70" : locName === selectedEntrance ? "bg-blue-500" : entranceCheck.logic === "available" ? "bg-green-500" : entranceCheck.logic === "possible" ? "bg-yellow-500" : entranceCheck.logic === "ool" ? "bg-orange-500" : "bg-red-500",
         props.className,
+        selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup && "ring-2 ring-blue-500",
+        selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup && "hidden",
+        currentMode === "connect" && "cursor-crosshair"
       )}
       style={{
         top: `${yPercent}%`,
@@ -52,6 +73,7 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
       }}
       onClick={handleClick}
       onAuxClick={handleConnectorClick}
+      onContextMenu={handleConnectorClick}
       onMouseLeave={resetGroups}
     >
       {showTooltip && (

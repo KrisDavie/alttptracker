@@ -101,28 +101,29 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
           });
       } else {
         const newData: Record<string, Uint8Array> = {};
-        for (const [index, range] of MEMORY_RANGES.entries()) {
+        for (const [name, range] of Object.entries(MEMORY_RANGES)) {
           try {
+            // TODO: Support QUSB2SNES
             const data = await fetchMemoryRange(transport, range.start, range.size);
             if (data) {
-              if (index === 0) {
+              if (name === "romname") {
                 // Checking ROM name range
                 const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, "");
                 if (romName !== fetchedRomName) {
                   dispatch(setRomName(fetchedRomName));
                 }
-              } else if (index === 1) {
+              } else if (name === "gamemode") {
                 // Checking first range for game mode
                 const gameMode = data[0];
                 if (![0x07, 0x09, 0x0b].includes(gameMode)) {
                   break; // Invalid game mode, skip processing
                 }
               } else {
-                newData[range.name] = data;
+                newData[name] = data;
               }
             }
           } catch (error) {
-            console.error(`Error fetching memory range ${range.start.toString(16)}-${range.end.toString(16)}:`, error);
+            console.error(`Error fetching memory range ${range.start.toString(16)}-${(range.start + range.size - 1).toString(16)}:`, error);
           }
         }
         setAutoTrackingData(newData);
@@ -140,14 +141,18 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     if (Object.keys(autoTrackingData).length === 0) return;
 
     const getByte = (addr: number) => {
-      const range = getRangeFromAddress(addr);
-      const data = range && autoTrackingData[range.name];
+      const rangeData = getRangeFromAddress(addr);
+      if (!rangeData) return null;
+      const { name, range } = rangeData;
+      const data = autoTrackingData[name];
       return data ? data[addr - range.start] || 0 : null;
     };
 
     const getWord = (addr: number) => {
-      const range = getRangeFromAddress(addr);
-      const data = range && autoTrackingData[range.name];
+      const rangeData = getRangeFromAddress(addr);
+      if (!rangeData) return null;
+      const { name, range } = rangeData;
+      const data = autoTrackingData[name];
       if (!data) return null;
       const offset = addr - range.start;
       return (data[offset] || 0) | ((data[offset + 1] || 0) << 8);
@@ -156,6 +161,12 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     const updates: Record<string, CheckStatus> = {};
     const itemUpdates: Record<string, number> = {};
     const dungeonUpdates: Record<string, Partial<DungeonState>> = {};
+
+
+    // // TODO: Add full processing here
+    // const FORK = romName?.slice(0, 2)
+    // const VERSION = romName?.slice(2, 5)
+
 
     // Item locations — use ALL possible locations for autotracking
     // (we want to track anything the player picks up, even if settings don't show it)
@@ -246,7 +257,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     Object.entries(dungeonUpdates).forEach(([dungeon, newState]) => {
       if (Object.keys(newState).length > 0) dispatch(updateDungeonState({ dungeon, newState }));
     });
-  }, [autoTrackingData, dispatch]);
+  }, [autoTrackingData, romName, dispatch]);
 
   return <>{children}</>;
 };

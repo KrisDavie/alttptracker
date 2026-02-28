@@ -57,8 +57,13 @@ export const entrancesSlice = createSlice({
         state[entrance].manuallyChanged.medallion = true;
       }
     },
+    setEntranceLink: (state, action: PayloadAction<{ entrance: string; to: string | null }>) => {
+      const { entrance, to } = action.payload;
+      state[entrance].to = to;
+      state[entrance].checked = to !== null;
+    }
   },
 });
 
-export const { incrementMedallionCount } = entrancesSlice.actions;
+export const { incrementMedallionCount, setEntranceLink } = entrancesSlice.actions;
 export default entrancesSlice.reducer;

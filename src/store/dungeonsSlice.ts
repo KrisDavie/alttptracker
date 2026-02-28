@@ -11,9 +11,11 @@ export interface DungeonState {
   bigKey: boolean;
   map: boolean;
   compass: boolean;
-  manuallyChanged?: {
-    smallKeys?: boolean;
-    prize?: boolean;
+  manuallyChanged: {
+    smallKeys: boolean;
+    bossDefeated: boolean;
+    prize: boolean;
+    prizeCollected: boolean;
   };
 }
 
@@ -33,7 +35,9 @@ const dungeonInitialState: DungeonState = {
   compass: false,
   manuallyChanged: {
     smallKeys: false,
+    bossDefeated: false,
     prize: false,
+    prizeCollected: false,
   },
 };
 
@@ -56,6 +60,7 @@ export const dungeonsSlice = createSlice({
     toggleDungeonBoss: (state, action: PayloadAction<{ dungeon: string }>) => {
       const { dungeon } = action.payload;
       state[dungeon].bossDefeated = !state[dungeon].bossDefeated;
+      state[dungeon].manuallyChanged.bossDefeated = true;
     },
     setSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; count: number }>) => {
       const { dungeon, count } = action.payload;
@@ -84,6 +89,7 @@ export const dungeonsSlice = createSlice({
     togglePrizeCollected: (state, action: PayloadAction<{ dungeon: string }>) => {
       const { dungeon } = action.payload;
       state[dungeon].prizeCollected = !state[dungeon].prizeCollected;
+      state[dungeon].manuallyChanged.prizeCollected = true;
     },
     incrementPrizeCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
       const { dungeon, decrement } = action.payload;
@@ -96,15 +102,25 @@ export const dungeonsSlice = createSlice({
       } else {
         state[dungeon].prize = PRIZES[(currentIndex + 1) % (maxCount + 1)];
       }
-      if (state[dungeon].manuallyChanged) {
-        state[dungeon].manuallyChanged.prize = true;
-      }
+      
+      state[dungeon].manuallyChanged.prize = true;
     },
     updateDungeonState: (state, action: PayloadAction<{ dungeon: string; newState: Partial<DungeonState> }>) => {
       const { dungeon, newState } = action.payload;
       const current = state[dungeon];
+      
+      // Never overwrite manually changed values
+      const filteredState = { ...newState };
+      if (current.manuallyChanged.smallKeys) delete filteredState.smallKeys;
+      if (current.manuallyChanged.bossDefeated) delete filteredState.bossDefeated;
+      if (current.manuallyChanged.prize) delete filteredState.prize;
+      if (current.manuallyChanged.prizeCollected) delete filteredState.prizeCollected;
 
-      Object.assign(current, newState, current.manuallyChanged?.smallKeys ? { smallKeys: current.smallKeys } : {}, current.manuallyChanged?.prize ? { prize: current.prize } : {});
+      if (filteredState.map && (!current.manuallyChanged.prize || current.prize === "unknown")) {
+        filteredState.prize = "map"
+      }
+
+      Object.assign(current, filteredState);
     },
   },
 });
