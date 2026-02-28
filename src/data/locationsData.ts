@@ -3758,7 +3758,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   "Dark Sanctuary Hint": {
     x: 235.5,
     y: 141,
-    world: "lw",
+    world: "dw",
     entrance: true,
     entrance_modes: {
       dungeonssimple: "vanilla",

@@ -1,4 +1,5 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import type { RootState } from "../../../store/store";
 
 import MapItemLocation from "@/components/tracker/MapItemLocation";
@@ -11,15 +12,36 @@ import {
   isReplacedByEntrances,
 } from "@/lib/logic/locationMapper";
 
+import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
+import { cn } from "@/lib/utils";
+import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
+
 interface OWMapProps {
   world?: "lw" | "dw";
 }
 
 function OWMap({ world = "lw" }: OWMapProps) {
+  const dispatch = useDispatch();
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const bonkShuffle = useSelector((state: RootState) => state.settings.bonkShuffle);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
+  const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === 'entrance';
+  const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
   const settings = useSelector((state: RootState) => state.settings);
+  const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
+
+  const selectedWorld = selectedEntrance ? locationsData[selectedEntrance]?.world : "";
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        dispatch(setSelectedEntrance(null));
+        dispatch(setCurrentMode("none"));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [dispatch]);
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
 
@@ -38,7 +60,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
   }
   return (
     <div
-      className="w-full h-full relative"
+      className={cn("w-full h-full relative", currentMode === "connect" && "cursor-crosshair")}
       key={world}
       style={{
         backgroundImage: `url("${bgimg}")`,
@@ -50,7 +72,12 @@ function OWMap({ world = "lw" }: OWMapProps) {
         justifyContent: "center",
       }}
     >
-      {/* Item location dots */}
+      {(entranceModalOpen && selectedWorld === world) && (
+        <div className="absolute top-0 left-0 w-full h-full z-100">
+          <EntranceSelectionModal />
+        </div>
+      )}
+      {/* Item locations */}
       {Object.keys(locationsData).map((locationKey) => {
         const location = locationsData[locationKey];
         if (location.world !== world) return null;
@@ -59,14 +86,13 @@ function OWMap({ world = "lw" }: OWMapProps) {
         if (entranceMode !== "none") {
           // Entrance mode: show individual entrance markers, hide unified parent entries
           if (isReplacedByEntrances(locationKey)) return null;
-          // Skip entrances whose mode is vanilla in current entrance mode
-          if (location.entrance && location.entrance_modes?.[entranceMode] === "vanilla") return null;
+          // Only show entrances that are not shuffled in the current entrance mode
+          if (location.entrance && location.entrance_modes?.[entranceMode] !== "vanilla") return null;
         } else {
           // Non-entrance mode: show unified entries, hide secondary entrances
           if (isSecondaryEntrance(locationKey)) return null;
         }
 
-        // Only filter: entries with 0 active item locations are hidden
         const activeLocations = getActiveLocations(locationKey, settings);
         if (activeLocations.length === 0) return null;
 
@@ -91,17 +117,12 @@ function OWMap({ world = "lw" }: OWMapProps) {
         );
       })}
 
-      {/* Entrance tracking dots (green/gray) - only in entrance mode, for 0-item entrances */}
+      {/* Entrance tracking dots (green/gray) - only in entrance mode, for any shuffled entrance */}
       {Object.keys(entranceLocations).map((locationKey) => {
         if (entranceMode === "none") return null;
         const location = entranceLocations[locationKey];
         if (location.world !== world) return null;
         if (location.entrance_modes?.[entranceMode] === "vanilla") return null;
-
-        // Only show entrance-only markers for entries with 0 item locations
-        // (entries WITH items are already shown as MapItemLocation dots above)
-        const activeLocations = getActiveLocations(locationKey, settings);
-        if (activeLocations.length > 0) return null;
 
         return (
           <MapEntranceLocation

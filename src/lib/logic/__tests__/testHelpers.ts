@@ -131,6 +131,12 @@ function createDefaultDungeonState(dungeonId: string): DungeonState {
     bigKey: false,
     map: false,
     compass: false,
+    manuallyChanged: {
+      smallKeys: false,
+      bossDefeated: false,
+      prize: false,
+      prizeCollected: false,
+    }
   };
 }
 
@@ -272,6 +278,17 @@ export class GameStateBuilder {
   withEntrance(entranceName: string, overrides: Partial<EntranceData>): this {
     if (this.entrances[entranceName]) {
       this.entrances[entranceName] = { ...this.entrances[entranceName], ...overrides };
+    }
+    return this;
+  }
+
+  /**
+   * Link entrance A to destination B (A's physical entrance leads to B's interior).
+   * This is the user action of "I entered A and found B's interior".
+   */
+  withEntranceLink(entrance: string, destination: string): this {
+    if (this.entrances[entrance]) {
+      this.entrances[entrance] = { ...this.entrances[entrance], to: destination };
     }
     return this;
   }

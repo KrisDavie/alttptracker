@@ -42,11 +42,72 @@ import { RequirementEvaluator, type EvaluationContext } from "./requirementEvalu
 import { DungeonTraverser } from "./dungeonTraverser";
 import { createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } from "./logicHelpers";
 import { DungeonsData } from "@/data/dungeonData";
+import { entranceLocations } from "@/data/locationsData";
+
+/**
+ * Build a lookup: exit key name → [{ to: region, type: exit type }]
+ * by scanning all regions in the logic graph. This lets us find
+ * the interior region that a named entrance normally leads to.
+ *
+ * Also builds exitToParentRegions: exit name → all regions containing that exit.
+ * The same exit name can appear in multiple regions (e.g. LW and DW variants).
+ */
+function buildExitMaps(regions: Record<string, RegionLogic>): {
+  exitDestMap: Map<string, { to: string; type: string }[]>;
+  exitToParentRegions: Map<string, { regionName: string; regionType: string }[]>;
+} {
+  const exitDestMap = new Map<string, { to: string; type: string }[]>();
+  const exitToParentRegions = new Map<string, { regionName: string; regionType: string }[]>();
+  for (const [regionName, regionLogic] of Object.entries(regions)) {
+    if (!regionLogic.exits) continue;
+    for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+      if (!exit?.to) continue;
+      if (!exitDestMap.has(exitName)) {
+        exitDestMap.set(exitName, []);
+        exitToParentRegions.set(exitName, []);
+      }
+      exitDestMap.get(exitName)!.push({ to: exit.to, type: exit.type });
+      exitToParentRegions.get(exitName)!.push({ regionName, regionType: regionLogic.type });
+    }
+  }
+  return { exitDestMap, exitToParentRegions };
+}
+
+/**
+ * Pick the correct parent region for an entrance based on the entrance's world.
+ * "lw" entrances should match LightWorld regions, "dw" should match DarkWorld regions.
+ */
+function pickParentRegion(
+  parents: { regionName: string; regionType: string }[] | undefined,
+  entranceWorld: string
+): string | undefined {
+  if (!parents || parents.length === 0) return undefined;
+  if (parents.length === 1) return parents[0].regionName;
+  const targetType = entranceWorld === "dw" ? "DarkWorld" : "LightWorld";
+  const match = parents.find(p => p.regionType === targetType);
+  return match?.regionName ?? parents[0].regionName;
+}
+
+/**
+ * Pick the correct exit destination for an entrance based on the entrance's world.
+ */
+function pickExitDest(
+  dests: { to: string; type: string }[] | undefined,
+  parents: { regionName: string; regionType: string }[] | undefined,
+  entranceWorld: string
+): { to: string; type: string } | undefined {
+  if (!dests || dests.length === 0) return undefined;
+  if (dests.length === 1) return dests[0];
+  if (!parents || parents.length !== dests.length) return dests[0];
+  const targetType = entranceWorld === "dw" ? "DarkWorld" : "LightWorld";
+  const idx = parents.findIndex(p => p.regionType === targetType);
+  return idx >= 0 ? dests[idx] : dests[0];
+}
 
 interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
   queue: string[];
-  blockedExits: { exit: ExitLogic[string]; from: string }[];
+  blockedExits: { exitName: string; exit: ExitLogic[string]; from: string }[];
   pendingDungeons: Map<string, Map<string, { bunnyState: boolean; status: LogicStatus; keyCost: number }>>;
   // Track ALL discovered portals for each dungeon across all iterations
   // keyCost tracks how many keys were used to reach this portal (if reached via dungeon exit)
@@ -103,6 +164,11 @@ export class OverworldTraverser {
   private dungeonBigKeyGatedRegions: Map<string, Set<string>> = new Map();
   // Per-dungeon set of regions that are only reachable via small key doors
   private dungeonSmallKeyGatedRegions: Map<string, Set<string>> = new Map();
+  // Maps exit key name → remapped { to, type } for entrance shuffle
+  // null means the exit is shuffled but unlinked → should be blocked
+  private entranceRemaps: Map<string, { to: string; type: string } | null> = new Map();
+  // Maps entrance name → its correct overworld parent region (for entrance reachability)
+  private entranceToParentRegion: Map<string, string> = new Map();
 
   constructor(state: GameState, logicSet: LogicSet, protection: "partial" | "dangerous" = "partial") {
     this.state = state;
@@ -116,6 +182,137 @@ export class OverworldTraverser {
       const allItemsState = createAllItemsState(this.state);
       this.allItemsEvaluator = new RequirementEvaluator(allItemsState);
     }
+    
+    // Build exit maps (used for entrance remaps and entrance reachability evaluation)
+    const { exitDestMap, exitToParentRegions } = buildExitMaps(this.regions);
+
+    // Pre-compute the correct parent region for each entrance based on its world
+    for (const [entranceName, locData] of Object.entries(entranceLocations)) {
+      const parent = pickParentRegion(exitToParentRegions.get(entranceName), locData.world);
+      if (parent) this.entranceToParentRegion.set(entranceName, parent);
+    }
+
+    // Build entrance remaps for entrance shuffle
+    if (state.settings.entranceMode !== "none") {
+      const entranceMode = state.settings.entranceMode;
+
+      // --- Forward remaps: entrance exit → destination's interior ---
+      // Also build a reverse lookup: destination entrance name → source entrance name
+      const reverseLinks = new Map<string, string>(); // B → A (entrance A linked to destination B)
+
+      for (const [entranceName, locData] of Object.entries(entranceLocations)) {
+        // Only remap entrances that are shuffled (not "vanilla") in the current mode
+        const pool = locData.entrance_modes?.[entranceMode];
+        if (!pool || pool === "vanilla") continue;
+
+        const link = state.entrances[entranceName]?.to;
+        if (link) {
+          // User has linked this entrance to another entrance name
+          // Find the destination entrance's original interior region
+          const linkData = entranceLocations[link];
+          const destInfo = pickExitDest(
+            exitDestMap.get(link),
+            exitToParentRegions.get(link),
+            linkData?.world ?? "lw"
+          );
+          if (destInfo) {
+            this.entranceRemaps.set(entranceName, { to: destInfo.to, type: destInfo.type });
+            reverseLinks.set(link, entranceName);
+          } else {
+            // Generic destinations (Shop, Rupee, etc.) — treat as disconnected
+            this.entranceRemaps.set(entranceName, null);
+          }
+        } else {
+          // Shuffled but not yet linked → disconnected
+          this.entranceRemaps.set(entranceName, null);
+        }
+      }
+
+      // --- Reverse remaps: interior return exit → source entrance's overworld region ---
+      // When entrance A links to destination B, B's interior exit back to overworld
+      // should lead to A's overworld region (not B's original overworld region).
+      //
+      // For connector caves (e.g. Elder House with East/West entrances), multiple
+      // return exits may go to the same parent region. We match each entrance to
+      // its specific return exit using directional qualifiers (e.g. "Elder House (East)"
+      // pairs with "Elder House Exit (East)").
+      for (const [entranceName, locData] of Object.entries(entranceLocations)) {
+        const pool = locData.entrance_modes?.[entranceMode];
+        if (!pool || pool === "vanilla") continue;
+
+        // Find the portal/interior region for this entrance (world-aware)
+        const destInfo = pickExitDest(
+          exitDestMap.get(entranceName),
+          exitToParentRegions.get(entranceName),
+          locData.world
+        );
+        if (!destInfo) continue;
+        const portalRegion = this.regions[destInfo.to];
+        if (!portalRegion?.exits) continue;
+
+        // Find the return exit: the exit from the portal whose normal destination
+        // matches the entrance's overworld parent region
+        const parentRegion = this.entranceToParentRegion.get(entranceName);
+        if (!parentRegion) continue;
+
+        // Collect ALL return exits matching the parent region
+        const matchingReturnExits = Object.entries(portalRegion.exits)
+          .filter(([, returnExit]) => returnExit.to === parentRegion);
+
+        // Find the specific return exit for this entrance
+        let targetReturnExitName: string | undefined;
+        if (matchingReturnExits.length === 1) {
+          targetReturnExitName = matchingReturnExits[0][0];
+        } else if (matchingReturnExits.length > 1) {
+          // Connector cave: match by directional qualifier.
+          // "Elder House (East)" → look for return exit containing "(East)"
+          const dirMatch = entranceName.match(/\(([^)]+)\)$/);
+          if (dirMatch) {
+            const direction = dirMatch[1];
+            const match = matchingReturnExits.find(([name]) => name.includes(`(${direction})`));
+            if (match) targetReturnExitName = match[0];
+          }
+          // Fallback: first match (shouldn't happen with well-formed data)
+          if (!targetReturnExitName) targetReturnExitName = matchingReturnExits[0][0];
+        }
+
+        if (!targetReturnExitName) continue;
+
+        // Remap this specific return exit based on who linked to this entrance.
+        const sourceEntrance = reverseLinks.get(entranceName);
+        if (sourceEntrance) {
+          // Someone linked to this entrance — exit to the linker's overworld region
+          const sourceOverworld = this.entranceToParentRegion.get(sourceEntrance);
+          if (sourceOverworld) {
+            const sourceRegion = this.regions[sourceOverworld];
+            this.entranceRemaps.set(targetReturnExitName, {
+              to: sourceOverworld,
+              type: sourceRegion?.type ?? "LightWorld",
+            });
+          }
+        } else {
+          // Nobody linked to this entrance — disconnect the return exit
+          this.entranceRemaps.set(targetReturnExitName, null);
+        }
+      }
+    }
+  }
+
+  /**
+   * Resolve the effective destination for an exit, accounting for entrance remaps.
+   * Returns null if the exit is shuffled but unlinked (should be blocked).
+   * Returns the original exit if no remap applies.
+   */
+  private resolveExit(exitName: string, exit: ExitLogic[string]): ExitLogic[string] | null {
+    if (!this.entranceRemaps.has(exitName)) {
+      return exit; // Not a shuffled entrance, use as-is
+    }
+    const remap = this.entranceRemaps.get(exitName);
+    if (remap === null || remap === undefined) {
+      return null; // Shuffled but unlinked — block this exit
+    }
+    // Return a modified exit with the remapped destination
+    return { ...exit, to: remap.to, type: remap.type };
   }
 
   public calculateAll() {
@@ -284,8 +481,7 @@ export class OverworldTraverser {
     return evaluator.evaluateWorldLogic(exit.requirements, evalCtx);
   }
 
-  private processExit(exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): void {
-    if (!exit?.to) return;
+private processExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): void {    if (!exit?.to) return;
 
     const currentReachability = ctx.reachable.get(exit.to);
 
@@ -294,7 +490,7 @@ export class OverworldTraverser {
     const exitStatus = exit.type === "Dungeon" && this.allItemsEvaluator ? this.evaluateExitRequirementsForDiscovery(exit, fromRegion, ctx) : this.evaluateExitRequirements(exit, fromRegion, ctx);
 
     if (exitStatus === "unavailable") {
-      ctx.blockedExits.push({ exit, from: fromRegion });
+      ctx.blockedExits.push({ exitName, exit, from: fromRegion });
       return;
     }
 
@@ -420,23 +616,34 @@ export class OverworldTraverser {
       }
 
       // Process external exits (dungeon -> overworld)
-      for (const [, exitInfo] of result.externalExits) {
+      // Apply entrance remaps to portal return exits (e.g., "Desert Palace Exit (West)")
+      for (const [exitName, exitInfo] of result.externalExits) {
         if (exitInfo.status === "unavailable") continue;
+
+        // Apply entrance remaps to dungeon external exits
+        let resolvedTo = exitInfo.to;
+        let resolvedType = this.regions[exitInfo.to]?.type ?? "LightWorld";
+        if (this.entranceRemaps.has(exitName)) {
+          const remap = this.entranceRemaps.get(exitName);
+          if (!remap) continue; // Disconnected return exit
+          resolvedTo = remap.to;
+          resolvedType = remap.type;
+        }
 
         // Track the key cost for this overworld region
         // Use the minimum key cost if we've seen it before
-        const existingKeyCost = ctx.overworldKeyCost.get(exitInfo.to);
+        const existingKeyCost = ctx.overworldKeyCost.get(resolvedTo);
         if (existingKeyCost === undefined || exitInfo.keysUsedToReach < existingKeyCost) {
-          ctx.overworldKeyCost.set(exitInfo.to, exitInfo.keysUsedToReach);
+          ctx.overworldKeyCost.set(resolvedTo, exitInfo.keysUsedToReach);
         }
 
-        if (!ctx.reachable.has(exitInfo.to)) {
-          const newBunny = this.computeBunnyStateForExit(exitInfo.bunnyState, this.regions[exitInfo.to]?.type ?? "LightWorld");
-          ctx.reachable.set(exitInfo.to, {
+        if (!ctx.reachable.has(resolvedTo)) {
+          const newBunny = this.computeBunnyStateForExit(exitInfo.bunnyState, resolvedType);
+          ctx.reachable.set(resolvedTo, {
             status: exitInfo.status,
             bunnyState: newBunny,
           });
-          ctx.queue.push(exitInfo.to);
+          ctx.queue.push(resolvedTo);
           madeProgress = true;
         }
       }
@@ -553,19 +760,33 @@ export class OverworldTraverser {
 
   public evaluateEntrances(reachable: Map<string, RegionReachability>): Record<string, LogicStatus> {
     const entranceStatuses: Record<string, LogicStatus> = {};
-    for (const [, regionLogic] of Object.entries(this.regions)) {
-      // No entrances
-      if (!regionLogic.entrances) {
+    for (const entranceName of Object.keys(entranceLocations)) {
+      // Find the overworld region containing this entrance
+      const parentRegion = this.entranceToParentRegion.get(entranceName);
+      if (!parentRegion) {
+        entranceStatuses[entranceName] = "unavailable";
         continue;
       }
-      for (const [entranceName] of Object.entries(regionLogic.entrances)) {
-        const regionReachability = reachable.get(entranceName);
-        // Entrances are also regions
-        if (!regionReachability) {
-          entranceStatuses[entranceName] = "unavailable";
-          continue;
-        }
+      const regionReachability = reachable.get(parentRegion);
+      if (!regionReachability) {
+        entranceStatuses[entranceName] = "unavailable";
+        continue;
+      }
 
+      // Evaluate the exit requirements to enter this cave/dungeon.
+      // Even though a bunny can walk to the entrance marker, some entrances
+      // require interaction (e.g. bonk rocks need boots + moonpearl).
+      const parentRegionLogic = this.regions[parentRegion];
+      const exitDef = parentRegionLogic?.exits?.[entranceName];
+      if (exitDef?.requirements) {
+        const evalCtx: EvaluationContext = {
+          regionName: parentRegion,
+          canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
+        };
+        const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exitDef.requirements, evalCtx);
+        entranceStatuses[entranceName] = minimumStatus(regionReachability.status, exitStatus);
+      } else {
+        // No exit found or no requirements — entrance is freely accessible
         entranceStatuses[entranceName] = regionReachability.status;
       }
     }
@@ -697,14 +918,17 @@ export class OverworldTraverser {
 
   private reevaluateBlockedExits(ctx: OverworldTraverserContext): boolean {
     let madeProgress = false;
-    const stillBlocked: { exit: ExitLogic[string]; from: string }[] = [];
+    const stillBlocked: { exitName: string; exit: ExitLogic[string]; from: string }[] = [];
 
-    for (const { exit, from } of ctx.blockedExits) {
-      if (ctx.reachable.has(exit.to)) continue; // Already reachable
+    for (const { exitName, exit, from } of ctx.blockedExits) {
+      const resolvedExit = this.resolveExit(exitName, exit);
+      if (resolvedExit === null) continue; // Disconnected exit, drop it
+
+      if (ctx.reachable.has(resolvedExit.to)) continue; // Already reachable
 
       if (!ctx.reachable.has(from)) {
-        console.warn(`Blocked exit from unreachable region: ${from} -> ${exit.to}`);
-        stillBlocked.push({ exit, from });
+        console.warn(`Blocked exit from unreachable region: ${from} -> ${resolvedExit.to}`);
+        stillBlocked.push({ exitName, exit, from });
         continue; // Can't evaluate if the from region isn't reachable
       }
 
@@ -720,18 +944,18 @@ export class OverworldTraverser {
       const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
       if (exitStatus !== "unavailable") {
-        const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
+        const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, resolvedExit.type);
         const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
-        ctx.reachable.set(exit.to, {
+        ctx.reachable.set(resolvedExit.to, {
           status: newStatus,
           bunnyState: newBunny,
           crystalStates: fromRegionReachability.crystalStates,
         });
-        ctx.queue.push(exit.to);
+        ctx.queue.push(resolvedExit.to);
         madeProgress = true;
       } else {
-        stillBlocked.push({ exit, from });
+        stillBlocked.push({ exitName, exit, from });
       }
     }
     ctx.blockedExits = stillBlocked;
@@ -756,20 +980,22 @@ export class OverworldTraverser {
       const regionLogic = this.regions[current];
       if (!regionLogic?.exits) continue;
 
-      for (const exit of Object.values(regionLogic.exits)) {
-        if (!exit?.to || exit.type === "Dungeon") continue; // Skip dungeon portals for now
+      for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+        const resolvedExit = this.resolveExit(exitName, exit);
+        if (resolvedExit === null) continue;
+        if (!resolvedExit?.to || resolvedExit.type === "Dungeon") continue;
 
         const evalCtx: EvaluationContext = {
           regionName: current,
           canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
         };
-        const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
+        const status = this.requirementEvaluator.evaluateWorldLogic(resolvedExit.requirements, evalCtx);
 
-        if (status !== "unavailable" && !actuallyReachable.has(exit.to)) {
+        if (status !== "unavailable" && !actuallyReachable.has(resolvedExit.to)) {
           const currentBunny = actuallyReachable.get(current) ?? false;
-          const newBunny = this.computeBunnyStateForExit(currentBunny, exit.type ?? "LightWorld");
-          actuallyReachable.set(exit.to, newBunny);
-          actualQueue.push(exit.to);
+          const newBunny = this.computeBunnyStateForExit(currentBunny, resolvedExit.type ?? "LightWorld");
+          actuallyReachable.set(resolvedExit.to, newBunny);
+          actualQueue.push(resolvedExit.to);
         }
       }
     }
@@ -788,26 +1014,28 @@ export class OverworldTraverser {
 
       if (!regionLogic?.exits) continue;
 
-      for (const exit of Object.values(regionLogic.exits)) {
-        if (!exit?.to) continue;
+      for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+        const resolvedExit = this.resolveExit(exitName, exit);
+        if (resolvedExit === null) continue; // Shuffled but unlinked — skip
+        if (!resolvedExit?.to) continue;
 
         // Evaluate with all-items evaluator
         const evalCtx: EvaluationContext = {
           regionName: current,
           canReachRegion: (name: string) => (visited.has(name) ? "available" : "unavailable"),
         };
-        const status = this.allItemsEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
+        const status = this.allItemsEvaluator.evaluateWorldLogic(resolvedExit.requirements, evalCtx);
 
         if (status === "unavailable") continue;
 
         // If this is a dungeon portal, register it
-        if (exit.type === "Dungeon") {
-          const dungeonId = this.getDungeonIdFromPortal(exit.to);
+        if (resolvedExit.type === "Dungeon") {
+          const dungeonId = this.getDungeonIdFromPortal(resolvedExit.to);
           if (dungeonId) {
             if (!ctx.allDiscoveredPortals.has(dungeonId)) {
               ctx.allDiscoveredPortals.set(dungeonId, new Map());
             }
-            if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
+            if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(resolvedExit.to)) {
               // Entry status from actual inventory (captures medallion uncertainty, etc.)
               let entryStatus: LogicStatus = "unavailable";
               if (actuallyReachable.has(current)) {
@@ -815,16 +1043,16 @@ export class OverworldTraverser {
                   regionName: current,
                   canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
                 };
-                const actualStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, actualEvalCtx);
+                const actualStatus = this.requirementEvaluator.evaluateWorldLogic(resolvedExit.requirements, actualEvalCtx);
                 entryStatus = actualStatus === "unavailable" ? "unavailable" : actualStatus;
               }
 
               // Compute bunny state based on the region leading to the portal
               const portalBunny = actuallyReachable.has(current)
-                ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, exit.type ?? "Dungeon")
+                ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, resolvedExit.type ?? "Dungeon")
                 : false;
 
-              ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
+              ctx.allDiscoveredPortals.get(dungeonId)!.set(resolvedExit.to, {
                 bunnyState: portalBunny,
                 status: entryStatus,
                 keyCost: 0,
@@ -835,9 +1063,9 @@ export class OverworldTraverser {
         }
 
         // For overworld regions, add to discovery queue
-        if (!visited.has(exit.to)) {
-          visited.add(exit.to);
-          queue.push(exit.to);
+        if (!visited.has(resolvedExit.to)) {
+          visited.add(resolvedExit.to);
+          queue.push(resolvedExit.to);
         }
       }
     }
@@ -862,8 +1090,10 @@ export class OverworldTraverser {
 
         if (!regionLogic?.exits) continue;
 
-        for (const exit of Object.values(regionLogic.exits)) {
-          this.processExit(exit, current, regionReachability, ctx);
+        for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+          const resolvedExit = this.resolveExit(exitName, exit);
+          if (resolvedExit === null) continue; // Shuffled but unlinked — skip
+          this.processExit(exitName, resolvedExit, current, regionReachability, ctx);
         }
       }
 

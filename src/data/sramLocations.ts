@@ -142,10 +142,9 @@ export interface MultiInventoryItemLocation extends MultiSramLocation {
 }
 
 export interface MemoryRange {
-  name: string;
   start: number;
-  end: number;
   size: number;
+  subranges?: Record<string, { start: number; size: number }>;
 }
 
 export const ROOM_COUNT = 296;
@@ -21354,7 +21353,7 @@ export const INVENTORY_LOCATIONS: InventoryItemLocation[] = [
 export const SPECIAL_HANDLE_INVENTORY_ITEMS: MultiInventoryItemLocation[] = [
   { name: "Inventory - bow", type: LocationType.InventoryItem, wramAddress: 0xf5f38e, mask: 0x00, phWramAddress: 0xf5f340, phMask: 0x00 },
   { name: "Inventory - boomerang", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f341, phMask: 0x00 },
-  { name: "Inventory - bombs", type: LocationType.InventoryItem, wramAddress: 0xf5f341, mask: 0x00, phWramAddress: 0xf5f341, phMask: 0x00 },
+  { name: "Inventory - bombs", type: LocationType.InventoryItem, wramAddress: 0xf5f343, mask: 0x00, phWramAddress: 0xf5f343, phMask: 0x00 },
   { name: "Inventory - mushroom", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f344, phMask: 0x00 },
   { name: "Inventory - powder", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x10, phWramAddress: 0xf5f344, phMask: 0x00 },
   { name: "Inventory - shovel", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x04, phWramAddress: 0xf5f34c, phMask: 0x00 },
@@ -21369,8 +21368,8 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f365, mask: 0x20 },
       map: { wramAddress: 0xf5f369, mask: 0x20 },
       smallKeys: { wramAddress: 0xf5f4e2, mask: 0x00 },
-      boss: { wramAddress: 0xf5f190, mask: 0x800 },
-      prize: { wramAddress: 0xf5f472, mask: 0x2000 },
+      boss: { wramAddress: 0xf5f191, mask: 0x08 },
+      prize: { wramAddress: 0xf5f473, mask: 0x20 },
     },
   },
   {
@@ -21380,8 +21379,8 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f365, mask: 0x10 },
       map: { wramAddress: 0xf5f369, mask: 0x10 },
       smallKeys: { wramAddress: 0xf5f4e3, mask: 0x00 },
-      boss: { wramAddress: 0xf5f066, mask: 0x800 },
-      prize: { wramAddress: 0xf5f472, mask: 0x1000 },
+      boss: { wramAddress: 0xf5f067, mask: 0x08 },
+      prize: { wramAddress: 0xf5f473, mask: 0x10 },
     },
   },
   {
@@ -21391,7 +21390,7 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f364, mask: 0x20 },
       map: { wramAddress: 0xf5f368, mask: 0x20 },
       smallKeys: { wramAddress: 0xf5f4ea, mask: 0x00 },
-      boss: { wramAddress: 0xf5f00e, mask: 0x800 },
+      boss: { wramAddress: 0xf5f00f, mask: 0x08 },
       prize: { wramAddress: 0xf5f472, mask: 0x20 },
     },
   },
@@ -21402,8 +21401,8 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f365, mask: 0x02 },
       map: { wramAddress: 0xf5f369, mask: 0x02 },
       smallKeys: { wramAddress: 0xf5f4e6, mask: 0x00 },
-      boss: { wramAddress: 0xf5f0b4, mask: 0x800 },
-      prize: { wramAddress: 0xf5f472, mask: 0x200 },
+      boss: { wramAddress: 0xf5f0b5, mask: 0x08 },
+      prize: { wramAddress: 0xf5f473, mask: 0x02 },
     },
   },
   {
@@ -21413,8 +21412,8 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f365, mask: 0x04 },
       map: { wramAddress: 0xf5f369, mask: 0x04 },
       smallKeys: { wramAddress: 0xf5f4e5, mask: 0x00 },
-      boss: { wramAddress: 0xf5f00c, mask: 0x800 },
-      prize: { wramAddress: 0xf5f472, mask: 0x400 },
+      boss: { wramAddress: 0xf5f00d, mask: 0x08 },
+      prize: { wramAddress: 0xf5f473, mask: 0x04 },
     },
   },
   {
@@ -21424,7 +21423,7 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f364, mask: 0x80 },
       map: { wramAddress: 0xf5f368, mask: 0x80 },
       smallKeys: { wramAddress: 0xf5f4e8, mask: 0x00 },
-      boss: { wramAddress: 0xf5f052, mask: 0x800 },
+      boss: { wramAddress: 0xf5f053, mask: 0x08 },
       prize: { wramAddress: 0xf5f472, mask: 0x80 },
     },
   },
@@ -21435,7 +21434,7 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f364, mask: 0x10 },
       map: { wramAddress: 0xf5f368, mask: 0x10 },
       smallKeys: { wramAddress: 0xf5f4eb, mask: 0x00 },
-      boss: { wramAddress: 0xf5f158, mask: 0x800 },
+      boss: { wramAddress: 0xf5f159, mask: 0x08 },
       prize: { wramAddress: 0xf5f472, mask: 0x10 },
     },
   },
@@ -21446,7 +21445,7 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f364, mask: 0x40 },
       map: { wramAddress: 0xf5f368, mask: 0x40 },
       smallKeys: { wramAddress: 0xf5f4e9, mask: 0x00 },
-      boss: { wramAddress: 0xf5f1bc, mask: 0x800 },
+      boss: { wramAddress: 0xf5f1bd, mask: 0x08 },
       prize: { wramAddress: 0xf5f472, mask: 0x40 },
     },
   },
@@ -21457,8 +21456,8 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f365, mask: 0x01 },
       map: { wramAddress: 0xf5f369, mask: 0x01 },
       smallKeys: { wramAddress: 0xf5f4e7, mask: 0x00 },
-      boss: { wramAddress: 0xf5f120, mask: 0x800 },
-      prize: { wramAddress: 0xf5f472, mask: 0x100 },
+      boss: { wramAddress: 0xf5f121, mask: 0x08 },
+      prize: { wramAddress: 0xf5f473, mask: 0x01 },
     },
   },
   {
@@ -21468,8 +21467,8 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f364, mask: 0x08 },
       map: { wramAddress: 0xf5f368, mask: 0x08 },
       smallKeys: { wramAddress: 0xf5f4ec, mask: 0x00 },
-      boss: { wramAddress: 0xf5f148, mask: 0x800 },
-      prize: { wramAddress: 0xf5f472, mask: 0x8 },
+      boss: { wramAddress: 0xf5f149, mask: 0x08 },
+      prize: { wramAddress: 0xf5f472, mask: 0x08 },
     },
   },
   {
@@ -21479,7 +21478,7 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
       compass: { wramAddress: 0xf5f364, mask: 0x04 },
       map: { wramAddress: 0xf5f368, mask: 0x04 },
       smallKeys: { wramAddress: 0xf5f4ed, mask: 0x00 },
-      boss: { wramAddress: 0x0, mask: 0x0 },
+      boss: { wramAddress: 0xf5f01b, mask: 0x08 },
       prize: { wramAddress: 0x0, mask: 0x0 },
     },
   },
@@ -21507,43 +21506,63 @@ export const DUNGEON_ITEMS: DungeonItemLocations[] = [
   },
 ];
 
-export const MEMORY_RANGES: MemoryRange[] = [
-  {
-    name: "romname",
-    start: 0xe02000,
-    end: 0xe02015,
-    size: 0x15,
+export const MEMORY_RANGES: Record<string, MemoryRange> = {
+  "romname": {
+    start: 0x7fc0,
+    size: 0x21,
   },
-  {
-    name: "gamemode",
+  "gamemode": {
     start: 0xf50010,
-    end: 0xf50011,
     size: 0x1,
   },
-  {
-    name: "main",
+  "prize_numbers": {
+    start: 0x1209b,
+    size: 0x0d,
+  },
+  "flags_data": {
+    start: 0x180000,
+    size: 0x2ff,
+    subranges: {
+      "smiths": {
+        start: 0x18004c,
+        size: 0x01
+      },
+      "prize_data": {
+        start: 0x180050,
+        size: 0x0d,
+      },
+      "pseudoboots": {
+        start: 0x18008e,
+        size: 0x01,
+      },
+      "keysanity": {
+        start: 0x18016a,
+        size: 0x01,
+      },
+      "entrance": {
+        start: 0x180211,
+        size: 0x01,
+      }
+    }
+  },
+  "main": {
     start: 0xf5f000,
-    end: 0xf5f4ff,
     size: 0x4ff,
   },
-  {
-    name: "dungeon_stats",
+  "dungeon_stats": {
     start: 0xf65410,
-    end: 0xf65440,
     size: 0x30,
   },
-  {
-    name: "pots_drops",
+  "pots_drops": {
     start: 0xf6601c,
-    end: 0xf664d8,
     size: 0x4bc,
   },
-];
+};
 
-export function getRangeFromAddress(address: number): MemoryRange | null {
-  for (const range of MEMORY_RANGES) {
-    if (address >= range.start && address < range.end) {
-      return range;
+export function getRangeFromAddress(address: number): {name: string, range: MemoryRange} | null {
+  for (const [name, range] of Object.entries(MEMORY_RANGES)) {
+    if (address >= range.start && address < range.start + range.size) {
+      return { name, range };
     }
   }
   return null;

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface TrackerState {
-   currentMode: "none" | "scout" | "connect" | "follower";
+   currentMode: "none" | "scout" | "connect" | "entrance_select" | "follower";
    modalOpen: "none" | "mystery" | "entrance" 
    selectedLocation: string | null;
    selectedEntrance: string | null;
@@ -9,7 +9,7 @@ export interface TrackerState {
 
 const initialState: TrackerState = {
     currentMode: "none",
-    modalOpen: "none",
+    modalOpen: "entrance",
     selectedLocation: null,
     selectedEntrance: null,
 };
@@ -26,12 +26,16 @@ export const trackerSlice = createSlice({
     },
     setSelectedEntrance: (state, action) => {
       state.selectedEntrance = action.payload;
+      state.modalOpen = "entrance";
     },
     setSelectedLocation: (state, action) => {
       state.selectedLocation = action.payload;
     },
+    setCurrentMode: (state, action) => {
+      state.currentMode = action.payload;
+    }
   },
 });
 
-export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation } = trackerSlice.actions;
+export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode } = trackerSlice.actions;
 export default trackerSlice.reducer;

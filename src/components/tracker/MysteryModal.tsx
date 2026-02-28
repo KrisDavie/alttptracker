@@ -61,7 +61,7 @@ function MysteryModal() {
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.entranceMode} onChange={(e) => handleInputChange("entranceMode", e.target.value)}>
               <option value="none">None</option>
               <option value="crossed">Crossed</option>
-              {/* <option value="lean">Lean</option>
+              <option value="lean">Lean</option>
               <option value="lite">Lite</option>
               <option value="dungeonssimple">Dungeons Simple</option>
               <option value="dungeonsfull">Dungeons Full</option>
@@ -70,7 +70,7 @@ function MysteryModal() {
               <option value="full">Full</option>
               <option value="district">District</option>
               <option value="swapped">Swapped</option>
-              <option value="insanity">Insanity</option> */}
+              {/* <option value="insanity">Insanity</option> */}
             </select>
 
             <label className="font-medium">Boss Shuffle:</label>
