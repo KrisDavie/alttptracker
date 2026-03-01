@@ -61,7 +61,11 @@ export const itemsSlice = createSlice({
     updateMultipleItems: (state, action: PayloadAction<Record<string, number>>) => {
       Object.entries(action.payload).forEach(([itemName, count]) => {
         if (state[itemName].manuallyChanged) {
-          return;
+          if (state[itemName].amount !== count) {
+            return;
+          } else { // If the count is the same as the current count, we can assume that the manually changed value was meant to sync with the new count, so we can reset the manually changed flag
+            state[itemName].manuallyChanged = false;
+          }
         }
         state[itemName].amount = count;
       });

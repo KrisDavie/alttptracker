@@ -1428,7 +1428,7 @@ export class DungeonTraverser {
     const pottery = this.state.settings.pottery;
     const drops = this.state.settings.enemyDrop;
     if (name.endsWith("Pot Key") || name.includes("Hammer Block Key Drop")) {
-      return !(pottery === "keys" || pottery === "cavekeys");
+      return !["keys", "cavekeys", "lottery", "dungeon"].includes(pottery);
     }
     if (name.includes("Key Drop") && !name.includes("Hammer Block Key Drop") && !name.includes("Big Key Drop")) {
       return drops === "none";
@@ -1450,7 +1450,7 @@ export class DungeonTraverser {
       if (!region?.locations) continue;
       for (const locationName of Object.keys(region.locations)) {
         if (locationName.endsWith("Pot Key") || locationName.includes("Hammer Block Key Drop")) {
-          if (pottery === "keys" || pottery === "cavekeys") count++;
+          if (["keys", "cavekeys", "lottery", "dungeon"].includes(pottery)) count++;
         } else if (locationName.includes("Key Drop") && !locationName.includes("Hammer Block Key Drop")) {
           if (drops !== "none") count++;
         }
