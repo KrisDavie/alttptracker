@@ -132,7 +132,9 @@ function createDefaultDungeonState(dungeonId: string): DungeonState {
     map: false,
     compass: false,
     manuallyChanged: {
-      smallKeys: false,
+      smallKeys: 0,
+      maxSmallKeys: 0,
+      bigKey: false,
       bossDefeated: false,
       prize: false,
       prizeCollected: false,
