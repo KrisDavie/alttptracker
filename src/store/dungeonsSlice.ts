@@ -12,10 +12,12 @@ export interface DungeonState {
   map: boolean;
   compass: boolean;
   manuallyChanged: {
-    smallKeys: boolean;
+    smallKeys: number;
+    maxSmallKeys: number;
     bossDefeated: boolean;
     prize: boolean;
     prizeCollected: boolean;
+    bigKey: boolean;
   };
 }
 
@@ -34,10 +36,12 @@ const dungeonInitialState: DungeonState = {
   map: false,
   compass: false,
   manuallyChanged: {
-    smallKeys: false,
+    smallKeys: 0,
+    maxSmallKeys: 0,
     bossDefeated: false,
     prize: false,
     prizeCollected: false,
+    bigKey: false,
   },
 };
 
@@ -62,29 +66,19 @@ export const dungeonsSlice = createSlice({
       state[dungeon].bossDefeated = !state[dungeon].bossDefeated;
       state[dungeon].manuallyChanged.bossDefeated = true;
     },
-    setSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; count: number }>) => {
-      const { dungeon, count } = action.payload;
-      state[dungeon].smallKeys = count;
-      if (state[dungeon].manuallyChanged) {
-        state[dungeon].manuallyChanged.smallKeys = true;
-      }
+    incrementSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
+      const { dungeon, decrement } = action.payload;
+      state[dungeon].manuallyChanged.smallKeys = state[dungeon].manuallyChanged.smallKeys + (decrement ? -1 : 1);
     },
-    incrementSmallKeyCount: (state, action: PayloadAction<{ dungeon: string; maxCount: number; decrement: boolean }>) => {
-      const { dungeon, maxCount, decrement } = action.payload;
-      const currentCount = state[dungeon].smallKeys;
-      
-      if (decrement) {
-        state[dungeon].smallKeys = (currentCount - 1 + (maxCount + 1)) % (maxCount + 1);
-      } else {
-        state[dungeon].smallKeys = (currentCount + 1) % (maxCount + 1);
-      }
-      if (state[dungeon].manuallyChanged) {
-        state[dungeon].manuallyChanged.smallKeys = true;
-      }
+    setMaxSmallKeys: (state, action: PayloadAction<{ dungeon: string; maxSmallKeys: number }>) => {
+      const { dungeon, maxSmallKeys } = action.payload;
+      console.log("Setting max small keys for", dungeon, "to", maxSmallKeys, "was", state[dungeon].manuallyChanged.maxSmallKeys);
+      state[dungeon].manuallyChanged.maxSmallKeys = maxSmallKeys;
     },
     setBigKey: (state, action: PayloadAction<{ dungeon: string; hasBigKey: boolean }>) => {
       const { dungeon, hasBigKey } = action.payload;
       state[dungeon].bigKey = hasBigKey;
+      state[dungeon].manuallyChanged.bigKey = true;
     },
     togglePrizeCollected: (state, action: PayloadAction<{ dungeon: string }>) => {
       const { dungeon } = action.payload;
@@ -109,12 +103,20 @@ export const dungeonsSlice = createSlice({
       const { dungeon, newState } = action.payload;
       const current = state[dungeon];
       
-      // Never overwrite manually changed values
       const filteredState = { ...newState };
-      if (current.manuallyChanged.smallKeys) delete filteredState.smallKeys;
-      if (current.manuallyChanged.bossDefeated) delete filteredState.bossDefeated;
-      if (current.manuallyChanged.prize) delete filteredState.prize;
-      if (current.manuallyChanged.prizeCollected) delete filteredState.prizeCollected;
+
+      const fields = ["bossDefeated", "bigKey", "prizeCollected", "prize"] as const;
+      fields.forEach((field) => {
+        if (newState[field] !== undefined) {
+          const isManual = current.manuallyChanged[field as keyof typeof current.manuallyChanged];
+
+          if (newState[field] === current[field]) {
+            current.manuallyChanged[field] = false;
+          } else if (isManual) {
+            delete filteredState[field];
+          }
+        }
+      });
 
       if (filteredState.map && (!current.manuallyChanged.prize || current.prize === "unknown")) {
         filteredState.prize = "map"
@@ -125,5 +127,5 @@ export const dungeonsSlice = createSlice({
   },
 });
 
-export const { setDungeonCollectedCount, toggleDungeonBoss, setSmallKeyCount, incrementSmallKeyCount, setBigKey, incrementPrizeCount, togglePrizeCollected, updateDungeonState } = dungeonsSlice.actions;
+export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setBigKey, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys } = dungeonsSlice.actions;
 export default dungeonsSlice.reducer;

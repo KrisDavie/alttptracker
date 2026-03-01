@@ -21,7 +21,7 @@ import type { SettingsState } from "@/store/settingsSlice";
 import { baseLocationsData } from "@/data/locationsData";
 import { DungeonsData } from "@/data/dungeonData";
 
-export type LocationCategory = "chest" | "keyDrop" | "potKey" | "pot" | "enemy" | "shop" | "prize" | "event";
+export type LocationCategory = "chest" | "keyDrop" | "potKey" | "pot" | "enemy" | "shop" | "prize" | "bonk" | "event";
 
 export interface LocationInfo {
   name: string;
@@ -45,6 +45,8 @@ function categorizeLocation(name: string): LocationCategory | null {
   if (name.includes("Enemy #")) return "enemy";
 
   if (name.includes(" - Prize")) return "prize";
+
+  if (name === 'Cold Fairy Statue') return 'bonk';
 
   // Shop locations (shopsanity)
   if (isShopLocation(name)) return "shop";
@@ -74,6 +76,10 @@ function categorizeLocation(name: string): LocationCategory | null {
     name === "Flute Activation" ||
     name === "Kiki" ||
     name === "Pyramid Crack" ||
+    name === "Lost Old Man" ||
+    name === "Missing Smith" ||
+    name === "Big Bomb" ||
+    name === "Archery Game Prize" ||
     // Dungeon mechanic/event locations
     name === "Skull Star Tile" ||
     name === "Revealing Light" ||
@@ -93,7 +99,9 @@ function categorizeLocation(name: string): LocationCategory | null {
  */
 function isShopLocation(name: string): boolean {
   const shopPatterns = [
+    "Capacity Upgrade - ",
     "Potion Shop - ",
+    "Red Shield Shop - ",
     "Dark Potion Shop - ",
     "Dark Death Mountain Shop - ",
     "Lake Hylia Shop - ",
@@ -395,6 +403,9 @@ function isLocationActive(loc: LocationInfo, settings: SettingsState): boolean {
 
     case "enemy":
       return settings.enemyDrop === "underworld";
+
+    case "bonk":
+      return settings.bonkShuffle;
 
     case "shop":
       return false; // TODO: shopsanity support

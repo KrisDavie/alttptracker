@@ -846,7 +846,7 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
         const dungeonData = DungeonsData[dungeonId]?.totalLocations;
         const hasChestKeys = (dungeonData?.smallkeys ?? 0) > 0;
         // TODO: Extract keys, cavekeys - use POT_KEY_SHUFFLE_MODES
-        const hasPotteryKeys = ["keys", "cavekeys"].includes(this.state.settings.pottery) && (dungeonData?.keypots ?? 0) > 0;
+        const hasPotteryKeys = ["keys", "cavekeys", "lottery", "dungeon"].includes(this.state.settings.pottery) && (dungeonData?.keypots ?? 0) > 0;
         const hasDropKeys = this.state.settings.enemyDrop !== "none" && (dungeonData?.keydrops ?? 0) > 0;
         if (!hasChestKeys && !hasPotteryKeys && !hasDropKeys) {
           result.set(dungeonId, "available");
@@ -887,7 +887,7 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
           // Key Drop/Pot Key: when their respective settings are off, these locations
           // have fixed keys and aren't part of the shuffle pool (applies to both BK and SK).
           if (locationName.includes("Key Drop") && this.state.settings.enemyDrop === "none") continue;
-          if (locationName.endsWith("Pot Key") && !["keys", "cavekeys"].includes(this.state.settings.pottery)) continue;
+          if (locationName.endsWith("Pot Key") && !["keys", "cavekeys", "lottery", "dungeon"].includes(this.state.settings.pottery)) continue;
 
           hasAnyNonGatedLocation = true;
           const status = locationStatuses[locationName];
