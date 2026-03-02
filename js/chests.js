@@ -1860,10 +1860,10 @@
             !items.moonpearl ||
             !items.hammer ||
             items.glove !== 2 ||
-            (!items.somaria && flags.doorshuffle === "N") ||
+            (!items.somaria && flags.doorshuffle !== "C") ||
             !items.mirror ||
-            (!items.bomb && flags.doorshuffle === "N") ||
-            (flags.wildkeys && flags.doorshuffle === "N" && items.smallkey9 <= 1 && flags.gametype != "R")
+            (!items.bomb && flags.doorshuffle !== "C") ||
+            (flags.wildkeys && flags.doorshuffle !== "C" && items.smallkey9 <= 1 && flags.gametype != "R")
           )
             return "unavailable";
           var medallion = flags.glitches === "N" ? medallionCheck(1) : "available";
@@ -1910,7 +1910,7 @@
       };
       // HC
       window.chests[98].is_available = function () {
-        if (flags.doorshuffle === "N") {
+        if (flags.doorshuffle !== "C") {
           const subdungeon = ["Hyrule Castle - Boomerang Chest", "Hyrule Castle - Map Chest", "Hyrule Castle - Zelda's Chest"];
           const dungeonId = 11;
           var checksAlways = 0;
@@ -1940,7 +1940,7 @@
       };
       // Dark Cross
       window.chests[104].is_available = function () {
-        if (flags.doorshuffle === "N") {
+        if (flags.doorshuffle !== "C") {
           const dungeonId = 11;
           const requirements = dungeonLogic["Hyrule Castle"]["Sewers - Dark Cross"];
           if (inLogic(dungeonId, requirements["always"])) {
@@ -1957,7 +1957,7 @@
       };
       // CT1
       window.chests[106].is_available = function () {
-        if (flags.doorshuffle === "N") {
+        if (flags.doorshuffle !== "C") {
           const dungeonId = 12;
           const requirements = dungeonLogic["Castle Tower"]["Castle Tower - Room 03"];
           if (inLogic(dungeonId, requirements["always"])) {
@@ -1977,7 +1977,7 @@
       };
       // CT2
       window.chests[107].is_available = function () {
-        if (flags.doorshuffle === "N") {
+        if (flags.doorshuffle !== "C") {
           const dungeonId = 12;
           const requirements = dungeonLogic["Castle Tower"]["Castle Tower - Dark Maze"];
           if (inLogic(dungeonId, requirements["always"])) {

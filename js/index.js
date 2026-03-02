@@ -434,6 +434,7 @@ function loadnamedpreset(name) {
       loadcabookeypreset();
       break;
     case "cabookeydrop":
+    case "league/cabookeydrop":
       loadcabookeydroppreset();
       break;
     case "casualboots":
@@ -498,6 +499,7 @@ function loadnamedpreset(name) {
       break;
     case "enemizerkeydrop":
     case "mfns./open_keydrop_logenemizer":
+    case "ladder/open_enemizer_starting_mc":
       loadenemizerkeydroppreset();
       break;
     case "ganonhunt":
@@ -605,6 +607,9 @@ function loadnamedpreset(name) {
       break;
     case "standardboots":
       loadstandardbootspreset();
+      break;
+    case "league/stdinvkeys":
+      loadstanvertedkeyspreset();
       break;
     case "supercrosskeys":
       loadsupercrosskeyspreset();

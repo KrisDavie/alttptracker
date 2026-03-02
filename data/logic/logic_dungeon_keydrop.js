@@ -121,10 +121,10 @@
       },
       "Castle Tower - Dark Maze": {
         always: {
-          allOf: ["canBreach|Castle Tower", "keys|1", "canKillMostEnemies", "canDarkRoomNavigateBlind"],
+          allOf: ["canBreach|Castle Tower", "keys|1", "canKillOrExplodeMostEnemies", "canDarkRoomNavigateBlind"],
         },
         logical: {
-          allOf: ["canReach|Castle Tower", "canDarkRoomNavigate"],
+          allOf: ["canReach|Castle Tower", "canDarkRoomNavigate", "canKillMostEnemies"],
         },
       },
       "Castle Tower - Room 03": {
