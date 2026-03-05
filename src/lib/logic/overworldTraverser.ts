@@ -43,6 +43,7 @@ import { DungeonTraverser } from "./dungeonTraverser";
 import { createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } from "./logicHelpers";
 import { DungeonsData } from "@/data/dungeonData";
 import { entranceLocations } from "@/data/locationsData";
+import { whirlpoolRegistry, parallelLinks } from "@/data/logic/owData";
 
 /**
  * Build a lookup: exit key name → [{ to: region, type: exit type }]
@@ -170,12 +171,62 @@ export class OverworldTraverser {
   // Maps entrance name → its correct overworld parent region (for entrance reachability)
   private entranceToParentRegion: Map<string, string> = new Map();
 
+  // Whether the world state counts as "inverted" (player starts in DW)
+  private readonly isInverted: boolean;
+  // --- OWR (Overworld Randomizer) infrastructure ---
+  // Whether any OWR setting is non-vanilla
+  private isOwrActive: boolean = false;
+  // Region name → owid (overworld tile ID)
+  private regionToOwid: Map<string, number> = new Map();
+  // Set of exit names that cross tile boundaries (different owid between source and dest)
+  private tileBoundaryExits: Set<string> = new Set();
+  // Set of whirlpool exit names
+  private whirlpoolExitNames: Set<string> = new Set(whirlpoolRegistry);
+  // Maps each exit name → the region that defines it (for edge link resolution)
+  private exitToSourceRegion: Map<string, string> = new Map();
+  // Flute exits: exit name → spot index (built from scanning "Flute Sky" region)
+  private fluteSpotExits: Map<string, number> = new Map();
+  // Tile Flip: pre-computed remap for tile-boundary exits crossing flip boundaries
+  // Maps exit name → redirected destination region name
+  private tileFlipRemaps: Map<string, string> = new Map();
+  // Interior region name → owid of the overworld region that has it in its entrances array
+  // Used to resolve effectiveWorldState for Menu S&Q exits (which target cave interiors)
+  private interiorToOwid: Map<string, number> = new Map();
+
   constructor(state: GameState, logicSet: LogicSet, protection: "partial" | "dangerous" = "partial") {
+    // Standverted: inverted world state with automatic tile flips for Link's House,
+    // Hyrule Castle, and Sanctuary tiles. Apply the flips before any other logic.
+    if (state.settings.worldState === "standverted") {
+      const standvertedFlips: Record<number, "light" | "dark"> = {
+        19: "dark",  // Sanctuary - Home
+        83: "light", 
+        20: "dark",  // Graveyard
+        84: "light", 
+        26: "dark", // Forgotten forest
+        90: "light",
+        27: "dark", // Hyrule Castle
+        91: "light",  
+        43: "dark", // Central bonk rocks
+        107: "light", 
+        44: "dark", // Link's House - Home
+        108: "light", 
+      };
+      state = {
+        ...state,
+        settings: { ...state.settings, owMixed: true },
+        overworld: {
+          ...state.overworld,
+          tileWorlds: { ...standvertedFlips, ...state.overworld.tileWorlds },
+        },
+      };
+    }
+
     this.state = state;
     this.logicSet = logicSet;
     this.regions = logicSet.regions as Record<string, RegionLogic>;
     this.requirementEvaluator = new RequirementEvaluator(state);
     this.protection = protection;
+    this.isInverted = ["inverted", "inverted_1", "standverted"].includes(state.settings.worldState);
 
     // In partial mode, create an all-items evaluator for discovering regions
     if (protection === "partial") {
@@ -296,23 +347,234 @@ export class OverworldTraverser {
         }
       }
     }
+
+    // --- OWR infrastructure initialization ---
+    this.isOwrActive = state.settings.owMixed ||
+      state.settings.owLayout !== "vanilla" ||
+      state.settings.owCrossed !== "none" ||
+      state.settings.owWhirlpool ||
+      state.settings.owFluteShuffle !== "vanilla";
+
+    if (this.isOwrActive) {
+      // Build regionToOwid map and interiorToOwid reverse map
+      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
+        if (regionLogic.owid != null) {
+          this.regionToOwid.set(regionName, regionLogic.owid);
+          // Map entrances to this tile's owid (e.g. "Links House" → owid 44)
+          if (regionLogic.entrances) {
+            for (const entrance of regionLogic.entrances) {
+              this.interiorToOwid.set(entrance, regionLogic.owid);
+            }
+          }
+        }
+      }
+
+      // Build exitToSourceRegion and identify tile-boundary exits
+      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
+        if (!regionLogic.exits) continue;
+        for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+          if (!exit?.to) continue;
+          this.exitToSourceRegion.set(exitName, regionName);
+
+          // Tile-boundary exit: different owid between source and dest, overworld type
+          const sourceOwid = regionLogic.owid;
+          const destRegionLogic = this.regions[exit.to];
+          const destOwid = destRegionLogic?.owid;
+          if (sourceOwid != null && destOwid != null && sourceOwid !== destOwid &&
+            (exit.type === "LightWorld" || exit.type === "DarkWorld")) {
+            this.tileBoundaryExits.add(exitName);
+          }
+        }
+      }
+
+      // Build flute spot exit index from "Flute Sky" region
+      const fluteRegion = this.regions["Flute Sky"];
+      if (fluteRegion?.exits) {
+        let index = 1; // 1-based to match fluteLinks keys
+        for (const exitName of Object.keys(fluteRegion.exits)) {
+          this.fluteSpotExits.set(exitName, index++);
+        }
+      }
+
+      // Build tile-flip boundary remaps (Mixed OWR).
+      // When tiles are flipped, the terrain at that grid position changes to the
+      // parallel tile's terrain. Tile-boundary exits crossing a flip boundary
+      // need to be redirected to the parallel tile's regions.
+      if (state.settings.owMixed && Object.keys(state.overworld.tileWorlds).length > 0) {
+        for (const exitName of this.tileBoundaryExits) {
+          const sourceRegion = this.exitToSourceRegion.get(exitName);
+          if (!sourceRegion) continue;
+          const sourceOwid = this.regionToOwid.get(sourceRegion);
+
+          const sourceRegionLogic = this.regions[sourceRegion];
+          const exitDef = sourceRegionLogic?.exits?.[exitName];
+          if (!exitDef?.to) continue;
+          const destOwid = this.regionToOwid.get(exitDef.to);
+
+          if (sourceOwid == null || destOwid == null) continue;
+
+          const sourceFlipped = this.getEffectiveWorld(sourceOwid) !== this.getVanillaWorld(sourceOwid);
+          const destFlipped = this.getEffectiveWorld(destOwid) !== this.getVanillaWorld(destOwid);
+
+          // Only remap if crossing a flip boundary (one side flipped, the other not)
+          if (sourceFlipped !== destFlipped) {
+            const parallelExit = (parallelLinks as Record<string, string>)[exitName];
+            if (parallelExit) {
+              // The parallel exit's destination is the region we should redirect to
+              const parallelSource = this.exitToSourceRegion.get(parallelExit);
+              if (parallelSource) {
+                const parallelExitDef = this.regions[parallelSource]?.exits?.[parallelExit];
+                if (parallelExitDef?.to) {
+                  this.tileFlipRemaps.set(exitName, parallelExitDef.to);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // --- OWR helper methods ---
+
+  /**
+   * Get the effective world of an overworld tile, accounting for tile flips.
+   * Vanilla: owid < 64 or owid >= 128 → "light", 64-127 → "dark".
+   * Tile flip overrides come from state.overworld.tileWorlds.
+   */
+  private getEffectiveWorld(owid: number): "light" | "dark" {
+    const override = this.state.overworld.tileWorlds[owid];
+    if (override) return override;
+    return (owid < 64 || owid >= 128) ? "light" : "dark";
   }
 
   /**
-   * Resolve the effective destination for an exit, accounting for entrance remaps.
+   * Get the vanilla world of an overworld tile (ignoring flips).
+   */
+  private getVanillaWorld(owid: number): "light" | "dark" {
+    return (owid < 64 || owid >= 128) ? "light" : "dark";
+  }
+
+  /**
+   * Determine if a tile-boundary edge crosses worlds.
+   * - Unrestricted: reads from state.overworld.crossedEdges
+   * - Grouped/Polar: computed from effective world mismatch between source and dest tiles
+   */
+  private isEdgeCrossed(exitName: string, sourceOwid?: number, destOwid?: number): boolean {
+    const crossed = this.state.settings.owCrossed;
+    if (crossed === "none") return false;
+
+    if (crossed === "unrestricted") {
+      return !!this.state.overworld.crossedEdges[exitName];
+    }
+
+    // Grouped and Polar: edge is crossed if source and dest tiles are in
+    // different effective worlds (tile flip causes world-crossing at boundaries)
+    if ((crossed === "grouped" || crossed === "polar") && sourceOwid != null && destOwid != null) {
+      return this.getEffectiveWorld(sourceOwid) !== this.getEffectiveWorld(destOwid);
+    }
+
+    return false;
+  }
+
+  /**
+   * Get the effective world state string for requirement evaluation on a region.
+   * When a tile is flipped (OWR Mixed), exits from that tile should be evaluated
+   * using the opposite world state (e.g., mirror becomes available on flipped-to-DW tiles).
+   * Returns undefined when no override is needed.
+   */
+  private getEffectiveWorldState(regionName: string, destRegionName?: string): string | undefined {
+    if (!this.isOwrActive || !this.state.settings.owMixed) return undefined;
+
+    let owid = this.regionToOwid.get(regionName);
+
+    // For regions without an owid (e.g. Menu), fall back to the destination's
+    // overworld tile. This lets S&Q exits evaluate with the correct world state
+    // when the destination tile is flipped (e.g. standverted).
+    if (owid == null && destRegionName) {
+      owid = this.interiorToOwid.get(destRegionName) ?? this.regionToOwid.get(destRegionName);
+    }
+
+    if (owid == null) return undefined;
+
+    const effectiveWorld = this.getEffectiveWorld(owid);
+    const vanillaWorld = this.getVanillaWorld(owid);
+
+    if (effectiveWorld !== vanillaWorld) {
+      // Tile is flipped — use opposite world state for requirements
+      const ws = this.state.settings.worldState;
+      if (ws === "open" || ws === "standard") return "inverted";
+      if (ws === "inverted" || ws === "standverted") return "open";
+      if (ws === "inverted_1") return "open";
+    }
+    return undefined;
+  }
+
+  /**
+   * Resolve the effective destination for an exit, accounting for entrance remaps
+   * and OWR remapping (layout shuffle, whirlpool shuffle, flute shuffle).
    * Returns null if the exit is shuffled but unlinked (should be blocked).
    * Returns the original exit if no remap applies.
    */
   private resolveExit(exitName: string, exit: ExitLogic[string]): ExitLogic[string] | null {
-    if (!this.entranceRemaps.has(exitName)) {
-      return exit; // Not a shuffled entrance, use as-is
+    // Entrance shuffle remaps take priority
+    if (this.entranceRemaps.has(exitName)) {
+      const remap = this.entranceRemaps.get(exitName);
+      if (remap === null || remap === undefined) {
+        return null; // Shuffled but unlinked — block this exit
+      }
+      // Return a modified exit with the remapped destination
+      return { ...exit, to: remap.to, type: remap.type };
     }
-    const remap = this.entranceRemaps.get(exitName);
-    if (remap === null || remap === undefined) {
-      return null; // Shuffled but unlinked — block this exit
+
+    if (!this.isOwrActive) return exit;
+
+    // Tile Flip (Mixed): remap tile-boundary exits crossing flip boundaries
+    if (this.tileFlipRemaps.has(exitName)) {
+      const newDest = this.tileFlipRemaps.get(exitName)!;
+      return { ...exit, to: newDest };
     }
-    // Return a modified exit with the remapped destination
-    return { ...exit, to: remap.to, type: remap.type };
+
+    // Layout Shuffle: remap tile-boundary exits via edgeLinks
+    if (this.state.settings.owLayout !== "vanilla" && this.tileBoundaryExits.has(exitName)) {
+      const destExitName = this.state.overworld.edgeLinks[exitName];
+      if (destExitName === undefined) return exit; // Not in edgeLinks → use vanilla
+      if (destExitName === null) return null; // Explicitly unknown → blocked (unavailable)
+
+      // Destination is the region that DEFINES the destination exit (the tile we arrive at)
+      const destRegion = this.exitToSourceRegion.get(destExitName);
+      if (!destRegion) return null;
+
+      const destRegionLogic = this.regions[destRegion];
+      return { ...exit, to: destRegion, type: destRegionLogic?.type ?? exit.type };
+    }
+
+    // Whirlpool Shuffle: remap whirlpool exits via whirlpoolLinks
+    if (this.state.settings.owWhirlpool && this.whirlpoolExitNames.has(exitName)) {
+      const destWhirlpool = this.state.overworld.whirlpoolLinks[exitName];
+      if (destWhirlpool === undefined) return exit; // Not in whirlpoolLinks → use vanilla
+      if (destWhirlpool === null) return null; // Explicitly unknown → blocked
+
+      const destRegion = this.exitToSourceRegion.get(destWhirlpool);
+      if (!destRegion) return null;
+
+      const destRegionLogic = this.regions[destRegion];
+      return { ...exit, to: destRegion, type: destRegionLogic?.type ?? exit.type };
+    }
+
+    // Flute Shuffle: remap flute exits via fluteLinks
+    if (this.state.settings.owFluteShuffle !== "vanilla" && this.fluteSpotExits.has(exitName)) {
+      const spotIndex = this.fluteSpotExits.get(exitName)!;
+      const destRegion = this.state.overworld.fluteLinks[spotIndex];
+      if (destRegion === undefined) return exit; // Not in fluteLinks → use vanilla
+      if (destRegion === null) return null; // Explicitly unknown → blocked
+
+      const destRegionLogic = this.regions[destRegion];
+      if (!destRegionLogic) return null;
+      return { ...exit, to: destRegion, type: destRegionLogic.type ?? exit.type };
+    }
+
+    return exit; // No OWR remap applies
   }
 
   public calculateAll() {
@@ -428,12 +690,38 @@ export class OverworldTraverser {
     };
   }
 
-  private computeBunnyStateForExit(currentBunnyState: boolean, exitType: string): boolean {
+  private computeBunnyStateForExit(
+    currentBunnyState: boolean,
+    exitType: string,
+    exitName?: string,
+    destRegionName?: string,
+  ): boolean {
     if (this.state.items.moonpearl.amount > 0) return false; //Never a bunny if we have moon pearl
 
-    const isInverted = ["inverted", "inverted_1"].includes(this.state.settings.worldState);
+    const isInverted = this.isInverted;
 
-    // We only change bunny state if we're transitioning to the overworld
+    // OWR: determine bunny state from effective world of destination tile
+    if (this.isOwrActive && destRegionName) {
+      const destOwid = this.regionToOwid.get(destRegionName);
+      if (destOwid != null) {
+        let effectiveWorld = this.getEffectiveWorld(destOwid);
+
+        // Crossed: edge crossing flips the effective world
+        if (this.state.settings.owCrossed !== "none" && exitName && this.tileBoundaryExits.has(exitName)) {
+          // Find source owid from the exit's source region
+          const sourceRegion = this.exitToSourceRegion.get(exitName);
+          const sourceOwid = sourceRegion ? this.regionToOwid.get(sourceRegion) : undefined;
+          if (this.isEdgeCrossed(exitName, sourceOwid, destOwid)) {
+            effectiveWorld = effectiveWorld === "light" ? "dark" : "light";
+          }
+        }
+
+        if (effectiveWorld === "dark") return !isInverted;
+        if (effectiveWorld === "light") return isInverted;
+      }
+    }
+
+    // Vanilla logic: bunny state determined by exit type
     if (exitType === "LightWorld") return isInverted;
     if (exitType === "DarkWorld") return !isInverted;
 
@@ -441,8 +729,8 @@ export class OverworldTraverser {
   }
 
   private updateIfBetter(regionName: string, newStatus: LogicStatus, newBunnyState: boolean, ctx: OverworldTraverserContext): void {
-    const current = ctx.reachable.get(regionName)!;
-    if (!current) return; // Can't update non-existant region, shouldn't happen though
+    const current = ctx.reachable.get(regionName);
+    if (!current) return; // Can't update non-existent region, shouldn't happen though
 
     if (current.bunnyState && !newBunnyState) {
       ctx.reachable.set(regionName, {
@@ -460,34 +748,42 @@ export class OverworldTraverser {
     }
   }
 
-  private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext): LogicStatus {
+  /**
+   * Evaluate exit requirements. When `forDiscovery` is true, uses the all-items
+   * evaluator (partial mode) to discover portals reachable with full inventory.
+   */
+  private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext, forDiscovery = false): LogicStatus {
     const evalCtx: EvaluationContext = {
       regionName: fromRegion,
       canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
+      effectiveWorldState: this.getEffectiveWorldState(fromRegion, exit.to),
     };
 
-    return this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
-  }
-
-  /** Evaluate exit requirements using all-items evaluator for portal discovery in partial mode */
-  private evaluateExitRequirementsForDiscovery(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext): LogicStatus {
-    const evalCtx: EvaluationContext = {
-      regionName: fromRegion,
-      canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
-    };
-
-    // In partial mode, use all-items evaluator to discover more portals
-    const evaluator = this.allItemsEvaluator ?? this.requirementEvaluator;
+    const evaluator = forDiscovery ? (this.allItemsEvaluator ?? this.requirementEvaluator) : this.requirementEvaluator;
     return evaluator.evaluateWorldLogic(exit.requirements, evalCtx);
   }
 
-private processExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): void {    if (!exit?.to) return;
+  private processExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): void {
+    if (!exit?.to) return;
+
+    // OWR: Block flute exits to tiles whose effective world prevents flute usage.
+    // In Open mode, can only flute to effectively-LW tiles.
+    // In Inverted mode, can only flute to effectively-DW tiles.
+    if (this.isOwrActive && this.fluteSpotExits.has(exitName)) {
+      const destOwid = this.regionToOwid.get(exit.to);
+      if (destOwid != null) {
+        const effectiveWorld = this.getEffectiveWorld(destOwid);
+        if ((!this.isInverted && effectiveWorld === "dark") || (this.isInverted && effectiveWorld === "light")) {
+          return; // Can't flute to this tile — wrong effective world
+        }
+      }
+    }
 
     const currentReachability = ctx.reachable.get(exit.to);
 
     // For dungeon exits in partial mode, use all-items evaluator to discover portals
     // that would be reachable with full inventory
-    const exitStatus = exit.type === "Dungeon" && this.allItemsEvaluator ? this.evaluateExitRequirementsForDiscovery(exit, fromRegion, ctx) : this.evaluateExitRequirements(exit, fromRegion, ctx);
+    const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx, exit.type === "Dungeon" && !!this.allItemsEvaluator);
 
     if (exitStatus === "unavailable") {
       ctx.blockedExits.push({ exitName, exit, from: fromRegion });
@@ -497,10 +793,10 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
     if (exit.type === "Dungeon") {
       const dungeonId = this.getDungeonIdFromPortal(exit.to);
       if (dungeonId) {
-        const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
+        const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type, exitName, exit.to);
         // For dungeon portals in partial mode, compute actual status with real
         // inventory (the exitStatus came from the all-items evaluator for discovery).
-        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx) : exitStatus;
+        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx, false) : exitStatus;
         const newStatus = minimumStatus(fromRegionReachability.status, actualExitStatus === "unavailable" ? "unavailable" : actualExitStatus);
 
         // Get the key cost to reach this overworld region (if it was reached via a dungeon exit)
@@ -532,7 +828,7 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
       return; // We process dungeon entrances separately
     }
 
-    const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type);
+    const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type, exitName, exit.to);
     const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
     if (!currentReachability) {
@@ -638,7 +934,7 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
         }
 
         if (!ctx.reachable.has(resolvedTo)) {
-          const newBunny = this.computeBunnyStateForExit(exitInfo.bunnyState, resolvedType);
+          const newBunny = this.computeBunnyStateForExit(exitInfo.bunnyState, resolvedType, exitName, resolvedTo);
           ctx.reachable.set(resolvedTo, {
             status: exitInfo.status,
             bunnyState: newBunny,
@@ -702,6 +998,7 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
           crystalStates: regionReachability.crystalStates,
           isBunny: regionReachability.bunnyState,
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
+          effectiveWorldState: this.getEffectiveWorldState(regionName),
         };
 
         const locationStatus = this.requirementEvaluator.evaluateWorldLogic(locationLogic.requirements, evalCtx);
@@ -782,6 +1079,7 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
         const evalCtx: EvaluationContext = {
           regionName: parentRegion,
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
+          effectiveWorldState: this.getEffectiveWorldState(parentRegion, exitDef.to),
         };
         const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exitDef.requirements, evalCtx);
         entranceStatuses[entranceName] = minimumStatus(regionReachability.status, exitStatus);
@@ -939,12 +1237,13 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
         crystalStates: fromRegionReachability.crystalStates,
         isBunny: fromRegionReachability.bunnyState,
         canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
+        effectiveWorldState: this.getEffectiveWorldState(from, resolvedExit.to),
       };
 
       const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
       if (exitStatus !== "unavailable") {
-        const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, resolvedExit.type);
+        const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, resolvedExit.type, exitName, resolvedExit.to);
         const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
         ctx.reachable.set(resolvedExit.to, {
@@ -988,12 +1287,13 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
         const evalCtx: EvaluationContext = {
           regionName: current,
           canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
+          effectiveWorldState: this.getEffectiveWorldState(current, resolvedExit.to),
         };
-        const status = this.requirementEvaluator.evaluateWorldLogic(resolvedExit.requirements, evalCtx);
+        const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
         if (status !== "unavailable" && !actuallyReachable.has(resolvedExit.to)) {
           const currentBunny = actuallyReachable.get(current) ?? false;
-          const newBunny = this.computeBunnyStateForExit(currentBunny, resolvedExit.type ?? "LightWorld");
+          const newBunny = this.computeBunnyStateForExit(currentBunny, resolvedExit.type ?? "LightWorld", exitName, resolvedExit.to);
           actuallyReachable.set(resolvedExit.to, newBunny);
           actualQueue.push(resolvedExit.to);
         }
@@ -1023,8 +1323,9 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
         const evalCtx: EvaluationContext = {
           regionName: current,
           canReachRegion: (name: string) => (visited.has(name) ? "available" : "unavailable"),
+          effectiveWorldState: this.getEffectiveWorldState(current, resolvedExit.to),
         };
-        const status = this.allItemsEvaluator.evaluateWorldLogic(resolvedExit.requirements, evalCtx);
+        const status = this.allItemsEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
         if (status === "unavailable") continue;
 
@@ -1042,14 +1343,15 @@ private processExit(exitName: string, exit: ExitLogic[string], fromRegion: strin
                 const actualEvalCtx: EvaluationContext = {
                   regionName: current,
                   canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
+                  effectiveWorldState: this.getEffectiveWorldState(current, resolvedExit.to),
                 };
-                const actualStatus = this.requirementEvaluator.evaluateWorldLogic(resolvedExit.requirements, actualEvalCtx);
+                const actualStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, actualEvalCtx);
                 entryStatus = actualStatus === "unavailable" ? "unavailable" : actualStatus;
               }
 
               // Compute bunny state based on the region leading to the portal
               const portalBunny = actuallyReachable.has(current)
-                ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, resolvedExit.type ?? "Dungeon")
+                ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, resolvedExit.type ?? "Dungeon", exitName, resolvedExit.to)
                 : false;
 
               ctx.allDiscoveredPortals.get(dungeonId)!.set(resolvedExit.to, {

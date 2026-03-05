@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface SettingsState {
   // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
-  worldState: "open" | "standard" | "inverted" | "inverted_1";
+  worldState: "open" | "standard" | "inverted" | "inverted_1" | "standverted";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
   wildMaps: boolean;
@@ -18,6 +18,16 @@ export interface SettingsState {
   itemPool: "normal" | "hard" | "expert";
   activatedFlute: boolean;
   bonkShuffle: boolean;
+
+  // OW Stuff
+  owLayout: "vanilla" | "grid" | "wild" 
+  owCrossed: "none" | "grouped" | "polar" | "unrestricted" 
+  owMixed: boolean 
+  owParallel: boolean
+  owTerrain: boolean
+  owKeepSimilar: boolean
+  owWhirlpool: boolean
+  owFluteShuffle: "vanilla" | "balanced" | "random"
 
   // UI settings
   autotracking: boolean;
@@ -42,6 +52,18 @@ const initialState: SettingsState = {
   itemPool: "normal",
   activatedFlute: false,
   bonkShuffle: false,
+
+  // OW Stuff
+  owLayout: "vanilla",
+  owCrossed: "none",
+  owMixed: false,
+  owParallel: false,
+  owTerrain: false,
+  owKeepSimilar: true,
+  owWhirlpool: false,
+  owFluteShuffle: "vanilla",
+
+  // UI settings
   autotracking: true,
   includeDungeonItemsInCounter: false,
   mapMode: "normal",
@@ -52,7 +74,9 @@ export const settingsSlice = createSlice({
   initialState,
   reducers: {
     setSettings: (state, action: { payload: Partial<SettingsState> }) => {
-      return { ...state, ...action.payload };
+      const newState = { ...state, ...action.payload };
+      return newState;
+
     },
     setWildSmallKeys: (state, action: { payload: "inDungeon" | "wild" | "universal" }) => {
       state.wildSmallKeys = action.payload;

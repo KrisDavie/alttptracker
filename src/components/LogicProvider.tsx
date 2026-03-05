@@ -16,6 +16,7 @@ function LogicProvider({ children }: LogicProviderProps) {
   const dungeons = useSelector((state: RootState) => state.dungeons);
   const entrances = useSelector((state: RootState) => state.entrances);
   const locationsChecks = useSelector((state: RootState) => state.checks.locationsChecks);
+  const overworld = useSelector((state: RootState) => state.overworld);
 
   useEffect(() => {
     // Build checks record with just { checked } for the logic engine
@@ -23,14 +24,14 @@ function LogicProvider({ children }: LogicProviderProps) {
     for (const [name, status] of Object.entries(locationsChecks)) {
       checks[name] = { checked: status.checked };
     }
-    const snapshot = { items, settings, dungeons, entrances, checks };
+    const snapshot = { items, settings, dungeons, entrances, checks, overworld };
     const logicSet = getLogicSet(settings.logicMode);
 
     const traverser = new OverworldTraverser(snapshot, logicSet);
     const newResults = traverser.calculateAll();
 
     dispatch(updateLogicStatuses(newResults));
-  }, [items, settings, dungeons, entrances, locationsChecks, dispatch]); 
+  }, [items, settings, dungeons, entrances, locationsChecks, overworld, dispatch]); 
 
   return <>{children}</>;
 }

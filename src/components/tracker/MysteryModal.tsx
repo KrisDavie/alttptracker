@@ -52,7 +52,7 @@ function MysteryModal() {
             <label className="font-medium">World State:</label>
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.worldState} onChange={(e) => handleInputChange("worldState", e.target.value)}>
               <option value="open">Open</option>
-              {/* <option value="standard">Standard</option> */}
+              <option value="standverted">Standverted</option>
               <option value="inverted_1">Inverted 1.0</option>
               <option value="inverted">Inverted 2.0</option>
             </select>

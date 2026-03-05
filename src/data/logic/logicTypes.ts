@@ -1,6 +1,7 @@
 import type { DungeonsState } from "@/store/dungeonsSlice";
 import type { EntrancesState } from "@/store/entrancesSlice";
 import type { ItemsState } from "@/store/itemsSlice";
+import type { OverworldState } from "@/store/overworldSlice";
 import type { SettingsState } from "@/store/settingsSlice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -64,6 +65,7 @@ export interface GameState {
   settings: SettingsState;
   dungeons: DungeonsState;
   entrances: EntrancesState;
+  overworld: OverworldState;
   checks?: Record<string, { checked: boolean }>;
 }
 

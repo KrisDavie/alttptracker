@@ -7,6 +7,7 @@ import settingsReducer from './settingsSlice';
 import entrancesReducer from './entrancesSlice';
 import autotrackerReducer from './autotrackerSlice';
 import trackerReducer from './trackerSlice';
+import overworldReducer from './overworldSlice';
 
 // const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances'];
 const rememberedKeys: string[] = [];
@@ -23,6 +24,7 @@ export const store = configureStore({
     settings: settingsReducer,
     entrances: entrancesReducer,
     autotracker: autotrackerReducer,
+    overworld: overworldReducer,
   }),
   enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(
     rememberEnhancer(
