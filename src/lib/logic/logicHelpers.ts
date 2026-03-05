@@ -62,14 +62,16 @@ export function createAllItemsState(baseState: GameState): GameState {
   };
 }
 
-export function getLogicStateForWorld(state: GameState, worldLogic: WorldLogic ) {
-  const ws = state.settings.worldState;
+export function getLogicStateForWorld(state: GameState, worldLogic: WorldLogic, effectiveWorldState?: string) {
+  const ws = effectiveWorldState ?? state.settings.worldState;
   let mode: "Open" | "Inverted" | "Inverted_1" | "Standard";
   switch (ws) {
     case "open":
     case "standard":
       mode = "Open";
       break;
+
+    case "standverted":
     case "inverted":
       mode = "Inverted";
       break;

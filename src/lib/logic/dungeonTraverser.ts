@@ -84,6 +84,11 @@ export class DungeonTraverser {
   // Set of region types that are overworld (exits to these are skipped during dungeon traversal)
   private static readonly OVERWORLD_TYPES = new Set(["LightWorld", "DarkWorld"]);
 
+  // Cached big key state: whether the player actually has the big key (or it's not wild)
+  private readonly actuallyHasBigKey: boolean;
+  // Cached: whether to assume big key for discovery/counting (partial mode or actually has it)
+  private readonly effectivelyHasBigKey: boolean;
+
   constructor(state: GameState, logicSet: LogicSet, dungeonId: string, protection: "partial" | "dangerous" = "partial") {
     this.state = state;
     this.regions = logicSet.regions as Record<string, RegionLogic>;
@@ -91,6 +96,9 @@ export class DungeonTraverser {
     this.protection = protection;
 
     this.requirementEvaluator = new RequirementEvaluator(state);
+
+    this.actuallyHasBigKey = !state.settings.wildBigKeys || !!state.dungeons[dungeonId]?.bigKey;
+    this.effectivelyHasBigKey = protection === "partial" || this.actuallyHasBigKey;
   }
 
   public traverse(
@@ -126,7 +134,7 @@ export class DungeonTraverser {
       this.dijkstraMinKeys(ctx, entryRegions, dijkstraKeyCost, this.requirementEvaluator, true);
 
       // Pass 2 (if needed): Dijkstra without big key for accurate minKeysUsedNoBK
-      const actuallyHasBigKey = !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+      const actuallyHasBigKey = this.actuallyHasBigKey;
       if (!actuallyHasBigKey && this.protection === "partial") {
         this.dijkstraMinKeys(ctx, entryRegions, dijkstraKeyCost, this.requirementEvaluator, false);
       } else {
@@ -311,7 +319,7 @@ export class DungeonTraverser {
             let canReachKeyCost = 0;
 
             // Evaluate exit requirements; big key based on assumeBigKey parameter.
-            const hasBigKey = assumeBigKey && (this.protection === "partial" || !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey);
+            const hasBigKey = assumeBigKey && this.effectivelyHasBigKey;
 
             const status = evaluator.evaluateWorldLogic(exit.requirements, {
               regionName: region,
@@ -472,7 +480,7 @@ export class DungeonTraverser {
 
               let canReachKeyCost = 0;
 
-              const hasBigKey = this.protection === "partial" || !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+              const hasBigKey = this.effectivelyHasBigKey;
               const status = evaluator.evaluateWorldLogic(exit.requirements, {
                 regionName: region,
                 dungeonId: this.dungeonId,
@@ -562,7 +570,7 @@ export class DungeonTraverser {
     // Phase 2: Fixed-point key counting. Phase 3: Compute final status.
     // Partial mode uses keyCountingEvaluator (all items) for discovery.
 
-    const actuallyHasBigKey = !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+    const actuallyHasBigKey = this.actuallyHasBigKey;
     const effectiveMinKeysMap = actuallyHasBigKey ? ctx.regionMinKeysUsed : ctx.regionMinKeysUsedNoBK;
 
     // Pre-compute total keys from Dijkstra data (for canReach contention checks).
@@ -628,9 +636,9 @@ export class DungeonTraverser {
           const isSKDoor = this.requiresSmallKey(exit);
 
           // For big key: assume in partial mode for key counting (to discover all regions)
-          const assumeBigKeyForDiscovery = this.protection === "partial" || !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+          const assumeBigKeyForDiscovery = this.effectivelyHasBigKey;
           // For actual traversability: use real inventory
-          const actuallyHasBigKey = !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+          const actuallyHasBigKey = this.actuallyHasBigKey;
 
           // Discovery: evaluate with keyCountingEvaluator + assumeBigKey.
           // Track canReach targets to detect alternate-path divergence with actual evaluator.
@@ -691,7 +699,7 @@ export class DungeonTraverser {
           });
 
           // Effective entry status = min(region's entry status, actual traversability)
-          const effectiveEntryStatus = this.combineStatuses(currentRegionEntryStatus, actualStatus);
+          const effectiveEntryStatus = minimumStatus(currentRegionEntryStatus, actualStatus);
 
           // Add to reachable if not already there
           if (!ctx.reachable.has(exit.to)) {
@@ -905,7 +913,7 @@ export class DungeonTraverser {
         : orangeEntry ?? blueEntry ?? "available";
 
       // Final status is the combination of entry status and key status
-      regionState.status = this.combineStatuses(entryRegionStatus, keyStatus);
+      regionState.status = minimumStatus(entryRegionStatus, keyStatus);
     }
   }
 
@@ -1125,7 +1133,7 @@ export class DungeonTraverser {
         if (isSKDoor) continue;
 
         // Evaluate non-key requirements (big key doors, item requirements, etc.)
-        const hasBigKey = this.protection === "partial" || !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+        const hasBigKey = this.effectivelyHasBigKey;
         const status = evaluator.evaluateWorldLogic(exit.requirements, {
           regionName: region,
           dungeonId: this.dungeonId,
@@ -1163,7 +1171,7 @@ export class DungeonTraverser {
       entrySet.add(regionName);
     }
 
-    const hasBigKey = this.protection === "partial" || !this.state.settings.wildBigKeys || this.state.dungeons[this.dungeonId]?.bigKey;
+    const hasBigKey = this.effectivelyHasBigKey;
 
     // Compute full reachability with all doors (fixed-point for canReach deps).
     const fullReachable = new Set<string>(entrySet);
@@ -1478,10 +1486,7 @@ export class DungeonTraverser {
     return status === "available" || status === "possible";
   }
 
-  private combineStatuses(status1: LogicStatus, status2: LogicStatus): LogicStatus {
-    const order: LogicStatus[] = ["information", "unavailable", "possible", "ool", "available"];
-    return order[Math.min(order.indexOf(status1), order.indexOf(status2))];
-  }
+
 
   /** Find the source region of a door exit using cached lookup (built lazily). */
   private findDoorSourceRegion(doorExitName: string): string | undefined {

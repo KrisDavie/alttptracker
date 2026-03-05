@@ -2,6 +2,7 @@ import type { ItemsState } from "@/store/itemsSlice";
 import type { SettingsState } from "@/store/settingsSlice";
 import type { DungeonState, DungeonsState } from "@/store/dungeonsSlice";
 import type { EntranceData, EntrancesState } from "@/store/entrancesSlice";
+import type { OverworldState } from "@/store/overworldSlice";
 import { DungeonsData } from "@/data/dungeonData";
 import ItemsData from "@/data/itemData";
 import { entranceLocations } from "@/data/locationsData";
@@ -104,6 +105,16 @@ export function createDefaultSettings(): SettingsState {
     itemPool: "normal",
     activatedFlute: false,
     bonkShuffle: false,
+
+    owLayout: "vanilla",
+    owCrossed: "none",
+    owMixed: false,
+    owParallel: false,
+    owTerrain: false,
+    owKeepSimilar: true,
+    owWhirlpool: false,
+    owFluteShuffle: "vanilla",
+
     mapMode: "off",
     autotracking: false,
   };
@@ -222,6 +233,14 @@ export class GameStateBuilder {
   private dungeons: DungeonsState;
   private entrances: EntrancesState;
   private checks: Record<string, { checked: boolean }> = {};
+  private overworld: OverworldState = {
+    tileWorlds: {},
+    edgeLinks: {},
+    whirlpoolLinks: {},
+    fluteLinks: {},
+    tileGroups: [],
+    crossedEdges: {},
+  };
 
   constructor() {
     this.items = createEmptyItems();
@@ -302,6 +321,67 @@ export class GameStateBuilder {
     return this;
   }
 
+  /**
+   * Set a tile's effective world (OWR Mixed / Tile Flip).
+   * Automatically pairs the LW↔DW counterpart (owid ± 0x40) with the opposite world.
+   * world: "light" or "dark". Pass null to reset both to vanilla.
+   */
+  withTileFlip(owid: number, world: "light" | "dark" | null): this {
+    const paired = owid < 64 ? owid + 64 : owid < 128 ? owid - 64 : null;
+    const pairedWorld = world === "light" ? "dark" : world === "dark" ? "light" : null;
+    if (world) {
+      this.overworld.tileWorlds[owid] = world;
+    } else {
+      delete this.overworld.tileWorlds[owid];
+    }
+    if (paired != null) {
+      if (pairedWorld) {
+        this.overworld.tileWorlds[paired] = pairedWorld;
+      } else {
+        delete this.overworld.tileWorlds[paired];
+      }
+    }
+    return this;
+  }
+
+  /** Batch-flip multiple tiles. Each entry auto-pairs its LW↔DW counterpart. */
+  withTileFlips(flips: Record<number, "light" | "dark">): this {
+    for (const [owidStr, world] of Object.entries(flips)) {
+      this.withTileFlip(Number(owidStr), world);
+    }
+    return this;
+  }
+
+  /** Link a tile-boundary edge to another (OWR Layout Shuffle). null = unknown/blocked. */
+  withEdgeLink(source: string, destination: string | null): this {
+    this.overworld.edgeLinks[source] = destination;
+    return this;
+  }
+
+  /** Link a whirlpool exit to another (OWR Whirlpool Shuffle). null = unknown/blocked. */
+  withWhirlpoolLink(source: string, destination: string | null): this {
+    this.overworld.whirlpoolLinks[source] = destination;
+    return this;
+  }
+
+  /** Set a flute spot destination (OWR Flute Shuffle). null = unknown/blocked. */
+  withFluteLink(spotIndex: number, destination: string | null): this {
+    this.overworld.fluteLinks[spotIndex] = destination;
+    return this;
+  }
+
+  /** Mark an edge as crossed (OWR Crossed Unrestricted). */
+  withCrossedEdge(edge: string, crossed: boolean = true): this {
+    this.overworld.crossedEdges[edge] = crossed;
+    return this;
+  }
+
+  /** Define a tile group (OWR Tile Groups). */
+  withTileGroup(owids: number[]): this {
+    this.overworld.tileGroups.push(owids);
+    return this;
+  }
+
   build() {
     return {
       items: this.items,
@@ -309,6 +389,7 @@ export class GameStateBuilder {
       dungeons: this.dungeons,
       entrances: this.entrances,
       checks: this.checks,
+      overworld: this.overworld,
     };
   }
 }

@@ -23,6 +23,7 @@ function getLayoutDimensions(mapMode: "off" | "normal" | "compact" | "vertical")
 function App() {
   const [scale, setScale] = useState(1);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
+  const worldState = useSelector((state: RootState) => state.settings.worldState);
   const { width, height } = useMemo(() => getLayoutDimensions(mapMode), [mapMode]);
 
   useEffect(() => {
@@ -41,6 +42,15 @@ function App() {
   const showMaps = mapMode !== "off";
   const isVertical = mapMode === "vertical";
   const isCompact = mapMode === "compact";
+
+  let maps = []
+
+  if (['inverted', 'inverted_1', 'standverted'].includes(worldState)) {
+    maps = [<OWMap key="dw" world="dw" />, <OWMap key="lw" world="lw" />];
+  } else {
+    maps = [<OWMap key="lw" world="lw" />, <OWMap key="dw" world="dw" />];
+  }
+
 
   return (
     <div className="h-screen w-screen bg-neutral-900 flex items-start justify-start overflow-hidden fixed inset-0" onContextMenu={(e) => e.preventDefault()}>
@@ -65,8 +75,7 @@ function App() {
               height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
             }}
           >
-            <OWMap world="lw" />
-            <OWMap world="dw" />
+            {maps}
           </div>
         )}
       </div>

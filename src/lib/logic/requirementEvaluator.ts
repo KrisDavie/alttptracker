@@ -16,6 +16,9 @@ export interface EvaluationContext {
   /** Set by canReach when the target region is reachable but with a degraded status
    *  ("possible" or "ool" instead of "available"). The evaluator caps the final result. */
   degradedReach?: boolean;
+  /** OWR: Override world state for requirement evaluation on tiles whose effective
+   *  world differs from the global setting (e.g., flipped tiles). */
+  effectiveWorldState?: string;
 }
 
 export class RequirementEvaluator {
@@ -26,7 +29,7 @@ export class RequirementEvaluator {
   }
 
   public evaluateWorldLogic(worldLogic: WorldLogic, ctx: EvaluationContext): LogicStatus {
-    const logicState = getLogicStateForWorld(this.state, worldLogic);
+    const logicState = getLogicStateForWorld(this.state, worldLogic, ctx.effectiveWorldState);
     if (!logicState) {
       return "unavailable";
     }
