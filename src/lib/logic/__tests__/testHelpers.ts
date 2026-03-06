@@ -8,6 +8,8 @@ import ItemsData from "@/data/itemData";
 import { entranceLocations } from "@/data/locationsData";
 import { OverworldTraverser } from "../overworldTraverser";
 import { getLogicSet, type LogicMode } from "../logicMapper";
+import { buildEffectiveRegions } from "../regionsProvider";
+import type { RegionLogic } from "@/data/logic/logicTypes";
 
 /**
  * Helper to create a default items state with all items at 0
@@ -415,7 +417,8 @@ export function getDungeonKeyInfo(
   keyDoorsFound: string[];
 } {
   const logicSet = getLogicSet(logicMode);
-  const engine = new OverworldTraverser(state, logicSet);
+  const { regions: effectiveRegions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+  const engine = new OverworldTraverser(state, { ...logicSet, regions: effectiveRegions }, metadata);
   
   // Run calculation to populate internal state
   engine.calculateAll();

@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { getLogicSet } from "../logicMapper";
 import { OverworldTraverser } from "../overworldTraverser";
+import { buildEffectiveRegions } from "../regionsProvider";
 import { gameState } from "./testHelpers";
+import type { RegionLogic } from "@/data/logic/logicTypes";
 
 /**
  * Helper: build state, run traverser, return { locationsLogic, entrancesLogic }.
@@ -9,7 +11,8 @@ import { gameState } from "./testHelpers";
 function calculate(builder: ReturnType<typeof gameState>) {
   const state = builder.build();
   const logicSet = getLogicSet("noglitches");
-  const traverser = new OverworldTraverser(state, logicSet);
+  const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+  const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
   return traverser.calculateAll();
 }
 
