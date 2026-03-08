@@ -1,5 +1,43 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export interface StatusColors {
+  available: string;
+  possible: string;
+  ool: string;
+  information: string;
+  unavailable: string;
+  checked: string;
+  selected: string;
+}
+
+export const DEFAULT_STATUS_COLORS: StatusColors = {
+  available: "#22c55e",
+  possible: "#eab308",
+  ool: "#7e22ce",
+  information: "#06b6d4",
+  unavailable: "#ef4444",
+  checked: "rgba(107, 114, 128, 0.7)",
+  selected: "#3b82f6",
+};
+
+export const DEFAULT_STATUS_TEXT_COLORS: StatusColors = {
+  available: "#4ade80",
+  possible: "#facc15",
+  ool: "#c084fc",
+  information: "#22d3ee",
+  unavailable: "#f87171",
+  checked: "#6b7280",
+  selected: "#3b82f6",
+};
+
+export const defaultUserSequenceBreaks = {
+  // All false by default, users can toggle these on to allow the logic to consider them as "possible but not guaranteed" options
+  canNavigateDarkRooms: true,
+} as const;
+
+// 2. Derive the type from the object
+export type UserSequenceBreaks = typeof defaultUserSequenceBreaks;
+
 export interface SettingsState {
   // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
@@ -33,6 +71,14 @@ export interface SettingsState {
   autotracking: boolean;
   mapMode: "off" | "normal" | "compact" | "vertical";
   includeDungeonItemsInCounter?: boolean;
+
+
+  // Player sequence break settings
+  sequenceBreaks: UserSequenceBreaks;
+
+  // Custom colors
+  customColors?: Partial<StatusColors>;
+  customTextColors?: Partial<StatusColors>;
 }
 
 const initialState: SettingsState = {
@@ -67,6 +113,9 @@ const initialState: SettingsState = {
   autotracking: true,
   includeDungeonItemsInCounter: false,
   mapMode: "normal",
+
+  // Sequence breaks
+  sequenceBreaks: defaultUserSequenceBreaks,
 };
 
 export const settingsSlice = createSlice({
@@ -87,8 +136,11 @@ export const settingsSlice = createSlice({
     setMapMode: (state, action: { payload: "off" | "normal" | "compact" | "vertical" }) => {
       state.mapMode = action.payload;
     },
+    setSequenceBreaks: (state, action: { payload: Partial<UserSequenceBreaks> }) => {
+      state.sequenceBreaks = { ...state.sequenceBreaks, ...action.payload };
+    },
   },
 });
 
-export const { setSettings, setWildSmallKeys, toggleWildBigKeys } = settingsSlice.actions;
+export const { setSettings, setWildSmallKeys, toggleWildBigKeys, setSequenceBreaks } = settingsSlice.actions;
 export default settingsSlice.reducer;

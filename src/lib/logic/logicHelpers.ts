@@ -1,7 +1,7 @@
 import type { GameState, LogicRequirement, LogicState, LogicStatus, WorldLogic } from "@/data/logic/logicTypes";
 
 /** Status ordering from worst to best (for reachability purposes) */
-const STATUS_ORDER: LogicStatus[] = ["unavailable", "possible", "ool", "available", "information"];
+const STATUS_ORDER: LogicStatus[] = ["unavailable", "information", "possible", "ool", "available"];
 
 /** Returns true if newStatus is better (more available) than oldStatus */
 export function isBetterStatus(newStatus: LogicStatus, oldStatus: LogicStatus): boolean {
@@ -13,9 +13,24 @@ export function combineStatuses(status1: LogicStatus, status2: LogicStatus): Log
   return STATUS_ORDER[Math.max(STATUS_ORDER.indexOf(status1), STATUS_ORDER.indexOf(status2))];
 }
 
-/** Returns the worse (less available) of two statuses */
-export function minimumStatus(status1: LogicStatus, status2: LogicStatus): LogicStatus {
-  return STATUS_ORDER[Math.min(STATUS_ORDER.indexOf(status1), STATUS_ORDER.indexOf(status2))];
+/** Returns the worse (less available) of the given statuses */
+export function minimumStatus(...statuses: LogicStatus[]): LogicStatus {
+  let worst = STATUS_ORDER.length - 1;
+  for (const s of statuses) {
+    const idx = STATUS_ORDER.indexOf(s);
+    if (idx < worst) worst = idx;
+  }
+  return STATUS_ORDER[worst];
+}
+
+/** Returns the best (most available) status from an array */
+export function maximumStatus(...statuses: LogicStatus[]): LogicStatus {
+  let best = 0;
+  for (const s of statuses) {
+    const idx = STATUS_ORDER.indexOf(s);
+    if (idx > best) best = idx;
+  }
+  return STATUS_ORDER[best];
 }
 
 /** Creates a GameState with all items set to max values (for partial key logic) */

@@ -22,4 +22,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./src/components/tracker/__tests__/setup.ts"],
+  },
 });

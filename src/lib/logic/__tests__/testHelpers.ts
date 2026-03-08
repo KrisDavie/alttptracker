@@ -1,5 +1,5 @@
 import type { ItemsState } from "@/store/itemsSlice";
-import type { SettingsState } from "@/store/settingsSlice";
+import { defaultUserSequenceBreaks, type SettingsState, type UserSequenceBreaks} from "@/store/settingsSlice";
 import type { DungeonState, DungeonsState } from "@/store/dungeonsSlice";
 import type { EntranceData, EntrancesState } from "@/store/entrancesSlice";
 import type { OverworldState } from "@/store/overworldSlice";
@@ -90,6 +90,9 @@ export function createAllItems(): ItemsState {
  * Helper to create default settings
  */
 export function createDefaultSettings(): SettingsState {
+
+  const allFalseSeqBreaks = Object.fromEntries(Object.keys(defaultUserSequenceBreaks).map(key => [key, false])) as unknown as UserSequenceBreaks;
+
   return {
     logicMode: "noglitches",
     worldState: "open",
@@ -119,6 +122,8 @@ export function createDefaultSettings(): SettingsState {
 
     mapMode: "off",
     autotracking: false,
+
+    sequenceBreaks: allFalseSeqBreaks
   };
 }
 
@@ -288,6 +293,11 @@ export class GameStateBuilder {
 
   withSettings(overrides: Partial<SettingsState>): this {
     this.settings = { ...this.settings, ...overrides };
+    return this;
+  }
+
+  withSequenceBreaks(overrides: Partial<UserSequenceBreaks>): this {
+    this.settings.sequenceBreaks = { ...this.settings.sequenceBreaks, ...overrides };
     return this;
   }
 

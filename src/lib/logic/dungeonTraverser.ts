@@ -1483,7 +1483,7 @@ export class DungeonTraverser {
     const switchLoc = region?.locations?.["Crystal_Switch"];
     if (!switchLoc) return false;
     const status = this.requirementEvaluator.evaluateWorldLogic(switchLoc.requirements, ctx);
-    return status === "available" || status === "possible";
+    return status !== "unavailable" && status !== "information";
   }
 
 

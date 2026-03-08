@@ -2,9 +2,13 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setSettings, type SettingsState } from "@/store/settingsSlice";
 import { SettingsContext } from "@/hooks/useSettings";
+import { useApplyStatusColors } from "@/hooks/useStatusColors";
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
+
+  // Sync custom status colors → CSS variables
+  useApplyStatusColors();
 
   // Determine the storage key based on an optional 'id' in the URL
   // This must match the prefix used in store.ts for redux-remember
