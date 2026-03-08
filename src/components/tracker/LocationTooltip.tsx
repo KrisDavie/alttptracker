@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 import type { CheckStatus } from "@/store/checksSlice";
+import { tooltipStatusText } from "@/hooks/useStatusColors";
 
 export type TooltipCheckInfo = { displayName: string; status: CheckStatus };
 export type TooltipDisplayItem = { key: string; info: TooltipCheckInfo };
@@ -37,7 +38,7 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
         {singleCheck ? (
           <div className="font-bold flex gap-2 whitespace-nowrap items-baseline">
             <span>{name}</span>
-            <span className={cn("w-12 text-right", singleCheck.status.checked ? "text-gray-500" : singleCheck.status.logic === "available" ? "text-green-400" : "text-red-400")}>
+            <span className={cn("w-12 text-right", tooltipStatusText(singleCheck.status.checked ? "checked" : singleCheck.status.logic))}>
               {singleCheck.status.checked ? "checked" : singleCheck.status.logic}
             </span>
           </div>
@@ -60,7 +61,7 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
                     >
                       <span className="flex-1">{item.info.displayName}</span>
                       <span
-                        className={cn("w-8 text-right", item.info.status.checked ? "text-gray-500" : item.info.status.logic === "available" ? "text-green-400" : item.info.status.logic === "possible" ? "text-yellow-400" : "text-red-400")}
+                        className={cn("w-8 text-right", tooltipStatusText(item.info.status.checked ? "checked" : item.info.status.logic))}
                       >
                         {item.info.status.checked ? "checked" : item.info.status.logic}
                       </span>
@@ -77,7 +78,7 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
                       <span className="flex-1 underline decoration-dotted">
                         {item.items.length} {item.category}
                       </span>
-                      <span className={cn("w-8 text-right", item.status === "checked" ? "text-gray-500" : item.status === "available" ? "text-green-400" : item.status === "possible" ? "text-yellow-400" : "text-red-400")}>
+                      <span className={cn("w-8 text-right", tooltipStatusText(item.status === "checked" ? "checked" : item.status))}>
                         {item.status}
                       </span>
                     </div>

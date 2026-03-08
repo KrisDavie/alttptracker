@@ -973,26 +973,16 @@ export class OverworldTraverser {
               ctx.allDiscoveredPortals.set(dungeonId, new Map());
             }
             if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
-              // Entry status from actual inventory (captures medallion uncertainty, etc.)
-              let entryStatus: LogicStatus = "unavailable";
-              if (actuallyReachable.has(current)) {
-                const actualEvalCtx: EvaluationContext = {
-                  regionName: current,
-                  canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
-                  effectiveWorldState: this.getEffectiveWorldState(current, exit.to),
-                };
-                const actualStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, actualEvalCtx);
-                entryStatus = actualStatus === "unavailable" ? "unavailable" : actualStatus;
-              }
-
-              // Compute bunny state based on the region leading to the portal
+              // Discovery only — status starts as "unavailable" and will be set
+              // accurately by the main BFS (processExit), which accounts for
+              // accumulated path degradation (e.g., ool from dark rooms).
               const portalBunny = actuallyReachable.has(current)
                 ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, exit.type ?? "Dungeon", exitName, exit.to)
                 : false;
 
               ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
                 bunnyState: portalBunny,
-                status: entryStatus,
+                status: "unavailable",
                 keyCost: 0,
               });
             }

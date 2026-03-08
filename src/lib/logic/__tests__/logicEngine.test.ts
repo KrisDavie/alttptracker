@@ -2,7 +2,9 @@ import { describe, it, expect } from "vitest";
 import { getLogicSet } from "../logicMapper";
 import { OverworldTraverser } from "../overworldTraverser";
 import { gameState } from "./testHelpers";
-import type { LogicStatus } from "@/data/logic/logicTypes";
+import type { LogicStatus, RegionLogic } from "@/data/logic/logicTypes";
+import { defaultUserSequenceBreaks } from "@/store/settingsSlice";
+import { buildEffectiveRegions } from "../regionsProvider";
 
 describe("LogicEngine", () => {
   describe("Hyrule Castle Key Logic", () => {
@@ -947,6 +949,33 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Tower of Hera - Big Key Chest"]).toBe("available");
     });
 
+    it("[SK] ToH Big Key Chest available with app default settings (wild keys, pottery, enemyDrop)", () => {
+      // Reproduce exact app default settings
+      const state = gameState()
+        .withAllItems()
+        .withSettings({
+          wildSmallKeys: "wild",
+          wildBigKeys: true,
+          wildMaps: true,
+          wildCompasses: true,
+          pottery: "keys",
+          enemyDrop: "keys",
+        })
+        .withDungeon("toh", { smallKeys: 1, bigKey: true })
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions: effectiveRegions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions: effectiveRegions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Tower of Hera - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Tower of Hera - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Tower of Hera - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Tower of Hera - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Tower of Hera - Boss"]).toBe("available");
+    });
+
     it("[SK] 2 keys, 2 doors with no additional doors should be available", () => {
       // Scenario where keys match doors exactly
       const state = gameState()
@@ -1517,6 +1546,40 @@ describe("LogicEngine", () => {
 
       // With no pearl, cannot drain dam in LW
       expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("unavailable");
+    });
+  });
+
+  describe("Sequence Breaks", () => {
+    it("should cap dungeon locations at ool when entry requires dark room navigation", () => {
+      // Path: glove → Old Man Cave (dark without lantern → ool) → hookshot → hammer → Tower of Hera
+      const state = gameState()
+        .withItems({ glove: 1, mirror: 1, firerod: 1, sword: 1 })
+        .withSequenceBreaks({canNavigateDarkRooms: true})
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // Entry to Tower of Hera via dark rooms should be "ool"
+      // Locations with no extra requirements should be capped at "ool"
+      expect(result.locationsLogic["Tower of Hera - Map Chest"]).toBe("ool");
+      expect(result.locationsLogic["Tower of Hera - Basement Cage"]).toBe("ool");
+    });
+
+    it("should not cap dungeon locations when entry does not require sequence break", () => {
+      // Same setup but WITH lantern — entry is "available", locations should be "available"
+      const state = gameState()
+        .withItems({ glove: 1, mirror: 1, firerod: 1, sword: 1, lantern: 1 })
+        .withSequenceBreaks({canNavigateDarkRooms: true})
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Tower of Hera - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Tower of Hera - Basement Cage"]).toBe("available");
     });
   });
 });

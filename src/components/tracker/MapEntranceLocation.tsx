@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { locationsData, type LocationData } from "@/data/locationsData";
 import { LocationTooltip } from "./LocationTooltip";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
+import { mapStatusBg } from "@/hooks/useStatusColors";
 import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
 import { setEntranceLink } from "@/store/entrancesSlice";
 
@@ -61,7 +62,7 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
       key={locName}
       className={cn(
         "absolute border border-black left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20 rounded-full",
-        entranceCheck.checked ? "bg-gray-500/70" : locName === selectedEntrance ? "bg-blue-500" : entranceCheck.logic === "available" ? "bg-green-500" : entranceCheck.logic === "possible" ? "bg-yellow-500" : entranceCheck.logic === "ool" ? "bg-orange-500" : "bg-red-500",
+        entranceCheck.checked ? mapStatusBg("checked") : locName === selectedEntrance ? mapStatusBg("selected") : mapStatusBg(entranceCheck.logic),
         props.className,
         selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup && "ring-2 ring-blue-500",
         selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup && "hidden",

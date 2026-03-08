@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
+import { mapStatusBg } from "@/hooks/useStatusColors";
 import { LocationTooltip } from "./LocationTooltip";
 
 interface MapItemLocationProps {
@@ -25,7 +26,7 @@ function MapItemLocation(props: MapItemLocationProps) {
       key={locName}
       className={cn(
         "absolute border border-black left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20",
-        status === "all" ? "bg-gray-500/70" : maxLogicStatus === "available" ? "bg-green-500" : maxLogicStatus === "possible" ? "bg-yellow-500" : "bg-red-500",
+        status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus),
         status === "some" && "is-hatched",
         props.className,
       )}

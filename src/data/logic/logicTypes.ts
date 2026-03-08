@@ -15,6 +15,7 @@ export interface LogicState {
   always?: LogicRequirement;
   logical?: LogicRequirement;
   required?: LogicRequirement;
+  information?: LogicRequirement;
   scout?: LogicRequirement;
 }
 

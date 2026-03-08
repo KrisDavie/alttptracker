@@ -77,6 +77,24 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
+
+  /* Logic status colors — map markers (bg) */
+  --status-available: #22c55e;
+  --status-possible: #eab308;
+  --status-ool: #7e22ce;
+  --status-information: #06b6d4;
+  --status-unavailable: #ef4444;
+  --status-checked: rgba(107, 114, 128, 0.7);
+  --status-selected: #3b82f6;
+
+  /* Logic status colors — tooltip text */
+  --status-text-available: #4ade80;
+  --status-text-possible: #facc15;
+  --status-text-ool: #c084fc;
+  --status-text-information: #22d3ee;
+  --status-text-unavailable: #f87171;
+  --status-text-checked: #6b7280;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
@@ -166,6 +184,21 @@ body {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Status colors as Tailwind theme colors */
+  --color-status-available: var(--status-available);
+  --color-status-possible: var(--status-possible);
+  --color-status-ool: var(--status-ool);
+  --color-status-information: var(--status-information);
+  --color-status-unavailable: var(--status-unavailable);
+  --color-status-checked: var(--status-checked);
+  --color-status-selected: var(--status-selected);
+  --color-status-text-available: var(--status-text-available);
+  --color-status-text-possible: var(--status-text-possible);
+  --color-status-text-ool: var(--status-text-ool);
+  --color-status-text-information: var(--status-text-information);
+  --color-status-text-unavailable: var(--status-text-unavailable);
+  --color-status-text-checked: var(--status-text-checked);
 }
 
 .dark {

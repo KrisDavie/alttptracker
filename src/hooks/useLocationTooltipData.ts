@@ -64,9 +64,10 @@ export function useLocationTooltipData(locName: string) {
   const maxLogicStatus = useMemo(() => {
     return checksList.reduce((best, check) => {
       if (check?.checked) return best;
-      if (check?.logic === "available") return "available";
-      if (check?.logic === "possible" && best !== "available") return "possible";
-      return best;
+      const logic = check?.logic ?? "unavailable";
+      // Use STATUS_ORDER: unavailable < information < possible < ool < available
+      const order: Record<string, number> = { unavailable: 0, information: 1, possible: 2, ool: 3, available: 4 };
+      return (order[logic] ?? 0) > (order[best] ?? 0) ? logic : best;
     }, "unavailable" as LogicStatus);
   }, [checksList]);
 
