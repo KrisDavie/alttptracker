@@ -7,7 +7,7 @@ import { LocationTooltip } from "./LocationTooltip";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { mapStatusBg } from "@/hooks/useStatusColors";
 import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
-import { setEntranceLink } from "@/store/entrancesSlice";
+import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
 
 interface MapEntranceLocationProps {
   name: string;
@@ -29,6 +29,14 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
 
   const selectedEntranceGroup = selectedEntrance? locationsData[selectedEntrance]?.entrance_modes?.[entranceMode || "none"] : null
   const selfEntranceGroup = locationsData[locName]?.entrance_modes?.[entranceMode || "none"];
+  const maxConnectorGroup = useSelector((state: RootState) => Object.values(state.entrances).reduce((max, entrance) => {
+    if (entrance.connectorGroup) {
+      return Math.max(max, entrance.connectorGroup)
+    }
+    return max;
+  }, 0)
+)
+
 
   const entranceCheck = useSelector((state: RootState) => state.checks.entranceChecks[locName]);
 
@@ -37,23 +45,37 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
   const xPercent = (location.x / 512) * 100;
   const yPercent = (location.y / 512) * 100;
 
-  function handleClick() {
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    console.log("click", e.button)
+    if (e.button !== 0) return;
     if (currentMode === "connect" && selectedEntrance && selectedEntrance !== locName) {
       dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));
-      dispatch(setSelectedEntrance(null));
+      dispatch(setSelectedEntrance([null, false]));
       dispatch(setCurrentMode("none"));
     } else {
       dispatch(setEntranceChecked({ entrance: locName, checked: !entranceCheck.checked, manual: true }));
     }
   }
 
-  function handleConnectorClick(e: React.MouseEvent) {
+  function handleEntranceClick(e: React.MouseEvent) {
+
+    // Middle click for quick actions
     if (e.button === 1) {
       e.stopPropagation();
+      if (!selectedEntrance) {
+        dispatch(setSelectedEntrance([locName, false]));
+        dispatch(setCurrentMode("connect"));
+      } else if (currentMode === "connect" && selectedEntrance !== locName) {
+        dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+        dispatch(setSelectedEntrance([null, false]));
+        dispatch(setCurrentMode("none"));
+      }
     }
+    // Right click to set entrance with modal open
     if (e.button === 2) {
       e.preventDefault();
-      dispatch(setSelectedEntrance(locName));
+      dispatch(setSelectedEntrance([locName, true]));
     }
   }
 
@@ -73,8 +95,8 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
         left: `${xPercent}%`,
       }}
       onClick={handleClick}
-      onAuxClick={handleConnectorClick}
-      onContextMenu={handleConnectorClick}
+      onAuxClick={handleEntranceClick}
+      onContextMenu={handleEntranceClick}
       onMouseLeave={resetGroups}
     >
       {showTooltip && (

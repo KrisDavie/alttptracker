@@ -4,7 +4,7 @@ import { entranceLocations } from "@/data/locationsData";
 export interface EntranceData {
   checked: boolean;
   connector: boolean;
-  connectorGroup: string | null;
+  connectorGroup: number | null;
   to: string | null;
   oneway: boolean;
   medallion?: "unknown" | "bombos" | "ether" | "quake";
@@ -61,9 +61,28 @@ export const entrancesSlice = createSlice({
       const { entrance, to } = action.payload;
       state[entrance].to = to;
       state[entrance].checked = to !== null;
-    }
+    },
+    connectGenericConnector: (state, action: { payload: { source: string; destination: string; connectorId: number } }) => {
+      const { source, destination, connectorId } = action.payload;
+      let connectorGroup
+      if (state[source].to) {
+        connectorGroup = state[source].connectorGroup ?? connectorId;
+      } else if (state[destination].to) {
+        connectorGroup = state[destination].connectorGroup ?? connectorId;
+      } else {
+        connectorGroup = connectorId;
+      }
+
+
+      state[source].to = `Generic Connector ${connectorGroup}`;
+      state[destination].to = `Generic Connector ${connectorGroup}`;
+      state[source].checked = true;
+      state[destination].checked = true;
+      state[source].connectorGroup = connectorGroup;
+      state[destination].connectorGroup = connectorGroup;
+    },
   },
 });
 
-export const { incrementMedallionCount, setEntranceLink } = entrancesSlice.actions;
+export const { incrementMedallionCount, setEntranceLink, connectGenericConnector } = entrancesSlice.actions;
 export default entrancesSlice.reducer;

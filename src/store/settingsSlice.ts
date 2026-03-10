@@ -33,10 +33,10 @@ export const DEFAULT_STATUS_TEXT_COLORS: StatusColors = {
 export const defaultUserSequenceBreaks = {
   // All false by default, users can toggle these on to allow the logic to consider them as "possible but not guaranteed" options
   canNavigateDarkRooms: true,
-} as const;
+};
 
-// 2. Derive the type from the object
-export type UserSequenceBreaks = typeof defaultUserSequenceBreaks;
+// Type allows boolean values for all sequence break keys
+export type UserSequenceBreaks = { [K in keyof typeof defaultUserSequenceBreaks]: boolean };
 
 export interface SettingsState {
   // Mode Settings
@@ -71,7 +71,8 @@ export interface SettingsState {
   autotracking: boolean;
   mapMode: "off" | "normal" | "compact" | "vertical";
   includeDungeonItemsInCounter?: boolean;
-
+  connectionLinesMode: "none" | "caves" | "dungeons" | "all";
+  connectionLineColor: string;
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
@@ -84,8 +85,8 @@ export interface SettingsState {
 const initialState: SettingsState = {
   logicMode: "noglitches",
   worldState: "open",
-  wildSmallKeys: "inDungeon",
-  wildBigKeys: false,
+  wildSmallKeys: "wild",
+  wildBigKeys: true,
   wildMaps: false,
   wildCompasses: false,
   pottery: "none",
@@ -113,6 +114,8 @@ const initialState: SettingsState = {
   autotracking: true,
   includeDungeonItemsInCounter: false,
   mapMode: "normal",
+  connectionLinesMode: "all",
+  connectionLineColor: "#ff00f9ff",
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,

@@ -4,6 +4,7 @@ import type { RootState } from "./store/store";
 import "./App.css";
 import CommunityLayoutItems from "./components/layouts/CommunityTracker/CommunityLayoutItems";
 import OWMap from "./components/layouts/Map/OWMap";
+import EntranceLinesOverlay from "./components/tracker/EntranceLinesOverlay";
 
 const TILE = 448;
 
@@ -43,14 +44,13 @@ function App() {
   const isVertical = mapMode === "vertical";
   const isCompact = mapMode === "compact";
 
-  let maps = []
+  let maps = [];
 
-  if (['inverted', 'inverted_1', 'standverted'].includes(worldState)) {
+  if (["inverted", "inverted_1", "standverted"].includes(worldState)) {
     maps = [<OWMap key="dw" world="dw" />, <OWMap key="lw" world="lw" />];
   } else {
     maps = [<OWMap key="lw" world="lw" />, <OWMap key="dw" world="dw" />];
   }
-
 
   return (
     <div className="h-screen w-screen bg-neutral-900 flex items-start justify-start overflow-hidden fixed inset-0" onContextMenu={(e) => e.preventDefault()}>
@@ -69,13 +69,22 @@ function App() {
         </div>
         {showMaps && (
           <div
-            className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start`}
+            className="relative"
             style={{
               width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
               height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
             }}
-          >
-            {maps}
+            >
+            <EntranceLinesOverlay />
+            <div
+              className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
+              style={{
+                width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
+                height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
+              }}
+            >
+              {maps}
+            </div>
           </div>
         )}
       </div>

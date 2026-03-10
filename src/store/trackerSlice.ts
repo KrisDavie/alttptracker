@@ -24,9 +24,10 @@ export const trackerSlice = createSlice({
     setModalClose: (state) => {
       state.modalOpen = "none";
     },
-    setSelectedEntrance: (state, action) => {
-      state.selectedEntrance = action.payload;
-      state.modalOpen = "entrance";
+    setSelectedEntrance: (state, action: { payload: [string | null, boolean] }) => {
+      const [entrance, openModal] = action.payload;
+      state.selectedEntrance = entrance;
+      state.modalOpen = openModal ? "entrance" : "none";
     },
     setSelectedLocation: (state, action) => {
       state.selectedLocation = action.payload;

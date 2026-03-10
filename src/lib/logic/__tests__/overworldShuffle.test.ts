@@ -201,5 +201,47 @@ describe("Overworld Shuffle", () => {
       expect(result.locationsLogic["Bottle Merchant"]).toBe("unavailable");
       expect(result.locationsLogic["Sunken Treasure"]).toBe("unavailable");
     });
+
+    it("[SK] LW is not available without SKs", () => {
+      const result = calculate(
+        gameState()
+          .withSettings({ worldState: "standverted" })
+      );
+
+      // With no items in standverted, S&Q goes to flipped tiles (DW home).
+      // The inverted S&Q exits (Big Bomb Shop, Dark Sanctuary Hint) are on
+      // flipped-to-LW tiles, so they should be blocked by effectiveWorldState.
+      expect(result.locationsLogic["Bottle Merchant"]).toBe("unavailable");
+      expect(result.locationsLogic["Sunken Treasure"]).toBe("unavailable");
+    });
+
+    it("AT exit goes to HC Ledge, not GT Stairs, in standverted", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ worldState: "standverted" })
+      );
+
+      // The AT tile is flipped back to its normal (LW) position in standverted.
+      // AT should be reachable from HC Ledge (with cape/swordbeams) and its
+      // dungeon locations should be available. The inverted exit to GT Stairs
+      // should be blocked.
+      expect(result.locationsLogic["Castle Tower - Room 03"]).toBe("available");
+    });
+
+    it("AT is not accessible from GT Stairs in standverted", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withoutItems(["cape"])
+          .withItems({ sword: 1 })
+          .withSettings({ worldState: "standverted" })
+      );
+
+      // Without cape or swordbeams (sword level > 1), the HC Ledge entry to AT
+      // is blocked. The GT Stairs entry should also be blocked (AT is not on DM).
+      // So AT locations should be unavailable.
+      expect(result.locationsLogic["Castle Tower - Room 03"]).toBe("unavailable");
+    });
   });
 });

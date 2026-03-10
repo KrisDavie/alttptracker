@@ -14,7 +14,7 @@ function EntranceSelectionModal() {
   const handleGenericLink = (to: string | null) => {
     dispatch(setEntranceLink({ entrance: selectedEntrance, to }));
     dispatch(setModalClose());
-    dispatch(setSelectedEntrance(null));
+    dispatch(setSelectedEntrance([null, false]));
   };
 
   const handleSelectFromMap = () => {
@@ -24,7 +24,7 @@ function EntranceSelectionModal() {
 
   const handleCancel = () => {
     dispatch(setModalClose());
-    dispatch(setSelectedEntrance(null));
+    dispatch(setSelectedEntrance([null, false]));
   };
 
   return (
