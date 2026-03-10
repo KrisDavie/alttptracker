@@ -34,7 +34,18 @@ function LogicProvider({ children }: LogicProviderProps) {
     for (const [name, status] of Object.entries(locationsChecks)) {
       checks[name] = { checked: status.checked };
     }
-    const snapshot = { items, settings, dungeons, entrances, checks, overworld };
+
+    // Apply manuallyChanged offsets to dungeon small keys so the logic
+    // engine sees the effective count (base + manual adjustment).
+    const effectiveDungeons: typeof dungeons = {};
+    for (const [id, dState] of Object.entries(dungeons)) {
+      effectiveDungeons[id] = {
+        ...dState,
+        smallKeys: Math.max(0, dState.smallKeys + (dState.manuallyChanged?.smallKeys ?? 0)),
+      };
+    }
+
+    const snapshot = { items, settings, dungeons: effectiveDungeons, entrances, checks, overworld };
 
     const traverser = new OverworldTraverser(snapshot, { regions: effectiveGraph.regions }, effectiveGraph.metadata);
     const newResults = traverser.calculateAll();

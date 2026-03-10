@@ -287,10 +287,8 @@ export class RequirementEvaluator {
 
       case "canLightFires":
         return this.boolToStatus(this.hasItem("firerod") || this.hasItem("lantern"));
-      case "canDarkRoomNavigate":
-        // TODO: Add personal logic for dark room navigation
-        return this.resolveSimple("lantern", ctx);
-      case "canTorchRoomNavigate":
+      
+        case "canTorchRoomNavigate":
         // TODO: (items.firerod && !isDoorsBranch() && flags.entrancemode === "N");
         return maximumStatus(this.resolveSimple("lantern", ctx), this.boolToStatus(this.hasItem("firerod")));
       case "canDefeatCurtains":

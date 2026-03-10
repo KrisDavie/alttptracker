@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import LogicProvider from "@/components/LogicProvider";
-import MapItemLocation from "@/components/tracker/MapItemLocation";
+import MapLocation from "@/components/tracker/MapLocation";
 import { locationsData } from "@/data/locationsData";
 import { createTestStore } from "@/components/tracker/__tests__/renderWithStore";
 import { setItemCount, updateMultipleItems } from "@/store/itemsSlice";
@@ -12,7 +12,7 @@ import { updateDungeonState } from "@/store/dungeonsSlice";
 type TestStore = ReturnType<typeof createTestStore>;
 
 /**
- * Renders the MapItemLocation for a given location name, wrapped in
+ * Renders the MapLocation for a given location name, wrapped in
  * LogicProvider so the full logic engine runs end-to-end via Redux.
  */
 function renderLocationWithLogic(locationName: string, store?: TestStore) {
@@ -23,7 +23,7 @@ function renderLocationWithLogic(locationName: string, store?: TestStore) {
   const result = render(
     <Provider store={testStore}>
       <LogicProvider>
-        <MapItemLocation name={locationName} location={location} type="item" className="h-4 w-4" tooltip={true} />
+        <MapLocation name={locationName} location={location} type="item" className="h-4 w-4" tooltip={true} isEntrance={false} />
       </LogicProvider>
     </Provider>,
   );
@@ -108,6 +108,7 @@ describe("E2E: Keysanity with ool checks", () => {
 
     // Mountain climbable
     store.dispatch(setSequenceBreaks({ canNavigateDarkRooms: true }));
+    store.dispatch(setSettings({ wildSmallKeys: "inDungeon", wildBigKeys: false }));
     store.dispatch(
       updateMultipleItems({
         glove: 1,

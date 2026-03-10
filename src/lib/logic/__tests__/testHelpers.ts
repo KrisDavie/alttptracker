@@ -122,6 +122,8 @@ export function createDefaultSettings(): SettingsState {
 
     mapMode: "off",
     autotracking: false,
+    connectionLinesMode: "all",
+    connectionLineColor: "#a855f7",
 
     sequenceBreaks: allFalseSeqBreaks
   };

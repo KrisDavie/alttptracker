@@ -11,15 +11,10 @@ export function useLocationTooltipData(locName: string) {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   const settings = useSelector((state: RootState) => state.settings);
-  const entrances = useSelector((state: RootState) => state.entrances);
 
   // 1. Resolve the actual name if it's an entrance and redirected
-  const targetName = useMemo(() => {
-    if (settings.entranceMode !== "none" && entrances[locName]?.to) {
-      return entrances[locName].to;
-    }
-    return locName;
-  }, [locName, settings.entranceMode, entrances]);
+  // (Removed internal double-resolution. The caller is expected to provide the correct resolved target)
+  const targetName = locName;
 
   const itemLocations = useMemo(() => {
     const list = getActiveLocations(targetName, settings);

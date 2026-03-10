@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
-import MapItemLocation from "../MapItemLocation";
+import MapLocation from "../MapLocation";
 import { renderWithStore } from "./renderWithStore";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
-// Mock the hook that MapItemLocation depends on
+// Mock the hook that MapLocation depends on
 const mockToggleAllChecks = vi.fn();
 const mockResetGroups = vi.fn();
 const mockHandleCheckClick = vi.fn();
@@ -34,7 +34,7 @@ vi.mock("@/hooks/useLocationTooltipData", () => ({
 
 const defaultLocation = { x: 100, y: 200, world: "lw" as const, open: true, isDungeon: false, overworld: true, shopsanity: false, pots: false, enemies: false, bonk: false };
 
-describe("MapItemLocation", () => {
+describe("MapLocation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset to default unchecked/unavailable state
@@ -59,7 +59,7 @@ describe("MapItemLocation", () => {
 
   it("should use the unavailable background class when the location is unavailable", () => {
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     expect(el).toBeTruthy();
@@ -69,7 +69,7 @@ describe("MapItemLocation", () => {
   it("should use the available background class when the location is available", () => {
     mockHookReturn.maxLogicStatus = "available";
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     expect(el.className).toContain("bg-status-available");
@@ -78,7 +78,7 @@ describe("MapItemLocation", () => {
   it("should use the possible background class when the location is possible", () => {
     mockHookReturn.maxLogicStatus = "possible";
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     expect(el.className).toContain("bg-status-possible");
@@ -88,7 +88,7 @@ describe("MapItemLocation", () => {
     mockHookReturn.status = "all";
     mockHookReturn.itemChecks["Test Location - Chest"].status.checked = true;
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     expect(el.className).toContain("bg-status-checked");
@@ -97,7 +97,7 @@ describe("MapItemLocation", () => {
   it("should apply hatched class when some items are checked", () => {
     mockHookReturn.status = "some";
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     expect(el.className).toContain("is-hatched");
@@ -106,7 +106,7 @@ describe("MapItemLocation", () => {
   it("should call toggleAllChecks when clicked", async () => {
     const user = userEvent.setup();
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     await user.click(el);
@@ -115,7 +115,7 @@ describe("MapItemLocation", () => {
 
   it("should be positioned based on location coordinates", () => {
     renderWithStore(
-      <MapItemLocation name="Test Location" location={defaultLocation} type="item" />,
+      <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
     const el = document.querySelector(".absolute") as HTMLElement;
     const xPercent = (100 / 512) * 100;

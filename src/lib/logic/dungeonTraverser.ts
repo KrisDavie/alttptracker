@@ -1423,7 +1423,7 @@ export class DungeonTraverser {
           crystalStates: new Set<CrystalSwitchState>(),
           isBunny: false,
         });
-        if (status === "available" || status === "possible") {
+        if (status === "available" || status === "possible" || status === "ool") {
           locationKeys.push(locationName);
         }
       }

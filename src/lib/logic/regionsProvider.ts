@@ -224,6 +224,7 @@ function applyEntranceShuffle(
 
   // --- Forward pass: sever or remap entrance exits ---
   const reverseLinks = new Map<string, string>(); // destination entrance → source entrance
+  const genericConnectors = new Map<string, string[]>();
 
   for (const [entranceName, locData] of Object.entries(entranceLocations)) {
     const pool = locData.entrance_modes?.[entranceMode];
@@ -247,6 +248,12 @@ function applyEntranceShuffle(
       if (destInfo) {
         setExitTo(exits, entranceName, destInfo.to, destInfo.type);
         reverseLinks.set(link, entranceName);
+      } else if (link.startsWith("Generic Connector")) {
+        setExitTo(exits, entranceName, link);
+        if (!genericConnectors.has(link)) {
+          genericConnectors.set(link, []);
+        }
+        genericConnectors.get(link)!.push(entranceName);
       } else {
         // Generic destination (Shop, Rupee, etc.) — sever
         setExitTo(exits, entranceName, null);
@@ -310,6 +317,31 @@ function applyEntranceShuffle(
       // Nobody linked to this entrance — sever the return exit
       setExitTo(interiorExits, targetReturnExitName, null);
     }
+  }
+
+  // --- Create Generic Connector synthetic regions ---
+  const emptyRequirements = { Open: {}, Inverted: {} };
+  for (const [connectorName, sourceEntrances] of genericConnectors.entries()) {
+    const connectorExits: Record<string, { to: string, type: string, requirements: typeof emptyRequirements }> = {};
+
+    for (const ent of sourceEntrances) {
+      const parentOverworld = meta.entranceToParentRegion.get(ent);
+      if (parentOverworld) {
+        const sourceRegion = result[parentOverworld];
+        connectorExits[`Return to ${ent}`] = {
+          to: parentOverworld,
+          type: sourceRegion?.type ?? "LightWorld",
+          requirements: emptyRequirements
+        };
+      }
+    }
+
+    result[connectorName] = {
+      type: "Cave", // Valid interior type
+      locations: {},
+      entrances: sourceEntrances,
+      exits: connectorExits,
+    } as unknown as RegionLogic;
   }
 
   return result;
@@ -553,6 +585,71 @@ export function buildEffectiveRegions(
   regions = applyWhirlpoolRemaps(regions, effectiveState, metadata);
   regions = applyFluteRemaps(regions, effectiveState, metadata);
   regions = applyDoorRemaps(regions, effectiveState, metadata);
+  regions = applyStandvertedPortalFixes(regions, effectiveState);
 
   return { regions, metadata };
+}
+
+/**
+ * Temporary fix: patch Agahnim's Tower portal exits for standverted mode.
+ *
+ * In standverted the castle tile is flipped back to its normal (Light World)
+ * position, so the AT exit should go to Hyrule Castle Ledge (Open behaviour),
+ * not GT Stairs (Inverted behaviour). The dungeon traverser evaluates these
+ * exits using Inverted logic (standverted → Inverted), which picks the wrong
+ * set of requirements.
+ *
+ * TODO: Fix this properly by either:
+ *  - Adding a Standverted world-logic key in the generation scripts, or
+ *  - Having the dungeon traverser pass an effectiveWorldState (based on tile
+ *    flips) when evaluating external exit requirements.
+ * That would generalise to any dungeon portal affected by tile flips.
+ */
+function applyStandvertedPortalFixes(
+  regions: Record<string, RegionLogic>,
+  state: GameState,
+): Record<string, RegionLogic> {
+  if (state.settings.worldState !== "standverted") return regions;
+  // Entrance shuffle remaps destinations — skip the hard-coded patch when active
+  if (state.settings.entranceMode !== "none") return regions;
+
+  const result = { ...regions };
+
+  // AT Portal: swap exit availability (AT is on its normal LW tile)
+  const atPortal = result["Agahnims Tower Portal"];
+  if (atPortal?.exits) {
+    result["Agahnims Tower Portal"] = {
+      ...atPortal,
+      exits: {
+        ...atPortal.exits,
+        // Normal exit to HC Ledge — should be available (Open behaviour)
+        "Agahnims Tower Exit": {
+          ...atPortal.exits["Agahnims Tower Exit"],
+          requirements: { Open: {}, Inverted: {} },
+        },
+        // Inverted exit to GT Stairs — should be blocked (AT is not on DM)
+        "Agahnims Tower Exit (Inverted)": {
+          ...atPortal.exits["Agahnims Tower Exit (Inverted)"],
+          requirements: { Open: "never", Inverted: "never" },
+        },
+      },
+    };
+  }
+
+  // GT Stairs: block entry to AT (AT is not on Death Mountain in standverted)
+  const gtStairs = result["GT Stairs"];
+  if (gtStairs?.exits?.["Ganons Tower (Inverted)"]) {
+    result["GT Stairs"] = {
+      ...gtStairs,
+      exits: {
+        ...gtStairs.exits,
+        "Ganons Tower (Inverted)": {
+          ...gtStairs.exits["Ganons Tower (Inverted)"],
+          requirements: { Open: "never", Inverted: "never" },
+        },
+      },
+    };
+  }
+
+  return result;
 }

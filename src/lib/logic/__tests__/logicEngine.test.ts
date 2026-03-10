@@ -3,7 +3,6 @@ import { getLogicSet } from "../logicMapper";
 import { OverworldTraverser } from "../overworldTraverser";
 import { gameState } from "./testHelpers";
 import type { LogicStatus, RegionLogic } from "@/data/logic/logicTypes";
-import { defaultUserSequenceBreaks } from "@/store/settingsSlice";
 import { buildEffectiveRegions } from "../regionsProvider";
 
 describe("LogicEngine", () => {
@@ -100,6 +99,28 @@ describe("LogicEngine", () => {
   });
 
   describe("Eastern Palace Key Logic", () => {
+    it("Should mark big key chest as ool with sequence breaks enabled", () => {
+      const state = gameState().withSequenceBreaks({canNavigateDarkRooms: true}).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Eastern Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Eastern Palace - Big Key Chest"]).toBe("ool");
+    });
+
+    it("[SK] Should mark big key chest as ool with sequence breaks enabled", () => {
+      const state = gameState().withSettings({wildSmallKeys: "wild"}).withSequenceBreaks({canNavigateDarkRooms: true}).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Eastern Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Eastern Palace - Big Key Chest"]).toBe("ool");
+    });
+    
     it("[BK] should mark entire front as available with no big key", () => {
       const state = gameState().withAllItems().withSettings({ wildBigKeys: true }).withDungeon("ep", { bigKey: false }).build();
 
@@ -1551,7 +1572,6 @@ describe("LogicEngine", () => {
 
   describe("Sequence Breaks", () => {
     it("should cap dungeon locations at ool when entry requires dark room navigation", () => {
-      // Path: glove → Old Man Cave (dark without lantern → ool) → hookshot → hammer → Tower of Hera
       const state = gameState()
         .withItems({ glove: 1, mirror: 1, firerod: 1, sword: 1 })
         .withSequenceBreaks({canNavigateDarkRooms: true})
@@ -1565,6 +1585,7 @@ describe("LogicEngine", () => {
       // Locations with no extra requirements should be capped at "ool"
       expect(result.locationsLogic["Tower of Hera - Map Chest"]).toBe("ool");
       expect(result.locationsLogic["Tower of Hera - Basement Cage"]).toBe("ool");
+      expect(result.locationsLogic["Tower of Hera - Big Key Chest"]).toBe("ool");
     });
 
     it("should not cap dungeon locations when entry does not require sequence break", () => {
@@ -1580,6 +1601,7 @@ describe("LogicEngine", () => {
 
       expect(result.locationsLogic["Tower of Hera - Map Chest"]).toBe("available");
       expect(result.locationsLogic["Tower of Hera - Basement Cage"]).toBe("available");
+      expect(result.locationsLogic["Tower of Hera - Big Key Chest"]).toBe("available");
     });
   });
 });

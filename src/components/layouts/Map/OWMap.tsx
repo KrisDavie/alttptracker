@@ -2,8 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import type { RootState } from "../../../store/store";
 
-import MapItemLocation from "@/components/tracker/MapItemLocation";
-import MapEntranceLocation from "@/components/tracker/MapEntranceLocation";
+import MapLocation from "@/components/tracker/MapLocation";
 import { locationsData, entranceLocations } from "@/data/locationsData";
 import {
   getActiveLocations,
@@ -35,7 +34,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        dispatch(setSelectedEntrance(null));
+        dispatch(setSelectedEntrance([null, false]));
         dispatch(setCurrentMode("none"));
       }
     };
@@ -106,13 +105,14 @@ function OWMap({ world = "lw" }: OWMapProps) {
         }
 
         return (
-          <MapItemLocation
+          <MapLocation
             key={locationKey}
             name={locationKey}
             location={location}
             type={itemType as "dungeon" | "item" | "tree"}
             className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? smallSize : fullSize}`}
             tooltip={true}
+            isEntrance={false}
           />
         );
       })}
@@ -125,12 +125,14 @@ function OWMap({ world = "lw" }: OWMapProps) {
         if (location.entrance_modes?.[entranceMode] === "vanilla") return null;
 
         return (
-          <MapEntranceLocation
+          <MapLocation
             key={locationKey}
             name={locationKey}
             location={location}
+            type="entrance"
             className="h-3 w-3 hover:origin-center hover:scale-150"
             tooltip={true}
+            isEntrance={true}
           />
         );
       })}
