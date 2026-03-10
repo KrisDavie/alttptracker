@@ -85,8 +85,8 @@ export interface SettingsState {
 const initialState: SettingsState = {
   logicMode: "noglitches",
   worldState: "open",
-  wildSmallKeys: "wild",
-  wildBigKeys: true,
+  wildSmallKeys: "inDungeon",
+  wildBigKeys: false,
   wildMaps: false,
   wildCompasses: false,
   pottery: "none",
