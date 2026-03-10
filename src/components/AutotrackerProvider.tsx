@@ -252,6 +252,12 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       dungeonUpdates[dungeon] = newState;
     });
 
+    const ctBossDefeated = getByte(0xf5f3c5);
+    if (ctBossDefeated !== null && ctBossDefeated >= 0x03) {
+      if (!dungeonUpdates['ct']) dungeonUpdates['ct'] = {};
+      dungeonUpdates['ct'].bossDefeated = true;
+    }
+
     if (Object.keys(updates).length > 0) dispatch(updateMultipleLocations(updates));
     if (Object.keys(itemUpdates).length > 0) dispatch(updateMultipleItems(itemUpdates));
     Object.entries(dungeonUpdates).forEach(([dungeon, newState]) => {
