@@ -774,8 +774,22 @@
     "Ice Palace": {
       Open: {
         always: {
-          allOf: ["mitts"],
-          anyOf: ["flippers", "canFakeFlipper", "canWaterWalk"],
+          anyOf: [
+            {
+              allOf: [
+                "mitts",
+                {
+                  anyOf: ["flippers", "canFakeFlipper", "canWaterWalk"],
+                }
+              ],
+            },
+            {
+              allOf: ["canMirrorWrap","canBreach|Dark World - South"],
+            },
+            {
+              allOf: ["flippers","canBreach|Dark World - South"],
+            },
+          ],
         },
         logical: {
           allOf: ["mitts"],
