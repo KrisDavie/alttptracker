@@ -31,6 +31,16 @@ export const autotrackerSlice = createSlice({
     setRomName: (state, action: PayloadAction<string | null>) => {
       state.romName = action.payload 
     },
+    setAutotrackingSettings: (state, action: { payload: Partial<AutotrackerState> }) => {
+      const newState = { ...state, ...action.payload };
+      // reset connection status if host or port changes
+      if (action.payload.host !== undefined || action.payload.port !== undefined) {
+        newState.isConnected = false;
+        newState.status = "disconnected";
+        newState.selectedDevice = null;
+      }
+      return newState;
+    },
     setConnectedgRPC: (state, action: PayloadAction<{ selectedDevice: string | null; isConnected: boolean }>) => {
       state.selectedDevice = action.payload.selectedDevice;
       state.isConnected = action.payload.isConnected;
@@ -52,5 +62,5 @@ export const autotrackerSlice = createSlice({
   },
 });
 
-export const { setRomName, setConnectedgRPC, setConnectionStatus, setDeviceList, setSelectedDevice, setError } = autotrackerSlice.actions;
+export const { setRomName, setAutotrackingSettings, setConnectedgRPC, setConnectionStatus, setDeviceList, setSelectedDevice, setError } = autotrackerSlice.actions;
 export default autotrackerSlice.reducer;

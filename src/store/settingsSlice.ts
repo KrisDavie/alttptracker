@@ -128,7 +128,6 @@ export const settingsSlice = createSlice({
     setSettings: (state, action: { payload: Partial<SettingsState> }) => {
       const newState = { ...state, ...action.payload };
       return newState;
-
     },
     setWildSmallKeys: (state, action: { payload: "inDungeon" | "wild" | "universal" }) => {
       state.wildSmallKeys = action.payload;

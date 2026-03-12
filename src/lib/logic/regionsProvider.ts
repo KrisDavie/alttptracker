@@ -636,15 +636,47 @@ function applyStandvertedPortalFixes(
     };
   }
 
-  // GT Stairs: block entry to AT (AT is not on Death Mountain in standverted)
+  // GT Stairs (owid 67, NOT flipped): GT is physically here in standverted.
+  // Block inverted AT entry; enable normal GT entry with canOpenGT.
   const gtStairs = result["GT Stairs"];
-  if (gtStairs?.exits?.["Ganons Tower (Inverted)"]) {
+  if (gtStairs?.exits) {
     result["GT Stairs"] = {
       ...gtStairs,
       exits: {
         ...gtStairs.exits,
-        "Ganons Tower (Inverted)": {
-          ...gtStairs.exits["Ganons Tower (Inverted)"],
+        // Block entry to AT (AT is not on Death Mountain in standverted)
+        ...(gtStairs.exits["Ganons Tower (Inverted)"] && {
+          "Ganons Tower (Inverted)": {
+            ...gtStairs.exits["Ganons Tower (Inverted)"],
+            requirements: { Open: "never", Inverted: "never" },
+          },
+        }),
+        // Enable normal GT entry (Open behaviour: canOpenGT)
+        ...(gtStairs.exits["Ganons Tower"] && {
+          "Ganons Tower": {
+            ...gtStairs.exits["Ganons Tower"],
+            requirements: { Open: { always: { allOf: ["canOpenGT"] } }, Inverted: { always: { allOf: ["canOpenGT"] } } },
+          },
+        }),
+      },
+    };
+  }
+
+  // GT Portal: swap exit availability (GT exits to DM, not HC Ledge)
+  const gtPortal = result["Ganons Tower Portal"];
+  if (gtPortal?.exits) {
+    result["Ganons Tower Portal"] = {
+      ...gtPortal,
+      exits: {
+        ...gtPortal.exits,
+        // Normal exit to GT Stairs — should be available (Open behaviour)
+        "Ganons Tower Exit": {
+          ...gtPortal.exits["Ganons Tower Exit"],
+          requirements: { Open: {}, Inverted: {} },
+        },
+        // Inverted exit to HC Ledge — should be blocked (GT is not on castle tile)
+        "Ganons Tower Exit (Inverted)": {
+          ...gtPortal.exits["Ganons Tower Exit (Inverted)"],
           requirements: { Open: "never", Inverted: "never" },
         },
       },

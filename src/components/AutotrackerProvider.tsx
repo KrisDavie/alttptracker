@@ -41,17 +41,16 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
 
   const items = useSelector((state: RootState) => state.items);
   const itemsRef = useRef(items);
+
   useEffect(() => {
     itemsRef.current = items;
   }, [items]);
 
   // Connecting and querying data
   useEffect(() => {
-
     if (!autotrackingEnabled) {
       return;
     }
-
 
     if (connectionType !== "sni") {
       return;

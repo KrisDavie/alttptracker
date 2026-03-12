@@ -243,5 +243,15 @@ describe("Overworld Shuffle", () => {
       // So AT locations should be unavailable.
       expect(result.locationsLogic["Castle Tower - Room 03"]).toBe("unavailable");
     });
+
+    it("GT is accessible from GT Stairs in standverted with 7 crystals", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ worldState: "standverted" })
+          .withAllPrizes()
+      );
+      expect(result.locationsLogic["Ganons Tower - Hope Room - Left"]).toBe("available");
+    });
   });
 });
