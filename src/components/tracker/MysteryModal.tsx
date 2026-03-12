@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { setSettings } from "../../store/settingsSlice";
 import { setModalClose } from "../../store/trackerSlice";
+import { setAutotrackingSettings } from "@/store/autotrackerSlice";
 
 function MysteryModal() {
   const dispatch = useDispatch();
@@ -12,20 +13,39 @@ function MysteryModal() {
   const [localSettings, setLocalSettings] = useState(trackerSettings);
   const [prevTrackerSettings, setPrevTrackerSettings] = useState(trackerSettings);
 
+  const autotrackerSettings = useSelector((state: RootState) => state.autotracker);
+  const [localAutotrackerSettings, setLocalAutotrackerSettings] = useState(autotrackerSettings);
+  const [prevAutotrackerSettings, setPrevAutotrackerSettings] = useState(autotrackerSettings);
+
+
   if (trackerSettings !== prevTrackerSettings) {
     setPrevTrackerSettings(trackerSettings);
     setLocalSettings(trackerSettings);
   }
 
+  if (autotrackerSettings !== prevAutotrackerSettings) {
+    setPrevAutotrackerSettings(autotrackerSettings);
+    setLocalAutotrackerSettings(autotrackerSettings);
+  }
+
   type SettingsKey = keyof typeof trackerSettings;
   type SettingsValue = string | boolean;
+
+  type AutotrackerSettingsKey = keyof typeof autotrackerSettings;
+  type AutotrackerSettingsValue = string | boolean;
 
   const handleInputChange = (key: SettingsKey, value: SettingsValue) => {
     setLocalSettings((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleAutotrackerInputChange = (key: AutotrackerSettingsKey, value: AutotrackerSettingsValue) => {
+    setLocalAutotrackerSettings((prev) => ({ ...prev, [key]: value }));
+  }
+
   const handleSubmit = () => {
     dispatch(setSettings(localSettings));
+    dispatch(setAutotrackingSettings(localAutotrackerSettings));
+
     dispatch(setModalClose());
   };
 
@@ -178,6 +198,10 @@ function MysteryModal() {
               <option value="compact">Compact</option>
               <option value="vertical">Vertical</option>
             </select>
+            <label className="font-medium">SNI host:</label>
+            <input type="text" className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.host || ""} onChange={(e) => handleAutotrackerInputChange("host", e.target.value)} />
+            <label className="font-medium">SNI port:</label>
+            <input type="number" className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.port || ""} onChange={(e) => handleAutotrackerInputChange("port", e.target.value)} />
           </div>
         </div>
       )}

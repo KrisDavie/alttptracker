@@ -49,7 +49,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
       + (wildMaps ? 0 : (totLocs?.map ? 1 : 0)));
 
     // Only count dungeon items
-    numChecks -= dungeonState.smallKeys && !wildSmallKeys ? dungeonState.smallKeys : 0;
+    numChecks -= dungeonState.smallKeys && (wildSmallKeys !== "wild") ? dungeonState.smallKeys : 0;
     numChecks -= dungeonState.bigKey && !wildBigKeys ? 1 : 0;
     numChecks -= dungeonState.compass && !wildCompasses ? 1 : 0;
     numChecks -= dungeonState.map && !wildMaps ? 1 : 0;
