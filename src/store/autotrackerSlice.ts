@@ -41,10 +41,10 @@ export const autotrackerSlice = createSlice({
       }
       return newState;
     },
-    setConnectedgRPC: (state, action: PayloadAction<{ selectedDevice: string | null; isConnected: boolean }>) => {
+    setConnected: (state, action: PayloadAction<{ selectedDevice: string | null; isConnected: boolean }>) => {
       state.selectedDevice = action.payload.selectedDevice;
       state.isConnected = action.payload.isConnected;
-      state.status = `Connected to ${action.payload.selectedDevice || "unknown device"} (SNI gRPC)`;
+      state.status = `Connected to ${action.payload.selectedDevice || "unknown device"} (${(state.connectionType === "sni" ? "SNI gRPC" : "QUsb2snes")})`;
     },
     setConnectionStatus: (state, action: PayloadAction<AutotrackerState["status"]>) => {
       state.status = action.payload;
@@ -62,5 +62,5 @@ export const autotrackerSlice = createSlice({
   },
 });
 
-export const { setRomName, setAutotrackingSettings, setConnectedgRPC, setConnectionStatus, setDeviceList, setSelectedDevice, setError } = autotrackerSlice.actions;
+export const { setRomName, setAutotrackingSettings, setConnected, setConnectionStatus, setDeviceList, setSelectedDevice, setError } = autotrackerSlice.actions;
 export default autotrackerSlice.reducer;

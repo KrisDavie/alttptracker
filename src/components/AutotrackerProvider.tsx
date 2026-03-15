@@ -3,7 +3,7 @@ import { DUNGEON_ITEMS, getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVEN
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { setConnectedgRPC, setDeviceList, setRomName } from "@/store/autotrackerSlice";
+import { setConnected, setDeviceList, setRomName } from "@/store/autotrackerSlice";
 import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
@@ -13,22 +13,40 @@ import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
 import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
 
+/** Send a QUsb2snes command and await its single response message. */
+function qusb2snesRequest(ws: WebSocket, opcode: string, operands: string[] = []): Promise<MessageEvent> {
+  return new Promise((resolve, reject) => {
+    const onMessage = (event: MessageEvent) => {
+      ws.removeEventListener("error", onError);
+      resolve(event);
+    };
+    const onError = (event: Event) => {
+      ws.removeEventListener("message", onMessage);
+      reject(new Error(`QUsb2snes WebSocket error during ${opcode}: ${event}`));
+    };
+    ws.addEventListener("message", onMessage, { once: true });
+    ws.addEventListener("error", onError, { once: true });
+    ws.send(JSON.stringify({ Opcode: opcode, Space: "SNES", Operands: operands }));
+  });
+}
+
+/** Send a QUsb2snes command that doesn't produce a response (e.g. Attach). */
+function qusb2snesSend(ws: WebSocket, opcode: string, operands: string[] = []) {
+  ws.send(JSON.stringify({ Opcode: opcode, Space: "SNES", Operands: operands }));
+}
+
 interface AutotrackerProviderProps {
   children: React.ReactNode;
 }
-
-const getTransport = ({ host, port }: { host: string; port: number }) => {
-  return new GrpcWebFetchTransport({
-    baseUrl: `http://${host}:${port}`,
-  });
-};
 
 export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
   const autotrackerState = useSelector((state: RootState) => state.autotracker);
   const autotrackingEnabled = useSelector((state: RootState) => state.settings.autotracking);
+  const settings = useSelector((state: RootState) => state.settings);
   const { isConnected, connectionType, selectedDevice, romName, host, port } = autotrackerState;
   const [autoTrackingData, setAutoTrackingData] = useState<Record<string, Uint8Array>>({});
+  const [qusb2Websocket, setQusb2Websocket] = useState<WebSocket | null>(null);
 
   const checks = useSelector((state: RootState) => state.checks.locationsChecks);
   const checksRef = useRef(checks);
@@ -52,67 +70,111 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       return;
     }
 
-    if (connectionType !== "sni") {
-      return;
-    }
-
     if (!host || !port) {
       console.error("Host or port not set for autotracker connection");
       return;
     }
-
-    async function fetchDevices(transport: GrpcWebFetchTransport) {
-      const deviceClient = new DevicesClient(transport);
-      const devicesResponse = await deviceClient.listDevices({ kinds: [] });
-      return devicesResponse.response.devices.map((device) => device.uri);
-    }
-
-    async function fetchMemoryRange(transport: GrpcWebFetchTransport, requestAddress: number, size: number) {
-      if (!selectedDevice) {
-        throw new Error("No device selected");
+    
+    if (connectionType === "qusb2snes") {
+      if (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN) {
+        const ws = new WebSocket(`ws://${host}:${port}`);
+        ws.binaryType = "arraybuffer";
+        ws.onopen = () => {
+          console.log("Connected to QUsb2snes WebSocket");
+          setQusb2Websocket(ws);
+        };
+        ws.onclose = () => {
+          console.log("QUsb2snes WebSocket closed");
+          setQusb2Websocket(null);
+        };
       }
-      const memClient = new DeviceMemoryClient(transport);
-      const memoryRangeResponse = await memClient.singleRead({
-        uri: selectedDevice,
-        request: {
-          requestMemoryMapping: MemoryMapping.LoROM, // TODO: Detect this on connection (and when reloading rom)
-          requestAddressSpace: AddressSpace.FxPakPro,
-          requestAddress,
-          size,
-        },
-      });
-      return memoryRangeResponse.response.response?.data;
     }
 
-    // Polling loop
+    // --- Transport-agnostic helpers ---
+    async function fetchDevices(): Promise<string[]> {
+      if (connectionType === "sni") {
+        const transport = new GrpcWebFetchTransport({ baseUrl: `http://${host}:${port}` });
+        const deviceClient = new DevicesClient(transport);
+        const devicesResponse = await deviceClient.listDevices({ kinds: [] });
+        return devicesResponse.response.devices.map((device) => device.uri);
+      } else {
+        if (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN) {
+          throw new Error("WebSocket not connected for QUsb2snes");
+        }
+        const response = await qusb2snesRequest(qusb2Websocket, "DeviceList");
+        const parsed = JSON.parse(response.data as string) as { Results: string[] };
+        return parsed.Results ?? [];
+      }
+    }
+
+    async function connectToDevice(devices: string[]): Promise<void> {
+      if (devices.length === 0) return;
+      const device = devices[0];
+      dispatch(setDeviceList(devices));
+
+      if (connectionType === "sni") {
+        dispatch(setConnected({ selectedDevice: device, isConnected: true }));
+      } else {
+        // Attach to the device (no response expected)
+        qusb2snesSend(qusb2Websocket!, "Attach", [device]);
+        dispatch(setConnected({ selectedDevice: device, isConnected: true }));
+      }
+    }
+
+    async function fetchMemoryRange(requestAddress: number, size: number): Promise<Uint8Array | undefined> {
+      if (connectionType === "sni") {
+        if (!selectedDevice) throw new Error("No device selected");
+        const transport = new GrpcWebFetchTransport({ baseUrl: `http://${host}:${port}` });
+        const memClient = new DeviceMemoryClient(transport);
+        const memoryRangeResponse = await memClient.singleRead({
+          uri: selectedDevice,
+          request: {
+            requestMemoryMapping: MemoryMapping.LoROM, // TODO: Detect this on connection (and when reloading rom)
+            requestAddressSpace: AddressSpace.FxPakPro,
+            requestAddress,
+            size,
+          },
+        });
+        return memoryRangeResponse.response.response?.data;
+      } else {
+        if (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN) {
+          throw new Error("WebSocket not connected for QUsb2snes");
+        }
+        const response = await qusb2snesRequest(
+          qusb2Websocket,
+          "GetAddress",
+          [requestAddress.toString(16), size.toString(16)],
+        );
+        return new Uint8Array(response.data as ArrayBuffer);
+      }
+    }
+
+    // --- Shared polling loop ---
     const poll = async () => {
-      const transport = getTransport({ host, port });
+      // For QUsb2snes, wait until the WebSocket is actually open before doing anything
+      if (connectionType === "qusb2snes" && (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN)) {
+        return;
+      }
+
       if (!isConnected) {
-        fetchDevices(transport)
-          .then((devices) => {
-            if (devices.length > 0) {
-              dispatch(setDeviceList(devices));
-              dispatch(setConnectedgRPC({ selectedDevice: devices[0], isConnected: true }));
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching devices:", error);
-          });
+        try {
+          const devices = await fetchDevices();
+          await connectToDevice(devices);
+        } catch (error) {
+          console.error("Error during device discovery:", error);
+        }
       } else {
         const newData: Record<string, Uint8Array> = {};
         for (const [name, range] of Object.entries(MEMORY_RANGES)) {
           try {
-            // TODO: Support QUSB2SNES
-            const data = await fetchMemoryRange(transport, range.start, range.size);
+            const data = await fetchMemoryRange(range.start, range.size);
             if (data) {
               if (name === "romname") {
-                // Checking ROM name range
                 const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, "");
                 if (romName !== fetchedRomName) {
                   dispatch(setRomName(fetchedRomName));
                 }
               } else if (name === "gamemode") {
-                // Checking first range for game mode
                 const gameMode = data[0];
                 if (![0x07, 0x09, 0x0b].includes(gameMode)) {
                   break; // Invalid game mode, skip processing
@@ -133,7 +195,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     poll();
 
     return () => clearInterval(interval);
-  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled]);
+  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled, qusb2Websocket]);
 
   // Actually process the data and mark things as checked etc.
   useEffect(() => {
@@ -163,7 +225,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
 
 
     // // TODO: Add full processing here
-    // const FORK = romName?.slice(0, 2)
+    const FORK = romName?.slice(0, 2)
     // const VERSION = romName?.slice(2, 5)
 
 
@@ -251,10 +313,25 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       dungeonUpdates[dungeon] = newState;
     });
 
+    // Detect Aga1
     const ctBossDefeated = getByte(0xf5f3c5);
     if (ctBossDefeated !== null && ctBossDefeated >= 0x03) {
       if (!dungeonUpdates['ct']) dungeonUpdates['ct'] = {};
       dungeonUpdates['ct'].bossDefeated = true;
+    }
+
+    // Only fix double small keys when enemy drops and pottery don't already add small keys, since those can cause >1 small keys in a dungeon legitimately
+    // This fix doesn't account for GT. In GT, there is more than 1 small key and so we can't easily detect this issue
+    // VT currently has an issue where torch or freestanding small keys are counted twice in memory
+    // This only happens when it's found in it's vanilla dungeon, but it shouldn't go above this regardless, so we can just cap it at 1 small key for those dungeons when certain settings are enabled
+    const fixDoubleSmallKeys = FORK === "VT" && settings.enemyDrop === "none" && !["keys",  "cavekeys" , "dungeon" , "lottery"].includes(settings.pottery) // && settings.doors === "none";
+
+    if (fixDoubleSmallKeys) {
+      for (const dungeon of ['dp', 'toh']) {
+        if (dungeonUpdates[dungeon] && dungeonUpdates[dungeon].smallKeys && dungeonUpdates[dungeon].smallKeys > 1) {
+          dungeonUpdates[dungeon].smallKeys = 1;
+        }
+      }
     }
 
     if (Object.keys(updates).length > 0) dispatch(updateMultipleLocations(updates));
@@ -262,7 +339,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     Object.entries(dungeonUpdates).forEach(([dungeon, newState]) => {
       if (Object.keys(newState).length > 0) dispatch(updateDungeonState({ dungeon, newState }));
     });
-  }, [autoTrackingData, romName, dispatch]);
+  }, [autoTrackingData, romName, dispatch, settings]);
 
   return <>{children}</>;
 };

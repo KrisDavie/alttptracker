@@ -39,7 +39,15 @@ function MysteryModal() {
   };
 
   const handleAutotrackerInputChange = (key: AutotrackerSettingsKey, value: AutotrackerSettingsValue) => {
-    setLocalAutotrackerSettings((prev) => ({ ...prev, [key]: value }));
+    const nextState = { ...localAutotrackerSettings, [key]: value };
+    if (key === "connectionType") {
+      if (value === "sni") {
+        nextState.port = 8190;
+    } else if (value === "qusb2snes") {
+          nextState.port = 23074;
+      }
+    setLocalAutotrackerSettings(nextState);
+    }
   }
 
   const handleSubmit = () => {
@@ -198,9 +206,14 @@ function MysteryModal() {
               <option value="compact">Compact</option>
               <option value="vertical">Vertical</option>
             </select>
-            <label className="font-medium">SNI host:</label>
+            <label className="font-medium">Autotracking Protocol:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.connectionType || "sni"} onChange={(e) => handleAutotrackerInputChange("connectionType", e.target.value)}>
+              <option value="sni">SNI gRPC</option>
+              <option value="qusb2snes">QUsb2snes</option>
+            </select>
+            <label className="font-medium">Autotracking host:</label>
             <input type="text" className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.host || ""} onChange={(e) => handleAutotrackerInputChange("host", e.target.value)} />
-            <label className="font-medium">SNI port:</label>
+            <label className="font-medium">Autotracking port:</label>
             <input type="number" className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.port || ""} onChange={(e) => handleAutotrackerInputChange("port", e.target.value)} />
           </div>
         </div>
