@@ -23,7 +23,7 @@
  * is never mutated. Transforms share a precomputed RegionMetadata context.
  */
 
-import type { ExitLogic, GameState, RegionLogic } from "@/data/logic/logicTypes";
+import type { ExitLogic, GameState, LogicRequirement, LogicState, RegionLogic, WorldLogic } from "@/data/logic/logicTypes";
 import { entranceLocations } from "@/data/locationsData";
 import { whirlpoolRegistry, parallelLinks } from "@/data/logic/owData";
 
@@ -585,10 +585,111 @@ export function buildEffectiveRegions(
   regions = applyWhirlpoolRemaps(regions, effectiveState, metadata);
   regions = applyFluteRemaps(regions, effectiveState, metadata);
   regions = applyDoorRemaps(regions, effectiveState, metadata);
+  regions = applyStandardLogicChanges(regions, effectiveState);
   regions = applyStandvertedPortalFixes(regions, effectiveState);
+
 
   return { regions, metadata };
 }
+
+/** 
+* In standard, the player is given a free lamp cone in the sewers, and therefore
+* the escape sequence does not need the lamp. This function applies the necessary 
+* logic changes to reflect that.
+*/
+function applyStandardLogicChanges(
+  regions: Record<string, RegionLogic>,
+  state: GameState,
+): Record<string, RegionLogic> {
+
+  if (!['standard', 'standverted'].includes(state.settings.worldState)) {
+    return regions;
+  }
+
+  const escapeRegions = [
+    "Sewers Behind Tapestry",
+    "Sewers Rope Room",
+    "Sewers Dark Cross",
+    "Sewers Water",
+    "Sewers Dark Aquabats",
+    "Sewers Key Rat"
+  ];
+
+  const result = { ...regions };
+  const toStrip = new Set(["lantern"]);
+
+  for (const regionName of escapeRegions) {
+    const region = result[regionName];
+    if (!region) continue;
+
+    // Deep-copy exits with lantern stripped
+    const newExits: ExitLogic = {};
+    for (const [exitName, exit] of Object.entries(region.exits)) {
+      newExits[exitName] = {
+        ...exit,
+        requirements: stripRequirementsFromWorldLogic(exit.requirements, toStrip),
+      };
+    }
+
+    // Deep-copy locations with lantern stripped
+    const newLocations: RegionLogic["locations"] = {};
+    for (const [locName, loc] of Object.entries(region.locations)) {
+      newLocations[locName] = {
+        ...loc,
+        requirements: stripRequirementsFromWorldLogic(loc.requirements, toStrip),
+      };
+    }
+
+    result[regionName] = { ...region, exits: newExits, locations: newLocations };
+  }
+
+  return result;
+}
+
+/**
+ * Strip matching requirement strings from a WorldLogic requirements object.
+ * Returns a new object — does not mutate the original.
+ */
+function stripRequirementsFromWorldLogic(worldLogic: WorldLogic, toStrip: Set<string>): WorldLogic {
+  const result: WorldLogic = {};
+  for (const [worldKey, logicState] of Object.entries(worldLogic)) {
+    if (typeof logicState === "string") {
+      (result as Record<string, unknown>)[worldKey] = logicState;
+    } else {
+      (result as Record<string, unknown>)[worldKey] = stripRequirementsFromLogicState(logicState as LogicState, toStrip);
+    }
+  }
+  return result;
+}
+
+function stripRequirementsFromLogicState(logicState: LogicState, toStrip: Set<string>): LogicState {
+  const result: LogicState = {};
+  for (const tier of ["always", "logical", "required", "information", "scout"] as const) {
+    if (logicState[tier] != null) {
+      result[tier] = stripRequirementsFromRequirement(logicState[tier]!, toStrip);
+    }
+  }
+  return result;
+}
+
+function stripRequirementsFromRequirement(req: LogicRequirement, toStrip: Set<string>): LogicRequirement {
+  if (typeof req === "string") {
+    return toStrip.has(req) ? ({} as LogicRequirement) : req;
+  }
+  if ("allOf" in req && req.allOf) {
+    const filtered = req.allOf
+      .map(r => stripRequirementsFromRequirement(r, toStrip))
+      .filter(r => typeof r !== "string" || !toStrip.has(r));
+    const meaningful = filtered.filter(r => typeof r === "string" || Object.keys(r).length > 0);
+    if (meaningful.length === 0) return {};
+    return { allOf: meaningful };
+  }
+  if ("anyOf" in req && req.anyOf) {
+    return { anyOf: req.anyOf.map(r => stripRequirementsFromRequirement(r, toStrip)) };
+  }
+  return req;
+}
+
 
 /**
  * Temporary fix: patch Agahnim's Tower portal exits for standverted mode.

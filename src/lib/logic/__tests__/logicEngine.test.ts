@@ -1224,6 +1224,48 @@ describe("LogicEngine", () => {
     });
   });
 
+    describe("Old Man", () => {
+      it("Old man should be available with lamp and flute", () => {
+        const state = gameState().withItems({ lantern: 1, flute: 1 }).build();
+
+        const logicSet = getLogicSet("noglitches");
+        const traverser = new OverworldTraverser(state, logicSet);
+        const result = traverser.calculateAll();
+
+        expect(result.locationsLogic["Old Man"]).toBe("available");
+      });
+
+      it("Old man should be available with lamp and glove", () => {
+        const state = gameState().withItems({ lantern: 1, glove: 1 }).build();
+
+        const logicSet = getLogicSet("noglitches");
+        const traverser = new OverworldTraverser(state, logicSet);
+        const result = traverser.calculateAll();
+
+        expect(result.locationsLogic["Old Man"]).toBe("available");
+      });
+
+      it("Old man should be ool with glove/flute", () => {
+        const state = gameState().withItems({ glove: 1, flute: 1 }).withSequenceBreaks({canNavigateDarkRooms: true}).build();
+
+        const logicSet = getLogicSet("noglitches");
+        const traverser = new OverworldTraverser(state, logicSet);
+        const result = traverser.calculateAll();
+
+        expect(result.locationsLogic["Old Man"]).toBe("ool");
+      });
+
+      it("Old man should be unavailable without glove/flute", () => {
+        const state = gameState().withAllItems().withoutItems(["flute", "glove"]).build();
+
+        const logicSet = getLogicSet("noglitches");
+        const traverser = new OverworldTraverser(state, logicSet);
+        const result = traverser.calculateAll();
+
+        expect(result.locationsLogic["Old Man"]).toBe("unavailable");
+      });
+  });
+
   describe("Inverted Logic", () => {
     it("all locations should be available with all items", () => {
       const state = gameState().withAllItems().withSettings({ worldState: "inverted" }).withAllPrizes().build();

@@ -327,7 +327,7 @@ export class RequirementEvaluator {
       // Followers
       case "canCollectOldMan":
         // TODO Follower shuffle logic
-        return this.resolveComplex("canReach|Old Man Cave (East)", ctx);
+        return this.resolveComplex("canReach|Old Man Cave (West)", ctx);
       case "canRescueOldMan":
         return minimumStatus(this.resolveSimple("canCollectOldMan", ctx), this.resolveComplex("canReach|Old Man Drop Off", ctx));
       case "canCollectKiki":
