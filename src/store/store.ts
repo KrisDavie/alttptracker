@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rememberReducer, rememberEnhancer } from 'redux-remember';
+import { idbDriver } from '@/lib/idbDriver';
 import itemsReducer from './itemsSlice';
 import dungeonsReducer from './dungeonsSlice';
 import checksReducer from './checksSlice';
@@ -9,8 +10,7 @@ import autotrackerReducer from './autotrackerSlice';
 import trackerReducer from './trackerSlice';
 import overworldReducer from './overworldSlice';
 
-// const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances'];
-const rememberedKeys: string[] = [];
+const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances', 'overworld'];
 
 const urlParams = new URLSearchParams(window.location.search);
 const instanceId = urlParams.get("id") || urlParams.get("instance") || 'default';
@@ -28,7 +28,7 @@ export const store = configureStore({
   }),
   enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(
     rememberEnhancer(
-      window.localStorage,
+      idbDriver,
       rememberedKeys,
       { prefix: `alttptracker_session_${instanceId}_` }
     )

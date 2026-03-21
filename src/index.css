@@ -6,7 +6,6 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   width: 100%;
   height: 100%;
 }
@@ -238,10 +237,8 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    overflow: hidden;
   }
   html {
-    overflow: hidden;
     @apply font-sans;
   }
 }

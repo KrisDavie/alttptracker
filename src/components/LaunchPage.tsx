@@ -1,59 +1,311 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Info, Github } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
+import type { SettingsState } from "@/store/settingsSlice";
+import { getPresetById, resolvePresetFromSlug } from "@/data/launcherPresets";
+import ItemsData from "@/data/itemData";
+import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
+import { idbDriver } from "@/lib/idbDriver";
+import { DEFAULT_SETTINGS, loadLauncherPrefs, saveLauncherPrefs, loadRecentSprites, pushRecentSprite } from "@/lib/launchHelpers";
+import { LaunchHeader } from "./launch/LaunchHeader";
+import { PresetSection } from "./launch/PresetSection";
+import { LaunchCard } from "./launch/LaunchCard";
+import { GameSettingsTabs } from "./launch/GameSettingsTabs";
+import { SpriteSelector } from "./launch/SpriteSelector";
 
 const LaunchPage: React.FC = () => {
-  const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
+  const savedPrefs = useMemo(() => loadLauncherPrefs(), []);
+  const [settings, setSettings] = useState<SettingsState>(() => ({
+    ...DEFAULT_SETTINGS,
+    mapMode: (savedPrefs.mapMode as SettingsState["mapMode"]) ?? DEFAULT_SETTINGS.mapMode,
+    connectionLinesMode: (savedPrefs.connectionLinesMode as SettingsState["connectionLinesMode"]) ?? DEFAULT_SETTINGS.connectionLinesMode,
+    autotracking: savedPrefs.autotracking ?? DEFAULT_SETTINGS.autotracking,
+    includeDungeonItemsInCounter: savedPrefs.includeDungeonItemsInCounter ?? DEFAULT_SETTINGS.includeDungeonItemsInCounter,
+    sequenceBreaks: { canNavigateDarkRooms: savedPrefs.canNavigateDarkRooms ?? DEFAULT_SETTINGS.sequenceBreaks.canNavigateDarkRooms },
+  }));
+  const [spriteName, setSpriteName] = useState(savedPrefs.spriteName ?? "link");
+  const [startingItems, setStartingItems] = useState<Record<string, number>>({});
+  const [sessions, setSessions] = useState<TrackerSession[]>([]);
+  const [sessionsLoaded, setSessionsLoaded] = useState(false);
+  const [recentSprites, setRecentSprites] = useState<string[]>(() => loadRecentSprites());
+  const [autotrackHost, setAutotrackHost] = useState("localhost");
+  const [autotrackPort, setAutotrackPort] = useState(8190);
+  const [autotrackProtocol, setAutotrackProtocol] = useState<"sni" | "qusb2snes">("sni");
+  const [autotrackStatus, setAutotrackStatus] = useState<"checking" | "connected" | "disconnected">("checking");
+  const [sessionName, setSessionName] = useState("");
+  const [motd, setMotd] = useState<string | null>(null);
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
+  const [nextLadder, setNextLadder] = useState<{ presetId: string; name: string; time: Date } | null>(null);
 
-  const openTracker = () => {
-    // Current window navigation
-    navigate("/tracker");
-  };
+  // Load sessions from IndexedDB
+  useEffect(() => {
+    getSessions().then((s) => {
+      setSessions(s);
+      setSessionsLoaded(true);
+    });
+  }, []);
 
-  const openTrackerNewWindow = () => {
-    // Open in a new window/tab
-    window.open("/tracker", "_blank", "width=1344,height=449");
-  };
+  // Fetch next ladder race from alttpr.racing API
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/ladder/upcoming");
+        if (cancelled) return;
+        if (!res.ok) return;
+        const data = await res.json();
+        const race = data[0];
+        if (!race || cancelled) return;
+        const modeRes = await fetch(`/api/ladder/modes/${encodeURIComponent(race.mode)}`);
+        if (cancelled) return;
+        if (!modeRes.ok) return;
+        const modeData = await modeRes.json();
+        const presetId = resolvePresetFromSlug(modeData.slug ?? "");
+        if (presetId && !cancelled) {
+          setNextLadder({
+            presetId,
+            name: modeData.name,
+            time: new Date(parseInt(race.time) * 1000),
+          });
+        }
+      } catch {
+        // Silently ignore — fetch may fail due to network or proxy unavailability
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Save UI preferences when sprite or interface settings change
+  useEffect(() => {
+    saveLauncherPrefs({
+      spriteName,
+      mapMode: settings.mapMode,
+      connectionLinesMode: settings.connectionLinesMode,
+      autotracking: settings.autotracking,
+      includeDungeonItemsInCounter: settings.includeDungeonItemsInCounter ?? false,
+      canNavigateDarkRooms: settings.sequenceBreaks.canNavigateDarkRooms,
+    });
+  }, [spriteName, settings.mapMode, settings.connectionLinesMode, settings.autotracking, settings.includeDungeonItemsInCounter, settings.sequenceBreaks.canNavigateDarkRooms]);
+
+  // Fetch MOTD from public/motd.txt
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/motd.txt")
+      .then((r) => (r.ok ? r.text() : null))
+      .then((text) => {
+        if (!cancelled && text?.trim()) setMotd(text.trim());
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Probe autotracker connection on mount and when settings change
+  useEffect(() => {
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      if (cancelled) return;
+      setAutotrackStatus("checking");
+      if (autotrackProtocol === "sni") {
+        try {
+          await fetch(`http://${autotrackHost}:${autotrackPort}`, {
+            mode: "no-cors",
+            signal: AbortSignal.timeout(2000),
+          });
+          if (!cancelled) setAutotrackStatus("connected");
+        } catch {
+          if (!cancelled) setAutotrackStatus("disconnected");
+        }
+      } else {
+        try {
+          const ws = new WebSocket(`ws://${autotrackHost}:${autotrackPort}`);
+          ws.onopen = () => {
+            if (!cancelled) setAutotrackStatus("connected");
+            ws.close();
+          };
+          ws.onerror = () => {
+            if (!cancelled) setAutotrackStatus("disconnected");
+          };
+          setTimeout(() => {
+            if (ws.readyState !== WebSocket.OPEN) {
+              ws.close();
+              if (!cancelled) setAutotrackStatus("disconnected");
+            }
+          }, 2000);
+        } catch {
+          if (!cancelled) setAutotrackStatus("disconnected");
+        }
+      }
+    }, 10000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [autotrackHost, autotrackPort, autotrackProtocol]);
+
+  const updateSetting = useCallback(<K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const applyPreset = useCallback((presetId: string) => {
+    const preset = getPresetById(presetId);
+    if (preset) {
+      setSettings({ ...DEFAULT_SETTINGS, ...preset.settings });
+      setStartingItems(preset.startingItems ?? {});
+      setSelectedPresetId(presetId);
+    }
+  }, []);
+
+  const toggleStartingItem = useCallback((item: string) => {
+    setStartingItems((prev) => {
+      const current = prev[item] ?? 0;
+      const maxCount = ItemsData[item as keyof typeof ItemsData]?.maxCount ?? 1;
+      if (current >= maxCount) {
+        const next = { ...prev };
+        delete next[item];
+        return next;
+      }
+      return { ...prev, [item]: current + 1 };
+    });
+  }, []);
+
+  const launchTracker = useCallback(
+    async (sessionId?: string) => {
+      let id = sessionId;
+      const isNewSession = !id;
+
+      if (isNewSession) {
+        const session = await createSession(settings, sessionName || undefined, spriteName, selectedPresetId ?? undefined);
+        id = session.id;
+        setSessions(await getSessions());
+      }
+
+      pushRecentSprite(spriteName);
+      setRecentSprites(loadRecentSprites());
+
+      const prefix = `alttptracker_session_${id}_`;
+
+      if (isNewSession) {
+        await idbDriver.setItem(prefix + "settings", JSON.stringify(settings));
+
+        if (Object.keys(startingItems).length > 0) {
+          const itemsState: Record<string, { amount: number }> = {};
+          for (const key of Object.keys(ItemsData)) {
+            if (key.startsWith("bottle")) continue;
+            itemsState[key] = { amount: 0 };
+          }
+          itemsState["bottle1"] = { amount: 0 };
+          itemsState["bottle2"] = { amount: 0 };
+          itemsState["bottle3"] = { amount: 0 };
+          itemsState["bottle4"] = { amount: 0 };
+          for (const [item, count] of Object.entries(startingItems)) {
+            if (item === "bottle") {
+              for (let i = 1; i <= Math.min(count, 4); i++) {
+                itemsState[`bottle${i}`] = { amount: 1 };
+              }
+            } else if (itemsState[item]) {
+              itemsState[item] = { amount: count };
+            }
+          }
+          await idbDriver.setItem(prefix + "items", JSON.stringify(itemsState));
+        }
+      } else {
+        const raw = await idbDriver.getItem(prefix + "settings");
+        const savedSettings = raw ? JSON.parse(raw) : {};
+        const merged = {
+          ...savedSettings,
+          mapMode: settings.mapMode,
+          connectionLinesMode: settings.connectionLinesMode,
+          connectionLineColor: settings.connectionLineColor,
+          autotracking: settings.autotracking,
+          includeDungeonItemsInCounter: settings.includeDungeonItemsInCounter,
+        };
+        await idbDriver.setItem(prefix + "settings", JSON.stringify(merged));
+      }
+
+      window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", "width=1344,height=449");
+    },
+    [settings, spriteName, sessionName, selectedPresetId, startingItems],
+  );
+
+  const handleDeleteSession = useCallback(async (id: string) => {
+    await deleteSession(id);
+    setSessions(await getSessions());
+  }, []);
+
+  const handleTogglePin = useCallback(async (id: string) => {
+    await togglePin(id);
+    setSessions(await getSessions());
+  }, []);
+
+  const unpinnedCount = sessions.filter((s) => !s.pinned).length;
+  const canCreateSession = unpinnedCount > 0 || sessions.length < MAX_SESSIONS;
 
   return (
-    <div className="min-h-screen w-full bg-neutral-900 text-white flex flex-col items-center justify-center p-8">
-      <div className="max-w-2xl w-full space-y-8 text-center">
-        <h1 className="text-5xl font-bold tracking-tight">
-          ALttP Randomizer Tracker
-        </h1>
-        <p className="text-xl text-neutral-400">
-          A powerful logic-based item and location tracker for A Link to the Past Randomizer.
-        </p>
+    <TooltipProvider>
+      <div className="min-h-screen bg-background text-foreground overflow-auto">
+        <LaunchHeader theme={theme} setTheme={setTheme} autotrackStatus={autotrackStatus} autotrackProtocol={autotrackProtocol} autotrackHost={autotrackHost} autotrackPort={autotrackPort} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-8">
-          <Button 
-            onClick={openTracker}
-            className="h-16 text-lg cursor-pointer"
-            variant="default"
-          >
-            Launch Tracker
-          </Button>
-          <Button 
-            onClick={openTrackerNewWindow}
-            className="h-16 text-lg cursor-pointer"
-            variant="outline"
-          >
-            Open in New Window
-          </Button>
-        </div>
+        <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+          {/* MOTD */}
+          {motd && (
+            <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+              <Info className="size-4 mt-0.5 shrink-0 text-primary" />
+              <span>{motd}</span>
+            </div>
+          )}
 
-        <div className="pt-12 border-t border-neutral-800 mt-12 text-left">
-          <h2 className="text-2xl font-semibold mb-4">Features</h2>
-          <ul className="list-disc list-inside space-y-2 text-neutral-300">
-            <li>Graph-based logic engine</li>
-            <li>Support for standard, inverted, and custom world states</li>
-            <li>Autotracking support (via SNI)</li>
-            <li>Multiple layout modes (Normal, Compact, Vertical)</li>
-            <li>Entrance shuffle support</li>
-          </ul>
-        </div>
+          <PresetSection nextLadder={nextLadder} applyPreset={applyPreset} />
+
+          <LaunchCard
+            sessionName={sessionName}
+            setSessionName={setSessionName}
+            spriteName={spriteName}
+            selectedPresetId={selectedPresetId}
+            sessions={sessions}
+            sessionsLoaded={sessionsLoaded}
+            canCreateSession={canCreateSession}
+            onLaunch={launchTracker}
+            onDeleteSession={handleDeleteSession}
+            onTogglePin={handleTogglePin}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
+            {/* Settings tabs (game settings + tracker settings) */}
+            <GameSettingsTabs
+              settings={settings}
+              updateSetting={updateSetting}
+              startingItems={startingItems}
+              setStartingItems={setStartingItems}
+              toggleStartingItem={toggleStartingItem}
+              autotrackProtocol={autotrackProtocol}
+              setAutotrackProtocol={setAutotrackProtocol}
+              autotrackHost={autotrackHost}
+              setAutotrackHost={setAutotrackHost}
+              autotrackPort={autotrackPort}
+              setAutotrackPort={setAutotrackPort}
+            />
+
+            {/* Sidebar: Sprite */}
+            <SpriteSelector spriteName={spriteName} setSpriteName={setSpriteName} recentSprites={recentSprites} />
+          </div>
+
+          {/* Footer */}
+          <footer className="border-t pt-4 pb-6 mt-6 flex items-center justify-between text-xs text-muted-foreground">
+            <span>Design by Muffins</span>
+            <a href="https://github.com/KrisDavie/alttptracker" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <Github className="size-3.5" />
+              GitHub
+            </a>
+          </footer>
+        </main>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 

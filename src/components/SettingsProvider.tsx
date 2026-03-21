@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { setSettings, type SettingsState } from "@/store/settingsSlice";
 import { SettingsContext } from "@/hooks/useSettings";
 import { useApplyStatusColors } from "@/hooks/useStatusColors";
+import { idbDriver } from "@/lib/idbDriver";
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
@@ -30,21 +31,31 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [dispatch]);
 
-  // Listen for changes from other windows (e.g., Launcher) with the same ID
+  // Poll IndexedDB for settings changes from other windows (e.g., Launcher)
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === storageKey && e.newValue) {
+    let cancelled = false;
+    let lastValue: string | null = null;
+
+    // Initial read
+    idbDriver.getItem(storageKey).then((val) => {
+      if (!cancelled && val) lastValue = val;
+    });
+
+    const interval = setInterval(async () => {
+      if (cancelled) return;
+      const val = await idbDriver.getItem(storageKey);
+      if (val && val !== lastValue) {
+        lastValue = val;
         try {
-          const newSettings = JSON.parse(e.newValue);
+          const newSettings = JSON.parse(val);
           dispatch(setSettings(newSettings));
         } catch (err) {
-          console.error("Failed to sync settings from storage event", err);
+          console.error("Failed to sync settings from IndexedDB", err);
         }
       }
-    };
+    }, 2000);
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    return () => { cancelled = true; clearInterval(interval); };
   }, [dispatch, storageKey]);
 
   const saveSettings = (newSettings: Partial<SettingsState>) => {

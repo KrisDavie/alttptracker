@@ -35,7 +35,7 @@ function CommunityLayoutItems() {
   // +-----------------------------------+
 
   return (
-    <div className="w-112 h-112 grid grid-cols-7 grid-rows-7 bg-black relative">
+    <div className="w-md h-112 grid grid-cols-7 grid-rows-7 bg-black relative">
       {/* Mystery Modal */}
       {modalOpen === "mystery" && (
         <div className="absolute top-0 left-0 w-full h-full z-10">

@@ -7,7 +7,14 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    host: true
+    host: true,
+    proxy: {
+      "/api/ladder": {
+        target: "https://alttpr.racing/api/v1",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/ladder/, ""),
+      },
+    },
   },
   plugins: [
     react({
