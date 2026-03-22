@@ -1,5 +1,5 @@
 import type { ItemsState } from "@/store/itemsSlice";
-import { defaultUserSequenceBreaks, type SettingsState, type UserSequenceBreaks} from "@/store/settingsSlice";
+import { type SettingsState, type UserSequenceBreaks} from "@/store/settingsSlice";
 import type { DungeonState, DungeonsState } from "@/store/dungeonsSlice";
 import type { EntranceData, EntrancesState } from "@/store/entrancesSlice";
 import type { OverworldState } from "@/store/overworldSlice";
@@ -10,6 +10,8 @@ import { OverworldTraverser } from "../overworldTraverser";
 import { getLogicSet, type LogicMode } from "../logicMapper";
 import { buildEffectiveRegions } from "../regionsProvider";
 import type { RegionLogic } from "@/data/logic/logicTypes";
+import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
+
 
 /**
  * Helper to create a default items state with all items at 0
@@ -89,51 +91,19 @@ export function createAllItems(): ItemsState {
 /**
  * Helper to create default settings
  */
-export function createDefaultSettings(): SettingsState {
-
-  const allFalseSeqBreaks = Object.fromEntries(Object.keys(defaultUserSequenceBreaks).map(key => [key, false])) as unknown as UserSequenceBreaks;
-
-  return {
-    logicMode: "noglitches",
-    worldState: "open",
-    wildSmallKeys: "inDungeon",
-    wildBigKeys: false,
-    wildMaps: false,
-    wildCompasses: false,
-    enemyDrop: "none",
-    pottery: "none",
-    entranceMode: "none",
-    bossShuffle: "none",
-    enemyShuffle: "none",
-    goal: "fast_ganon",
-    swords: "randomized",
-    itemPool: "normal",
-    activatedFlute: false,
-    bonkShuffle: false,
-
-    owLayout: "vanilla",
-    owCrossed: "none",
-    owMixed: false,
-    owParallel: false,
-    owTerrain: false,
-    owKeepSimilar: true,
-    owWhirlpool: false,
-    owFluteShuffle: "vanilla",
-
-    mapMode: "off",
-    autotracking: false,
-    connectionLinesMode: "all",
-    connectionLineColor: "#a855f7",
-
-    sequenceBreaks: allFalseSeqBreaks
-  };
-}
 
 /**
  * Helper to create settings with specific overrides
  */
 export function createSettings(overrides: Partial<SettingsState>): SettingsState {
-  return { ...createDefaultSettings(), ...overrides };
+  const settings = DEFAULT_SETTINGS;
+  // Set all sequence breaks to false by default for easier testing, then apply overrides
+  // Loop through all sequence break keys and set to false if not overridden
+  for (const key of Object.keys(settings.sequenceBreaks) as (keyof UserSequenceBreaks)[]) {
+      settings.sequenceBreaks[key] = false;
+    }
+  
+  return { ...settings, ...overrides };
 }
 
 /**
@@ -253,7 +223,7 @@ export class GameStateBuilder {
 
   constructor() {
     this.items = createEmptyItems();
-    this.settings = createDefaultSettings();
+    this.settings = DEFAULT_SETTINGS;
     this.dungeons = createEmptyDungeons();
     this.entrances = createEmptyEntrances();
   }

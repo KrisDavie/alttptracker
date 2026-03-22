@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../store/store";
 import { setSettings, type SettingsState } from "@/store/settingsSlice";
 import { SettingsContext } from "@/hooks/useSettings";
 import { useApplyStatusColors } from "@/hooks/useStatusColors";
@@ -13,18 +14,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Determine the storage key based on an optional 'id' in the URL
   // This must match the prefix used in store.ts for redux-remember
-  const urlParams = new URLSearchParams(window.location.search);
-  const instanceId = urlParams.get("id") || urlParams.get("instance") || "default";
+  const instanceId = useSelector((state: RootState) => state.trackerState.instanceId);
   const storageKey = `alttptracker_session_${instanceId}_settings`;
 
   // Load settings from URL on mount (overrides persisted state)
   useEffect(() => {
     // const params = new URLSearchParams(window.location.search);
     const urlSettings: Partial<SettingsState> = {};
-    
-    // if (params.has("wildSmallKeys")) urlSettings.wildSmallKeys = params.get("wildSmallKeys") === "true";
-    // if (params.has("wildBigKeys")) urlSettings.wildBigKeys = params.get("wildBigKeys") === "true";
-    // Add more legacy mappings as needed
 
     if (Object.keys(urlSettings).length > 0) {
       dispatch(setSettings(urlSettings));

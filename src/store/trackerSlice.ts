@@ -1,10 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
+import { getSessionInstanceId } from "@/lib/sessionHelper";
 
 export interface TrackerState {
    currentMode: "none" | "scout" | "connect" | "entrance_select" | "follower";
    modalOpen: "none" | "mystery" | "entrance" 
    selectedLocation: string | null;
    selectedEntrance: string | null;
+   instanceId: string;
+   rehydrated: boolean;
 }
 
 const initialState: TrackerState = {
@@ -12,6 +16,8 @@ const initialState: TrackerState = {
     modalOpen: "entrance",
     selectedLocation: null,
     selectedEntrance: null,
+    instanceId: getSessionInstanceId(),
+    rehydrated: false,
 };
 
 export const trackerSlice = createSlice({
@@ -35,6 +41,11 @@ export const trackerSlice = createSlice({
     setCurrentMode: (state, action) => {
       state.currentMode = action.payload;
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (state) => {
+      state.rehydrated = true;
+    });
   },
 });
 

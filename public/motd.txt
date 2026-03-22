@@ -1,1 +1,1 @@
-DR, OR, VT (v31.x.x) and Prachack (>=14.4.0) supported. Report any issues via Discord.
+DR, OR, VT (v31.x.x) and Prachack (>=14.4.0) supported.

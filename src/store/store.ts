@@ -10,10 +10,11 @@ import autotrackerReducer from './autotrackerSlice';
 import trackerReducer from './trackerSlice';
 import overworldReducer from './overworldSlice';
 
+import { getSessionInstanceId } from '@/lib/sessionHelper';
+
 const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances', 'overworld'];
 
-const urlParams = new URLSearchParams(window.location.search);
-const instanceId = urlParams.get("id") || urlParams.get("instance") || 'default';
+const instanceId = getSessionInstanceId();
 
 export const store = configureStore({
   reducer: rememberReducer({
@@ -34,6 +35,5 @@ export const store = configureStore({
     )
   )
 });
-
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -14,12 +14,13 @@ function SpriteSquare() {
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
   const keyDrop = useSelector((state: RootState) => state.settings.enemyDrop) !== "none";
   const autotracking = useSelector((state: RootState) => state.settings.autotracking);
+  const spriteName = useSelector((state: RootState) => state.settings.spriteName);
   const doors = false;
 
   return (
     <div className="relative w-full h-full">
       <div className="h-24 w-24">
-        <SpriteDisplay spriteName="dark_link" />
+        <SpriteDisplay spriteName={spriteName} />
       </div>
       <div className="h-10 w-10 absolute top-14 right-8">
         <TrackerItem itemName="moonpearl" />

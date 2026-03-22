@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Info, Github } from "lucide-react";
+import { Info, Github, AlertOctagon } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import type { SettingsState } from "@/store/settingsSlice";
 import { getPresetById, resolvePresetFromSlug } from "@/data/launcherPresets";
 import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
-import { DEFAULT_SETTINGS, loadLauncherPrefs, saveLauncherPrefs, loadRecentSprites, pushRecentSprite } from "@/lib/launchHelpers";
+import { loadLauncherPrefs, saveLauncherPrefs, loadRecentSprites, pushRecentSprite } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
 import { LaunchCard } from "./launch/LaunchCard";
 import { GameSettingsTabs } from "./launch/GameSettingsTabs";
 import { SpriteSelector } from "./launch/SpriteSelector";
+import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
 
 const LaunchPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -36,6 +37,7 @@ const LaunchPage: React.FC = () => {
   const [autotrackStatus, setAutotrackStatus] = useState<"checking" | "connected" | "disconnected">("checking");
   const [sessionName, setSessionName] = useState("");
   const [motd, setMotd] = useState<string | null>(null);
+  const [alerts, setAlerts] = useState<string | null>(null);
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [nextLadder, setNextLadder] = useState<{ presetId: string; name: string; time: Date } | null>(null);
 
@@ -73,7 +75,7 @@ const LaunchPage: React.FC = () => {
       } catch {
         // Silently ignore — fetch may fail due to network or proxy unavailability
       }
-    })();
+    })()
     return () => {
       cancelled = true;
     };
@@ -92,12 +94,27 @@ const LaunchPage: React.FC = () => {
   }, [spriteName, settings.mapMode, settings.connectionLinesMode, settings.autotracking, settings.includeDungeonItemsInCounter, settings.sequenceBreaks.canNavigateDarkRooms]);
 
   // Fetch MOTD from public/motd.txt
+  // Lets us update the launch page with important announcements without needing a full redeploy or relying on third-party services for dynamic content
   useEffect(() => {
     let cancelled = false;
     fetch("/motd.txt")
       .then((r) => (r.ok ? r.text() : null))
       .then((text) => {
         if (!cancelled && text?.trim()) setMotd(text.trim());
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Fetch any active alerts from the server (e.g., maintenance notices)
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/alerts.txt")
+      .then((r) => (r.ok ? r.text() : null))
+      .then((text) => {
+        if (!cancelled && text?.trim()) setAlerts(text.trim());
       })
       .catch(() => {});
     return () => {
@@ -180,7 +197,9 @@ const LaunchPage: React.FC = () => {
       const isNewSession = !id;
 
       if (isNewSession) {
-        const session = await createSession(settings, sessionName || undefined, spriteName, selectedPresetId ?? undefined);
+        // Create session with current settings including the selected sprite
+        const launchSettings = { ...settings, spriteName };
+        const session = await createSession(launchSettings, sessionName || undefined, spriteName, selectedPresetId ?? undefined);
         id = session.id;
         setSessions(await getSessions());
       }
@@ -191,7 +210,8 @@ const LaunchPage: React.FC = () => {
       const prefix = `alttptracker_session_${id}_`;
 
       if (isNewSession) {
-        await idbDriver.setItem(prefix + "settings", JSON.stringify(settings));
+        // Persist settings with the spriteName included
+        await idbDriver.setItem(prefix + "settings", JSON.stringify({ ...settings, spriteName }));
 
         if (Object.keys(startingItems).length > 0) {
           const itemsState: Record<string, { amount: number }> = {};
@@ -224,6 +244,7 @@ const LaunchPage: React.FC = () => {
           connectionLineColor: settings.connectionLineColor,
           autotracking: settings.autotracking,
           includeDungeonItemsInCounter: settings.includeDungeonItemsInCounter,
+          spriteName: savedSettings.spriteName ?? spriteName,
         };
         await idbDriver.setItem(prefix + "settings", JSON.stringify(merged));
       }
@@ -251,12 +272,19 @@ const LaunchPage: React.FC = () => {
       <div className="min-h-screen bg-background text-foreground overflow-auto">
         <LaunchHeader theme={theme} setTheme={setTheme} autotrackStatus={autotrackStatus} autotrackProtocol={autotrackProtocol} autotrackHost={autotrackHost} autotrackPort={autotrackPort} />
 
-        <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+        <main className="max-w-6xl mx-auto px-4 py-6 space-y-4">
+          {/* Alerts */}
+          {alerts && (
+            <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-4 py-2 text-sm text-muted-foreground">
+              <AlertOctagon className="size-4 mt-0.5 shrink-0 text-red-600" />
+              <span className="whitespace-pre-line">{alerts}</span>
+            </div>
+          )}
           {/* MOTD */}
           {motd && (
-            <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+            <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-4 py-2 text-sm text-muted-foreground">
               <Info className="size-4 mt-0.5 shrink-0 text-primary" />
-              <span>{motd}</span>
+              <span className="whitespace-pre-line">{motd}</span>
             </div>
           )}
 

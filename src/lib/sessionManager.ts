@@ -58,9 +58,10 @@ export async function createSession(
   settings: Partial<SettingsState>,
   name?: string,
   spriteName?: string,
-  presetId?: string
+  presetId?: string,
+  providedId?: string
 ): Promise<TrackerSession> {
-  const id = crypto.randomUUID().slice(0, 8);
+  const id = providedId || crypto.randomUUID().slice(0, 8);
   const session: TrackerSession = {
     id,
     name: name || `Session ${new Date().toLocaleDateString()}`,

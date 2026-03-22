@@ -4,6 +4,7 @@ import type { RootState } from "@/store/store";
 import CommunityLayoutItems from "@/components/layouts/CommunityTracker/CommunityLayoutItems";
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
+import { Loader2 } from "lucide-react";
 
 const TILE = 448;
 
@@ -22,6 +23,7 @@ function getLayoutDimensions(mapMode: "off" | "normal" | "compact" | "vertical")
 
 export function Tracker() {
   const [scale, setScale] = useState(1);
+  const rehydrated = useSelector((state: RootState) => state.trackerState.rehydrated);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const worldState = useSelector((state: RootState) => state.settings.worldState);
   const { width, height } = useMemo(() => getLayoutDimensions(mapMode), [mapMode]);
@@ -49,6 +51,15 @@ export function Tracker() {
     maps = [<OWMap key="dw" world="dw" />, <OWMap key="lw" world="lw" />];
   } else {
     maps = [<OWMap key="lw" world="lw" />, <OWMap key="dw" world="dw" />];
+  }
+
+  if (!rehydrated) {
+    return (
+      <div className="h-screen w-screen bg-surface fixed inset-0 flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <div className="text-primary font-body text-xl animate-pulse">Loading Tracker...</div>
+      </div>
+    );
   }
 
   return (
