@@ -1277,7 +1277,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Superbunny Cave": {
-    x: 431.5,
+    x: 420,
     y: 74.5,
     world: "dw",
     entranceRegions: ["Superbunny Cave (Top)", "Superbunny Cave (Bottom)"],
@@ -3644,7 +3644,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Dark Death Mountain Shop": {
-    x: 438,
+    x: 439,
     y: 74.5,
     world: "dw",
     entrance: true,

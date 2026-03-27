@@ -1278,6 +1278,35 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Pyramid Fairy - Left"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Boss"]).toBe("available");
     });
+    it("Inverted 2.0 - Flute is always activated", () => {
+      const state = gameState().withItems({flute: 1}).withSettings({ worldState: "inverted" }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Mire Shed - Left"]).toBe("available");
+    });
+
+    it("Inverted 1.0 - Flute is not active without access to kak", () => {
+      const state = gameState().withItems({flute: 1}).withSettings({ worldState: "inverted_1" }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Mire Shed - Left"]).toBe("unavailable");
+    });
+    
+    it("Inverted 1.0 - Flute is active with access to kak", () => {
+      const state = gameState().withItems({flute: 1, moonpearl: 1, glove: 1, hammer: 1}).withSettings({ worldState: "inverted_1" }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Mire Shed - Left"]).toBe("available");
+    });
   });
 
   describe("Non-Wild Big Key Inference", () => {

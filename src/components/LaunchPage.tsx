@@ -24,7 +24,7 @@ const LaunchPage: React.FC = () => {
     connectionLinesMode: (savedPrefs.connectionLinesMode as SettingsState["connectionLinesMode"]) ?? DEFAULT_SETTINGS.connectionLinesMode,
     autotracking: savedPrefs.autotracking ?? DEFAULT_SETTINGS.autotracking,
     includeDungeonItemsInCounter: savedPrefs.includeDungeonItemsInCounter ?? DEFAULT_SETTINGS.includeDungeonItemsInCounter,
-    sequenceBreaks: { canNavigateDarkRooms: savedPrefs.canNavigateDarkRooms ?? DEFAULT_SETTINGS.sequenceBreaks.canNavigateDarkRooms },
+    sequenceBreaks: { ...DEFAULT_SETTINGS.sequenceBreaks, ...savedPrefs.sequenceBreaks },
   }));
   const [spriteName, setSpriteName] = useState(savedPrefs.spriteName ?? "link");
   const [startingItems, setStartingItems] = useState<Record<string, number>>({});
@@ -89,9 +89,9 @@ const LaunchPage: React.FC = () => {
       connectionLinesMode: settings.connectionLinesMode,
       autotracking: settings.autotracking,
       includeDungeonItemsInCounter: settings.includeDungeonItemsInCounter ?? false,
-      canNavigateDarkRooms: settings.sequenceBreaks.canNavigateDarkRooms,
+      sequenceBreaks: settings.sequenceBreaks,
     });
-  }, [spriteName, settings.mapMode, settings.connectionLinesMode, settings.autotracking, settings.includeDungeonItemsInCounter, settings.sequenceBreaks.canNavigateDarkRooms]);
+  }, [spriteName, settings.mapMode, settings.connectionLinesMode, settings.autotracking, settings.includeDungeonItemsInCounter, settings.sequenceBreaks]);
 
   // Fetch MOTD from public/motd.txt
   // Lets us update the launch page with important announcements without needing a full redeploy or relying on third-party services for dynamic content
@@ -249,7 +249,14 @@ const LaunchPage: React.FC = () => {
         await idbDriver.setItem(prefix + "settings", JSON.stringify(merged));
       }
 
-      window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", "width=1344,height=449");
+      const windowSizes: Record<string, { w: number; h: number }> = {
+        off: { w: 448, h: 448 },
+        normal: { w: 1344, h: 449 },
+        compact: { w: 448, h: 672 },
+        vertical: { w: 448, h: 1344 },
+      };
+      const { w, h } = windowSizes[settings.mapMode] ?? windowSizes.normal;
+      window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${w},height=${h}`);
     },
     [settings, spriteName, sessionName, selectedPresetId, startingItems],
   );
@@ -303,24 +310,28 @@ const LaunchPage: React.FC = () => {
             onTogglePin={handleTogglePin}
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
+          <div className="relative flex flex-col lg:block">
             {/* Settings tabs (game settings + tracker settings) */}
-            <GameSettingsTabs
-              settings={settings}
-              updateSetting={updateSetting}
-              startingItems={startingItems}
-              setStartingItems={setStartingItems}
-              toggleStartingItem={toggleStartingItem}
-              autotrackProtocol={autotrackProtocol}
-              setAutotrackProtocol={setAutotrackProtocol}
-              autotrackHost={autotrackHost}
-              setAutotrackHost={setAutotrackHost}
-              autotrackPort={autotrackPort}
-              setAutotrackPort={setAutotrackPort}
-            />
+            <div className="lg:mr-86 min-h-150 h-full flex flex-col">
+              <GameSettingsTabs
+                settings={settings}
+                updateSetting={updateSetting}
+                startingItems={startingItems}
+                setStartingItems={setStartingItems}
+                toggleStartingItem={toggleStartingItem}
+                autotrackProtocol={autotrackProtocol}
+                setAutotrackProtocol={setAutotrackProtocol}
+                autotrackHost={autotrackHost}
+                setAutotrackHost={setAutotrackHost}
+                autotrackPort={autotrackPort}
+                setAutotrackPort={setAutotrackPort}
+              />
+            </div>
 
             {/* Sidebar: Sprite */}
-            <SpriteSelector spriteName={spriteName} setSpriteName={setSpriteName} recentSprites={recentSprites} />
+            <div className="mt-6 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:bottom-0 lg:w-[320px] flex flex-col h-full">
+              <SpriteSelector spriteName={spriteName} setSpriteName={setSpriteName} recentSprites={recentSprites} />
+            </div>
           </div>
 
           {/* Footer */}

@@ -61,7 +61,7 @@ function launchDirectSession(sessionId: string, urlParams: URLSearchParams) {
     connectionLinesMode: (savedPrefs.connectionLinesMode as SettingsState["connectionLinesMode"]) ?? DEFAULT_SETTINGS.connectionLinesMode,
     autotracking: savedPrefs.autotracking ?? DEFAULT_SETTINGS.autotracking,
     includeDungeonItemsInCounter: savedPrefs.includeDungeonItemsInCounter ?? DEFAULT_SETTINGS.includeDungeonItemsInCounter,
-    sequenceBreaks: { canNavigateDarkRooms: savedPrefs.canNavigateDarkRooms ?? DEFAULT_SETTINGS.sequenceBreaks.canNavigateDarkRooms },
+    sequenceBreaks: { ...DEFAULT_SETTINGS.sequenceBreaks, ...savedPrefs.sequenceBreaks },
     spriteName: savedPrefs.spriteName ?? DEFAULT_SETTINGS.spriteName,
   };
 

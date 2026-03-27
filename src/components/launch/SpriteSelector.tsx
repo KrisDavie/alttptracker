@@ -26,7 +26,7 @@ export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: Spr
       <CardHeader className="pb-3">
         <CardTitle className="text-sm">Sprite</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 flex-1 flex flex-col">
+      <CardContent className="space-y-3 flex-1 flex flex-col overflow-hidden min-h-0">
         {/* Preview */}
         <div className="flex items-center justify-center gap-4">
           <div className="text-center">
@@ -80,7 +80,7 @@ export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: Spr
           onChange={(e) => setSpriteSearch(e.target.value)}
           className="h-7 text-xs"
         />
-        <ScrollArea className="flex-1 min-h-40 max-h-40">
+        <ScrollArea className="flex-1 min-h-40">
           <div className="grid grid-cols-5 gap-1 p-0.5">
             {filteredSprites.map((name: string) => (
               <button

@@ -408,10 +408,10 @@ function isLocationActive(loc: LocationInfo, settings: SettingsState): boolean {
       return settings.bonkShuffle;
 
     case "shop":
-      return false; // TODO: shopsanity support
+      return settings.shopsanity;
 
     case "prize":
-      return false; // TODO: Prize shuffle support
+      return settings.prizeShuffle !== "vanilla";
 
     case "event":
       return false;

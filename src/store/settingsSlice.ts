@@ -33,6 +33,43 @@ export const DEFAULT_STATUS_TEXT_COLORS: StatusColors = {
 export const defaultUserSequenceBreaks = {
   // All false by default, users can toggle these on to allow the logic to consider them as "possible but not guaranteed" options
   canNavigateDarkRooms: false,
+
+  // Dungeon logic breaks
+  canIceBreak: false,
+  canHookClip: false,
+  canBombJump: false,
+  canBombOrBonkCameraUnlock: false,
+  canHover: false,
+  canHoverAlot: false,
+  canSpeckyClip: false,
+  canFireSpooky: false,
+  canBombSpooky: false,
+  canHeraPot: false,
+  canMimicClip: false,
+  canPotionCameraUnlock: false,
+  canMoldormBounce: false,
+  canDarkRoomNavigateBlind: false,
+  canTorchRoomNavigateBlind: false,
+
+  // Overworld logic breaks
+  canFairyReviveHover: false,
+  canFakeFlipper: false,
+  canOWFairyRevive: false,
+  canQirnJump: false,
+  canMirrorSuperBunny: false,
+  canDungeonBunnyRevive: false,
+  canFakePowder: false,
+  canWaterWalk: false,
+  canZoraSplashDelete: false,
+  canBunnyPocket: false,
+  canFairyBarrierRevive: false,
+  canShockBlock: false,
+  canTombRaider: false,
+
+  // Glitch logic breaks
+  canTamSwam: false,
+  canBunnyCitrus: false,
+  canMirrorWrap: false,
 };
 
 // Type allows boolean values for all sequence break keys
@@ -42,8 +79,8 @@ export interface SettingsState {
   // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
   worldState: "open" | "standard" | "inverted" | "inverted_1" | "standverted";
-  gtOpen: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "other"
-  ganonVulnerable: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "other"
+  gtOpen: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "locksmith";
+  ganonVulnerable: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "other";
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
   wildMaps: boolean;
@@ -53,15 +90,19 @@ export interface SettingsState {
   entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity";
   bossShuffle: "none" | "simple" | "full" | "random";
   enemyShuffle: "none" | "shuffled" | "random";
-  goal: "ganon" | "fast_ganon" | "dungeons" | "pedestal" | "triforce_hunt" | "ganonhunt";
+  goal: "ganon" | "fast_ganon" | "dungeons" | "pedestal" | "triforce_hunt" | "ganonhunt" | "completionist";
   swords: "randomized" | "assured" | "vanilla" | "swordless";
-  itemPool: "normal" | "hard" | "expert";
+  prizeShuffle: "vanilla" | "inDungeon" | "wild";
+  shuffleLinks: boolean;
   activatedFlute: boolean;
   bonkShuffle: boolean;
   shopsanity: boolean;
   pseudoboots: boolean;
   mirrorScroll: boolean;
-  ambriosia: boolean;
+  ambrosia: boolean;
+  followerShuffle: boolean;
+  tavernShuffle: boolean;
+  zelgaWoods: boolean;
 
   // DR Stuff
   doors: "vanilla" | "basic" | "partitioned" | "crossed" 
@@ -106,15 +147,19 @@ export const initialState: SettingsState = {
   entranceMode: "none",
   bossShuffle: "none",
   enemyShuffle: "none",
-  goal: "fast_ganon",
+  goal: "ganon",
   swords: "randomized",
-  itemPool: "normal",
+  prizeShuffle: "vanilla",
+  shuffleLinks: false,
   activatedFlute: false,
   bonkShuffle: false,
   shopsanity: false,
   pseudoboots: false,
   mirrorScroll: false,
-  ambriosia: false,
+  ambrosia: false,
+  followerShuffle: false,
+  tavernShuffle: false,
+  zelgaWoods: false,
 
   // DR Stuff
   doors: "vanilla",

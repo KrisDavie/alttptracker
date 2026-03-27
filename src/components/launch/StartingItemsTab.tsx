@@ -48,12 +48,9 @@ export function StartingItemsTab({ startingItems, setStartingItems, toggleStarti
                       className="w-full h-full object-contain"
                       style={{ imageRendering: "pixelated", opacity: count > 0 ? 1 : 0.35 }}
                     />
-                    {count > 1 && (
-                      <span className="absolute bottom-0 right-0.5 text-[10px] font-bold text-primary">{count}</span>
-                    )}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>{data.name}{count > 0 ? ` (${count})` : ""}</TooltipContent>
+                <TooltipContent>{data.name}</TooltipContent>
               </Tooltip>
             );
           })}

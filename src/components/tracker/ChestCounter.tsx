@@ -20,7 +20,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
 
   // Dynamically compute active item locations based on current settings
   const dungeonChecks = getActiveLocations(dungeonData.name, settings);
-  if (dungeonData.name === 'Hyrule Castle') {
+  if (dungeonData.name === "Hyrule Castle") {
     // Also need to include sanctuary and sanctuary grave locations
     dungeonChecks.push(...getActiveLocations("Sanctuary", settings));
     dungeonChecks.push(...getActiveLocations("Sanctuary Grave", settings));
@@ -33,26 +33,25 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const wildSmallKeys = settings.wildSmallKeys;
   const wildCompasses = settings.wildCompasses;
   const wildMaps = settings.wildMaps;
+  const wildPrizes = settings.prizeShuffle;
   const totLocs = dungeonData?.totalLocations;
 
   // Count small keys in the active location set
-  const totSKeys = dungeonChecks.filter(
-    (loc) => loc.includes("Key Drop") || loc.includes("Pot Key")
-  ).length + (totLocs?.smallkeys || 0);
+  const totSKeys = dungeonChecks.filter((loc) => loc.includes("Key Drop") || loc.includes("Pot Key")).length + (totLocs?.smallkeys || 0);
+
+  const totPrizes = dungeonChecks.filter((loc) => loc.includes("Prize")).length + (totLocs?.prize ? 1 : 0);
 
   // Adjust maxCount based on settings
   // Subtract out dungeon items that are not shuffled into the pool
   if (!settings.includeDungeonItemsInCounter) {
-    maxCount -= ((wildBigKeys ? 0 : (totLocs?.bigkey ? 1 : 0))
-      + (wildSmallKeys === "wild" ? 0 : totSKeys)
-      + (wildCompasses ? 0 : (totLocs?.compass ? 1 : 0))
-      + (wildMaps ? 0 : (totLocs?.map ? 1 : 0)));
+    maxCount -= (wildBigKeys ? 0 : totLocs?.bigkey ? 1 : 0) + (wildSmallKeys === "wild" ? 0 : totSKeys) + (wildCompasses ? 0 : totLocs?.compass ? 1 : 0) + (wildMaps ? 0 : totLocs?.map ? 1 : 0) + (wildPrizes === "wild" ? 0 : totPrizes);
 
     // Only count dungeon items
-    numChecks -= dungeonState.smallKeys && (wildSmallKeys !== "wild") ? dungeonState.smallKeys : 0;
+    numChecks -= dungeonState.smallKeys && wildSmallKeys !== "wild" ? dungeonState.smallKeys : 0;
     numChecks -= dungeonState.bigKey && !wildBigKeys ? 1 : 0;
     numChecks -= dungeonState.compass && !wildCompasses ? 1 : 0;
     numChecks -= dungeonState.map && !wildMaps ? 1 : 0;
+    numChecks -= dungeonState.prize && wildPrizes !== "wild" ? 1 : 0;
   }
 
   // TODO: Collected can be more than maxCount when settings are toggle off after collecting items.
@@ -84,10 +83,24 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
           justifyContent: "center",
         }}
         onClick={() => setCount(collected + 1)}
-        onContextMenu={(e) => { e.preventDefault(); setCount(collected - 1); }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setCount(collected - 1);
+        }}
       >
         <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 bg-white bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
-          <div className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`} onClick={(e) => { e.stopPropagation(); setCount(collected + 1); }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setCount(collected - 1); }}>
+          <div
+            className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCount(collected + 1);
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setCount(collected - 1);
+            }}
+          >
             {checksRemaining}
           </div>
         </div>

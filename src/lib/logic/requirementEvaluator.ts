@@ -234,8 +234,18 @@ export class RequirementEvaluator {
         return this.state.settings.sequenceBreaks.canNavigateDarkRooms ? "ool" : "unavailable";
       case "canFlute":
       case "flute":
-        // TODO: CanActivateFlute logic
-        return this.boolToStatus(items.flute.amount > 0);
+        if (items.flute.amount == 0) {
+          return "unavailable";
+        }
+        if (
+          items.flute.amount >= 2 || 
+          this.state.settings.activatedFlute ||
+          this.state.settings.worldState === "inverted" || 
+          this.state.settings.worldState === "standverted"
+        ) {
+          return "available";
+        }
+        return this.resolveComplex("canReach|Kakariko Village", ctx);
       case "cane":
         return this.boolToStatus(this.hasItem("somaria") || this.hasItem("byrna"));
       case "rod":
@@ -316,7 +326,12 @@ export class RequirementEvaluator {
       case "canCrossEnergyBarrier":
         return this.boolToStatus(this.hasItem("swordbeams") || this.hasItem("cape")); // || TODO: Add swordless logic
       case "canOpenGT":
-        return this.boolToStatus(this.getCrystalCount() >= 7);
+        if (this.state.settings.gtOpen === "locksmith") {
+            return this.resolveSimple("canCollectLocksmith", ctx);    
+        } else if (Number(this.state.settings.gtOpen) >= 0) {
+            return this.boolToStatus(this.getCrystalCount() >= Number(this.state.settings.gtOpen));
+        }
+        return "unavailable";
       case "canBuyBigBombMaybe":
       case "canBuyBigBomb":
         return this.boolToStatus(this.getRedCrystalCount() >= 2);
@@ -335,6 +350,9 @@ export class RequirementEvaluator {
         return this.resolveComplex("canReach|Palace of Darkness Area", ctx);
       case "canOpenPod":
         return minimumStatus(this.resolveSimple("canCollectKiki", ctx), this.resolveComplex("canReach|Palace of Darkness Area", ctx));
+      case "canCollectLocksmith":
+        // TODO Follower shuffle logic
+        return this.resolveComplex("canReach|Middle Aged Man", ctx);
       case "canCollectFrog":
         // TODO Follower shuffle logic
         return this.resolveComplex("canReach|Frog Prison", ctx);

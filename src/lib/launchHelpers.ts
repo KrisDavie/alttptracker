@@ -1,3 +1,5 @@
+import type { UserSequenceBreaks } from "@/store/settingsSlice";
+
 export const LAUNCHER_PREFS_KEY = "muffins_launcher_prefs";
 export const RECENT_SPRITES_KEY = "muffins_recent_sprites";
 export const MAX_RECENT_SPRITES = 6;
@@ -8,7 +10,8 @@ export interface LauncherPrefs {
   connectionLinesMode: string;
   autotracking: boolean;
   includeDungeonItemsInCounter: boolean;
-  canNavigateDarkRooms: boolean;
+  sequenceBreaks: UserSequenceBreaks;
+  canNavigateDarkRooms?: boolean;
 }
 
 export function loadLauncherPrefs(): Partial<LauncherPrefs> {

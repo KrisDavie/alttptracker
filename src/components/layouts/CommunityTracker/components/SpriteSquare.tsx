@@ -7,6 +7,7 @@ import BigKeyTracker from "../../../tracker/BigKeyTracker";
 import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
 import AutotrackingIcon from "@/components/tracker/AutotrackingIcon";
 import { setModalOpen } from "@/store/trackerSlice";
+import { Settings } from "lucide-react";
 
 function SpriteSquare() {
   const dispatch = useDispatch();
@@ -35,20 +36,8 @@ function SpriteSquare() {
         <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
       </div>
       {/* Mystery Flags */}
-      <div className="h-6 w-6 absolute top-12 left-0">
-        <div
-          style={{
-            backgroundImage: `url(/dungeons/flagicon.png)`,
-            width: "100%",
-            height: "100%",
-            backgroundPosition: "center",
-            backgroundSize: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={() => dispatch(setModalOpen("mystery"))}
-        />
+      <div className="flex items-center h-6 w-6 absolute top-12 left-0.5">
+        <Settings size={16} className="cursor-pointer text-gray-500" onClick={() => dispatch(setModalOpen("mystery"))} />
       </div>
       {/* Autotracking Icon */}
       {autotracking && (
