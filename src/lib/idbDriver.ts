@@ -4,6 +4,8 @@
  * and by sessionManager to clean up data when deleting sessions.
  */
 
+import { touchSession } from "@/lib/sessionManager";
+
 const DB_NAME = "muffins_tracker_store";
 const DB_VERSION = 1;
 const STORE_NAME = "redux";
@@ -40,10 +42,7 @@ function throttledTouchSession(key: string): void {
   const last = lastTouchTimes.get(sessionId) ?? 0;
   if (now - last < TOUCH_THROTTLE_MS) return;
   lastTouchTimes.set(sessionId, now);
-  // Dynamic import to avoid circular dependency
-  import("@/lib/sessionManager").then(({ touchSession }) => {
-    touchSession(sessionId).catch(() => {});
-  });
+  touchSession(sessionId).catch(() => {});
 }
 
 /**

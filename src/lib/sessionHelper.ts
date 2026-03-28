@@ -1,4 +1,4 @@
-import { createSession } from "./sessionManager";
+import { createSession, touchSession } from "./sessionManager";
 import { initialState as DEFAULT_SETTINGS, type SettingsState } from "@/store/settingsSlice";
 import { loadLauncherPrefs } from "./launchHelpers";
 import { getPresetById } from "@/data/launcherPresets";
@@ -89,7 +89,7 @@ function launchDirectSession(sessionId: string, urlParams: URLSearchParams) {
     sessionId,
   ).catch(err => {
     if (err?.name === "ConstraintError") {
-      import("@/lib/sessionManager").then(m => m.touchSession(sessionId));
+      touchSession(sessionId);
     } else {
       console.error("Failed to auto-create session", err);
     }

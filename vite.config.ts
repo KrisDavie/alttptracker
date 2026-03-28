@@ -30,6 +30,21 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 550,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          redux: ["@reduxjs/toolkit", "react-redux", "redux-remember"],
+          ui: ["radix-ui", "@radix-ui/react-slot", "@base-ui/react", "lucide-react"],
+          grpc: ["@protobuf-ts/grpcweb-transport", "@protobuf-ts/runtime-rpc", "rxjs"],
+          logic: ["./src/data/logic/logic_regions.ts"],
+          sram: ["./src/data/sramLocations.ts"],
+        },
+      },
+    },
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./src/components/tracker/__tests__/setup.ts"],

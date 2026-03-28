@@ -1,4 +1,5 @@
 import type { SettingsState } from "@/store/settingsSlice";
+import { deleteSessionStoreData } from "@/lib/idbDriver";
 
 export interface TrackerSession {
   id: string;
@@ -94,7 +95,6 @@ export async function deleteSession(id: string): Promise<void> {
     req.onerror = () => reject(req.error);
   });
   // Also clean up redux-remember keys for this session in IndexedDB
-  const { deleteSessionStoreData } = await import("@/lib/idbDriver");
   await deleteSessionStoreData(id);
 }
 

@@ -1,19 +1,23 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import LaunchPage from "./components/LaunchPage";
-import { Tracker } from "./components/Tracker";
-import LogicBreaksPage from "./components/LogicBreaksPage";
 import { ThemeProvider } from "./components/ThemeProvider";
+
+const LaunchPage = lazy(() => import("./components/LaunchPage"));
+const Tracker = lazy(() => import("./components/Tracker").then(m => ({ default: m.Tracker })));
+const LogicBreaksPage = lazy(() => import("./components/LogicBreaksPage"));
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
-        <Routes>
-          <Route path="/" element={<LaunchPage />} />
-          <Route path="/tracker" element={<Tracker />} />
-          <Route path="/logic" element={<LogicBreaksPage />} />
-        </Routes>
+        <Suspense>
+          <Routes>
+            <Route path="/" element={<LaunchPage />} />
+            <Route path="/tracker" element={<Tracker />} />
+            <Route path="/logic" element={<LogicBreaksPage />} />
+          </Routes>
+        </Suspense>
       </Router>
     </ThemeProvider>
   );
