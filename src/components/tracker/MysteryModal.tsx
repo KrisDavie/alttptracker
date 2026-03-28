@@ -154,12 +154,12 @@ function MysteryModal() {
               <option value="swordless">Swordless</option>
             </select>
 
-            <label className="font-medium">Item Pool:</label>
+            {/* <label className="font-medium">Item Pool:</label>
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.itemPool} onChange={(e) => handleInputChange("itemPool", e.target.value)}>
               <option value="normal">Normal</option>
               <option value="hard">Hard</option>
               <option value="expert">Expert</option>
-            </select>
+            </select> */}
 
             <label className="font-medium self-start pt-1">Misc:</label>
             <div className="flex flex-wrap gap-x-4 gap-y-1">

@@ -254,7 +254,7 @@ export const allPresets: LauncherPreset[] = [
     id: "invrosia",
     name: "Invrosia",
     description: "Inverted mode with assured sword, wild big keys and guaranteed non-dungeon item on the boss",
-    settings: { worldState: "inverted", swords: "assured", wildBigKeys: true, ambriosia: true },
+    settings: { worldState: "inverted", swords: "assured", wildBigKeys: true, ambrosia: true },
   },
 
   // ── Swordless / Combat Variants ─────────────────────────────────────────
@@ -339,13 +339,13 @@ export const allPresets: LauncherPreset[] = [
     id: "ambrosia",
     name: "Ambrosia",
     description: "Standard mode, assured sword, ambrosia",
-    settings: { worldState: "standard", swords: "assured", ambriosia: true },
+    settings: { worldState: "standard", swords: "assured", ambrosia: true },
   },
   {
     id: "ambroz1a",
     name: "AmbroZ1a",
     description: "Retro mode, Ganon hunt, ambrosia, activated flute",
-    settings: { worldState: "inverted_1", wildSmallKeys: "universal", activatedFlute: true, ambriosia: true },
+    settings: { worldState: "inverted_1", wildSmallKeys: "universal", activatedFlute: true, ambrosia: true },
   },
   {
     id: "cabookey",
