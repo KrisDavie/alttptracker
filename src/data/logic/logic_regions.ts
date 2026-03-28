@@ -601,13 +601,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lost Woods East Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Lost Woods Hideout Tree": {
@@ -623,19 +617,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Lost Woods East Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
                                 "moonpearl"
                             ]
                         }
@@ -728,13 +709,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Lumberjack Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         },
@@ -1882,13 +1857,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mountain Pass Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             },
             "Mountain Pass Pull Tree": {
@@ -1923,19 +1892,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Mountain Pass Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
                                 "moonpearl"
                             ]
                         }
@@ -4513,19 +4469,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
-            },
-            "Hyrule Castle Courtyard Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
             }
         },
         "owid": 27
@@ -5038,20 +4981,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem",
-                                "agahnim",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Eastern Palace Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
                                 "agahnim",
                                 "moonpearl"
                             ]
@@ -7515,22 +7444,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Statues Area"
         ],
         "type": "LightWorld",
-        "locations": {
-            "Statues Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies",
-                                "agahnim",
-                                "moonpearl"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
+        "locations": {},
         "owid": 52
     },
     "Statues Water": {
@@ -8317,14 +8231,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                             ]
                         }
                     },
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "glove",
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         },
@@ -8603,13 +8510,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "South Pass Area Crab Drop": {
                 "requirements": {
                     "Open": {},
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "moonpearl"
-                            ]
-                        }
-                    }
+                    "Inverted": "never"
                 }
             }
         },
@@ -9744,20 +9645,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Turtle Rock Tail Ledge Drop"
         ],
         "type": "DarkWorld",
-        "locations": {
-            "Turtle Rock Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
+        "locations": {},
         "owid": 71
     },
     "Turtle Rock Ledge": {
@@ -9870,20 +9758,7 @@ export const logic_regions: Record<string, RegionLogic> = {
         },
         "entrances": [],
         "type": "DarkWorld",
-        "locations": {
-            "Bumper Cave Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
+        "locations": {},
         "owid": 74
     },
     "Bumper Cave Ledge": {
@@ -11863,18 +11738,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "canGetBonkableItem"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Pyramid Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
                             ]
                         }
                     }
@@ -14546,18 +14409,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
-            },
-            "Hype Cave Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
-                }
             }
         },
         "owid": 116
@@ -15410,18 +15261,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "glove"
-                            ]
-                        }
-                    }
-                }
-            },
-            "Dark South Pass Area Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
                             ]
                         }
                     }
@@ -16338,8 +16177,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Spiral Cave (Bottom)",
                 "type": "Cave",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Spiral Cave Exit (Top)": {
@@ -16458,14 +16309,16 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {
                         "always": {
                             "allOf": [
-                                "hammer"
+                                "hammer",
+                                "canClearRoom"
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
                             "allOf": [
-                                "hammer"
+                                "hammer",
+                                "canClearRoom"
                             ]
                         }
                     }
@@ -17501,18 +17354,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {},
                     "Inverted": {}
                 }
-            },
-            "Snitch Lady (East) Tree Pull": {
-                "requirements": {
-                    "Open": "never",
-                    "Inverted": {
-                        "always": {
-                            "allOf": [
-                                "canKillMostEnemies"
-                            ]
-                        }
-                    }
-                }
             }
         }
     },
@@ -18404,32 +18245,92 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Mini Moldorm Cave - Far Left": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Mini Moldorm Cave - Left": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Mini Moldorm Cave - Right": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Mini Moldorm Cave - Far Right": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Mini Moldorm Cave - Generous Guy": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Mini Moldorm Cave Enemy #1": {
@@ -22130,8 +22031,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Hyrule Dungeon Guardroom",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Hyrule Dungeon Armory Interior Key Door N": {
@@ -22158,8 +22071,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Hyrule Dungeon Armory Boomerang",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -22182,8 +22107,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Hyrule Dungeon Armory Main",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -24301,16 +24238,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Eastern West Wing",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Eastern Stalfos Spawn NW": {
                 "to": "Eastern Compass Room",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -25460,8 +25421,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Eastern Duo Eyegores",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -25518,8 +25491,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Eastern Boss",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -26044,8 +26029,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Desert Cannonball",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -26886,16 +26883,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Desert Bridge",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Desert Four Statues ES": {
                 "to": "Desert Beamos Hall",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -28244,8 +28265,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Hera Startile Corner",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Hera Beetles Holes Front": {
@@ -29052,16 +29085,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Tower Lobby",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Tower Gold Knights EN": {
                 "to": "Tower Room 03",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -29121,8 +29178,20 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Castle Tower - Room 03": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Tower Room 03 Enemy #3": {
@@ -29825,14 +29894,16 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {
                         "always": {
                             "allOf": [
-                                "lantern"
+                                "lantern",
+                                "canClearRoom"
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
                             "allOf": [
-                                "lantern"
+                                "lantern",
+                                "canClearRoom"
                             ]
                         }
                     }
@@ -29937,8 +30008,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Tower Red Guards",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -29968,16 +30051,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Tower Red Spears",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Tower Red Guards SW": {
                 "to": "Tower Circle of Pots",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -30007,8 +30114,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Tower Red Guards",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Tower Circle of Pots ES": {
@@ -31676,8 +31795,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "PoD Conveyor",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "PoD Mimics 1 SW": {
@@ -32605,8 +32736,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "PoD Bow Statue Left",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -33463,7 +33606,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "hammer",
-                                "lantern"
+                                "lantern",
+                                "canClearRoom"
                             ]
                         }
                     },
@@ -33471,7 +33615,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "hammer",
-                                "lantern"
+                                "lantern",
+                                "canClearRoom"
                             ]
                         }
                     }
@@ -33485,7 +33630,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "hammer",
-                                "lantern"
+                                "lantern",
+                                "canClearRoom"
                             ]
                         }
                     },
@@ -33493,7 +33639,8 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "hammer",
-                                "lantern"
+                                "lantern",
+                                "canClearRoom"
                             ]
                         }
                     }
@@ -33918,8 +34065,20 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Swamp Palace - Entrance": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Swamp Entrance Enemy #2": {
@@ -40292,8 +40451,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Thieves Conveyor Bridge",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Thieves Basement Block Path": {
@@ -40842,8 +41013,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Ice Lobby",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Ice Jelly Key Down Stairs": {
@@ -41068,8 +41251,20 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Ice Palace - Compass Chest": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Ice Compass Room Enemy #1": {
@@ -41375,8 +41570,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Ice Conveyor",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -41752,8 +41959,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Ice Spike Cross",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -43882,8 +44101,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Mire Hub",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -44660,8 +44891,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "Mire Hidden Shooters",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "Mire Cross SW": {
@@ -48215,16 +48458,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "TR Dodgers",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "TR Twin Pokeys SW": {
                 "to": "TR Hallway",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -48632,8 +48899,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "TR Rupees",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -50425,8 +50704,20 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Ganons Tower - Tile Room": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -52653,8 +52944,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Speed Torch Upper",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -52815,8 +53118,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Hookshot North Platform",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53300,16 +53615,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Crystal Paths",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Mimics 1 ES": {
                 "to": "GT Mimics 2",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53339,16 +53678,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Mimics 1",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Mimics 2 NE": {
                 "to": "GT Dash Hall",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53626,8 +53989,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Gauntlet 2",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53671,16 +54046,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Gauntlet 1",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Gauntlet 2 SW": {
                 "to": "GT Gauntlet 3",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53741,16 +54140,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Gauntlet 2",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Gauntlet 3 SW": {
                 "to": "GT Gauntlet 4",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53811,16 +54234,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Gauntlet 3",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Gauntlet 4 SW": {
                 "to": "GT Gauntlet 5",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -53850,16 +54297,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Gauntlet 4",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Gauntlet 5 WS": {
                 "to": "GT Beam Dash",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -54030,8 +54501,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Dashing Bridge",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -54107,16 +54590,40 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Dashing Bridge",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Wizzrobes 2 NE": {
                 "to": "GT Conveyor Bridge",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canClearRoom"
+                            ]
+                        }
+                    }
                 }
             }
         },

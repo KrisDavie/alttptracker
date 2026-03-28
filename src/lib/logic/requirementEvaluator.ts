@@ -1,4 +1,4 @@
-import type { CrystalSwitchState, LogicRequirement, LogicState, LogicStatus, WorldLogic } from "@/data/logic/logicTypes";
+import type { CrystalSwitchState, LogicRequirement, LogicState, LogicStatus, RegionLogic, WorldLogic } from "@/data/logic/logicTypes";
 import type { GameState } from "@/data/logic/logicTypes";
 import { getLogicStateForWorld, minimumStatus, maximumStatus } from "./logicHelpers";
 
@@ -17,9 +17,11 @@ export interface EvaluationContext {
 
 export class RequirementEvaluator {
   private state: GameState;
+  private regions?: Record<string, RegionLogic>;
 
-  constructor(state: GameState) {
+  constructor(state: GameState, regions?: Record<string, RegionLogic>) {
     this.state = state;
+    this.regions = regions;
   }
 
   public evaluateWorldLogic(worldLogic: WorldLogic, ctx: EvaluationContext): LogicStatus {
@@ -237,12 +239,7 @@ export class RequirementEvaluator {
         if (items.flute.amount == 0) {
           return "unavailable";
         }
-        if (
-          items.flute.amount >= 2 || 
-          this.state.settings.activatedFlute ||
-          this.state.settings.worldState === "inverted" || 
-          this.state.settings.worldState === "standverted"
-        ) {
+        if (items.flute.amount >= 2 || this.state.settings.activatedFlute || this.state.settings.worldState === "inverted" || this.state.settings.worldState === "standverted") {
           return "available";
         }
         return this.resolveComplex("canReach|Kakariko Village", ctx);
@@ -254,6 +251,8 @@ export class RequirementEvaluator {
         return this.boolToStatus(this.hasItem("sword") || this.hasItem("hammer"));
       case "melee_bow":
         return maximumStatus(this.resolveSimple("melee", ctx), this.resolveSimple("bow", ctx));
+      case "melee_bow_bomb":
+        return maximumStatus(this.resolveSimple("melee_bow", ctx), this.resolveSimple("bomb", ctx));
       case "mitts":
         return this.boolToStatus(items.glove.amount > 1);
       case "mirrorshield":
@@ -297,8 +296,8 @@ export class RequirementEvaluator {
 
       case "canLightFires":
         return this.boolToStatus(this.hasItem("firerod") || this.hasItem("lantern"));
-      
-        case "canTorchRoomNavigate":
+
+      case "canTorchRoomNavigate":
         // TODO: (items.firerod && !isDoorsBranch() && flags.entrancemode === "N");
         return maximumStatus(this.resolveSimple("lantern", ctx), this.boolToStatus(this.hasItem("firerod")));
       case "canDefeatCurtains":
@@ -327,9 +326,9 @@ export class RequirementEvaluator {
         return this.boolToStatus(this.hasItem("swordbeams") || this.hasItem("cape")); // || TODO: Add swordless logic
       case "canOpenGT":
         if (this.state.settings.gtOpen === "locksmith") {
-            return this.resolveSimple("canCollectLocksmith", ctx);    
+          return this.resolveSimple("canCollectLocksmith", ctx);
         } else if (Number(this.state.settings.gtOpen) >= 0) {
-            return this.boolToStatus(this.getCrystalCount() >= Number(this.state.settings.gtOpen));
+          return this.boolToStatus(this.getCrystalCount() >= Number(this.state.settings.gtOpen));
         }
         return "unavailable";
       case "canBuyBigBombMaybe":
@@ -410,6 +409,86 @@ export class RequirementEvaluator {
         return "unavailable";
       case "canAvoidLasers":
         return this.boolToStatus(items.shield.amount >= 3 || this.hasItem("cape") || this.hasItem("byrna"));
+
+      case "canClearRoom": {
+        if (!ctx.regionName || !this.regions) return "available";
+        const region = this.regions[ctx.regionName];
+        if (!region?.locations) return "available";
+        let clearStatus: LogicStatus = "available";
+        for (const loc of Object.values(region.locations)) {
+          if (!loc.type) continue;
+          clearStatus = minimumStatus(clearStatus, this.resolveSimple(`canKill${loc.type}`, ctx));
+          if (clearStatus === "unavailable") return "unavailable";
+        }
+        return clearStatus;
+      }
+
+      // Icerod can kill
+      case "canKillGreenGuard":
+        return this.boolToStatus(this.met("icerod", ctx) || this.met("melee_bow_bomb", ctx));
+
+      // Hookshot can kill
+      case "canKillBabasu":
+      case "canKillBlueBari":
+      case "canKillCricketRat":
+      case "canKillHover":
+      case "canKillMiniMoldorm":
+      case "canKillPengator":
+      case "canKillPopo":
+      case "canKillPopo2":
+      case "canKillRedBari":
+        return this.boolToStatus(this.met("hookshot", ctx) || this.met("melee_bow_bomb", ctx));
+        break;
+
+      // Boomerang can kill
+      case "canKillStalfos":
+      case "canKillFloatingSkull":
+        return this.boolToStatus(this.met("boomerang", ctx) || this.met("melee_bow_bomb", ctx));
+
+      case "canKillStalfosKnight":
+        return this.boolToStatus(this.met("boomerang", ctx) || this.met("melee", ctx) || this.met("bomb", ctx));
+
+      // No bow
+      case "canKillGibdo":
+        return this.resolveSimple("melee", ctx);
+
+      // Melee only
+      case "canKillHardhatBeetle":
+        return this.resolveSimple("melee", ctx);
+
+      // No bombs
+      case "canKillSluggula":
+      case "canKillWizzrobe":
+        return this.resolveSimple("melee_bow", ctx);
+
+      case "canKillBallNChain":
+      case "canKillBlob":
+      case "canKillBlueArcher":
+      case "canKillBlueGuard":
+      case "canKillBluesainBolt":
+      case "canKillBlueZazak":
+      case "canKillDebirando":
+      case "canKillDebirandoPit":
+      case "canKillGibo":
+      case "canKillGreenEyegore":
+      case "canKillGreenKnifeGuard":
+      case "canKillKodongo":
+      case "canKillLeever":
+      case "canKillMiniHelmasaur":
+      case "canKillPokey":
+      case "canKillRedJavelinGuard":
+      case "canKillRedSpearGuard":
+      case "canKillRedZazak":
+      case "canKillSnake":
+        return this.resolveSimple("melee_bow_bomb", ctx);
+
+      // Requires bow
+      case "canKillRedEyegore":
+        return this.boolToStatus(this.hasItem("bow"));
+
+      // Hammer melee
+      case "canKillTerrorpin":
+        return this.boolToStatus(this.hasItem("hammer") && this.met("melee_bow", ctx));
 
       // TODO
       case "canDarkRoomNavigateBlind":

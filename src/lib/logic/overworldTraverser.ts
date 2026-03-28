@@ -128,7 +128,7 @@ export class OverworldTraverser {
     this.state = applyStandvertedState(state);
     this.logicSet = logicSet;
     this.regions = logicSet.regions as Record<string, RegionLogic>;
-    this.requirementEvaluator = new RequirementEvaluator(this.state);
+    this.requirementEvaluator = new RequirementEvaluator(this.state, this.regions);
     this.protection = resolvedProtection;
     this.isInverted = ["inverted", "inverted_1", "standverted"].includes(this.state.settings.worldState);
 
@@ -138,7 +138,7 @@ export class OverworldTraverser {
     // In partial mode, create an all-items evaluator for discovering regions
     if (resolvedProtection === "partial") {
       const allItemsState = createAllItemsState(this.state);
-      this.allItemsEvaluator = new RequirementEvaluator(allItemsState);
+      this.allItemsEvaluator = new RequirementEvaluator(allItemsState, this.regions);
     }
 
     // OWR active flag

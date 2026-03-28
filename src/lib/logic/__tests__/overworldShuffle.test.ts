@@ -90,12 +90,6 @@ describe("Overworld Shuffle", () => {
         //   Inverted: { canGetBonkableItem }
         // With effectiveWorldState = "inverted", uses { canGetBonkableItem } → boots → available
         expect(result.locationsLogic["Hype Cave Statue"]).toBe("available");
-
-        // "Hype Cave Area Tree Pull" on owid 116:
-        //   Open: "never"
-        //   Inverted: { canKillMostEnemies }
-        // With effectiveWorldState = "inverted", uses { canKillMostEnemies } → available
-        expect(result.locationsLogic["Hype Cave Area Tree Pull"]).toBe("available");
       });
 
       it("boundary exits from flipped tile lead back to LW, not to DW", () => {

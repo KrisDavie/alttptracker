@@ -1207,6 +1207,16 @@ describe("LogicEngine", () => {
 
       expect(result.locationsLogic["Spike Cave"]).toBe("unavailable");
     });
+
+    it("should require a bow for right side pod", () => {
+      const state = gameState().withAllItems().withoutItems(["bow"]).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Palace of Darkness - Map Chest"]).toBe("unavailable");
+    })
   });
 
   describe("Blacksmith", () => {
@@ -1224,7 +1234,7 @@ describe("LogicEngine", () => {
     });
   });
 
-    describe("Old Man", () => {
+  describe("Old Man", () => {
       it("Old man should be available with lamp and flute", () => {
         const state = gameState().withItems({ lantern: 1, flute: 1 }).build();
 

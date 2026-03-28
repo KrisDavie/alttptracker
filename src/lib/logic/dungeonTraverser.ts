@@ -95,7 +95,7 @@ export class DungeonTraverser {
     this.dungeonId = dungeonId;
     this.protection = protection;
 
-    this.requirementEvaluator = new RequirementEvaluator(state);
+    this.requirementEvaluator = new RequirementEvaluator(state, this.regions);
 
     this.actuallyHasBigKey = !state.settings.wildBigKeys || !!state.dungeons[dungeonId]?.bigKey;
     this.effectivelyHasBigKey = protection === "partial" || this.actuallyHasBigKey;
@@ -126,8 +126,8 @@ export class DungeonTraverser {
 
     // Key counting uses all-items (partial) or actual inventory (dangerous)
     const keyCountingState = this.protection === "partial" ? createAllItemsState(this.state) : this.state;
-    const keyCountingEvaluator = new RequirementEvaluator(keyCountingState);
-    this.requirementEvaluator = new RequirementEvaluator(this.state);
+    const keyCountingEvaluator = new RequirementEvaluator(keyCountingState, this.regions);
+    this.requirementEvaluator = new RequirementEvaluator(this.state, this.regions);
 
     if (this.state.settings.wildSmallKeys === "wild") {
       // Pass 1: Dijkstra with actual inventory, assuming big key for door discovery
@@ -1485,6 +1485,7 @@ export class DungeonTraverser {
     const status = this.requirementEvaluator.evaluateWorldLogic(switchLoc.requirements, ctx);
     return status !== "unavailable" && status !== "information";
   }
+
 
 
 
