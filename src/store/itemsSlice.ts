@@ -1,5 +1,6 @@
 import ItemsData from "@/data/itemData";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
 
 interface ItemState {
   amount: number;
@@ -70,6 +71,18 @@ export const itemsSlice = createSlice({
         state[itemName].amount = count;
       });
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
+      const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.items as Record<string, ItemState> | undefined;
+      if (!rehydrated) return initialState;
+      // Start from current initial state (has any new items), overlay persisted values
+      const merged = { ...initialState };
+      for (const [key, value] of Object.entries(rehydrated)) {
+        merged[key] = { ...itemInitialState, ...value };
+      }
+      return merged;
+    });
   },
 });
 

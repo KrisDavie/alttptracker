@@ -7,7 +7,7 @@ import { getPresetById, resolvePresetFromSlug } from "@/data/launcherPresets";
 import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
-import { loadLauncherPrefs, saveLauncherPrefs, loadRecentSprites, pushRecentSprite } from "@/lib/launchHelpers";
+import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
 import { LaunchCard } from "./launch/LaunchCard";
@@ -18,14 +18,9 @@ import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
 const LaunchPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
   const savedPrefs = useMemo(() => loadLauncherPrefs(), []);
-  const [settings, setSettings] = useState<SettingsState>(() => ({
-    ...DEFAULT_SETTINGS,
-    mapMode: (savedPrefs.mapMode as SettingsState["mapMode"]) ?? DEFAULT_SETTINGS.mapMode,
-    connectionLinesMode: (savedPrefs.connectionLinesMode as SettingsState["connectionLinesMode"]) ?? DEFAULT_SETTINGS.connectionLinesMode,
-    autotracking: savedPrefs.autotracking ?? DEFAULT_SETTINGS.autotracking,
-    includeDungeonItemsInCounter: savedPrefs.includeDungeonItemsInCounter ?? DEFAULT_SETTINGS.includeDungeonItemsInCounter,
-    sequenceBreaks: { ...DEFAULT_SETTINGS.sequenceBreaks, ...savedPrefs.sequenceBreaks },
-  }));
+  const [settings, setSettings] = useState<SettingsState>(() =>
+    applyLauncherPrefs(DEFAULT_SETTINGS, savedPrefs)
+  );
   const [spriteName, setSpriteName] = useState(savedPrefs.spriteName ?? "link");
   const [startingItems, setStartingItems] = useState<Record<string, number>>({});
   const [sessions, setSessions] = useState<TrackerSession[]>([]);
@@ -83,15 +78,8 @@ const LaunchPage: React.FC = () => {
 
   // Save UI preferences when sprite or interface settings change
   useEffect(() => {
-    saveLauncherPrefs({
-      spriteName,
-      mapMode: settings.mapMode,
-      connectionLinesMode: settings.connectionLinesMode,
-      autotracking: settings.autotracking,
-      includeDungeonItemsInCounter: settings.includeDungeonItemsInCounter ?? false,
-      sequenceBreaks: settings.sequenceBreaks,
-    });
-  }, [spriteName, settings.mapMode, settings.connectionLinesMode, settings.autotracking, settings.includeDungeonItemsInCounter, settings.sequenceBreaks]);
+    saveLauncherPrefs(buildLauncherPrefs({ ...settings, spriteName }));
+  }, [spriteName, settings]);
 
   // Fetch MOTD from public/motd.txt
   // Lets us update the launch page with important announcements without needing a full redeploy or relying on third-party services for dynamic content
@@ -234,19 +222,6 @@ const LaunchPage: React.FC = () => {
           }
           await idbDriver.setItem(prefix + "items", JSON.stringify(itemsState));
         }
-      } else {
-        const raw = await idbDriver.getItem(prefix + "settings");
-        const savedSettings = raw ? JSON.parse(raw) : {};
-        const merged = {
-          ...savedSettings,
-          mapMode: settings.mapMode,
-          connectionLinesMode: settings.connectionLinesMode,
-          connectionLineColor: settings.connectionLineColor,
-          autotracking: settings.autotracking,
-          includeDungeonItemsInCounter: settings.includeDungeonItemsInCounter,
-          spriteName: savedSettings.spriteName ?? spriteName,
-        };
-        await idbDriver.setItem(prefix + "settings", JSON.stringify(merged));
       }
 
       const windowSizes: Record<string, { w: number; h: number }> = {

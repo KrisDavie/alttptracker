@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
 import { getAllPossibleLocationNames } from "@/lib/logic/locationMapper";
 import { entranceLocations } from "@/data/locationsData";
 import type { LogicStatus } from "@/data/logic/logicTypes";
@@ -74,6 +75,25 @@ export const checksSlice = createSlice({
         }
       });
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
+      const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.checks as ChecksState | undefined;
+      if (!rehydrated) return initialState;
+      // Start from current initial state (has any new locations/entrances)
+      const merged: ChecksState = {
+        locationsChecks: { ...initialState.locationsChecks },
+        entranceChecks: { ...initialState.entranceChecks },
+      };
+      // Overlay persisted location checks (preserves checked/scouted state)
+      for (const [key, value] of Object.entries(rehydrated.locationsChecks ?? {})) {
+        merged.locationsChecks[key] = { ...initialCheckStatus, ...value };
+      }
+      for (const [key, value] of Object.entries(rehydrated.entranceChecks ?? {})) {
+        merged.entranceChecks[key] = { ...initialCheckStatus, ...value };
+      }
+      return merged;
+    });
   },
 });
 

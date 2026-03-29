@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
 
 export interface StatusColors {
   available: string;
@@ -124,6 +125,8 @@ export interface SettingsState {
   connectionLinesMode: "none" | "caves" | "dungeons" | "all";
   connectionLineColor: string;
   spriteName: string;
+  colouredChests: boolean;
+  showChestTooltips: boolean;
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
@@ -181,6 +184,8 @@ export const initialState: SettingsState = {
   connectionLinesMode: "all",
   connectionLineColor: "#ff00f9ff",
   spriteName: "link",
+  colouredChests: true,
+  showChestTooltips: true,
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,
@@ -206,6 +211,17 @@ export const settingsSlice = createSlice({
     setSequenceBreaks: (state, action: { payload: Partial<UserSequenceBreaks> }) => {
       state.sequenceBreaks = { ...state.sequenceBreaks, ...action.payload };
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
+      const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.settings as Partial<SettingsState> | undefined;
+      if (!rehydrated) return initialState;
+      return {
+        ...initialState,
+        ...rehydrated,
+        sequenceBreaks: { ...initialState.sequenceBreaks, ...rehydrated.sequenceBreaks },
+      };
+    });
   },
 });
 

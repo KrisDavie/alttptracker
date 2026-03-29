@@ -209,6 +209,52 @@ function getVanillaWorld(owid: number): "light" | "dark" {
   return (owid < 64 || owid >= 128) ? "light" : "dark";
 }
 
+// ─── Transform 1a: Entrance shuffle (no map) ─────────────────────────
+// When mapMode is "off" and entrance shuffle is active, the player cannot
+// input entrance links via the UI. Instead, add free exits from Menu to
+// every shuffled entrance destination so all interiors are reachable.
+
+function applyEntranceShuffleNoMap(
+  regions: Record<string, RegionLogic>,
+  state: GameState,
+): Record<string, RegionLogic> {
+  const result = { ...regions };
+  const entranceMode = state.settings.entranceMode;
+  const emptyRequirements = { Open: {}, Inverted: {} };
+
+  // Collect all interior destinations for shuffled entrances
+  const menuExits: Record<string, { to: string; type: string; requirements: typeof emptyRequirements }> = {};
+
+  for (const [entranceName, locData] of Object.entries(entranceLocations)) {
+    const pool = locData.entrance_modes?.[entranceMode];
+    if (!pool || pool === "vanilla") continue;
+
+    const portalRegions = locData.entranceRegions;
+    if (!portalRegions || portalRegions.length === 0) continue;
+
+    for (const portalRegion of portalRegions) {
+      if (!regions[portalRegion]) continue;
+      const regionType = regions[portalRegion].type ?? "Dungeon";
+      menuExits[`Entrance Shuffle ${entranceName} - ${portalRegion}`] = {
+        to: portalRegion,
+        type: regionType,
+        requirements: emptyRequirements,
+      };
+    }
+  }
+
+  // Append free exits to Menu
+  const menuRegion = result["Menu"];
+  if (menuRegion) {
+    result["Menu"] = {
+      ...menuRegion,
+      exits: { ...menuRegion.exits, ...menuExits },
+    };
+  }
+
+  return result;
+}
+
 // ─── Transform 1: Entrance shuffle ────────────────────────────────────
 
 function applyEntranceShuffle(
@@ -217,6 +263,13 @@ function applyEntranceShuffle(
   meta: RegionMetadata,
 ): Record<string, RegionLogic> {
   if (state.settings.entranceMode === "none") return regions;
+
+  // When map is off, the player has no UI to input entrance links.
+  // Add free exits from Menu to every shuffled entrance's interior so
+  // all dungeons/caves are assumed reachable regardless of shuffle.
+  if (state.settings.mapMode === "off") {
+    return applyEntranceShuffleNoMap(regions, state);
+  }
 
   const result = { ...regions };
   const copied = new Set<string>();

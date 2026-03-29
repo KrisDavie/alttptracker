@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
 import { DungeonsData } from "@/data/dungeonData";
 
 export interface DungeonState {
@@ -124,6 +125,23 @@ export const dungeonsSlice = createSlice({
 
       Object.assign(current, filteredState);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
+      const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.dungeons as Record<string, DungeonState> | undefined;
+      if (!rehydrated) return initialState;
+      const merged = { ...initialState };
+      for (const [key, value] of Object.entries(rehydrated)) {
+        if (merged[key]) {
+          merged[key] = {
+            ...dungeonInitialState,
+            ...value,
+            manuallyChanged: { ...dungeonInitialState.manuallyChanged, ...value.manuallyChanged },
+          };
+        }
+      }
+      return merged;
+    });
   },
 });
 

@@ -1,18 +1,12 @@
-import type { UserSequenceBreaks } from "@/store/settingsSlice";
+import type { SettingsState } from "@/store/settingsSlice";
+import { REMEMBERED_SETTINGS, type RememberedSettingsKey } from "@/data/userPreferences";
 
 export const LAUNCHER_PREFS_KEY = "muffins_launcher_prefs";
 export const RECENT_SPRITES_KEY = "muffins_recent_sprites";
 export const MAX_RECENT_SPRITES = 6;
 
-export interface LauncherPrefs {
-  spriteName: string;
-  mapMode: string;
-  connectionLinesMode: string;
-  autotracking: boolean;
-  includeDungeonItemsInCounter: boolean;
-  sequenceBreaks: UserSequenceBreaks;
-  canNavigateDarkRooms?: boolean;
-}
+/** Persisted launcher preferences — derived from REMEMBERED_SETTINGS registry. */
+export type LauncherPrefs = Pick<SettingsState, RememberedSettingsKey>;
 
 export function loadLauncherPrefs(): Partial<LauncherPrefs> {
   try {
@@ -25,6 +19,42 @@ export function loadLauncherPrefs(): Partial<LauncherPrefs> {
 
 export function saveLauncherPrefs(prefs: LauncherPrefs) {
   localStorage.setItem(LAUNCHER_PREFS_KEY, JSON.stringify(prefs));
+}
+
+/**
+ * Build a LauncherPrefs object from current settings.
+ * Picks all REMEMBERED_SETTINGS keys automatically.
+ */
+export function buildLauncherPrefs(settings: SettingsState): LauncherPrefs {
+  const prefs: Record<string, unknown> = {};
+  for (const key of REMEMBERED_SETTINGS) {
+    prefs[key] = settings[key];
+  }
+  return prefs as LauncherPrefs;
+}
+
+/**
+ * Apply saved launcher preferences onto a base SettingsState.
+ * Object-valued keys (like sequenceBreaks) are shallow-merged;
+ * all others are replaced directly.
+ */
+export function applyLauncherPrefs(base: SettingsState, saved: Partial<LauncherPrefs>): SettingsState {
+  const result = { ...base };
+  for (const key of REMEMBERED_SETTINGS) {
+    if (key in saved) {
+      const baseVal = base[key];
+      const savedVal = (saved as Record<string, unknown>)[key];
+      if (typeof baseVal === "object" && baseVal !== null && !Array.isArray(baseVal)) {
+        // Shallow-merge object values (e.g. sequenceBreaks)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (result as any)[key] = { ...(baseVal as any), ...(savedVal as any) };
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (result as any)[key] = savedVal;
+      }
+    }
+  }
+  return result;
 }
 
 export function loadRecentSprites(): string[] {

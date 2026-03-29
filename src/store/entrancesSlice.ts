@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
 import { entranceLocations } from "@/data/locationsData";
 
 export interface EntranceData {
@@ -81,6 +82,21 @@ export const entrancesSlice = createSlice({
       state[source].connectorGroup = connectorGroup;
       state[destination].connectorGroup = connectorGroup;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
+      const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.entrances as Record<string, EntranceData> | undefined;
+      if (!rehydrated) return initialState;
+      const merged = { ...initialState };
+      for (const [key, value] of Object.entries(rehydrated)) {
+        merged[key] = {
+          ...entranceInitialState,
+          ...value,
+          manuallyChanged: { ...entranceInitialState.manuallyChanged, ...value.manuallyChanged },
+        };
+      }
+      return merged;
+    });
   },
 });
 

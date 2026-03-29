@@ -146,6 +146,7 @@ function MapLocation(props: MapLocationProps) {
           }
           onCheckClick={handleCheckClick}
           onGroupExpand={handleGroupExpand}
+          onClose={resetGroups}
         />
       )}
     </div>

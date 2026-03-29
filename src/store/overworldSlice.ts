@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { REMEMBER_REHYDRATED } from "redux-remember";
 
 export interface OverworldState {
   // Per-tile effective world — only stores tiles that differ from vanilla
@@ -79,6 +80,13 @@ export const overworldSlice = createSlice({
     resetOverworldState() {
       return overworldInitialState;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
+      const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.overworld as Partial<OverworldState> | undefined;
+      if (!rehydrated) return overworldInitialState;
+      return { ...overworldInitialState, ...rehydrated };
+    });
   },
 });
 

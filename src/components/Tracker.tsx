@@ -66,6 +66,7 @@ export function Tracker() {
     <div className="h-screen w-screen bg-surface flex items-start justify-start overflow-hidden fixed inset-0 font-body antialiased" onContextMenu={(e) => e.preventDefault()}>
       <div className="stone-texture opacity-[0.03]"></div>
       <div
+        data-tracker-bounds
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top left",

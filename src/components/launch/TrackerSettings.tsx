@@ -43,7 +43,9 @@ export function TrackerSettings({
         <div className="space-y-2">
           <Label className="text-xs font-medium">Display</Label>
           <div className="flex flex-col gap-2">
-            <SettingSwitch label="Count Dungeon Items" checked={settings.includeDungeonItemsInCounter ?? false} onChange={(v) => updateSetting("includeDungeonItemsInCounter", v)} />
+            <SettingSwitch label="Count Dungeon Items" checked={!!(settings.includeDungeonItemsInCounter ?? false)} onChange={(v) => updateSetting("includeDungeonItemsInCounter", v)} />
+            <SettingSwitch label="Coloured Chests" checked={settings.colouredChests} onChange={(v) => updateSetting("colouredChests", v)} />
+            <SettingSwitch label="Show Chest Tooltips" checked={settings.showChestTooltips} onChange={(v) => updateSetting("showChestTooltips", v)} />
             <SettingSwitch label="Dark Room Navigation" checked={settings.sequenceBreaks.canNavigateDarkRooms} onChange={(v) => updateSetting("sequenceBreaks", { ...settings.sequenceBreaks, canNavigateDarkRooms: v })} />
           </div>
         </div>

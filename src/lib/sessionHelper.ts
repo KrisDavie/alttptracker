@@ -1,6 +1,6 @@
 import { createSession, touchSession } from "./sessionManager";
 import { initialState as DEFAULT_SETTINGS, type SettingsState } from "@/store/settingsSlice";
-import { loadLauncherPrefs } from "./launchHelpers";
+import { loadLauncherPrefs, applyLauncherPrefs } from "./launchHelpers";
 import { getPresetById } from "@/data/launcherPresets";
 import { idbDriver } from "./idbDriver";
 import ItemsData from "@/data/itemData";
@@ -55,15 +55,7 @@ function launchDirectSession(sessionId: string, urlParams: URLSearchParams) {
   const presetParam = urlParams.get("preset");
 
   // Build settings: start from defaults, overlay launcher prefs (UI settings)
-  let settings: SettingsState = {
-    ...DEFAULT_SETTINGS,
-    mapMode: (savedPrefs.mapMode as SettingsState["mapMode"]) ?? DEFAULT_SETTINGS.mapMode,
-    connectionLinesMode: (savedPrefs.connectionLinesMode as SettingsState["connectionLinesMode"]) ?? DEFAULT_SETTINGS.connectionLinesMode,
-    autotracking: savedPrefs.autotracking ?? DEFAULT_SETTINGS.autotracking,
-    includeDungeonItemsInCounter: savedPrefs.includeDungeonItemsInCounter ?? DEFAULT_SETTINGS.includeDungeonItemsInCounter,
-    sequenceBreaks: { ...DEFAULT_SETTINGS.sequenceBreaks, ...savedPrefs.sequenceBreaks },
-    spriteName: savedPrefs.spriteName ?? DEFAULT_SETTINGS.spriteName,
-  };
+  let settings: SettingsState = applyLauncherPrefs(DEFAULT_SETTINGS, savedPrefs);
 
   let startingItems: Record<string, number> = {};
   let presetId: string | undefined;

@@ -2,7 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setDungeonCollectedCount } from "../../store/dungeonsSlice";
 import DungeonsData from "@/data/dungeonData";
+import { mapStatusBg } from "@/hooks/useStatusColors";
 import { getActiveLocations } from "@/lib/logic/locationMapper";
+import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
+import { LocationTooltip } from "./LocationTooltip";
 
 interface ChestCounterProps {
   dungeon: string;
@@ -12,11 +15,15 @@ interface ChestCounterProps {
 function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const dispatch = useDispatch();
   const settings = useSelector((state: RootState) => state.settings);
+  const showChestTooltips = useSelector((state: RootState) => state.settings.showChestTooltips ?? true);
+  const colouredChests = useSelector((state: RootState) => state.settings.colouredChests ?? true);
   const collected = useSelector((state: RootState) => state.dungeons[dungeon]?.collectedCount ?? 0);
   const checks = useSelector((state: RootState) => state.checks);
   const dungeonState = useSelector((state: RootState) => state.dungeons[dungeon]);
 
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
+
+  const { itemLocations, itemChecks, displayList, status, maxLogicStatus, handleCheckClick, handleGroupExpand, resetGroups } = useLocationTooltipData(dungeonData.name);
 
   // Dynamically compute active item locations based on current settings
   const dungeonChecks = getActiveLocations(dungeonData.name, settings);
@@ -68,9 +75,12 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     dispatch(setDungeonCollectedCount({ dungeon, count: finalCount }));
   }
 
+  const bgClass = status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus);
+
   return (
     <>
       <div
+        className="group relative"
         style={{
           backgroundImage: `url(/dungeons/${checksRemaining === 0 ? "chest0" : "smallchest"}.png)`,
           width: "100%",
@@ -88,7 +98,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
           setCount(collected - 1);
         }}
       >
-        <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 bg-white bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
+        <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 ${colouredChests ? bgClass : "bg-white"} bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
           <div
             className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`}
             onClick={(e) => {
@@ -104,6 +114,21 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
             {checksRemaining}
           </div>
         </div>
+        {showChestTooltips && (
+          <LocationTooltip
+            name={dungeonData.name}
+            xPercent={50}
+            yPercent={0}
+            items={itemLocations.length > 1 ? displayList : undefined}
+            singleCheck={itemLocations.length === 1 ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] } : undefined}
+            onCheckClick={handleCheckClick}
+            onGroupExpand={handleGroupExpand}
+            onClose={resetGroups}
+            autoPosition
+            preventExpansion
+            size="md"
+          />
+        )}
       </div>
     </>
   );
