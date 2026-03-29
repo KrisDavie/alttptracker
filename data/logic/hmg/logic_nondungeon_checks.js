@@ -1415,6 +1415,9 @@
             "hammer",
             "canMirrorWrap",
             {
+              allOf: ["canBootsClip", { anyOf: ["flippers", "canFakeFlipper"], }, ],
+            },
+            {
               allOf: ["canBreach|Dark World - West", "moonpearl", "mirror", "mitts"],
             },
           ],
