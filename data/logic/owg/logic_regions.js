@@ -463,6 +463,19 @@
               allOf: ["canBreach|Dark World - West", "canBootsClip", "moonpearl"],
             },
             {
+              allOf: ["canBreach|Dark World - West", "canMirrorWrap"],
+            },
+            {
+              allOf: ["flute", "mitts"],
+            },
+          ],
+        },
+        logical: {
+          anyOf: [
+            {
+              allOf: ["canReach|Dark World - West", "canBootsClip", "moonpearl"],
+            },
+            {
               allOf: ["flute", "mitts"],
             },
           ],
