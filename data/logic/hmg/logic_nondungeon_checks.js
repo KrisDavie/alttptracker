@@ -1417,6 +1417,9 @@
             {
               allOf: ["canBreach|Dark World - West", "moonpearl", "mirror", "mitts"],
             },
+            {
+              allOf: ["canBreach|Dark World - East", "moonpearl", "canBootsClip", "mirror"],
+            },
           ],
         },
         logical: {
@@ -1425,6 +1428,9 @@
             "hammer",
             {
               allOf: ["canReach|Dark World - West", "mitts", "moonpearl"],
+            },
+            {
+              allOf: ["canReach|Dark World - East", "moonpearl", "canBootsClip", "mirror"],
             },
           ],
         },
@@ -1998,7 +2004,7 @@
           allOf: ["hammer"],
           anyOf: [
             {
-              allOf: ["canBreach|Dark World - East", "moonpearl", "canBootsClip"],
+              allOf: ["canBreach|Dark World - East", "moonpearl", "canBootsClip" ],
             },
             {
               allOf: ["mitts", "moonpearl"],
