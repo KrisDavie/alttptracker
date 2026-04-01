@@ -87,6 +87,7 @@ html, body {
   --status-unavailable: #ef4444;
   --status-checked: rgba(107, 114, 128, 0.7);
   --status-selected: #3b82f6;
+  --status-none: #ffffff;
 
   /* Logic status colors — tooltip text */
   --status-text-available: #4ade80;
@@ -168,6 +169,7 @@ body {
 
   /* Status colors as Tailwind theme colors */
   --color-status-available: var(--status-available);
+  --color-status-none: var(--status-none);
   --color-status-possible: var(--status-possible);
   --color-status-ool: var(--status-ool);
   --color-status-information: var(--status-information);

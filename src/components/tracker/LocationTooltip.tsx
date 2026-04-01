@@ -141,7 +141,7 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
               {name}
             </div>
             {items && (
-              <div className={items.length > 6 ? "grid grid-cols-2 gap-x-2" : ""}>
+              <div className={items.length > 6 ? "grid grid-cols-2 grid-flow-col gap-x-2" : ""} style={items.length > 6 ? { gridTemplateRows: `repeat(${Math.ceil(items.length / 2)}, auto)` } : undefined}>
                 {items.map((item) =>
                   item.type === "item" ? (
                     <div

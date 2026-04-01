@@ -6,7 +6,7 @@ import { useMemo, useState, useCallback } from "react";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 import type { TooltipListItem, TooltipCheckInfo } from "@/components/tracker/LocationTooltip";
 
-export function useLocationTooltipData(locName: string) {
+export function useLocationTooltipData(locName: string, additionalEntries?: string[]) {
   const dispatch = useDispatch();
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
@@ -18,10 +18,13 @@ export function useLocationTooltipData(locName: string) {
 
   const itemLocations = useMemo(() => {
     const list = getActiveLocations(targetName, settings);
-    const nonPots = list.filter((loc) => !loc.includes("#"));
-    const pots = list.filter((loc) => loc.includes("#"));
-    return [...nonPots, ...pots];
-  }, [targetName, settings]);
+    if (additionalEntries) {
+      for (const entry of additionalEntries) {
+        list.push(...getActiveLocations(entry, settings));
+      }
+    }
+    return list;
+  }, [targetName, settings, additionalEntries]);
 
   const checkStatuses = useSelector((state: RootState) => {
     return itemLocations.map((loc) => state.checks.locationsChecks[loc]);
@@ -73,8 +76,8 @@ export function useLocationTooltipData(locName: string) {
     const enemiesGroups: Partial<Record<LogicStatus | "checked", TooltipListItem[]>> = {};
 
     Object.entries(itemChecks).forEach(([key, info]) => {
-      const isPot = (info.displayName.includes("Pot Key") || info.displayName.includes("Pot #") || info.displayName.includes("Block")) && !info.displayName.includes("Enemy");
-      const isEnemy = info.displayName.includes("Enemy") || info.displayName.includes("Key Drop");
+      const isPot = (info.displayName.includes("Pot #") || (info.displayName.includes("Block") && !info.displayName.includes("Key"))) && !info.displayName.includes("Enemy");
+      const isEnemy = info.displayName.includes("Enemy #");
 
       const statusKey = info.status.checked ? "checked" : info.status.logic;
 

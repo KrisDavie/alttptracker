@@ -131,6 +131,19 @@ function buildLocationMapping(): {
 } {
   const regions = logic_regions;
 
+  // Build a global location order index from the graph's definition order.
+  // logic_regions.ts is auto-generated and lists locations in dungeon progression
+  // order, so this gives us a natural traversal ordering for tooltips.
+  const locationOrder = new Map<string, number>();
+  let orderIdx = 0;
+  for (const region of Object.values(regions)) {
+    for (const locName of Object.keys(region.locations || {})) {
+      if (!locationOrder.has(locName)) {
+        locationOrder.set(locName, orderIdx++);
+      }
+    }
+  }
+
   // Build reverse index: location name → region name
   const locationToRegion = new Map<string, string>();
   for (const [regionName, region] of Object.entries(regions)) {
@@ -170,7 +183,7 @@ function buildLocationMapping(): {
     return visited;
   }
 
-  // Collect all locations from a set of regions
+  // Collect all locations from a set of regions, sorted by graph definition order
   function collectLocations(regionSet: Set<string>): LocationInfo[] {
     const locations: LocationInfo[] = [];
     const addedNames = new Set<string>();
@@ -191,6 +204,10 @@ function buildLocationMapping(): {
         }
       }
     }
+
+    // Sort by graph definition order (logic_regions.ts lists locations in
+    // dungeon progression order since it's auto-generated from game data)
+    locations.sort((a, b) => (locationOrder.get(a.name) ?? Infinity) - (locationOrder.get(b.name) ?? Infinity));
 
     return locations;
   }

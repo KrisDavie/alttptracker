@@ -160,7 +160,7 @@ const LaunchPage: React.FC = () => {
   const applyPreset = useCallback((presetId: string) => {
     const preset = getPresetById(presetId);
     if (preset) {
-      setSettings({ ...DEFAULT_SETTINGS, ...preset.settings });
+      setSettings((prev) => applyLauncherPrefs({ ...DEFAULT_SETTINGS, ...preset.settings }, buildLauncherPrefs(prev)));
       setStartingItems(preset.startingItems ?? {});
       setSelectedPresetId(presetId);
     }

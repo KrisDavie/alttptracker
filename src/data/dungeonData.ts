@@ -17,6 +17,8 @@ interface DungeonData {
     prize: boolean;
   };
   portals?: string[];
+  /** Additional locationsData entries whose items belong to this dungeon (e.g. Sanctuary for HC) */
+  additionalEntries?: string[];
 }
 
 export const DungeonsData: Record<string, DungeonData> = {
@@ -268,6 +270,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       prize: false,
     },
     portals: ["Sanctuary Portal", "Hyrule Castle South Portal", "Hyrule Castle West Portal", "Hyrule Castle East Portal", "Sewer Drop"],
+    additionalEntries: ["Sanctuary Grave", "Sanctuary"],
   },
 };
 
