@@ -100,10 +100,13 @@ function MapLocation(props: MapLocationProps) {
   }
 
   const isHatched = (!isEntrance || isLinked) && status === "some";
+  const isGenericConnector = isLinked && itemLocations.length === 0;
   const bgClass =
     isEntrance && !isLinked
       ? (entranceCheck?.checked ? mapStatusBg("checked") : locName === selectedEntrance ? mapStatusBg("selected") : mapStatusBg(entranceCheck?.logic || "unavailable"))
-      : (status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus));
+      : isGenericConnector
+        ? (entranceCheck?.checked ? mapStatusBg("checked") : mapStatusBg(entranceCheck?.logic || "unavailable"))
+        : (status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus));
 
   return (
     <div

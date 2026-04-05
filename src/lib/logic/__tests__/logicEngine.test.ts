@@ -271,6 +271,32 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible");
     });
 
+      it("[SK BK Pottery KeyDrop] should mark beamos all pot key as available with 2 small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" }).withDungeon("dp", { smallKeys: 2, bigKey: true }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // These locations should be available (no key required)
+      expect(result.locationsLogic["Desert Palace - Big Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Desert Palace - Torch"]).toBe("available");
+
+      // Start with 2 small keys
+      // Open  Desert East Wing Key Door EN (also opens Desert Compass Key Door WN)
+      // We have one key available, and only one more door to open ("Desert Tiles 1 Up Stairs" (also opens "Desert Bridge Down Stairs"))
+
+      // Start with 2 small keys
+      // Open "Desert Tiles 1 Up Stairs" (also opens "Desert Bridge Down Stairs")
+      // Beamos pot key already available 
+
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("unavailable");
+      expect(result.locationsLogic["Desert Palace - Compass Chest"]).toBe("possible");
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible");
+      expect(result.locationsLogic["Desert Palace - Beamos Hall Pot Key"]).toBe("available");
+    });
+
     it("[SK] should mark locations as unavailable when lacking required items", () => {
       const state = gameState().withSettings({ wildSmallKeys: "wild" }).withDungeon("dp", { smallKeys: 1, bigKey: true }).build();
 

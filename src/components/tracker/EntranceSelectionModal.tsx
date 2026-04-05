@@ -7,7 +7,6 @@ import { Button } from "../ui/button";
 function EntranceSelectionModal() {
   const dispatch = useDispatch();
   const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
-  const mapMode = useSelector((state: RootState) => state.settings.mapMode);
 
   if (!selectedEntrance) return null;
 
@@ -28,10 +27,7 @@ function EntranceSelectionModal() {
   };
 
   return (
-    <div className="absolute inset-x-8 inset-y-12 bg-gray-900/95 border-2 border-gray-600 rounded-lg flex flex-col items-center justify-between text-white p-6 z-50 shadow-2xl overflow-hidden"
-      style={{
-        transform: `scale(${mapMode === "compact" ? 0.8 : 1})`,
-      }}>
+    <div className="absolute inset-x-8 inset-y-12 bg-gray-900/95 border-2 border-gray-600 rounded-lg flex flex-col items-center justify-between text-white p-6 z-50 shadow-2xl overflow-hidden">
       <div className="text-center w-full">
         <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Linking Entrance</h3>
         <p className="text-xl font-bold border-b border-gray-700 pb-2">{selectedEntrance}</p>

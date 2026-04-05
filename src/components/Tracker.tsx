@@ -4,6 +4,7 @@ import type { RootState } from "@/store/store";
 import CommunityLayoutItems from "@/components/layouts/CommunityTracker/CommunityLayoutItems";
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
+import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
 import { Loader2 } from "lucide-react";
 
 const TILE = 448;
@@ -44,6 +45,8 @@ export function Tracker() {
   const showMaps = mapMode !== "off";
   const isVertical = mapMode === "vertical";
   const isCompact = mapMode === "compact";
+  const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === 'entrance';
+  const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
 
   let maps = [];
 
@@ -78,8 +81,13 @@ export function Tracker() {
         }}
         className={`flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
       >
-        <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }}>
+        <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }} className="relative">
           <CommunityLayoutItems />
+          {isCompact && entranceModalOpen && selectedEntrance && (
+            <div className="absolute top-0 left-0 w-full h-full z-100">
+              <EntranceSelectionModal />
+            </div>
+          )}
         </div>
         {showMaps && (
           <div

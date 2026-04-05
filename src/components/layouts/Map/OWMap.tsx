@@ -44,17 +44,21 @@ function OWMap({ world = "lw" }: OWMapProps) {
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
 
-  let fullSize: string, smallSize: string;
+  let fullSize: string, smallSize: string, dungeonSize: string, entranceSize: string;
 
   switch (mapMode) {
     case "vertical":
     case "normal":
       fullSize = "h-4 w-4";
       smallSize = "h-2.5 w-2.5";
+      dungeonSize = "h-5.5 w-5.5";
+      entranceSize = "h-3 w-3";
       break;
     case "compact":
       fullSize = "h-2.5 w-2.5";
       smallSize = "h-1.5 w-1.5";
+      dungeonSize = "h-3.5 w-3.5";
+      entranceSize = "h-[9px] w-[9px]";
       break;
   }
   return (
@@ -71,7 +75,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
         justifyContent: "center",
       }}
     >
-      {(entranceModalOpen && selectedWorld === world) && (
+      {(entranceModalOpen && selectedWorld === world && mapMode !== "compact") && (
         <div className="absolute top-0 left-0 w-full h-full z-100">
           <EntranceSelectionModal />
         </div>
@@ -110,7 +114,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
             name={locationKey}
             location={location}
             type={itemType as "dungeon" | "item" | "tree"}
-            className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? smallSize : fullSize}`}
+            className={`hover:origin-center hover:scale-150 ${itemType === "tree" ? smallSize : itemType === "dungeon" ? dungeonSize : fullSize}`}
             tooltip={true}
             isEntrance={false}
           />
@@ -123,6 +127,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
         const location = entranceLocations[locationKey];
         if (location.world !== world) return null;
         if (location.entrance_modes?.[entranceMode] === "vanilla") return null;
+        if (locationKey.includes("Inverted") && settings.worldState === 'open') return null;
 
         return (
           <MapLocation
@@ -130,7 +135,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
             name={locationKey}
             location={location}
             type="entrance"
-            className="h-3 w-3 hover:origin-center hover:scale-150"
+            className={`hover:origin-center hover:scale-150 ${entranceSize}`}
             tooltip={true}
             isEntrance={true}
           />

@@ -283,6 +283,14 @@ function applyEntranceShuffle(
     const pool = locData.entrance_modes?.[entranceMode];
     if (!pool || pool === "vanilla") continue;
 
+    // When Link's House isn't shuffled, keep the S&Q destination vanilla.
+    // Links House is always kept (Open/Standard/Inverted_1 S&Q destination).
+    // Big Bomb Shop is only kept in Inverted mode (it's the Inverted S&Q destination).
+    if (!state.settings.shuffleLinks) {
+      if (entranceName === "Links House") continue;
+      if (entranceName === "Big Bomb Shop" && state.settings.worldState === "inverted") continue;
+    }
+
     // Find parent region containing this entrance exit
     const parentRegion = meta.entranceToParentRegion.get(entranceName);
     if (!parentRegion || !result[parentRegion]?.exits?.[entranceName]) continue;
@@ -302,7 +310,7 @@ function applyEntranceShuffle(
         setExitTo(exits, entranceName, destInfo.to, destInfo.type);
         reverseLinks.set(link, entranceName);
       } else if (link.startsWith("Generic Connector")) {
-        setExitTo(exits, entranceName, link);
+        setExitTo(exits, entranceName, link, "Cave");
         if (!genericConnectors.has(link)) {
           genericConnectors.set(link, []);
         }
@@ -321,6 +329,12 @@ function applyEntranceShuffle(
   for (const [entranceName, locData] of Object.entries(entranceLocations)) {
     const pool = locData.entrance_modes?.[entranceMode];
     if (!pool || pool === "vanilla") continue;
+
+    // Skip entrances kept vanilla above
+    if (!state.settings.shuffleLinks) {
+      if (entranceName === "Links House") continue;
+      if (entranceName === "Big Bomb Shop" && state.settings.worldState === "inverted") continue;
+    }
 
     // Find the interior region for this entrance
     const destInfo = pickExitDest(

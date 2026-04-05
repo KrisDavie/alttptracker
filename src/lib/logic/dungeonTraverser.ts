@@ -820,6 +820,85 @@ export class DungeonTraverser {
       }
     }
 
+    // Precompute unique door pairs and per-region protected door counts for
+    // pottery-mode contention (avoids running a BFS per region inside the loop).
+    const potteryProtectedDoors = new Map<string, number>();
+    if (isPotteryKeyMode && doorsAtThreshold0 > 1 && ctx.totalKeysAvailable < estimatedUniqueDoors - 1) {
+      // Build unique door pairs: [sourceRegion, destRegion]
+      const uniqueDoorPairs: [string, string][] = [];
+      const seenPairs = new Set<string>();
+      for (const doorName of ctx.pendingKeyDoors) {
+        const doorSource = this.findDoorSourceRegion(doorName);
+        if (!doorSource) continue;
+        const exitData = this.regions[doorSource]?.exits?.[doorName];
+        if (!exitData?.to) continue;
+        const pairKey = this.getDoorPairKey(doorSource, exitData.to);
+        if (seenPairs.has(pairKey)) continue;
+        seenPairs.add(pairKey);
+        uniqueDoorPairs.push([doorSource, exitData.to]);
+      }
+
+      // BFS from entries to get baseline full-reachability set.
+      // Only regions whose removal disconnects a door region can have
+      // protectedDoors > 0.  For all others we skip the per-region BFS.
+      const fullReachable = new Set<string>();
+      {
+        const q: string[] = [];
+        for (const [entryName, entryMinKeys] of effectiveMinKeysMap) {
+          if (entryMinKeys === 0) { q.push(entryName); fullReachable.add(entryName); }
+        }
+        while (q.length > 0) {
+          const cur = q.shift()!;
+          const curLogic = this.regions[cur];
+          if (!curLogic?.exits) continue;
+          for (const exit of Object.values(curLogic.exits)) {
+            if (!exit.to || fullReachable.has(exit.to) || !ctx.reachable.has(exit.to)) continue;
+            fullReachable.add(exit.to);
+            q.push(exit.to);
+          }
+        }
+      }
+
+      for (const [regionName] of ctx.reachable) {
+        if (!fullReachable.has(regionName)) {
+          // Region isn't even reachable from entries at threshold 0 — can't gate doors
+          potteryProtectedDoors.set(regionName, 0);
+          continue;
+        }
+        // BFS from entries excluding this region
+        const reachableWithout = new Set<string>();
+        const bfsQueue: string[] = [];
+        for (const [entryName, entryMinKeys] of effectiveMinKeysMap) {
+          if (entryMinKeys === 0 && entryName !== regionName) {
+            bfsQueue.push(entryName);
+            reachableWithout.add(entryName);
+          }
+        }
+        while (bfsQueue.length > 0) {
+          const current = bfsQueue.shift()!;
+          const currentLogic = this.regions[current];
+          if (!currentLogic?.exits) continue;
+          for (const exit of Object.values(currentLogic.exits)) {
+            if (!exit.to || exit.to === regionName || reachableWithout.has(exit.to) || !ctx.reachable.has(exit.to)) continue;
+            reachableWithout.add(exit.to);
+            bfsQueue.push(exit.to);
+          }
+        }
+        // If nothing changed, this region isn't an articulation point
+        if (reachableWithout.size === fullReachable.size - 1) {
+          potteryProtectedDoors.set(regionName, 0);
+          continue;
+        }
+        let protectedCount = 0;
+        for (const [src, dst] of uniqueDoorPairs) {
+          if (!reachableWithout.has(src) && !reachableWithout.has(dst)) {
+            protectedCount++;
+          }
+        }
+        potteryProtectedDoors.set(regionName, protectedCount);
+      }
+    }
+
     for (const [regionName, regionState] of ctx.reachable) {
       // Calculate key-based status
       let keyStatus: LogicStatus = "available";
@@ -886,7 +965,13 @@ export class DungeonTraverser {
             if (keysAvailableBeforeRegion >= effectiveMaxKeys) {
               // Pottery-mode contention: branching dungeon with shuffled pot/drop keys
               if (isPotteryKeyMode && doorsAtThreshold0 > 1 && ctx.totalKeysAvailable < estimatedUniqueDoors - 1) {
-                keyStatus = "possible";
+                const protectedDoors = potteryProtectedDoors.get(regionName) ?? 0;
+                const wasteable = Math.max(0, estimatedUniqueDoors - minKeysUsed - protectedDoors);
+                if (ctx.totalKeysAvailable >= minKeysUsed + wasteable) {
+                  keyStatus = "available";
+                } else {
+                  keyStatus = "possible";
+                }
               } else if (
                 doorsAtThreshold0 > 1 &&
                 ctx.totalKeysAvailable < estimatedUniqueDoors &&

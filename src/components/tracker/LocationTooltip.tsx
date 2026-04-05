@@ -114,7 +114,7 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
   }, [autoPosition, reposition]);
 
   // Map tooltips: CSS-only positioning based on xPercent/yPercent
-  const tooltipXClasses = name === "Ganon's Tower" ? "left-3/9 -translate-x-5/9" : xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2";
+  const tooltipXClasses = name === "Ganons Tower" ? "left-3/9 -translate-x-5/9" : xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2";
 
   const tooltipClasses = autoPosition
     ? cn("invisible group-hover:visible absolute z-50 w-max select-none", "top-full pt-1", "left-1/2 -translate-x-1/2")

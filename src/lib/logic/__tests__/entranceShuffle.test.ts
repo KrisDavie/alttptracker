@@ -32,12 +32,30 @@ function calculate(builder: ReturnType<typeof gameState>) {
  */
 describe("Entrance Shuffle", () => {
   describe("Starting location (no flute)", () => {
-    it("with no links and no flute, no overworld region is reachable", () => {
+    it("with no links and no flute, Link's House vanilla exit gives overworld access (shuffleLinks: false)", () => {
       const result = calculate(
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
           .withSettings({ entranceMode: "simple" })
+      );
+
+      // S&Q still reaches Link's House interior
+      expect(result.locationsLogic["Link's House"]).toBe("available");
+
+      // Link's House stays vanilla so overworld is reachable from its area
+      expect(result.entrancesLogic["Links House"]).toBe("available");
+      expect(result.entrancesLogic["Dam"]).toBe("available");
+      // Sanctuary entrance is severed (shuffled but unlinked), though the interior is reachable via Sanctuary S&Q
+      expect(result.locationsLogic["Sanctuary"]).toBe("available");
+    });
+
+    it("with no links, no flute, and shuffleLinks, no overworld region is reachable", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withoutItems(["flute"])
+          .withSettings({ entranceMode: "simple", shuffleLinks: true })
       );
 
       // S&Q still reaches Link's House interior
@@ -86,7 +104,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "simple", shuffleLinks: true })
           .withEntranceLink("Dam", "Links House")
           .withEntranceLink("Links House", "Dam")
       );
@@ -116,7 +134,7 @@ describe("Entrance Shuffle", () => {
     it("connectors properly connect disconnected regions", () => {
       const result = calculate(
         gameState()
-        .withSettings({ entranceMode: "crossed" })
+        .withSettings({ entranceMode: "crossed", shuffleLinks: true })
         .withEntranceLink("Links House", "Links House")
         .withEntranceLink("Dam", "Elder House (East)")
         .withEntranceLink("Spectacle Rock Cave Peak", "Elder House (West)")
@@ -132,7 +150,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
         .withItems({ bomb: 1 })
-        .withSettings({ entranceMode: "crossed" })
+        .withSettings({ entranceMode: "crossed", shuffleLinks: true })
         .withEntranceLink("Links House", "Links House")
         .withEntranceLink("Dam", "Elder House (East)")
         .withEntranceLink("Spectacle Rock Cave Peak", "Elder House (West)")
@@ -224,6 +242,65 @@ describe("Entrance Shuffle", () => {
         // If DW is reachable at all, Big Bomb Shop entrance should show as reachable
         expect(result.entrancesLogic["Big Bomb Shop"]).not.toBe("unavailable");
       }
+    });
+  });
+
+  describe("Unlinked dungeon accessibility", () => {
+    it("TT dungeon locations should be unavailable when TT entrance is not linked", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "simple" })
+      );
+
+      // TT entrance dot should be available (player can reach Village of Outcasts)
+      expect(result.entrancesLogic["Thieves Town"]).toBe("available");
+
+      // But TT dungeon locations should be UNAVAILABLE — no entrance linked to TT
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("unavailable");
+      expect(result.locationsLogic["Thieves' Town - Map Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Thieves' Town - Boss"]).toBe("unavailable");
+    });
+
+    it("TT dungeon locations become available when TT entrance is linked to itself", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "simple" })
+          .withEntranceLink("Thieves Town", "Thieves Town")
+      );
+
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("available");
+      expect(result.locationsLogic["Thieves' Town - Map Chest"]).toBe("available");
+    });
+
+    it("TT dungeon locations become available when another entrance is linked to TT", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "simple" })
+          .withEntranceLink("Dam", "Thieves Town")
+      );
+
+      expect(result.locationsLogic["Thieves' Town - Attic"]).toBe("available");
+    });
+
+    it("generic connector on a dungeon entrance makes nearby entrances available", () => {
+      // Middle-clicking Eastern Palace and then Dam creates a generic connector.
+      // The exit type for Eastern Palace is "Dungeon" in the graph, but should
+      // be overridden to "Cave" so the traverser doesn't misroute it.
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "simple" })
+          .withEntrance("Eastern Palace", { to: "Generic Connector 1", connectorGroup: 1 })
+          .withEntrance("Dam", { to: "Generic Connector 1", connectorGroup: 1 })
+      );
+
+      // Dam is in South Hyrule — reachable via connector from Eastern Palace area
+      expect(result.entrancesLogic["Dam"]).toBe("available");
+      // Eastern Palace entrance should also be available
+      expect(result.entrancesLogic["Eastern Palace"]).toBe("available");
     });
   });
 });

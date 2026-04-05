@@ -137,7 +137,7 @@ export const DungeonsData: Record<string, DungeonData> = {
     portals: ["Skull 1 Portal", "Skull 2 East Portal", "Skull 2 West Portal", "Skull 3 Portal", "Skull Pinball", "Skull Left Drop", "Skull Pot Circle", "Skull Back Drop"],
   },
   tt: {
-    name: "Thieves' Town",
+    name: "Thieves Town",
     boss: "blind",
     icon: "/dungeons/blind.png",
     totalLocations: {
@@ -213,7 +213,7 @@ export const DungeonsData: Record<string, DungeonData> = {
     portals: ["Turtle Rock Main Portal", "Turtle Rock Lazy Eyes Portal", "Turtle Rock Chest Portal", "Turtle Rock Eye Bridge Portal"],
   },
   gt: {
-    name: "Ganon's Tower",
+    name: "Ganons Tower",
     boss: "agahnim2",
     icon: "/dungeons/agahnim20.png",
     defeatedIcon: "/dungeons/agahnim1.png",

@@ -259,7 +259,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   Catfish: {
-    x: 457.5,
+    x: 464.5,
     y: 87.5,
     world: "dw",
     open: true,
@@ -392,7 +392,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Hyrule Castle": {
     x: 255.5,
-    y: 224.5,
+    y: 228.5,
     world: "lw",
     entranceRegions: ["Hyrule Castle South Portal", "Hyrule Castle West Portal", "Hyrule Castle East Portal"],
     open: true,
@@ -405,7 +405,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Castle Tower": {
     x: 255.5,
-    y: 205.0,
+    y: 200.0,
     world: "lw",
     entranceRegions: ["Agahnims Tower Portal"],
     open: true,
@@ -418,7 +418,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   Sanctuary: {
     x: 235.5,
-    y: 139.5,
+    y: 143.5,
     world: "lw",
     entranceRegions: ["Sanctuary"],
     entrance: true,
@@ -542,7 +542,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Blinds Hideout": {
-    x: 65.5,
+    x: 62,
     y: 214.5,
     world: "lw",
     entrance: true,
@@ -612,7 +612,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Tavern North": {
     x: 81.5,
-    y: 296.5,
+    y: 293.5,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -928,8 +928,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Ice Rod Cave": {
-    x: 457.5,
-    y: 395.0,
+    x: 455,
+    y: 391.0,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -1095,7 +1095,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Thieves' Town": {
+  "Thieves Town": {
     x: 63.5,
     y: 248.5,
     world: "dw",
@@ -1278,7 +1278,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Superbunny Cave": {
     x: 420,
-    y: 74.5,
+    y: 76.5,
     world: "dw",
     entranceRegions: ["Superbunny Cave (Top)", "Superbunny Cave (Bottom)"],
     open: true,
@@ -1290,8 +1290,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Hookshot Cave": {
-    x: 425.5,
-    y: 34.5,
+    x: 422.5,
+    y: 32.5,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -1541,7 +1541,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     enemies: false,
     bonk: false,
   },
-  "Ganon's Tower": {
+  "Ganons Tower": {
     x: 287.5,
     y: 10.0,
     world: "dw",
@@ -1993,7 +1993,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Lost Woods Hideout Drop": {
     x: 96.5,
-    y: 67,
+    y: 63,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -2161,7 +2161,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Old Man Cave (West)": {
     x: 181.5,
-    y: 90,
+    y: 93,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -2356,7 +2356,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Spiral Cave (Bottom)": {
-    x: 410,
+    x: 405,
     y: 66.5,
     world: "lw",
     entrance: true,
@@ -2384,8 +2384,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Fairy Ascension Cave (Bottom)": {
-    x: 419.5,
-    y: 70,
+    x: 415,
+    y: 76,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -2440,8 +2440,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Hookshot Fairy": {
-    x: 431.5,
-    y: 74.5,
+    x: 428,
+    y: 76.5,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -2496,8 +2496,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Paradox Cave (Middle)": {
-    x: 438,
-    y: 74.5,
+    x: 442,
+    y: 76.5,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -2748,7 +2748,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Elder House (East)": {
-    x: 86,
+    x: 92,
     y: 215,
     world: "lw",
     entrance: true,
@@ -2917,7 +2917,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Tavern (Front)": {
     x: 81.5,
-    y: 305.5,
+    y: 309,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -3000,7 +3000,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Bat Cave Drop": {
-    x: 165.5,
+    x: 169.5,
     y: 288,
     world: "lw",
     entrance: true,
@@ -3028,7 +3028,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Bat Cave Cave": {
-    x: 161.5,
+    x: 160,
     y: 284,
     world: "lw",
     entrance: true,
@@ -3392,8 +3392,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Good Bee Cave": {
-    x: 467.5,
-    y: 395,
+    x: 470,
+    y: 391,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -3421,7 +3421,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "20 Rupee Cave": {
     x: 462,
-    y: 402.5,
+    y: 405.5,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -3616,8 +3616,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Superbunny Cave (Bottom)": {
-    x: 431.5,
-    y: 74.5,
+    x: 428,
+    y: 76.5,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -3644,8 +3644,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Dark Death Mountain Shop": {
-    x: 439,
-    y: 74.5,
+    x: 442,
+    y: 76.5,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -3673,7 +3673,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Bumper Cave (Bottom)": {
     x: 181.5,
-    y: 90.5,
+    y: 95.5,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -3701,7 +3701,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Bumper Cave (Top)": {
     x: 183.5,
-    y: 79,
+    y: 78,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -3757,7 +3757,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Dark Sanctuary Hint": {
     x: 235.5,
-    y: 141,
+    y: 143.5,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -4036,7 +4036,7 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Dark Lake Hylia Fairy": {
-    x: 422,
+    x: 424,
     y: 331,
     world: "dw",
     entrance: true,
@@ -4176,8 +4176,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Dark Lake Hylia Ledge Fairy": {
-    x: 458,
-    y: 395,
+    x: 455,
+    y: 391.0,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -4204,8 +4204,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Dark Lake Hylia Ledge Hint": {
-    x: 467.5,
-    y: 395,
+    x: 470,
+    y: 391,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -4232,8 +4232,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Dark Lake Hylia Ledge Spike Cave": {
-    x: 461.5,
-    y: 402.5,
+    x: 462,
+    y: 405.5,
     world: "dw",
     entrance: true,
     entrance_modes: {
@@ -4289,7 +4289,7 @@ export const baseLocationsData: Record<string, LocationData> = {
   },
   "Hyrule Castle Entrance (South)": {
     x: 255.5,
-    y: 224.5,
+    y: 228.5,
     world: "lw",
     entrance: true,
     entrance_modes: {
