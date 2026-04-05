@@ -46,7 +46,7 @@ const dungeonInitialState: DungeonState = {
   },
 };
 
-const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
+export const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
 
 const initialState: Record<string, DungeonState> = Object.keys(DungeonsData).reduce((acc, dungeon) => {
   // TODO: If boss shuffle is enabled, always set boss to unknown
@@ -89,7 +89,8 @@ export const dungeonsSlice = createSlice({
     incrementPrizeCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
       const { dungeon, decrement } = action.payload;
       const current = state[dungeon].prize ?? "unknown";
-      const currentIndex = PRIZES.indexOf(current);
+      // Treat "map" as equivalent to "unknown" (index 0) for cycling purposes
+      const currentIndex = current === "map" ? 0 : PRIZES.indexOf(current);
       const maxCount = PRIZES.length - 1;
 
       if (decrement) {
@@ -106,6 +107,9 @@ export const dungeonsSlice = createSlice({
       
       const filteredState = { ...newState };
 
+      // Check these fields for manual changes
+      // If the new state is different from current state but the field has been manually changed, don't update it 
+      // (unless the new state is the same as the current state, in which case we can assume the manual change was meant to sync with the new state and we can reset the manually changed flag)
       const fields = ["bossDefeated", "bigKey", "prizeCollected", "prize"] as const;
       fields.forEach((field) => {
         if (newState[field] !== undefined) {
@@ -119,7 +123,8 @@ export const dungeonsSlice = createSlice({
         }
       });
 
-      if (filteredState.map && (!current.manuallyChanged.prize || current.prize === "unknown")) {
+      // Do we know the prize? If not, and the SRAM indicates we have the map, show map icom as long as the prize hasn't been manually changed to something else (other than unknown)
+      if (!filteredState.prize && filteredState.map && (!current.manuallyChanged.prize || current.prize === "unknown")) {
         filteredState.prize = "map"
       }
 

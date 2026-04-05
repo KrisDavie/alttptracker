@@ -7,6 +7,8 @@
  * Usage: (memoryValue & location.mask) !== 0 means the location has been checked
  */
 
+import { type PRIZES } from "@/store/dungeonsSlice";
+
 export const LocationType = {
   Chest: "chest",
   StandingKey: "standingKey",
@@ -173,21 +175,34 @@ export const OVERWORLD_MASKS = {
   BOMB_WALL: 0x02,
 } as const;
 
-export const PENDANT_MASKS = {
-  RED_WISDOM: 0x01,
-  BLUE_POWER: 0x02,
-  GREEN_COURAGE: 0x04,
-} as const;
+export const PENDANT_MASKS: Record<number, typeof PRIZES[number]> = {
+  0x01: "pendant",
+  0x02: "pendant",
+  0x04: "greenPendant",
+}
 
-export const CRYSTAL_MASKS = {
-  CRYSTAL_6: 0x01,
-  CRYSTAL_1: 0x02,
-  CRYSTAL_5: 0x04,
-  CRYSTAL_7: 0x08,
-  CRYSTAL_2: 0x10,
-  CRYSTAL_4: 0x20,
-  CRYSTAL_3: 0x40,
-} as const;
+export const CRYSTAL_MASKS: Record<number, typeof PRIZES[number]> = {
+  0x01: "redCrystal", 
+  0x02: "crystal", 
+  0x04: "redCrystal", 
+  0x08: "crystal", 
+  0x10: "crystal", 
+  0x20: "crystal", 
+  0x40: "crystal", 
+}
+
+export const DUNGEON_PRIZE_MASKS: Partial<Record<Dungeon, number>> = {
+  [Dungeon.EasternPalace]: 0x02,
+  [Dungeon.DesertPalace]: 0x03,
+  [Dungeon.TowerOfHera]: 0x0a,
+  [Dungeon.PalaceOfDarkness]: 0x06,
+  [Dungeon.SwampPalace]: 0x05,
+  [Dungeon.SkullWoods]: 0x08,
+  [Dungeon.ThievesTown]: 0x0b,
+  [Dungeon.IcePalace]: 0x09,
+  [Dungeon.MiseryMire]: 0x07,
+  [Dungeon.TurtleRock]: 0x0c,
+}
 
 /**
  * Check if a location has been collected

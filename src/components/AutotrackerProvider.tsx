@@ -7,7 +7,7 @@ import { setConnected, setDeviceList, setRomName } from "@/store/autotrackerSlic
 import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
-import { ALL_SRAM_LOCATIONS_MAP, INVENTORY_LOCATIONS } from "@/data/sramLocations";
+import { ALL_SRAM_LOCATIONS_MAP, INVENTORY_LOCATIONS, PENDANT_MASKS, CRYSTAL_MASKS, DUNGEON_PRIZE_MASKS } from "@/data/sramLocations";
 import { getAllPossibleLocations } from "@/lib/logic/locationMapper";
 import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
@@ -226,7 +226,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
 
     // // TODO: Add full processing here
     const FORK = romName?.slice(0, 2)
-    // const VERSION = romName?.slice(2, 5)
+    const VERSION = Number(romName?.slice(2, 5))
 
 
     // Item locations — use ALL possible locations for autotracking
@@ -310,6 +310,35 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
           case "boss":      newState.bossDefeated = isSet; break;
         }
       });
+
+      // Dumb prize code (since we don't have a clean way to detect the prize type
+      // TODO: Disable when prize shuffle is enabled
+      // TODO: Check for NO_ROM_READS emulators
+      // TODO: OR support. Also check if 5/6 is visible and use that info properly
+      const PENDANT_SWAP_BUG_PRESENT = (
+        // VT and ER enabled
+        (FORK === "VT" && ((getByte(MEMORY_RANGES['flags_data'].start + 211) ?? 0) & 0x02) != 0) ||
+        (FORK === "DR" && VERSION < 142 )
+      )
+      if (DUNGEON_PRIZE_MASKS[dungeon] !== undefined) {
+        // 1. Find the type of the prize
+        const prizeType = getByte(MEMORY_RANGES['flags_data'].subranges!["prize_data"].start + DUNGEON_PRIZE_MASKS[dungeon]) == 0x40 ? "crystal" : "pendant";
+        const prizeMap = prizeType === "crystal" ? CRYSTAL_MASKS : PENDANT_MASKS;
+        // 2. Find the prize value for this dungeon
+        let prizeValue = getByte(MEMORY_RANGES['prize_numbers'].start + DUNGEON_PRIZE_MASKS[dungeon]) ?? 0;
+        // 2.5 Fix this stupid ROM bug
+        if (PENDANT_SWAP_BUG_PRESENT && prizeType === "pendant" && (prizeValue === 0x01 || prizeValue === 0x02)) {
+          prizeValue = prizeValue === 0x01 ? 0x02 : 0x01; // Swap the pendant values if the bug is present and it's a pendant
+        }
+        // 3. Determine the actual prize based on the value and type
+        const prize = prizeMap[prizeValue as keyof typeof prizeMap] ?? "unknown";
+        // 4. Does the SRAM have that type:value pair marked as obtained? If so, update state
+        const prizeBits = getWord(prizeType === "crystal" ? MEMORY_RANGES['main'].start + 0x37a : MEMORY_RANGES['main'].start + 0x374);
+        const prizeObtained = prizeBits !== null && (prizeBits & prizeValue) !== 0;
+        if (prizeObtained) {
+          newState.prize = prize === "redCrystal" ? "crystal" : prize;
+        }
+      }
       dungeonUpdates[dungeon] = newState;
     });
 
