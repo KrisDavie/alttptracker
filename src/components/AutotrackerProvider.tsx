@@ -317,7 +317,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       // TODO: OR support. Also check if 5/6 is visible and use that info properly
       const PENDANT_SWAP_BUG_PRESENT = (
         // VT and ER enabled
-        (FORK === "VT" && ((getByte(MEMORY_RANGES['flags_data'].start + 211) ?? 0) & 0x02) != 0) ||
+        (FORK === "VT" && ((getByte(MEMORY_RANGES['flags_data'].start + 0x211) ?? 0) & 0x02) != 0) ||
         (FORK === "DR" && VERSION < 142 )
       )
       if (DUNGEON_PRIZE_MASKS[dungeon] !== undefined) {
