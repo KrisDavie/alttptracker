@@ -9,12 +9,14 @@
  * TRAVERSAL APPROACH:
  *
  * 1. PORTAL DISCOVERY (partial mode): Before main traversal, discovers all dungeon portals
- *    reachable with full inventory. This ensures key contention logic applies even to regions
- *    the player can't currently reach. Portals discovered this way start with "unavailable" status.
+ *    reachable with full inventory via an all-items BFS. This ensures key contention logic
+ *    applies even to regions the player can't currently reach. Discovered portals start with
+ *    "unavailable" status and are upgraded by the main BFS when actually reachable.
  *
- * 2. BFS TRAVERSAL: Starting from the initial region (Link's House or inverted equivalent),
- *    explores all reachable overworld regions via exits. Each exit is evaluated against
- *    the player's inventory to determine its status.
+ * 2. BFS TRAVERSAL: Starting from Menu and Flute Sky, explores all reachable overworld
+ *    regions via exits. Each exit is evaluated against the player's inventory to determine
+ *    its status. Dungeon exits use the all-items evaluator for discovery (partial mode) but
+ *    the real-inventory evaluator for status propagation.
  *
  * 3. DUNGEON COORDINATION: When a dungeon portal is found, it's collected into pendingDungeons.
  *    After overworld BFS stabilizes, DungeonTraverser is called for each dungeon with all
@@ -26,10 +28,11 @@
  * KEY CONCEPTS:
  * - RegionReachability: Tracks status and bunnyState for each region
  * - Portal discovery: In partial mode, finds all potential portals before main traversal
- * - Entry status propagation: Portals inherit status from how they were reached (available/unavailable)
+ * - Entry status propagation: Portals inherit status from how they were reached
  * - Bunny state: Tracks whether player is a bunny (in Dark World without Moon Pearl)
- * - blockedExits: Exits that failed evaluation are re-checked when new items/regions unlock
+ * - blockedExits: Exits that failed evaluation are re-checked when new regions unlock
  * - overworldKeyCost: Tracks keys used to reach overworld regions via dungeon exits
+ * - Key/BK inference: Post-processing infers key accessibility for non-wild key modes
  *
  * PROTECTION MODES:
  * - partial: Assumes all items for key counting/discovery, uses actual inventory for final status
@@ -874,7 +877,6 @@ export class OverworldTraverser {
 
       const evalCtx: EvaluationContext = {
         regionName: from,
-        crystalStates: fromRegionReachability.crystalStates,
         isBunny: fromRegionReachability.bunnyState,
         canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
         effectiveWorldState: this.getEffectiveWorldState(from, exit.to),
@@ -889,7 +891,6 @@ export class OverworldTraverser {
         ctx.reachable.set(exit.to, {
           status: newStatus,
           bunnyState: newBunny,
-          crystalStates: fromRegionReachability.crystalStates,
         });
         ctx.queue.push(exit.to);
         madeProgress = true;

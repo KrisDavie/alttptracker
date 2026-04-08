@@ -1,36 +1,39 @@
 import type { GameState, LogicRequirement, LogicState, LogicStatus, WorldLogic } from "@/data/logic/logicTypes";
 
-/** Status ordering from worst to best (for reachability purposes) */
-const STATUS_ORDER: LogicStatus[] = ["unavailable", "information", "possible", "ool", "available"];
+/** Status ordering from worst to best. Numeric lookup for O(1) comparisons. */
+const STATUS_RANK: Record<string, number> = { unavailable: 0, information: 1, possible: 2, ool: 3, available: 4 };
 
 /** Returns true if newStatus is better (more available) than oldStatus */
 export function isBetterStatus(newStatus: LogicStatus, oldStatus: LogicStatus): boolean {
-  return STATUS_ORDER.indexOf(newStatus) > STATUS_ORDER.indexOf(oldStatus);
+  return STATUS_RANK[newStatus] > STATUS_RANK[oldStatus];
 }
 
 /** Returns the better (more available) of two statuses */
 export function combineStatuses(status1: LogicStatus, status2: LogicStatus): LogicStatus {
-  return STATUS_ORDER[Math.max(STATUS_ORDER.indexOf(status1), STATUS_ORDER.indexOf(status2))];
+  const r1 = STATUS_RANK[status1], r2 = STATUS_RANK[status2];
+  return r1 >= r2 ? status1 : status2;
 }
 
 /** Returns the worse (less available) of the given statuses */
 export function minimumStatus(...statuses: LogicStatus[]): LogicStatus {
-  let worst = STATUS_ORDER.length - 1;
-  for (const s of statuses) {
-    const idx = STATUS_ORDER.indexOf(s);
-    if (idx < worst) worst = idx;
+  let worst: LogicStatus = statuses[0];
+  let worstRank = STATUS_RANK[worst];
+  for (let i = 1; i < statuses.length; i++) {
+    const rank = STATUS_RANK[statuses[i]];
+    if (rank < worstRank) { worst = statuses[i]; worstRank = rank; }
   }
-  return STATUS_ORDER[worst];
+  return worst;
 }
 
 /** Returns the best (most available) status from an array */
 export function maximumStatus(...statuses: LogicStatus[]): LogicStatus {
-  let best = 0;
-  for (const s of statuses) {
-    const idx = STATUS_ORDER.indexOf(s);
-    if (idx > best) best = idx;
+  let best: LogicStatus = statuses[0];
+  let bestRank = STATUS_RANK[best];
+  for (let i = 1; i < statuses.length; i++) {
+    const rank = STATUS_RANK[statuses[i]];
+    if (rank > bestRank) { best = statuses[i]; bestRank = rank; }
   }
-  return STATUS_ORDER[best];
+  return best;
 }
 
 /** Creates a GameState with all items set to max values (for partial key logic) */

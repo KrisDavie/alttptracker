@@ -598,12 +598,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                     }
                 }
             },
-            "Lost Woods East Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": "never"
-                }
-            },
             "Lost Woods Hideout Tree": {
                 "requirements": {
                     "Open": {
@@ -705,14 +699,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From Lumberjack Area"
         ],
         "type": "LightWorld",
-        "locations": {
-            "Lumberjack Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": "never"
-                }
-            }
-        },
+        "locations": {},
         "owid": 2
     },
     "West Death Mountain (Top)": {
@@ -1854,12 +1841,6 @@ export const logic_regions: Record<string, RegionLogic> = {
         ],
         "type": "LightWorld",
         "locations": {
-            "Mountain Pass Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": "never"
-                }
-            },
             "Mountain Pass Pull Tree": {
                 "requirements": {
                     "Open": {
@@ -8221,18 +8202,6 @@ export const logic_regions: Record<string, RegionLogic> = {
                         }
                     }
                 }
-            },
-            "Desert Pass Area Crab Drop": {
-                "requirements": {
-                    "Open": {
-                        "always": {
-                            "allOf": [
-                                "glove"
-                            ]
-                        }
-                    },
-                    "Inverted": "never"
-                }
             }
         },
         "owid": 58
@@ -8506,14 +8475,7 @@ export const logic_regions: Record<string, RegionLogic> = {
             "Mirror From South Pass Area"
         ],
         "type": "LightWorld",
-        "locations": {
-            "South Pass Area Crab Drop": {
-                "requirements": {
-                    "Open": {},
-                    "Inverted": "never"
-                }
-            }
-        },
+        "locations": {},
         "owid": 60
     },
     "Octoballoon Area": {
@@ -33993,8 +33955,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "flippers",
-                                "canReach|Dam",
-                                "mirror"
+                                "canDrainDam"
                             ]
                         }
                     },
@@ -34002,8 +33963,7 @@ export const logic_regions: Record<string, RegionLogic> = {
                         "always": {
                             "allOf": [
                                 "flippers",
-                                "canReach|Dam",
-                                "mirror"
+                                "canDrainDam"
                             ]
                         }
                     }

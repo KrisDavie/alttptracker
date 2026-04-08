@@ -157,7 +157,11 @@ export class RequirementEvaluator {
     return this.resolveSimple(condition, ctx) !== "unavailable";
   }
 
+  // Cached boss killability (computed lazily, immutable for a given state)
+  private _bossesKillCache?: Record<string, boolean>;
+
   private bossesKillStatus() {
+    if (this._bossesKillCache) return this._bossesKillCache;
     const killableBosses: Record<string, boolean> = {};
     const m = (c: string) => this.met(c, {});
     const cx = (c: string) => this.resolveComplex(c, {}) !== "unavailable";
@@ -189,6 +193,7 @@ export class RequirementEvaluator {
     killableBosses["agahnim2"] = m("melee") || m("net");
     killableBosses["bnc"] = true;
 
+    this._bossesKillCache = killableBosses;
     return killableBosses;
   }
 
@@ -374,7 +379,13 @@ export class RequirementEvaluator {
         return this.resolveComplex("canReach|Thieves Blind's Cell Interior", ctx);
       case "canRevealBlind":
         return minimumStatus(this.resolveSimple("canOpenTTAttic", ctx), this.resolveSimple("canCollectBlind", ctx), this.resolveComplex("canReach|Thieves Boss", ctx));
-
+      case "canDrainDam": {
+        const damStatus = this.resolveComplex("canReach|Dam", ctx);
+        if (this.state.settings.entranceMode === "none") {
+          return minimumStatus(damStatus, this.boolToStatus(this.hasItem("mirror")));
+        }
+        return damStatus;
+      }
       case "isPyramidOpen":
         // TODO: Check for fast ganon
         return this.resolveSimple("agahnim2", ctx);
