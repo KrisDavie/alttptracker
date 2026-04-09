@@ -23,6 +23,7 @@ export const REMEMBERED_SETTINGS = [
   "connectionLinesMode",
   "connectionLineColor",
   "spriteName",
+  "entranceLabelsMode",
 
   // Gameplay
   "autotracking",

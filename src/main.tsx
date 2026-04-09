@@ -19,5 +19,5 @@ createRoot(document.getElementById('root')!).render(
         </AutotrackerProvider>
       </SettingsProvider>
     </Provider>
-  </StrictMode>,
+  </StrictMode>
 )

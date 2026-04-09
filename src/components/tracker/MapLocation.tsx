@@ -25,13 +25,22 @@ function MapLocation(props: MapLocationProps) {
 
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
+  const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
 
   // Entrance specific state
   const to = useSelector((state: RootState) => isEntrance ? state.entrances[locName]?.to : undefined);
   const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
 
-  const selectedEntranceGroup = selectedEntrance ? locationsData[selectedEntrance]?.entrance_modes?.[entranceMode || "none"] : null;
-  const selfEntranceGroup = isEntrance ? locationsData[locName]?.entrance_modes?.[entranceMode || "none"] : null;
+  let selectedEntranceGroup = selectedEntrance ? locationsData[selectedEntrance]?.entrance_modes?.[entranceMode || "none"] : null;
+  if (selectedEntranceGroup === "skull_doors" && zelgaWoods) {
+    selectedEntranceGroup = "shuffle";
+  }
+
+  let selfEntranceGroup = isEntrance ? locationsData[locName]?.entrance_modes?.[entranceMode || "none"] : null;
+  if (selfEntranceGroup === "skull_doors" && zelgaWoods) {
+    selfEntranceGroup = "shuffle";
+  }
+
   const maxConnectorGroup = useSelector((state: RootState) => Object.values(state.entrances).reduce((max, entrance) => {
     if (entrance.connectorGroup) {
       return Math.max(max, entrance.connectorGroup)

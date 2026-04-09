@@ -1,3 +1,4 @@
+import type { EntranceLabel } from "@/data/entranceLabels";
 import { createSlice } from "@reduxjs/toolkit";
 import { REMEMBER_REHYDRATED } from "redux-remember";
 
@@ -127,9 +128,12 @@ export interface SettingsState {
   spriteName: string;
   colouredChests: boolean;
   showChestTooltips: boolean;
+  entranceLabelsMode: "off" | "labels" | "labels_lines";
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
+
+  entranceLabelOverrides: Record<string, EntranceLabel>
 
   // Custom colors
   customColors?: Partial<StatusColors>;
@@ -186,9 +190,12 @@ export const initialState: SettingsState = {
   spriteName: "link",
   colouredChests: true,
   showChestTooltips: true,
+  entranceLabelsMode: "labels_lines",
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,
+
+  entranceLabelOverrides: {}
 };
 
 export const settingsSlice = createSlice({

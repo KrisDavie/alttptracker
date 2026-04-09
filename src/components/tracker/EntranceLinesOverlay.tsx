@@ -101,7 +101,7 @@ export default function EntranceLinesOverlay() {
   if (linesToDraw.length === 0) return null;
 
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+    <svg className="absolute inset-0 w-full h-full pointer-events-none z-8">
       {linesToDraw.map(line => (
         <line
           key={line.id}
