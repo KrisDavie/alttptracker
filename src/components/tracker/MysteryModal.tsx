@@ -142,7 +142,7 @@ function MysteryModal() {
             </div>
 
             <label className="font-medium">Goal:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.goal} onChange={(e) => handleInputChange("goal", e.target.value)}>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.goal} onChange={(e) => handleInputChange("goal", e.target.value)}>
               <option value="fast_ganon">Fast Ganon</option>
               <option value="ganon">Defeat Ganon</option>
               <option value="dungeons">All Dungeons</option>
@@ -151,7 +151,7 @@ function MysteryModal() {
             </select>
 
             <label className="font-medium">Swords:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.swords} onChange={(e) => handleInputChange("swords", e.target.value)}>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.swords} onChange={(e) => handleInputChange("swords", e.target.value)}>
               <option value="randomized">Randomized</option>
               <option value="assured">Assured</option>
               <option value="vanilla">Vanilla</option>
