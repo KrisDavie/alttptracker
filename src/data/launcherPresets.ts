@@ -586,6 +586,7 @@ export const tournamentDiscords = [
   { label: "League", url: "https://discord.gg/yeJWJvT" },
   { label: "Beer League", url: "https://discord.gg/s8ybdqDrRh" },
   { label: "German Tournament", url: "https://discord.gg/5zuANcS" },
+  { label: "ADKDF", url: "https://discord.gg/M22pmUYw" }
 ];
 
 /** Look up a preset by ID. Returns undefined if not found. */
