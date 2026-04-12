@@ -149,13 +149,16 @@ function MysteryModal() {
               <option value="pedestal">Pedestal</option>
               <option value="triforce_hunt">Triforce Hunt</option>
             </select>
-
-            <label className="font-medium">Swords:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.swords} onChange={(e) => handleInputChange("swords", e.target.value)}>
-              <option value="randomized">Randomized</option>
-              <option value="assured">Assured</option>
-              <option value="vanilla">Vanilla</option>
-              <option value="swordless">Swordless</option>
+            <label className="font-medium">GT Crystals:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.gtOpen} onChange={(e) => handleInputChange("gtOpen", e.target.value)}>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
             </select>
 
             {/* <label className="font-medium">Item Pool:</label>
@@ -192,6 +195,13 @@ function MysteryModal() {
       {page === 2 && (
         <div className={`row-span-5 px-4 pt-1 overflow-y-auto`}>
           <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
+            <label className="font-medium">Swords:</label>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.swords} onChange={(e) => handleInputChange("swords", e.target.value)}>
+              <option value="randomized">Randomized</option>
+              <option value="assured">Assured</option>
+              <option value="vanilla">Vanilla</option>
+              <option value="swordless">Swordless</option>
+            </select>
             <label className="font-medium">Pottery:</label>
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.pottery} onChange={(e) => handleInputChange("pottery", e.target.value)}>
               <option value="none">None</option>
