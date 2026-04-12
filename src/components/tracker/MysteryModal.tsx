@@ -168,11 +168,11 @@ function MysteryModal() {
             <label className="font-medium self-start pt-1">Misc:</label>
             <div className="flex flex-wrap gap-x-4 gap-y-1">
               <label className="flex items-center space-x-1 cursor-pointer">
-                <input type="checkbox" checked={localSettings.shopsanity} className="disabled:bg-gray-400" disabled onChange={(e) => handleInputChange("shopsanity", e.target.checked)} />
+                <input type="checkbox" checked={localSettings.shopsanity} className="disabled:bg-gray-400" onChange={(e) => handleInputChange("shopsanity", e.target.checked)} />
                 <span>Shopsanity</span>
               </label>
               <label className="flex items-center space-x-1 cursor-pointer">
-                <input type="checkbox" checked={localSettings.activatedFlute} className="disabled:bg-gray-400" disabled onChange={(e) => handleInputChange("activatedFlute", e.target.checked)} />
+                <input type="checkbox" checked={localSettings.activatedFlute} className="disabled:bg-gray-400" onChange={(e) => handleInputChange("activatedFlute", e.target.checked)} />
                 <span>Activated Flute</span>
               </label>
               <label className="flex items-center space-x-1 cursor-pointer">
