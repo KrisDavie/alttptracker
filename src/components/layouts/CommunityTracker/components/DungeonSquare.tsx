@@ -6,6 +6,7 @@ import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
 import BigKeyTracker from "../../../tracker/BigKeyTracker";
 import MedallionSelector from "@/components/tracker/MedallionSelector";
 import PrizeSelector from "@/components/tracker/PrizeSelector";
+import BossSelector from "@/components/tracker/BossSelector";
 
 interface DungeonSquareProps {
   dungeon: string;
@@ -15,6 +16,7 @@ interface DungeonSquareProps {
 function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps) {
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
   const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
+  const bossShuffle = useSelector((state: RootState) => state.settings.bossShuffle);
   const doors = false;
 
   const renderContent = () => {
@@ -53,6 +55,7 @@ function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps
       <div className="h-16 w-16 relative">
         <BossIcon dungeon={dungeon} />
         <PrizeSelector dungeon={dungeon} className="absolute bottom-0 right-0 h-1/2 w-1/2 rounded-full bg-black" />
+        {bossShuffle !== "none" && <BossSelector dungeon={dungeon} className="absolute top-0 right-0 h-1/2 w-1/2" />}
         {(dungeon === "mm" || dungeon === "tr") && <MedallionSelector entrance={dungeon} className="absolute bottom-0 left-0 h-1/2 w-1/2" />}
       </div>
       <div className="h-16 w-16">{renderContent()}</div>

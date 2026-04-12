@@ -1,4 +1,6 @@
 import type { SettingsState } from "@/store/settingsSlice";
+import type { DungeonState } from "@/store/dungeonsSlice";
+import { locationsData } from "./locationsData";
 
 export interface LauncherPreset {
   id: string;
@@ -7,6 +9,14 @@ export interface LauncherPreset {
   settings: Partial<SettingsState>;
   /** Starting items to grant (item key → amount) */
   startingItems?: Record<string, number>;
+  /** Locations to mark as checked at launch, keyed by location name */
+  checkedLocations?: Record<string, { scoutedItems?: string[] }>;
+  /** Entrance location names to mark as checked (items collected) */
+  checkedEntrances?: string[];
+  /** Entrance → destination links to pre-place (e.g. {"Eastern Palace": "Hookshot Cave"}) */
+  entrancePlacements?: Record<string, string>;
+  /** Partial dungeon state keyed by dungeon short code (e.g. "dp", "ep") */
+  dungeonState?: Record<string, Pick<Partial<DungeonState>, "smallKeys" | "bigKey" | "prize">>;
 }
 
 export interface PresetCategory {
@@ -75,7 +85,7 @@ export const allPresets: LauncherPreset[] = [
     id: "adenemizer",
     name: "AD Enemizer",
     description: "All Dungeons with boss and enemy shuffle",
-    settings: { goal: "dungeons", bossShuffle: "simple", enemyShuffle: "shuffled" },
+    settings: { goal: "dungeons", bossShuffle: "random", enemyShuffle: "random" },
   },
   {
     id: "adkdb",
@@ -83,6 +93,53 @@ export const allPresets: LauncherPreset[] = [
     description: "All Dungeons, keysanity, key drop, start with boots",
     settings: { goal: "dungeons", enemyDrop: "keys", pottery: "keys", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
     startingItems: { boots: 1 },
+  },
+  {
+    id: "adkdf",
+    name: "ADKDF",
+    description: "All Dungeons, keysanity, key drop, start with boots",
+    settings: { goal: "dungeons", entranceMode: "crossed", shuffleLinks: true, enemyDrop: "keys", pottery: "keys", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, pseudoboots: true },
+    entrancePlacements: {
+      "Sick Kids House": "Links House",
+      "Chicken House": "Hyrule Castle Entrance (South)",
+      "Hyrule Castle Entrance (East)": "Hyrule Castle Entrance (West)",
+      "Hyrule Castle Entrance (West)": "Hyrule Castle Entrance (East)",
+      "Sanctuary": "Sanctuary",
+      "Blinds Hideout": "Eastern Palace",
+      "Elder House (East)": "Desert Palace Entrance (South)",
+      "Mire Shed": "Desert Palace Entrance (West)",
+      "Mire Fairy": "Desert Palace Entrance (East)",
+      "Desert Palace Entrance (North)": "Desert Palace Entrance (North)",
+      "Elder House (West)": "Tower of Hera",
+      "Ganons Tower": "Agahnims Tower",
+      "Snitch Lady (East)": "Palace of Darkness",
+      "Snitch Lady (West)": "Swamp Palace",
+      "Mire Hint": "Dam",
+      "Kakariko Well Cave": "Skull Woods First Section Door",
+      "Skull Woods First Section Door": "Skull Woods Final Section Door",
+      "Skull Woods Second Section Door (East)": "Skull Woods Second Section Door (East)",
+      "Skull Woods Second Section Door (West)": "Skull Woods Second Section Door (West)",
+      "Bush Covered House": "Thieves Town",
+      "Tavern North": "Ice Palace",
+      "Tavern (Front)": "Misery Mire",
+      "Light World Bomb Hut": "Turtle Rock",
+      "Dark Death Mountain Ledge (West)": "Dark Death Mountain Ledge (West)",
+      "Dark Death Mountain Ledge (East)": "Dark Death Mountain Ledge (East)",
+      "Desert Palace Entrance (East)": "Turtle Rock Isolated Ledge Entrance",
+      "Kakariko Shop": "Ganons Tower",
+      "Blacksmiths Hut": "Sahasrahlas Hut",
+      "Bat Cave Drop": "Kakariko Well Drop",
+      "Bat Cave Cave": "Kakariko Well Cave",
+      "Desert Palace Entrance (West)": "Mini Moldorm Cave",
+      "Skull Woods Final Section Door": "Blinds Hideout",
+      "Mimic Cave": "Hype Cave",
+      "Misery Mire": "Paradox Cave (Top)",
+      "Agahnims Tower": "Paradox Cave (Middle)",
+      "Pyramid Hole": "Pyramid Hole",
+      "Two Brothers House (East)": "Potion Shop",
+      "Kakariko Gamble Game": "Capacity Fairy",
+      "Library": "Generic Shop"
+    }
   },
   {
     id: "adkeydrop",
@@ -132,7 +189,7 @@ export const allPresets: LauncherPreset[] = [
     id: "mcboss",
     name: "MCBoss",
     description: "Maps and compasses shuffled with boss shuffle",
-    settings: { wildMaps: true, wildCompasses: true, bossShuffle: "simple" },
+    settings: { wildMaps: true, wildCompasses: true, bossShuffle: "random" },
   },
 
   // ── Crosskeys / Entrance Shuffle ────────────────────────────────────────
@@ -277,20 +334,20 @@ export const allPresets: LauncherPreset[] = [
     id: "enemizer",
     name: "Enemizer",
     description: "Open mode with boss and enemy shuffle",
-    settings: { bossShuffle: "simple", enemyShuffle: "shuffled" },
+    settings: { bossShuffle: "random", enemyShuffle: "random" },
   },
   {
     id: "enemizerboots",
     name: "Enemizer Boots",
     description: "Enemizer with starting boots",
-    settings: { bossShuffle: "simple", enemyShuffle: "shuffled" },
+    settings: { bossShuffle: "random", enemyShuffle: "random" },
     startingItems: { boots: 1 },
   },
   {
     id: "enemizerkeydrop",
     name: "Enemizer Keydrop",
     description: "Enemizer with key drop pots and full keysanity",
-    settings: { bossShuffle: "simple", enemyShuffle: "shuffled", pottery: "keys", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
+    settings: { bossShuffle: "random", enemyShuffle: "random", pottery: "keys", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
   },
 
   // ── Goal Variants ───────────────────────────────────────────────────────
@@ -383,14 +440,14 @@ export const allPresets: LauncherPreset[] = [
     id: "patronparty",
     name: "Patron Party",
     description: "Inverted, boss shuffle, keysanity, pseudoboots, activated flute, start with hookshot/glove/flute",
-    settings: { worldState: "inverted_1", goal: "fast_ganon", bossShuffle: "simple", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, activatedFlute: true },
+    settings: { worldState: "inverted_1", goal: "fast_ganon", bossShuffle: "random", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, activatedFlute: true },
     startingItems: { hookshot: 1, glove: 1, flute: 1 },
   },
   {
     id: "potpourri",
     name: "Potpourri",
     description: "All Dungeons, boss shuffle, wild keys, activated flute, start with hookshot/icerod/flute",
-    settings: { goal: "dungeons", bossShuffle: "simple", wildSmallKeys: "wild", wildBigKeys: true, activatedFlute: true },
+    settings: { goal: "dungeons", bossShuffle: "random", wildSmallKeys: "wild", wildBigKeys: true, activatedFlute: true },
     startingItems: { hookshot: 1, icerod: 1, flute: 1 },
   },
   {
@@ -464,6 +521,42 @@ export const allPresets: LauncherPreset[] = [
   },
 ];
 
+// ADKDF
+const adkdfIndex = allPresets.findIndex((p) => p.id === "adkdf");
+const adkdfCheckedLocations: Record<string, { scoutedItems?: string[] }> = {}
+const adkdfCheckedEntrances: string[] = [];
+
+const excludedEntrances = new Set([
+  "Kakariko Well Drop",
+  "Pyramid Hole",
+  "Library",
+])
+
+const excludedLocations = new Set([
+  "Master Sword Pedestal",
+  "Desert Ledge",
+  "Bottle Merchant"
+])
+
+for (const locName of Object.keys(locationsData)) {
+  const loc = locationsData[locName];
+  if (loc.entrance && !excludedEntrances.has(locName)) {
+    adkdfCheckedEntrances.push(locName);
+  }
+}
+
+for (const locName of Object.keys(locationsData)) {
+  if (!excludedLocations.has(locName) && locationsData[locName].overworld) {
+    adkdfCheckedLocations[locName] = {};
+  }
+}
+
+if (adkdfIndex !== -1) {
+  allPresets[adkdfIndex].checkedEntrances = adkdfCheckedEntrances;
+  allPresets[adkdfIndex].checkedLocations = adkdfCheckedLocations;
+}
+
+
 // ---------------------------------------------------------------------------
 // Preset categories — from the old tracker's index.html
 // ---------------------------------------------------------------------------
@@ -484,7 +577,7 @@ export const presetCategories: PresetCategory[] = [
   {
     id: "tournament",
     title: "Tournament Presets",
-    presetIds: ["open47keys", "ad", "ambroz1a", "casualboots", "cabookeydrop", "enemizer", "inverted_startflute", "enemizerboots", "mystery", "openboots", "standard", "stanvertedkeys"],
+    presetIds: ["open47keys", "ad", "adkdf", "ambroz1a", "casualboots", "cabookeydrop", "enemizer", "inverted_startflute", "enemizerboots", "mystery", "openboots", "standard", "stanvertedkeys"],
   },
 ];
 

@@ -1,6 +1,7 @@
 import type { EntranceLabel } from "@/data/entranceLabels";
 import { createSlice } from "@reduxjs/toolkit";
 import { REMEMBER_REHYDRATED } from "redux-remember";
+import { applyLauncherPrefs, loadLauncherPrefs } from "@/lib/launchHelpers";
 
 export interface StatusColors {
   available: string;
@@ -223,11 +224,14 @@ export const settingsSlice = createSlice({
     builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
       const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.settings as Partial<SettingsState> | undefined;
       if (!rehydrated) return initialState;
-      return {
+      const merged = {
         ...initialState,
         ...rehydrated,
         sequenceBreaks: { ...initialState.sequenceBreaks, ...rehydrated.sequenceBreaks },
       };
+      // On load, override remembered user preferences (mapMode, etc.) with
+      // current launcher prefs so the latest user choices always win.
+      return applyLauncherPrefs(merged as SettingsState, loadLauncherPrefs());
     });
   },
 });

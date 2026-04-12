@@ -1,8 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Timer, Search, ChevronDown, Settings2, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Timer, Search, ChevronDown } from "lucide-react";
 import { allPresets, presetCategories, tournamentDiscords, getPresetById } from "@/data/launcherPresets";
 import { DiscordIcon } from "./DiscordIcon";
 
@@ -12,7 +11,6 @@ interface PresetSectionProps {
 }
 
 export function PresetSection({ nextLadder, applyPreset }: PresetSectionProps) {
-  const navigate = useNavigate();
   const [presetSearch, setPresetSearch] = useState("");
   const [presetDropdownOpen, setPresetDropdownOpen] = useState(false);
   const presetDropdownRef = useRef<HTMLDivElement>(null);
@@ -106,14 +104,6 @@ export function PresetSection({ nextLadder, applyPreset }: PresetSectionProps) {
               </div>
             )}
           </div>
-          <Button variant="ghost" size="xs" className="text-muted-foreground" disabled>
-            <Settings2 className="size-3.5 mr-1" /> Customize Tracker
-            <ExternalLink className="size-3 ml-1" />
-          </Button>
-          <Button variant="ghost" size="xs" className="text-muted-foreground cursor-pointer" onClick={() => navigate("/logic")}>
-            Logic Breaks
-            <ExternalLink className="size-3 ml-1" />
-          </Button>
         </div>
       </div>
 

@@ -423,7 +423,7 @@ export function GameSettingsTabs({
                       { value: "none", label: "None" },
                       // { value: "simple", label: "Simple" },
                       // { value: "full", label: "Full" },
-                      // { value: "random", label: "Random" },
+                      { value: "random", label: "Random" },
                     ]}
                   />
                   <SettingSelect
@@ -433,7 +433,7 @@ export function GameSettingsTabs({
                     options={[
                       { value: "none", label: "None" },
                       // { value: "shuffled", label: "Shuffled" },
-                      // { value: "random", label: "Random" },
+                      { value: "random", label: "Random" },
                     ]}
                   />
                 </div>

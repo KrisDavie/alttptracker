@@ -4853,8 +4853,8 @@ export const locationsData = baseLocationsData;
 
 /**
  * Derived map of entrance entries only (entrance: true).
- * Use this wherever you previously used entranceData.
- */
+*/
+
 export const entranceLocations: Record<string, LocationData> = Object.fromEntries(
   Object.entries(baseLocationsData).filter(([, v]) => v.entrance),
 );

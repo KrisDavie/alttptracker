@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { setSettings } from "../../store/settingsSlice";
 import { setModalClose } from "../../store/trackerSlice";
+import { resetBossesForShuffle } from "@/store/dungeonsSlice";
 import { setAutotrackingSettings } from "@/store/autotrackerSlice";
 
 function MysteryModal() {
@@ -52,6 +53,9 @@ function MysteryModal() {
 
   const handleSubmit = () => {
     dispatch(setSettings(localSettings));
+    if (localSettings.bossShuffle !== trackerSettings.bossShuffle) {
+      dispatch(resetBossesForShuffle({ bossShuffle: localSettings.bossShuffle }));
+    }
     dispatch(setAutotrackingSettings(localAutotrackerSettings));
 
     dispatch(setModalClose());
@@ -103,17 +107,17 @@ function MysteryModal() {
             </select>
 
             <label className="font-medium">Boss Shuffle:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.bossShuffle} onChange={(e) => handleInputChange("bossShuffle", e.target.value)}>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.bossShuffle} onChange={(e) => handleInputChange("bossShuffle", e.target.value)}>
               <option value="none">None</option>
-              <option value="simple">Simple</option>
-              <option value="full">Full</option>
+              {/* <option value="simple">Simple</option>
+              <option value="full">Full</option> */}
               <option value="random">Random</option>
             </select>
 
             <label className="font-medium">Enemy Shuffle:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.enemyShuffle} onChange={(e) => handleInputChange("enemyShuffle", e.target.value)}>
+            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.enemyShuffle} onChange={(e) => handleInputChange("enemyShuffle", e.target.value)}>
               <option value="none">None</option>
-              <option value="shuffled">Shuffled</option>
+              {/* <option value="shuffled">Shuffled</option> */}
               <option value="random">Random</option>
             </select>
 

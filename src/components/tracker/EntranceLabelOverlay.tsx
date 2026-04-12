@@ -69,10 +69,10 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
 
   const placedLabels = useMemo(
     () => placeLabels(labelsToPlace, Object.values(obstaclesPct), {
-      charWidthPct: 1.2,
+      charWidthPct: 1.0,
       lineHeightPct: 2.5,
-      paddingPct: 0.5,
-      gapPct: 0.6,
+      paddingPct: 1.5,
+      gapPct: 0.8,
     }),
     [labelsToPlace, obstaclesPct]
   );
@@ -87,8 +87,8 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
             y1={`${label.anchorY}%`}
             x2={`${label.x + label.w / 2}%`}
             y2={`${label.y + label.h / 2}%`}
-            stroke={label.color}
-            opacity={0.8}
+            stroke="white"
+            opacity={0.9}
             strokeWidth="2"
           />
         ))}
@@ -96,21 +96,22 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
       {placedLabels.map(label => (
         <div
           key={label.id}
-          className="absolute text-center font-bold whitespace-nowrap"
+          className="absolute text-center font-bold whitespace-nowrap font-roboto p-0.5"
           style={{
             left: `${label.x + label.w / 2}%`,
             top: `${label.y + label.h / 2}%`,
             transform: "translate(-50%, -50%)",
-            color: "black",
-            fontSize: `${mapMode === "compact" ? 0.5 : 0.6}rem`,
+            color: label.color,
+            fontSize: `${mapMode === "compact" ? 7 : 10}px`,
             lineHeight: 1,
-            padding: "0 2px",
-            backgroundColor: label.color,
-            opacity: 0.8,
-            borderRadius: "2px",
+            backgroundColor: "black",
+            opacity: 0.9,
+            borderColor: label.color,
+            borderWidth: "1px",
+            borderStyle: "solid",
           }}
         >
-          {label.text}
+          {label.text.toLocaleUpperCase()}
         </div>
       ))}
     </div>

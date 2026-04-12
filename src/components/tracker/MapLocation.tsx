@@ -8,6 +8,8 @@ import { mapStatusBg } from "@/hooks/useStatusColors";
 import { LocationTooltip } from "./LocationTooltip";
 import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
 import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
+import { defaultEntranceLabels } from "@/data/entranceLabels";
+import { useMemo } from "react";
 
 interface MapLocationProps {
   name: string;
@@ -26,6 +28,12 @@ function MapLocation(props: MapLocationProps) {
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
+  const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
+  
+  const mergedLabels = useMemo(
+    () => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }),
+    [entranceLabelOverrides]
+  );
 
   // Entrance specific state
   const to = useSelector((state: RootState) => isEntrance ? state.entrances[locName]?.to : undefined);
@@ -49,6 +57,8 @@ function MapLocation(props: MapLocationProps) {
   }, 0));
 
   const entranceCheck = useSelector((state: RootState) => isEntrance ? state.checks.entranceChecks[locName] : undefined);
+
+  const labelColor = isEntrance && to ? mergedLabels?.[to]?.color : undefined;
 
   // We use the `to` field if it's an entrance and it's resolved, otherwise the name itself
   const targetLocationName = isEntrance && to ? to : locName;
@@ -121,7 +131,8 @@ function MapLocation(props: MapLocationProps) {
     <div
       key={locName}
       className={cn(
-        "absolute border border-black left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20",
+        "absolute border left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20",
+        !labelColor && "border-black",
         (isEntrance && itemLocations.length === 0) && "rounded-full",
         bgClass,
         isHatched && "is-hatched",
@@ -133,6 +144,7 @@ function MapLocation(props: MapLocationProps) {
       style={{
         top: `${yPercent}%`,
         left: `${xPercent}%`,
+        ...(labelColor && { borderColor: labelColor, borderWidth: "2px"}),
       }}
       onClick={handleLocationClick}
       onAuxClick={handleLocationClick}

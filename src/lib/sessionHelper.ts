@@ -1,9 +1,8 @@
 import { createSession, touchSession } from "./sessionManager";
 import { initialState as DEFAULT_SETTINGS, type SettingsState } from "@/store/settingsSlice";
-import { loadLauncherPrefs, applyLauncherPrefs } from "./launchHelpers";
+import { loadLauncherPrefs, applyLauncherPrefs, buildPresetIDBState } from "./launchHelpers";
 import { getPresetById } from "@/data/launcherPresets";
 import { idbDriver } from "./idbDriver";
-import ItemsData from "@/data/itemData";
 
 /**
  * Detects or generates the current session/instance ID from URL parameters.
@@ -91,26 +90,11 @@ function launchDirectSession(sessionId: string, urlParams: URLSearchParams) {
   const prefix = `alttptracker_session_${sessionId}_`;
   idbDriver.setItem(prefix + "settings", JSON.stringify(settings)).catch(() => {});
 
-  // Pre-seed starting items if any
-  if (Object.keys(startingItems).length > 0) {
-    const itemsState: Record<string, { amount: number }> = {};
-    for (const key of Object.keys(ItemsData)) {
-      if (key.startsWith("bottle")) continue;
-      itemsState[key] = { amount: 0 };
-    }
-    itemsState["bottle1"] = { amount: 0 };
-    itemsState["bottle2"] = { amount: 0 };
-    itemsState["bottle3"] = { amount: 0 };
-    itemsState["bottle4"] = { amount: 0 };
-    for (const [item, count] of Object.entries(startingItems)) {
-      if (item === "bottle") {
-        for (let i = 1; i <= Math.min(count, 4); i++) {
-          itemsState[`bottle${i}`] = { amount: 1 };
-        }
-      } else if (itemsState[item]) {
-        itemsState[item] = { amount: count };
-      }
-    }
-    idbDriver.setItem(prefix + "items", JSON.stringify(itemsState)).catch(() => {});
-  }
+  // Pre-seed preset state (items, checks, entrances, dungeons)
+  const preset = presetId ? getPresetById(presetId) : undefined;
+  const presetState = buildPresetIDBState(startingItems, preset);
+  if (presetState.items) idbDriver.setItem(prefix + "items", JSON.stringify(presetState.items)).catch(() => {});
+  if (presetState.checks) idbDriver.setItem(prefix + "checks", JSON.stringify(presetState.checks)).catch(() => {});
+  if (presetState.entrances) idbDriver.setItem(prefix + "entrances", JSON.stringify(presetState.entrances)).catch(() => {});
+  if (presetState.dungeons) idbDriver.setItem(prefix + "dungeons", JSON.stringify(presetState.dungeons)).catch(() => {});
 }

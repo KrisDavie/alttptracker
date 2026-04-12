@@ -7,7 +7,7 @@ import { getPresetById, resolvePresetFromSlug } from "@/data/launcherPresets";
 import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
-import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite } from "@/lib/launchHelpers";
+import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
 import { LaunchCard } from "./launch/LaunchCard";
@@ -201,27 +201,12 @@ const LaunchPage: React.FC = () => {
         // Persist settings with the spriteName included
         await idbDriver.setItem(prefix + "settings", JSON.stringify({ ...settings, spriteName }));
 
-        if (Object.keys(startingItems).length > 0) {
-          const itemsState: Record<string, { amount: number }> = {};
-          for (const key of Object.keys(ItemsData)) {
-            if (key.startsWith("bottle")) continue;
-            itemsState[key] = { amount: 0 };
-          }
-          itemsState["bottle1"] = { amount: 0 };
-          itemsState["bottle2"] = { amount: 0 };
-          itemsState["bottle3"] = { amount: 0 };
-          itemsState["bottle4"] = { amount: 0 };
-          for (const [item, count] of Object.entries(startingItems)) {
-            if (item === "bottle") {
-              for (let i = 1; i <= Math.min(count, 4); i++) {
-                itemsState[`bottle${i}`] = { amount: 1 };
-              }
-            } else if (itemsState[item]) {
-              itemsState[item] = { amount: count };
-            }
-          }
-          await idbDriver.setItem(prefix + "items", JSON.stringify(itemsState));
-        }
+        const preset = selectedPresetId ? getPresetById(selectedPresetId) : undefined;
+        const presetState = buildPresetIDBState(startingItems, preset);
+        if (presetState.items) await idbDriver.setItem(prefix + "items", JSON.stringify(presetState.items));
+        if (presetState.checks) await idbDriver.setItem(prefix + "checks", JSON.stringify(presetState.checks));
+        if (presetState.entrances) await idbDriver.setItem(prefix + "entrances", JSON.stringify(presetState.entrances));
+        if (presetState.dungeons) await idbDriver.setItem(prefix + "dungeons", JSON.stringify(presetState.dungeons));
       }
 
       const windowSizes: Record<string, { w: number; h: number }> = {

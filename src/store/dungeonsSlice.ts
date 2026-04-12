@@ -1,11 +1,15 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { REMEMBER_REHYDRATED } from "redux-remember";
 import { DungeonsData } from "@/data/dungeonData";
+import type { SettingsState } from "./settingsSlice";
+
+export const BOSSES = ["unknown", "armos", "lanmolas", "moldorm", "helmasaurking", "arrghus", "mothula", "blind", "kholdstare", "vitreous", "trinexx", "agahnim", "agahnim2", "bnc"] as const;
+export const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
 
 export interface DungeonState {
   collectedCount: number;
   bossDefeated: boolean;
-  boss: "unknown" | "armos" | "lanmolas" | "moldorm" | "helmasaurking" | "arrghus" | "mothula" | "blind" | "kholdstare" | "vitreous" | "trinexx" | "agahnim" | "agahnim2" | "bnc";
+  boss: typeof BOSSES[number];
   prize: "unknown" | "crystal" | "pendant" | "redCrystal" | "greenPendant" | "map";
   prizeCollected: boolean;
   smallKeys: number;
@@ -46,7 +50,6 @@ const dungeonInitialState: DungeonState = {
   },
 };
 
-export const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
 
 const initialState: Record<string, DungeonState> = Object.keys(DungeonsData).reduce((acc, dungeon) => {
   // TODO: If boss shuffle is enabled, always set boss to unknown
@@ -85,6 +88,30 @@ export const dungeonsSlice = createSlice({
       const { dungeon } = action.payload;
       state[dungeon].prizeCollected = !state[dungeon].prizeCollected;
       state[dungeon].manuallyChanged.prizeCollected = true;
+    },
+    resetBossesForShuffle: (state, action: PayloadAction<{ bossShuffle: SettingsState["bossShuffle"] }>) => {
+      const { bossShuffle } = action.payload;
+      if (bossShuffle === "none") {
+        for (const dungeon of Object.keys(state)) {
+          state[dungeon].boss = DungeonsData[dungeon].boss || "unknown";
+        }
+      } else {
+        for (const dungeon of Object.keys(state)) {
+          state[dungeon].boss = "unknown";
+        }
+      }
+    },
+    incrementBoss: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
+      const { dungeon, decrement } = action.payload;
+      const current = state[dungeon].boss;
+      const currentIndex = BOSSES.indexOf(current);
+      const maxIndex = 10; // Exclude aga and bnc for cycling since they aren't shuffled bosses
+
+      if (decrement) {
+        state[dungeon].boss = currentIndex === -1 ? BOSSES[maxIndex] : BOSSES[(currentIndex - 1 + (maxIndex + 1)) % (maxIndex + 1)];
+      } else {
+        state[dungeon].boss = currentIndex === -1 ? BOSSES[0] : BOSSES[(currentIndex + 1) % (maxIndex + 1)];
+      }
     },
     incrementPrizeCount: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
       const { dungeon, decrement } = action.payload;
@@ -134,6 +161,9 @@ export const dungeonsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
       const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.dungeons as Record<string, DungeonState> | undefined;
+      const settings = (action as unknown as { payload: Record<string, unknown> }).payload.settings as { bossShuffle?: string } | undefined;
+      const isBossShuffled = settings?.bossShuffle && settings.bossShuffle !== "none";
+  
       if (!rehydrated) return initialState;
       const merged = { ...initialState };
       for (const [key, value] of Object.entries(rehydrated)) {
@@ -145,10 +175,15 @@ export const dungeonsSlice = createSlice({
           };
         }
       }
+      if (isBossShuffled) {
+        for (const key of Object.keys(merged)) {
+          merged[key].boss = "unknown";
+        }
+      }
       return merged;
     });
   },
 });
 
-export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setBigKey, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys } = dungeonsSlice.actions;
+export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setBigKey, incrementBoss, resetBossesForShuffle, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys } = dungeonsSlice.actions;
 export default dungeonsSlice.reducer;

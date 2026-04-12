@@ -9,6 +9,14 @@ const rectOverlap = (r1: Rect, r2: Rect): boolean => {
   return !(r1.x + r1.w <= r2.x || r1.x >= r2.x + r2.w || r1.y + r1.h <= r2.y || r1.y >= r2.y + r2.h);
 };
 
+const percentageOverlap = (r1: Rect, r2: Rect): number => {
+  const xOverlap = Math.max(0, Math.min(r1.x + r1.w, r2.x + r2.w) - Math.max(r1.x, r2.x));
+  const yOverlap = Math.max(0, Math.min(r1.y + r1.h, r2.y + r2.h) - Math.max(r1.y, r2.y));
+  const overlapArea = xOverlap * yOverlap;
+  const labelArea = r1.w * r1.h;
+  return overlapArea / labelArea;
+}
+
 const directionPreference: Record<string, number> = {
   top: 0, left: 1, right: 1,
   topLeft: 2, topRight: 2,
@@ -78,7 +86,7 @@ export const placeLabels = (labels: LabelInput[], obstacles: MarkerObstacle[], c
       let overlaps = 0;
       for (const obstacle of obstacles) {
         if (rectOverlap(candidates[pos], obstacle)) {
-          overlaps++;
+          overlaps+= percentageOverlap(candidates[pos], obstacle);
         }
       }
       // Heavy penalty for out of bounds

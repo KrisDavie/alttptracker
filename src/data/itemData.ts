@@ -285,12 +285,30 @@ const ItemsData: Record<string, ItemData> = {
 };
 
 export const PrizeImages: Record<string, string> = {
-  unknown: "/dungeons/prize_unknown.png",
+  unknown: "/dungeons/unknown.png",
   greenPendant: "/dungeons/green_pendant.png",
   pendant: "/dungeons/pendant.png",
   map: "/dungeons/map.png",
   redCrystal: "/dungeons/red_crystal.png",
   crystal: "/dungeons/crystal.png",
 };
+
+export const BossImages: Record<string, string> = {
+  unknown: "/dungeons/unknown.png",
+  armos: "/dungeons/armos.png",
+  lanmolas: "/dungeons/lanmolas.png",
+  moldorm: "/dungeons/moldorm.png",
+  helmasaurking: "/dungeons/helmasaur_king.png",
+  arrghus: "/dungeons/arrghus.png",
+  mothula: "/dungeons/mothula.png",
+  blind: "/dungeons/blind.png",
+  kholdstare: "/dungeons/kholdstare.png",
+  vitreous: "/dungeons/vitreous.png",
+  trinexx: "/dungeons/trinexx.png",
+  agahnim: "/dungeons/agahnim0.png",
+  agahnim2: "/dungeons/agahnim20.png",
+  bnc: "/dungeons/ballnchain.png",
+};
+
 
 export default ItemsData;

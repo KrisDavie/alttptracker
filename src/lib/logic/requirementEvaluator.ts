@@ -284,6 +284,9 @@ export class RequirementEvaluator {
         return this.boolToStatus(Object.values(killableBosses).some((v) => v));
       case "canKillBoss":
         killableBosses = this.bossesKillStatus();
+        if (Object.values(killableBosses).every((v) => v)) {
+          return "available";
+        }
         if (ctx.dungeonId) {
           const dungeon = this.state.dungeons[ctx.dungeonId];
           return this.boolToStatus(killableBosses[dungeon.boss]);
@@ -449,7 +452,6 @@ export class RequirementEvaluator {
       case "canKillPopo2":
       case "canKillRedBari":
         return this.boolToStatus(this.met("hookshot", ctx) || this.met("melee_bow_bomb", ctx));
-        break;
 
       // Boomerang can kill
       case "canKillStalfos":
@@ -501,39 +503,46 @@ export class RequirementEvaluator {
       case "canKillTerrorpin":
         return this.boolToStatus(this.hasItem("hammer") && this.met("melee_bow", ctx));
 
+      case "canIceBreak":
+        return this.state.settings.sequenceBreaks.canIceBreak && this.hasItem("somaria") ? "ool" : "unavailable";
+
+      case "canHover":
+        return this.state.settings.sequenceBreaks.canHover && this.hasItem("boots") ? "ool" : "unavailable";
+      case "canHoverAlot":
+        return this.state.settings.sequenceBreaks.canHoverAlot && this.hasItem("boots") ? "ool" : "unavailable";
       // TODO
+      case "canQirnJump":
+        // TODO Bunny check
+        return this.state.settings.sequenceBreaks.canQirnJump && this.hasItem("bomb") ? "ool" : "unavailable";
+      case "canFakePowder":
+        return this.state.settings.sequenceBreaks.canFakePowder && this.hasItem("mushroom") && this.hasItem("somaria") ? "ool" : "unavailable";
+      case "canTombRaider":
+        return this.state.settings.sequenceBreaks.canTombRaider && this.hasItem("hookshot") && (this.state.items.sword.amount >= 2 || this.hasItem("bomb")) ? "ool" : "unavailable";
+      case "canSpeckyClip":
+        return this.state.settings.sequenceBreaks.canSpeckyClip && (this.hasItem("hookshot") && this.hasItem("bomb")) ? "ool" : "unavailable";
+      case "canHeraPot":
+        return this.state.settings.sequenceBreaks.canHeraPot && this.hasItem("hookshot") ? "ool" : "unavailable";
+      case "canMimicClip":
+        return this.state.settings.sequenceBreaks.canMimicClip ? "ool" : "unavailable";
+      case "canMoldormBounce":
+        return this.state.settings.sequenceBreaks.canMoldormBounce && (this.hasItem("bomb") && this.hasItem("sword")) ? "ool" : "unavailable";
+      case "canBombOrBonkCameraUnlock":
+        return this.state.settings.sequenceBreaks.canBombOrBonkCameraUnlock && (this.hasItem("bomb") && this.hasItem("boots")) ? "ool" : "unavailable";
       case "canDarkRoomNavigateBlind":
       case "canTorchRoomNavigateBlind":
       case "canFairyReviveHover":
       case "canOWFairyRevive":
-      case "canQirnJump":
-      case "canFakePowder":
       case "canZoraSplashDelete":
       case "canMirrorWrap":
-      case "canTombRaider":
       case "canFairyBarrierRevive":
       case "canShockBlock":
-      case "canHover":
-      case "canIceBreak":
       case "canHookClip":
       case "canBombJump":
-      case "canBombOrBonkCameraUnlock":
-      case "canHoverAlot":
-      case "canSpeckyClip":
       case "canBombSpooky":
-      case "canHeraPot":
       case "canFireSpooky":
-      case "canMimicClip":
       case "canPotionCameraUnlock":
-      case "canMoldormBounce":
       case "canBunnyCitrus":
       case "canTamSwam":
-      case "canReachTurtleRockMiddle":
-      case "canBreachMiseryMireMaybe":
-      case "canBreachTurtleRockMainMaybe":
-      case "canBreachTurtleRockMiddle":
-      case "canOnlyReachTurtleRockMain":
-      case "canReachTurtleRockBackOpen":
       case "canHMGMireClipBreach":
       case "canHMGMireClipLogic":
       case "canHMGHeraClipBreach":
