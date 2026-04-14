@@ -1012,6 +1012,9 @@ export class OverworldTraverser {
 
     while (madeProgress) {
       madeProgress = false;
+
+      const reachableBefore = ctx.reachable.size;
+
       while (ctx.queue.length > 0) {
         const current = ctx.queue.shift()!;
         const regionReachability = ctx.reachable.get(current)!;
@@ -1022,6 +1025,17 @@ export class OverworldTraverser {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
           if (!exit?.to) continue; // Severed exit — skip
           this.processExit(exitName, exit, current, regionReachability, ctx);
+        }
+      }
+
+      // If new overworld regions were discovered in BFS (e.g. via dungeon
+      // external exits from the previous iteration), re-queue all known
+      // dungeons so their canReachOverworldRegion callbacks see the updated state.
+      if (ctx.reachable.size > reachableBefore && ctx.allDiscoveredPortals.size > 0) {
+        for (const [dungeonId, portals] of ctx.allDiscoveredPortals) {
+          if (!ctx.pendingDungeons.has(dungeonId)) {
+            ctx.pendingDungeons.set(dungeonId, new Map(portals));
+          }
         }
       }
 

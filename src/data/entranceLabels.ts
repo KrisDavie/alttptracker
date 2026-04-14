@@ -31,7 +31,7 @@ export const defaultEntranceLabels: Record<string, EntranceLabel> = {
     "Hyrule Castle Entrance (East)": { label: "HC_E", color: "#ffd700" },
 
     // Start Locs
-    "Link's House": { label: "LH", color: "#98fb98" }, // PaleGreen
+    "Links House": { label: "Links", color: "#98fb98" }, // PaleGreen
     "Sanctuary": { label: "Sanc", color: "#98fb98" },
     "Old Man House (Bottom)": { label: "OM", color: "#98fb98" },
 

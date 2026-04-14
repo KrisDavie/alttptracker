@@ -97,14 +97,27 @@ export const allPresets: LauncherPreset[] = [
   {
     id: "adkdf",
     name: "ADKDF",
-    description: "All Dungeons, keysanity, key drop, start with boots",
-    settings: { goal: "dungeons", entranceMode: "crossed", shuffleLinks: true, enemyDrop: "keys", pottery: "keys", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, pseudoboots: true },
+    description: "All Dungeons, keysanity, key drop, follower shuffle",
+    settings: {
+      goal: "dungeons",
+      entranceMode: "crossed",
+      shuffleLinks: true,
+      enemyDrop: "keys",
+      pottery: "keys",
+      wildSmallKeys: "wild",
+      wildBigKeys: true,
+      wildMaps: true,
+      wildCompasses: true,
+      pseudoboots: true,
+      mirrorScroll: true,
+      followerShuffle: true,
+    },
     entrancePlacements: {
       "Sick Kids House": "Links House",
       "Chicken House": "Hyrule Castle Entrance (South)",
       "Hyrule Castle Entrance (East)": "Hyrule Castle Entrance (West)",
       "Hyrule Castle Entrance (West)": "Hyrule Castle Entrance (East)",
-      "Sanctuary": "Sanctuary",
+      Sanctuary: "Sanctuary",
       "Blinds Hideout": "Eastern Palace",
       "Elder House (East)": "Desert Palace Entrance (South)",
       "Mire Shed": "Desert Palace Entrance (West)",
@@ -112,10 +125,11 @@ export const allPresets: LauncherPreset[] = [
       "Desert Palace Entrance (North)": "Desert Palace Entrance (North)",
       "Elder House (West)": "Tower of Hera",
       "Ganons Tower": "Agahnims Tower",
-      "Snitch Lady (East)": "Palace of Darkness",
-      "Snitch Lady (West)": "Swamp Palace",
+      "Snitch Lady (West)": "Palace of Darkness",
+      "Snitch Lady (East)": "Swamp Palace",
       "Mire Hint": "Dam",
       "Kakariko Well Cave": "Skull Woods First Section Door",
+      "Kakariko Well Drop": "Skull Woods First Section Hole (North)",
       "Skull Woods First Section Door": "Skull Woods Final Section Door",
       "Skull Woods Second Section Door (East)": "Skull Woods Second Section Door (East)",
       "Skull Woods Second Section Door (West)": "Skull Woods Second Section Door (West)",
@@ -138,8 +152,8 @@ export const allPresets: LauncherPreset[] = [
       "Pyramid Hole": "Pyramid Hole",
       "Two Brothers House (East)": "Potion Shop",
       "Kakariko Gamble Game": "Capacity Fairy",
-      "Library": "Generic Shop"
-    }
+      Library: "Generic Shop",
+    },
   },
   {
     id: "adkeydrop",
@@ -221,7 +235,19 @@ export const allPresets: LauncherPreset[] = [
     id: "crosskeys_kd_flute_inv_pb_zw",
     name: "Crosskeys KD Flute Inv PB ZW",
     description: "Inverted crosskeys with key drop, activated flute, pseudoboots",
-    settings: { worldState: "inverted", goal: "fast_ganon", entranceMode: "crossed", pottery: "keys", enemyDrop: "keys", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, activatedFlute: true, pseudoboots: true },
+    settings: {
+      worldState: "inverted",
+      goal: "fast_ganon",
+      entranceMode: "crossed",
+      pottery: "keys",
+      enemyDrop: "keys",
+      wildSmallKeys: "wild",
+      wildBigKeys: true,
+      wildMaps: true,
+      wildCompasses: true,
+      activatedFlute: true,
+      pseudoboots: true,
+    },
   },
   {
     id: "crosskeys_kd_ms_pb_zw",
@@ -355,13 +381,13 @@ export const allPresets: LauncherPreset[] = [
     id: "bosshunt",
     name: "Bosshunt",
     description: "Ganon hunt with 0 tower crystals",
-    settings: {goal: "ganonhunt", gtOpen: "0", ganonVulnerable: "other" },
+    settings: { goal: "ganonhunt", gtOpen: "0", ganonVulnerable: "other" },
   },
   {
     id: "ganonhunt",
     name: "Ganonhunt",
     description: "Ganon hunt, assured sword, wild big keys, 5/2, start with boots",
-    settings: { swords: "assured", wildBigKeys: true,  gtOpen: "5", ganonVulnerable: "other", goal: "ganonhunt" },
+    settings: { swords: "assured", wildBigKeys: true, gtOpen: "5", ganonVulnerable: "other", goal: "ganonhunt" },
     startingItems: { boots: 1 },
   },
   {
@@ -523,20 +549,12 @@ export const allPresets: LauncherPreset[] = [
 
 // ADKDF
 const adkdfIndex = allPresets.findIndex((p) => p.id === "adkdf");
-const adkdfCheckedLocations: Record<string, { scoutedItems?: string[] }> = {}
+const adkdfCheckedLocations: Record<string, { scoutedItems?: string[] }> = {};
 const adkdfCheckedEntrances: string[] = [];
 
-const excludedEntrances = new Set([
-  "Kakariko Well Drop",
-  "Pyramid Hole",
-  "Library",
-])
+const excludedEntrances = new Set(["Kakariko Well Drop", "Pyramid Hole", "Library"]);
 
-const excludedLocations = new Set([
-  "Master Sword Pedestal",
-  "Desert Ledge",
-  "Bottle Merchant"
-])
+const excludedLocations = new Set(["Master Sword Pedestal", "Desert Ledge", "Bottle Merchant"]);
 
 for (const locName of Object.keys(locationsData)) {
   const loc = locationsData[locName];
@@ -555,7 +573,6 @@ if (adkdfIndex !== -1) {
   allPresets[adkdfIndex].checkedEntrances = adkdfCheckedEntrances;
   allPresets[adkdfIndex].checkedLocations = adkdfCheckedLocations;
 }
-
 
 // ---------------------------------------------------------------------------
 // Preset categories — from the old tracker's index.html
@@ -586,7 +603,7 @@ export const tournamentDiscords = [
   { label: "League", url: "https://discord.gg/yeJWJvT" },
   { label: "Beer League", url: "https://discord.gg/s8ybdqDrRh" },
   { label: "German Tournament", url: "https://discord.gg/5zuANcS" },
-  { label: "ADKDF", url: "https://discord.gg/M22pmUYw" }
+  { label: "ADKDF", url: "https://discord.gg/M22pmUYw" },
 ];
 
 /** Look up a preset by ID. Returns undefined if not found. */

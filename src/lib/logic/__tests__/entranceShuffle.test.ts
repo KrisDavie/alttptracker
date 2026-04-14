@@ -37,7 +37,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
       );
 
       // S&Q still reaches Link's House interior
@@ -55,7 +55,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple", shuffleLinks: true })
+          .withSettings({ entranceMode: "crossed", shuffleLinks: true })
       );
 
       // S&Q still reaches Link's House interior
@@ -72,7 +72,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Dam", "Links House")
       );
 
@@ -88,7 +88,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Kakariko Well Cave", "Sanctuary")
       );
 
@@ -104,7 +104,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple", shuffleLinks: true })
+          .withSettings({ entranceMode: "crossed", shuffleLinks: true })
           .withEntranceLink("Dam", "Links House")
           .withEntranceLink("Links House", "Dam")
       );
@@ -121,7 +121,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Dam", "Links House")
       );
 
@@ -177,7 +177,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withItems({ moonpearl: 1, lantern: 1, sword: 1 })
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Dam", "Links House")
       );
 
@@ -190,7 +190,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Dam", "Links House")
       );
 
@@ -204,7 +204,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
       );
 
       // Flute spots give direct OW access
@@ -216,7 +216,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
       );
 
       expect(result.entrancesLogic["Kakariko Well Cave"]).toBe("available");
@@ -230,7 +230,7 @@ describe("Entrance Shuffle", () => {
         gameState()
           .withAllItems()
           .withoutItems(["moonpearl", "flute"])
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Dam", "Links House")
       );
 
@@ -250,7 +250,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
       );
 
       // TT entrance dot should be available (player can reach Village of Outcasts)
@@ -266,7 +266,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Thieves Town", "Thieves Town")
       );
 
@@ -278,7 +278,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntranceLink("Dam", "Thieves Town")
       );
 
@@ -292,7 +292,7 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
-          .withSettings({ entranceMode: "simple" })
+          .withSettings({ entranceMode: "crossed" })
           .withEntrance("Eastern Palace", { to: "Generic Connector 1", connectorGroup: 1 })
           .withEntrance("Dam", { to: "Generic Connector 1", connectorGroup: 1 })
       );
@@ -302,5 +302,28 @@ describe("Entrance Shuffle", () => {
       // Eastern Palace entrance should also be available
       expect(result.entrancesLogic["Eastern Palace"]).toBe("available");
     });
+
+    it("Dam in mire area should make swamp available", () => {
+      // Middle-clicking Eastern Palace and then Dam creates a generic connector.
+      // The exit type for Eastern Palace is "Dungeon" in the graph, but should
+      // be overridden to "Cave" so the traverser doesn't misroute it.
+      const result = calculate(
+        gameState()
+          .withItems({"moonpearl": 1, "sword": 1, "flippers": 1 })
+          .withSettings({ entranceMode: "crossed", shuffleLinks: false })
+          // Mire area available via desert connector
+          .withEntrance("Elder House (East)", { to: "Desert Palace Entrance (South)" })
+          .withEntrance("Mire Fairy", { to: "Desert Palace Entrance (East)" })
+          // Dam available to drain swamp
+          .withEntrance("Mire Hint", { to: "Dam" })
+          // Swamp Palace available in kak
+          .withEntrance("Snitch Lady (East)", { to: "Swamp Palace" })
+      );
+
+      // Can reach Dam and use it to drain swamp, which should make Swamp Palace entrance chest available
+      expect(result.entrancesLogic["Mire Hint"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+    });    
+
   });
 });

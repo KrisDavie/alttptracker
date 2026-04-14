@@ -139,7 +139,8 @@ function MapLocation(props: MapLocationProps) {
         props.className,
         selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup && "ring-2 ring-blue-500",
         selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup && "hidden",
-        currentMode === "connect" && "cursor-crosshair"
+        currentMode === "connect" && "cursor-crosshair",
+        ((entranceCheck?.checked && !isLinked) || (status === "all")) ? "opacity-80" : ""
       )}
       style={{
         top: `${yPercent}%`,

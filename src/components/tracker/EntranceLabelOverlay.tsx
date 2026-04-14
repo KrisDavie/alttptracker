@@ -68,9 +68,9 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
   }, [entrances, mergedLabels, obstaclesPct]);
 
   const placedLabels = useMemo(
-    () => placeLabels(labelsToPlace, Object.values(obstaclesPct), {
-      charWidthPct: 1.0,
-      lineHeightPct: 2.5,
+    () => placeLabels(labelsToPlace, obstaclesPct, {
+      charWidthPct: 0.5,
+      lineHeightPct: 0.5,
       paddingPct: 1.5,
       gapPct: 0.8,
     }),

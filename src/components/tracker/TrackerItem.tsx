@@ -12,9 +12,19 @@ interface TrackerItemProps {
 function TrackerItem({ itemName, storageKey, skipFirstImgOnCollect = false }: TrackerItemProps) {
   const dispatch = useDispatch();
   const key = storageKey || itemName;
-  const collected = useSelector((state: RootState) => state.items[key]?.amount ?? 0);
+  let collected = useSelector((state: RootState) => state.items[key]?.amount ?? 0);
+  const pseudoboots = useSelector((state: RootState) => state.settings.pseudoboots);
+  const mirrorScroll = useSelector((state: RootState) => state.settings.mirrorScroll);
   const itemData = ItemsData[itemName as keyof typeof ItemsData];
-  const itemImage = itemData ? itemData.images[Math.max(0, collected - (skipFirstImgOnCollect ? 0 : 1))] : "unknown";
+  let itemImage = itemData ? itemData.images[Math.max(0, collected - (skipFirstImgOnCollect ? 0 : 1))] : "unknown";
+
+  if (itemName === "boots" && collected === 0 && pseudoboots) {
+    itemImage = "/items/pseudoboots.png";
+    collected = 1; 
+  } else if (itemName === "mirror" && collected === 0 && mirrorScroll) {
+    itemImage = "/items/mirrorscroll.png";
+    collected = 1; 
+  }
 
   return (
     <div
