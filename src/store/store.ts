@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Tuple } from '@reduxjs/toolkit';
 import { rememberReducer, rememberEnhancer } from 'redux-remember';
 import { idbDriver } from '@/lib/idbDriver';
 import itemsReducer from './itemsSlice';
@@ -11,29 +11,35 @@ import trackerReducer from './trackerSlice';
 import overworldReducer from './overworldSlice';
 
 import { getSessionInstanceId } from '@/lib/sessionHelper';
+import { createBroadcastMiddleware } from './broadcastMiddleware';
 
 const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances', 'overworld'];
 
 const instanceId = getSessionInstanceId();
 
+const reducers = {
+  trackerState: trackerReducer,
+  items: itemsReducer,
+  dungeons: dungeonsReducer,
+  checks: checksReducer,
+  settings: settingsReducer,
+  entrances: entrancesReducer,
+  autotracker: autotrackerReducer,
+  overworld: overworldReducer,
+};
+
 export const store = configureStore({
-  reducer: rememberReducer({
-    trackerState: trackerReducer,
-    items: itemsReducer,
-    dungeons: dungeonsReducer,
-    checks: checksReducer,
-    settings: settingsReducer,
-    entrances: entrancesReducer,
-    autotracker: autotrackerReducer,
-    overworld: overworldReducer,
-  }),
+  reducer: rememberReducer(reducers),
   enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(
     rememberEnhancer(
       idbDriver,
       rememberedKeys,
       { prefix: `alttptracker_session_${instanceId}_` }
     )
-  )
+  ),
+  middleware: (getDefaultMiddleware) => new Tuple(...getDefaultMiddleware(), createBroadcastMiddleware(instanceId)) as ReturnType<typeof getDefaultMiddleware>,
 });
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = {
+  [K in keyof typeof reducers]: ReturnType<(typeof reducers)[K]>;
+};
 export type AppDispatch = typeof store.dispatch;

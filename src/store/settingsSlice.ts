@@ -122,7 +122,7 @@ export interface SettingsState {
 
   // UI settings
   autotracking: boolean;
-  mapMode: "off" | "normal" | "compact" | "vertical";
+  mapMode: "off" | "normal" | "compact" | "vertical" | "popoutNormal" | "popoutVertical";
   includeDungeonItemsInCounter?: boolean;
   connectionLinesMode: "none" | "caves" | "dungeons" | "all";
   connectionLineColor: string;

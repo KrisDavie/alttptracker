@@ -51,6 +51,8 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
   const checks = useSelector((state: RootState) => state.checks.locationsChecks);
   const checksRef = useRef(checks);
 
+  const url = new URL(window.location.href);
+  const isMapPage = url.pathname === "/map";
 
   // Keep the ref updated with the latest checks state
   useEffect(() => {
@@ -66,7 +68,8 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
 
   // Connecting and querying data
   useEffect(() => {
-    if (!autotrackingEnabled) {
+    // We gate autotracking on being on the tracker page, do not run on the map page
+    if (!autotrackingEnabled || isMapPage) {
       return;
     }
 
@@ -195,7 +198,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     poll();
 
     return () => clearInterval(interval);
-  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled, qusb2Websocket]);
+  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled, qusb2Websocket, isMapPage]);
 
   // Actually process the data and mark things as checked etc.
   useEffect(() => {

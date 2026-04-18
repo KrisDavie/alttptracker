@@ -555,6 +555,8 @@ export function GameSettingsTabs({
                   { value: "normal", label: "Normal" },
                   { value: "compact", label: "Compact" },
                   { value: "vertical", label: "Vertical" },
+                  { value: "popoutNormal", label: "Popout Normal" },
+                  { value: "popoutVertical", label: "Popout Vertical" },
                 ]}
               />
               <SettingSelect

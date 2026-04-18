@@ -209,19 +209,35 @@ const LaunchPage: React.FC = () => {
         if (presetState.dungeons) await idbDriver.setItem(prefix + "dungeons", JSON.stringify(presetState.dungeons));
       }
 
-      const windowSizes: Record<string, { w: number; h: number }> = {
-        off: { w: 448, h: 448 },
-        normal: { w: 1344, h: 449 },
-        compact: { w: 448, h: 672 },
-        vertical: { w: 448, h: 1344 },
-      };
-      const { w, h } = windowSizes[settings.mapMode] ?? windowSizes.normal;
-      window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${w},height=${h}`);
+      const isMapPopout = settings.mapMode === "popoutNormal" || settings.mapMode === "popoutVertical";
+
+      if (isMapPopout) {
+        const mapUrl = `/map?id=${encodeURIComponent(id!)}`;
+        const trackerUrl = `/tracker?id=${encodeURIComponent(id!)}`;
+
+        window.open(trackerUrl, "_blank", `width=${448},height=${448}`);
+
+        const w = settings.mapMode === "popoutNormal" ? 896 : 448;
+        const h = settings.mapMode === "popoutVertical" ? 896 : 448;
+        window.open(mapUrl, "_blank", `width=${w},height=${h}`);
+
+      } else {
+
+        const windowSizes: Record<string, { w: number; h: number }> = {
+          off: { w: 448, h: 448 },
+          normal: { w: 1344, h: 449 },
+          compact: { w: 448, h: 672 },
+          vertical: { w: 448, h: 1344 },
+        };
+        const { w, h } = windowSizes[settings.mapMode] ?? windowSizes.normal;
+        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${w},height=${h}`);
+      }
     },
     [settings, spriteName, sessionName, selectedPresetId, startingItems],
   );
 
-  const handleDeleteSession = useCallback(async (id: string) => {
+  const handleDeleteSession = useCallback(async (id
+    : string) => {
     await deleteSession(id);
     setSessions(await getSessions());
   }, []);

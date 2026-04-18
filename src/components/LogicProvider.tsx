@@ -19,6 +19,9 @@ function LogicProvider({ children }: LogicProviderProps) {
   const locationsChecks = useSelector((state: RootState) => state.checks.locationsChecks);
   const overworld = useSelector((state: RootState) => state.overworld);
 
+  const url = new URL(window.location.href);
+  const isMapPage = url.pathname === "/map";
+
   // Pre-mutate the logic graph when topology-affecting state changes.
   // Skips recomputation when only items/dungeons/checks change.
   const logicSet = useMemo(() => getLogicSet(settings.logicMode), [settings.logicMode]);
@@ -29,6 +32,10 @@ function LogicProvider({ children }: LogicProviderProps) {
   }, [settings, entrances, overworld, logicSet]);
 
   useEffect(() => {
+    if (isMapPage) {
+      // Don't run logic on the map page, the item page manages this
+      return;
+    }
     // Build checks record with just { checked } for the logic engine
     const checks: Record<string, { checked: boolean }> = {};
     for (const [name, status] of Object.entries(locationsChecks)) {
@@ -51,7 +58,7 @@ function LogicProvider({ children }: LogicProviderProps) {
     const newResults = traverser.calculateAll();
 
     dispatch(updateLogicStatuses(newResults));
-  }, [items, settings, dungeons, entrances, locationsChecks, overworld, effectiveGraph, dispatch]); 
+  }, [items, settings, dungeons, entrances, locationsChecks, overworld, effectiveGraph, dispatch, isMapPage]); 
 
   return <>{children}</>;
 }

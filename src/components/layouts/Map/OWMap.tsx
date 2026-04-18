@@ -47,6 +47,8 @@ function OWMap({ world = "lw" }: OWMapProps) {
   switch (mapMode) {
     case "vertical":
     case "normal":
+    case "popoutNormal":
+    case "popoutVertical":
       fullSize = "h-4 w-4";
       smallSize = "h-2.5 w-2.5";
       dungeonSize = "h-5.5 w-5.5";

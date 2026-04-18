@@ -1,30 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
-import CommunityLayoutItems from "@/components/layouts/CommunityTracker/CommunityLayoutItems";
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
-import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
 import { Loader2 } from "lucide-react";
 
 const TILE = 448;
 
 function getLayoutDimensions(mapMode: "off" | "normal" | "compact" | "vertical" | "popoutNormal" | "popoutVertical") {
   switch (mapMode) {
-    case "off":
     case "popoutNormal":
+      return { width: TILE * 2, height: TILE };
     case "popoutVertical":
+      return { width: TILE, height: TILE * 2 };
+    default:
       return { width: TILE, height: TILE };
-    case "normal":
-      return { width: TILE * 3, height: TILE };
-    case "compact":
-      return { width: TILE, height: TILE * 1.5 };
-    case "vertical":
-      return { width: TILE, height: TILE * 3 };
   }
 }
 
-export function Tracker() {
+export function TrackerMap() {
   const [scale, setScale] = useState(1);
   const rehydrated = useSelector((state: RootState) => state.trackerState.rehydrated);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
@@ -44,11 +38,8 @@ export function Tracker() {
     return () => window.removeEventListener("resize", handleResize);
   }, [width, height]);
 
-  const showMaps = mapMode !== "off";
-  const isVertical = mapMode === "vertical";
+  const isVertical = mapMode === "vertical" || mapMode === "popoutVertical";
   const isCompact = mapMode === "compact";
-  const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === 'entrance';
-  const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
 
   let maps = [];
 
@@ -83,34 +74,24 @@ export function Tracker() {
         }}
         className={`flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
       >
-        <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }} className="relative">
-          <CommunityLayoutItems />
-          {isCompact && entranceModalOpen && selectedEntrance && (
-            <div className="absolute top-0 left-0 w-full h-full z-100">
-              <EntranceSelectionModal />
-            </div>
-          )}
-        </div>
-        {showMaps && !['popoutNormal', 'popoutVertical'].includes(mapMode) && (
+        <div
+          className="relative"
+          style={{
+            width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
+            height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
+          }}
+          >
+          <EntranceLinesOverlay />
           <div
-            className="relative"
+            className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
             style={{
               width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
               height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
             }}
-            >
-            <EntranceLinesOverlay />
-            <div
-              className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
-              style={{
-                width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
-                height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
-              }}
-            >
-              {maps}
-            </div>
+          >
+            {maps}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
