@@ -236,13 +236,26 @@ function buildLocationMapping(): {
     for (const [otherKey, otherRegions] of allEntranceRegionSets) {
       if (otherKey === key) continue;
       if (otherRegions.size < myRegions.size) continue; // Can't contain us if smaller
-      if ([...myRegions].every((r) => otherRegions.has(r))) {
+      if (![...myRegions].every((r) => otherRegions.has(r))) continue;
+
+      const otherData = baseLocationsData[otherKey];
+      const otherIsValidParent = !otherData.entrance || otherData.isDungeon;
+
+      if (otherIsValidParent) {
+        // A non-entrance (or dungeon) entry contains our regions — it will be
+        // shown in non-entrance mode as the unified parent.
         secondaryKeys.add(key);
-        // Track the parent (the entry that contains our regions)
-        // Only non-secondary entries count as parents
-        if (!baseLocationsData[otherKey].entrance || baseLocationsData[otherKey].isDungeon) {
-          parentKeys.add(otherKey);
-        }
+        parentKeys.add(otherKey);
+        break;
+      }
+
+      // Both are entrance entries. Only mark as secondary if the other is a
+      // strict superset, or — when region sets are identical — if the other
+      // has a lexicographically smaller key (canonical primary tiebreaker).
+      // This ensures at least ONE entrance entry representing a given region
+      // set remains visible in non-entrance mode.
+      if (otherRegions.size > myRegions.size || otherKey < key) {
+        secondaryKeys.add(key);
         break;
       }
     }
