@@ -10,6 +10,7 @@ import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
 import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { useMemo } from "react";
+import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 
 interface MapLocationProps {
   name: string;
@@ -28,8 +29,9 @@ function MapLocation(props: MapLocationProps) {
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
+  const hoveredDungeon = useSelector((state: RootState) => state.trackerState.hoveredDungeon);
   const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
-  
+
   const mergedLabels = useMemo(
     () => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }),
     [entranceLabelOverrides]
@@ -38,6 +40,9 @@ function MapLocation(props: MapLocationProps) {
   // Entrance specific state
   const to = useSelector((state: RootState) => isEntrance ? state.entrances[locName]?.to : undefined);
   const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
+
+  const dungeonId = getDungeonIdForEntry(to ?? "");
+  const isHighlighted = isEntrance && dungeonId && hoveredDungeon === dungeonId;
 
   let selectedEntranceGroup = selectedEntrance ? locationsData[selectedEntrance]?.entrance_modes?.[entranceMode || "none"] : null;
   if (selectedEntranceGroup === "skull_doors" && zelgaWoods) {
@@ -140,7 +145,8 @@ function MapLocation(props: MapLocationProps) {
         selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup && "ring-2 ring-blue-500",
         selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup && "hidden",
         currentMode === "connect" && "cursor-crosshair",
-        ((entranceCheck?.checked && !isLinked) || (status === "all")) ? "opacity-80" : ""
+        ((entranceCheck?.checked && !isLinked) || (status === "all")) ? "opacity-80" : "",
+        isHighlighted && "ring-2 ring-yellow-500"
       )}
       style={{
         top: `${yPercent}%`,

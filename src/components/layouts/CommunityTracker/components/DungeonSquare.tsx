@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../../../store/store";
 import ChestCounter from "../../../tracker/ChestCounter";
 import BossIcon from "../../../tracker/BossIcon";
@@ -7,6 +7,7 @@ import BigKeyTracker from "../../../tracker/BigKeyTracker";
 import MedallionSelector from "@/components/tracker/MedallionSelector";
 import PrizeSelector from "@/components/tracker/PrizeSelector";
 import BossSelector from "@/components/tracker/BossSelector";
+import { setHoveredDungeon } from "@/store/trackerSlice";
 
 interface DungeonSquareProps {
   dungeon: string;
@@ -14,6 +15,8 @@ interface DungeonSquareProps {
 }
 
 function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps) {
+  const dispatch = useDispatch();
+
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
   const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
   const bossShuffle = useSelector((state: RootState) => state.settings.bossShuffle);
@@ -51,7 +54,10 @@ function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps
   };
 
   return (
-    <div className={`h-16 flex items-center justify-center ${direction === "horizontal" ? "flex-row h-16 w-32" : "flex-col h-32 w-16"}`}>
+    <div className={`h-16 flex items-center justify-center ${direction === "horizontal" ? "flex-row h-16 w-32" : "flex-col h-32 w-16"}`}
+    onMouseEnter={() => dispatch(setHoveredDungeon(dungeon))}
+    onMouseLeave={() => dispatch(setHoveredDungeon(null))}
+    >
       <div className="h-16 w-16 relative">
         <BossIcon dungeon={dungeon} />
         <PrizeSelector dungeon={dungeon} className="absolute bottom-0 right-0 h-1/2 w-1/2 rounded-full bg-black" />

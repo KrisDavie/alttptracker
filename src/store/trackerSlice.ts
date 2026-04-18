@@ -7,6 +7,7 @@ export interface TrackerState {
    modalOpen: "none" | "mystery" | "entrance" 
    selectedLocation: string | null;
    selectedEntrance: string | null;
+   hoveredDungeon: string | null;
    instanceId: string;
    rehydrated: boolean;
 }
@@ -16,6 +17,7 @@ const initialState: TrackerState = {
     modalOpen: "entrance",
     selectedLocation: null,
     selectedEntrance: null,
+    hoveredDungeon: null,
     instanceId: getSessionInstanceId(),
     rehydrated: false,
 };
@@ -40,6 +42,9 @@ export const trackerSlice = createSlice({
     },
     setCurrentMode: (state, action) => {
       state.currentMode = action.payload;
+    },
+    setHoveredDungeon: (state, action) => {
+      state.hoveredDungeon = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -49,5 +54,5 @@ export const trackerSlice = createSlice({
   },
 });
 
-export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode } = trackerSlice.actions;
+export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode, setHoveredDungeon } = trackerSlice.actions;
 export default trackerSlice.reducer;

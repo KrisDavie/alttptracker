@@ -6,11 +6,12 @@ import { locationsData, entranceLocations } from "../../data/locationsData";
 export default function EntranceLinesOverlay() {
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const worldState = useSelector((state: RootState) => state.settings.worldState);
+  const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const connectionLinesMode = useSelector((state: RootState) => state.settings.connectionLinesMode);
   const connectionLineColor = useSelector((state: RootState) => state.settings.connectionLineColor);
   const entrances = useSelector((state: RootState) => state.entrances);
 
-  if (mapMode === "off" || connectionLinesMode === "none") return null;
+  if (mapMode === "off" || connectionLinesMode === "none" || entranceMode === "none") return null;
 
   const groupedLinks = new Map<string, string[]>(); // groupId -> array of overworld location names
 
