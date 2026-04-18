@@ -78,12 +78,16 @@ export const defaultUserSequenceBreaks = {
 // Type allows boolean values for all sequence break keys
 export type UserSequenceBreaks = { [K in keyof typeof defaultUserSequenceBreaks]: boolean };
 
+export type goalTypes = "ganon" | "fast_ganon" | "ad" | "pedestal" | "triforce_hunt" | "ganonhunt" | "trinity" | "completionist";
+export type gtOpenTypes = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "locksmith";
+export type ganonVulnerableTypes = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "completionist" | "ad" | "triforce" | "other";
+
 export interface SettingsState {
   // Mode Settings
   logicMode: "noglitches" | "overworldglitches" | "hybridglitches" | "nologic";
   worldState: "open" | "standard" | "inverted" | "inverted_1" | "standverted";
-  gtOpen: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "locksmith";
-  ganonVulnerable: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "other";
+  gtOpen: gtOpenTypes;
+  ganonVulnerable: ganonVulnerableTypes;
   wildSmallKeys: "inDungeon" | "wild" | "universal";
   wildBigKeys: boolean;
   wildMaps: boolean;
@@ -93,7 +97,7 @@ export interface SettingsState {
   entranceMode: "none" | "dungeonssimple" | "dungeonsfull" | "lite" | "lean" | "simple" | "restricted" | "full" | "district" | "swapped" | "crossed" | "insanity";
   bossShuffle: "none" | "simple" | "full" | "random";
   enemyShuffle: "none" | "shuffled" | "random";
-  goal: "ganon" | "fast_ganon" | "dungeons" | "pedestal" | "triforce_hunt" | "ganonhunt" | "completionist";
+  goal: goalTypes;
   swords: "randomized" | "assured" | "vanilla" | "swordless";
   prizeShuffle: "vanilla" | "inDungeon" | "wild";
   shuffleLinks: boolean;
@@ -130,6 +134,7 @@ export interface SettingsState {
   colouredChests: boolean;
   showChestTooltips: boolean;
   entranceLabelsMode: "off" | "labels" | "labels_lines";
+  showInsetBossSquare: boolean;
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
@@ -192,6 +197,7 @@ export const initialState: SettingsState = {
   colouredChests: true,
   showChestTooltips: true,
   entranceLabelsMode: "labels_lines",
+  showInsetBossSquare: true,
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,
@@ -224,6 +230,13 @@ export const settingsSlice = createSlice({
     builder.addCase(REMEMBER_REHYDRATED, (_state, action) => {
       const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.settings as Partial<SettingsState> | undefined;
       if (!rehydrated) return initialState;
+
+      // @ts-expect-error - This is an old saved state and we migrate to new type combinations
+      if (rehydrated.goal === "dungeons" || rehydrated.ganonVulnerable === "dungeons") {
+        console.log("Migrating old 'dungeons' goal to new 'ganon' goal with all dungeons vulnerable");
+        rehydrated.goal = "ganon";
+        rehydrated.ganonVulnerable = "ad";
+      }
       const merged = {
         ...initialState,
         ...rehydrated,

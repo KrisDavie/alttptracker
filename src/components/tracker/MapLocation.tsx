@@ -31,6 +31,7 @@ function MapLocation(props: MapLocationProps) {
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
   const hoveredDungeon = useSelector((state: RootState) => state.trackerState.hoveredDungeon);
   const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
+  const showInsetBossSquare = useSelector((state: RootState) => state.settings.showInsetBossSquare);
 
   const mergedLabels = useMemo(
     () => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }),
@@ -43,6 +44,9 @@ function MapLocation(props: MapLocationProps) {
 
   const dungeonId = getDungeonIdForEntry(to ?? "");
   const isHighlighted = isEntrance && dungeonId && hoveredDungeon === dungeonId;
+
+  // Resolve dungeon id for the displayed location (dungeon entry directly, or entrance pointing to one)
+  const resolvedDungeonId = isEntrance ? dungeonId : getDungeonIdForEntry(locName);
 
   let selectedEntranceGroup = selectedEntrance ? locationsData[selectedEntrance]?.entrance_modes?.[entranceMode || "none"] : null;
   if (selectedEntranceGroup === "skull_doors" && zelgaWoods) {
@@ -132,6 +136,15 @@ function MapLocation(props: MapLocationProps) {
         ? (entranceCheck?.checked ? mapStatusBg("checked") : mapStatusBg(entranceCheck?.logic || "unavailable"))
         : (status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus));
 
+  // Boss inner-square: when this marker maps to a dungeon and that dungeon has a "- Boss" check
+  const bossLocationKey = resolvedDungeonId
+    ? itemLocations.find((l) => l.endsWith(" - Boss"))
+    : undefined;
+  const bossCheckStatus = bossLocationKey ? itemChecks[bossLocationKey]?.status : undefined;
+  const bossBgClass = bossCheckStatus
+    ? (bossCheckStatus.checked ? mapStatusBg("checked") : mapStatusBg(bossCheckStatus.logic))
+    : undefined;
+
   return (
     <div
       key={locName}
@@ -158,6 +171,15 @@ function MapLocation(props: MapLocationProps) {
       onContextMenu={handleLocationClick}
       onMouseLeave={resetGroups}
     >
+      {showInsetBossSquare && bossBgClass && (
+        <div
+          className={cn(
+            "absolute inset-1 border border-black pointer-events-none",
+            bossBgClass,
+            bossCheckStatus?.checked && "opacity-80"
+          )}
+        />
+      )}
       {showTooltip && (
         <LocationTooltip
           name={isEntrance ? (targetName === locName || !targetName ? locName : `${locName} → ${targetName}`) : locName}

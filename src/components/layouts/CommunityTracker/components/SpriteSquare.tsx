@@ -8,6 +8,7 @@ import SmallKeyTracker from "../../../tracker/SmallKeyTracker";
 import AutotrackingIcon from "@/components/tracker/AutotrackingIcon";
 import { setModalOpen } from "@/store/trackerSlice";
 import { Settings } from "lucide-react";
+import GoalSelector from "@/components/tracker/GoalSelector";
 
 function SpriteSquare() {
   const dispatch = useDispatch();
@@ -34,6 +35,12 @@ function SpriteSquare() {
       </div>
       <div className="h-4 w-4 absolute top-11 right-9">
         <TrackerItem itemName="heartpiece" skipFirstImgOnCollect />
+      </div>
+      <div className="flex items-center h-6 w-6 absolute top-0 left-0.5">
+        <GoalSelector type="gtOpen" />
+      </div>
+      <div className="flex items-center h-6 w-6 absolute top-6 left-0.5">
+        <GoalSelector type="goal" />
       </div>
       {/* Mystery Flags */}
       <div className="flex items-center h-6 w-6 absolute top-12 left-0.5">

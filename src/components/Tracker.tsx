@@ -62,6 +62,7 @@ export function Tracker() {
     return (
       <div className="h-screen w-screen bg-surface fixed inset-0 flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <title>Muffins Tracker 2.0 - Tracker - Loading...</title>
         <div className="text-primary font-body text-xl animate-pulse">Loading Tracker...</div>
       </div>
     );
@@ -69,6 +70,7 @@ export function Tracker() {
 
   return (
     <div className="h-screen w-screen bg-surface flex items-start justify-start overflow-hidden fixed inset-0 font-body antialiased" onContextMenu={(e) => e.preventDefault()}>
+      <title>Muffins Tracker 2.0 - Tracker</title>
       <div className="stone-texture opacity-[0.03]"></div>
       <div
         data-tracker-bounds

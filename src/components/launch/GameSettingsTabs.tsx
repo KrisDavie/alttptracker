@@ -228,7 +228,7 @@ export function GameSettingsTabs({
                 options={[
                   { value: "fast_ganon", label: "Fast Ganon" },
                   { value: "ganon", label: "Defeat Ganon" },
-                  { value: "dungeons", label: "All Dungeons" },
+                  // { value: "ad", label: "All Dungeons" },
                   { value: "pedestal", label: "Pedestal" },
                   { value: "triforce_hunt", label: "Triforce Hunt" },
                 ]}
@@ -257,8 +257,11 @@ export function GameSettingsTabs({
                   { value: "5", label: "5 crystals" },
                   { value: "6", label: "6 crystals" },
                   { value: "7", label: "7 crystals" },
+                  { value: "ad", label: "All Dungeons" },
+                  { value: "completionist", label: "Completionist" },
+                  { value: "triforce", label: "Ganonhunt" },
                   { value: "random", label: "Random crystals" },
-                  { value: "other", label: "Other conditions" },
+                  // { value: "other", label: "Other conditions" },
                 ]}
               />
               <SettingSelect
@@ -605,6 +608,7 @@ export function GameSettingsTabs({
                   <SettingSwitch label="Count Dungeon Items" checked={!!(settings.includeDungeonItemsInCounter ?? false)} onChange={(v) => updateSetting("includeDungeonItemsInCounter", v)} />
                   <SettingSwitch label="Coloured Chests" checked={settings.colouredChests} onChange={(v) => updateSetting("colouredChests", v)} />
                   <SettingSwitch label="Show Chest Tooltips" checked={settings.showChestTooltips} onChange={(v) => updateSetting("showChestTooltips", v)} />
+                  <SettingSwitch label="Show Inset Boss Square" checked={settings.showInsetBossSquare} onChange={(v) => updateSetting("showInsetBossSquare", v)} />
                 </div>
               </div>
             </CardContent>

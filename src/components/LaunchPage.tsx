@@ -252,6 +252,8 @@ const LaunchPage: React.FC = () => {
 
   return (
     <TooltipProvider>
+      <title>Muffins Tracker 2.0 - Launch Page</title>
+
       <div className="min-h-screen bg-background text-foreground overflow-auto">
         <LaunchHeader theme={theme} setTheme={setTheme} autotrackStatus={autotrackStatus} autotrackProtocol={autotrackProtocol} autotrackHost={autotrackHost} autotrackPort={autotrackPort} />
 

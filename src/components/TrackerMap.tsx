@@ -53,6 +53,7 @@ export function TrackerMap() {
     return (
       <div className="h-screen w-screen bg-surface fixed inset-0 flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <title>Muffins Tracker 2.0 - Map Popout - Loading...</title>
         <div className="text-primary font-body text-xl animate-pulse">Loading Tracker...</div>
       </div>
     );
@@ -60,6 +61,7 @@ export function TrackerMap() {
 
   return (
     <div className="h-screen w-screen bg-surface flex items-start justify-start overflow-hidden fixed inset-0 font-body antialiased" onContextMenu={(e) => e.preventDefault()}>
+      <title>Muffins Tracker 2.0 - Map Popout</title>
       <div className="stone-texture opacity-[0.03]"></div>
       <div
         data-tracker-bounds
@@ -80,7 +82,7 @@ export function TrackerMap() {
             width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
             height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
           }}
-          >
+        >
           <EntranceLinesOverlay />
           <div
             className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
