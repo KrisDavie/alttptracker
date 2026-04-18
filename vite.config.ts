@@ -8,13 +8,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   server: {
     host: true,
-    proxy: {
-      "/api/ladder": {
-        target: "https://alttpr.racing/api/v1",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/ladder/, ""),
-      },
-    },
   },
   plugins: [
     react({

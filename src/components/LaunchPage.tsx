@@ -49,13 +49,13 @@ const LaunchPage: React.FC = () => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/ladder/upcoming");
+        const res = await fetch("https://alttpr.racing/api/v1/upcoming");
         if (cancelled) return;
         if (!res.ok) return;
         const data = await res.json();
         const race = data[0];
         if (!race || cancelled) return;
-        const modeRes = await fetch(`/api/ladder/modes/${encodeURIComponent(race.mode)}`);
+        const modeRes = await fetch(`https://alttpr.racing/api/v1/modes/${encodeURIComponent(race.mode)}`);
         if (cancelled) return;
         if (!modeRes.ok) return;
         const modeData = await modeRes.json();
