@@ -16030,6 +16030,26 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {},
                     "Inverted": {}
                 }
+            },
+            "Spec Rock Bomb Jump": {
+                "to": "Spectacle Rock Cave (Peak)",
+                "type": "Cave",
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canBombJump"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canBombJump"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [],
@@ -16126,6 +16146,26 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {},
                     "Inverted": {}
+                }
+            },
+            "Spec Rock Hover": {
+                "to": "Spectacle Rock Cave (Top)",
+                "type": "Cave",
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canHover"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canHover"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -19412,15 +19452,25 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "allOf": [
-                                "hookshot"
+                            "anyOf": [
+                                {
+                                    "allOf": [
+                                        "hookshot"
+                                    ]
+                                },
+                                "canHover"
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "allOf": [
-                                "hookshot"
+                            "anyOf": [
+                                {
+                                    "allOf": [
+                                        "hookshot"
+                                    ]
+                                },
+                                "canHover"
                             ]
                         }
                     }
@@ -41354,6 +41404,26 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {},
                     "Inverted": {}
                 }
+            },
+            "Ice Dead End Icebreaker": {
+                "to": "Ice Big Key",
+                "type": "Dungeon",
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canIceBreak"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canIceBreak"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [],
@@ -55236,15 +55306,25 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "allOf": [
-                                "hookshot"
+                            "anyOf": [
+                                {
+                                    "allOf": [
+                                        "hookshot"
+                                    ]
+                                },
+                                "canHover"
                             ]
                         }
                     },
                     "Inverted": {
                         "always": {
-                            "allOf": [
-                                "hookshot"
+                            "anyOf": [
+                                {
+                                    "allOf": [
+                                        "hookshot"
+                                    ]
+                                },
+                                "canHover"
                             ]
                         }
                     }

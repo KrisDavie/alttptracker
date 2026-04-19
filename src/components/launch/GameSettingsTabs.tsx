@@ -36,11 +36,11 @@ interface LogicBreak {
 
 const DUNGEON_LOGIC: LogicBreak[] = [
   { id: "canNavigateDarkRooms", label: "Dark Room Navigation", tooltip: "Navigate dark rooms without a light source (lamp/firerod)" },
-  // { id: "canIceBreak", label: "Ice Breaker", tooltip: "Use somaria to clip through the wall in IP Big Key Chest Room" },
+  { id: "canIceBreak", label: "Ice Breaker", tooltip: "Use somaria to clip through the wall in IP Big Key Chest Room" },
   // { id: "canHookClip", label: "Hook Clip", tooltip: "Use the hookshot to clip through walls" },
-  // { id: "canBombJump", label: "Bomb Jumps", tooltip: "Use bomb recoil to cross gaps" },
+  { id: "canBombJump", label: "Bomb Jumps", tooltip: "Use bomb recoil to cross gaps" },
   // { id: "canBombOrBonkCameraUnlock", label: "Bonk/Bomb Camera Unlock", tooltip: "Use to get past double Pokeys without a weapon" },
-  // { id: "canHover", label: "Hover", tooltip: "Use boots + Pegasus to hover across gaps" },
+  { id: "canHover", label: "Hover", tooltip: "Use boots + Pegasus to hover across gaps" },
   // { id: "canHoverAlot", label: "Long Hovers", tooltip: "Extended hovering across longer gaps" },
   // { id: "canSpeckyClip", label: "Specky Clip", tooltip: "Bypass flooding the first trench in Swamp Palace" },
   // { id: "canFireSpooky", label: "Spooky Action", tooltip: "Use the firerod for spooky action" },
