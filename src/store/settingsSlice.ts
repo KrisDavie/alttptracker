@@ -233,7 +233,6 @@ export const settingsSlice = createSlice({
 
       // @ts-expect-error - This is an old saved state and we migrate to new type combinations
       if (rehydrated.goal === "dungeons" || rehydrated.ganonVulnerable === "dungeons") {
-        console.log("Migrating old 'dungeons' goal to new 'ganon' goal with all dungeons vulnerable");
         rehydrated.goal = "ganon";
         rehydrated.ganonVulnerable = "ad";
       }

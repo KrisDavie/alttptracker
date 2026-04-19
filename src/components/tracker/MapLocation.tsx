@@ -86,7 +86,6 @@ function MapLocation(props: MapLocationProps) {
       if (isEntrance) {
         if (currentMode === "connect" && selectedEntrance) {
           dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));
-          console.log("linking", selectedEntrance, "to", locName)
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else {

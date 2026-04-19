@@ -14,9 +14,15 @@ function AutotrackingIcon({ size = 16 }: AutotrackingIconProps) {
     ? `Connected: ${selectedDevice}` 
     : status.charAt(0).toUpperCase() + status.slice(1);
 
+  const color = isConnected
+    ? "green"
+    : status === "no devices found"
+      ? "goldenrod"
+      : "red";
+
   return (
     <div className="relative group flex items-center">
-      <MemoryStick color={isConnected ? "green" : "red"} size={size} />
+      <MemoryStick color={color} size={size} />
       <div className="invisible group-hover:visible absolute left-full top-1/5 -translate-y-1/5 ml-2 px-2 py-1 bg-black text-white text-xs whitespace-nowrap rounded pointer-events-none border border-gray-600 z-50">
         {statusText}
       </div>

@@ -3,7 +3,7 @@ import { DUNGEON_ITEMS, getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVEN
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { setConnected, setDeviceList, setRomName } from "@/store/autotrackerSlice";
+import { setConnected, setConnectionStatus, setDeviceList, setRomName } from "@/store/autotrackerSlice";
 import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
@@ -83,12 +83,16 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         const ws = new WebSocket(`ws://${host}:${port}`);
         ws.binaryType = "arraybuffer";
         ws.onopen = () => {
-          console.log("Connected to QUsb2snes WebSocket");
           setQusb2Websocket(ws);
         };
         ws.onclose = () => {
-          console.log("QUsb2snes WebSocket closed");
           setQusb2Websocket(null);
+          dispatch(setConnected({ selectedDevice: null, isConnected: false }));
+          dispatch(setConnectionStatus("disconnected"));
+        };
+        ws.onerror = () => {
+          dispatch(setConnected({ selectedDevice: null, isConnected: false }));
+          dispatch(setConnectionStatus("connection error"));
         };
       }
     }
@@ -162,12 +166,18 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       if (!isConnected) {
         try {
           const devices = await fetchDevices();
+          if (devices.length === 0) {
+            dispatch(setConnectionStatus("no devices found"));
+            return;
+          }
           await connectToDevice(devices);
         } catch (error) {
           console.error("Error during device discovery:", error);
+          dispatch(setConnectionStatus("device discovery failed"));
         }
       } else {
         const newData: Record<string, Uint8Array> = {};
+        let fetchFailed = false;
         for (const [name, range] of Object.entries(MEMORY_RANGES)) {
           try {
             const data = await fetchMemoryRange(range.start, range.size);
@@ -188,9 +198,16 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
             }
           } catch (error) {
             console.error(`Error fetching memory range ${range.start.toString(16)}-${(range.start + range.size - 1).toString(16)}:`, error);
+            fetchFailed = true;
+            break;
           }
         }
-        setAutoTrackingData(newData);
+        if (fetchFailed) {
+          dispatch(setConnected({ selectedDevice: null, isConnected: false }));
+          dispatch(setConnectionStatus("connection lost"));
+        } else {
+          setAutoTrackingData(newData);
+        }
       }
     };
 
@@ -253,14 +270,19 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     // Inventory items
     INVENTORY_LOCATIONS.forEach((sramLoc) => {
       const itemName = sramLoc.name.replace("Inventory - ", "");
-      const currentAmount = itemsRef.current[itemName]?.amount ?? 0;
+      const currentItem = itemsRef.current[itemName];
+      const currentAmount = currentItem?.amount ?? 0;
       const val = getByte(sramLoc.wramAddress);
       if (val === null) return;
 
       let newValue = sramLoc.mask === 0 ? val : (val & sramLoc.mask) !== 0 ? 1 : 0;
       if (itemName.startsWith("bottle")) newValue = Math.max(0, newValue - 1);
 
-      if (newValue !== currentAmount) itemUpdates[itemName] = newValue;
+      // Always forward the SRAM value while the item is manually-changed, so the
+      // slice can clear the manual flag once SRAM catches up to the tracker value.
+      if (newValue !== currentAmount || currentItem?.manuallyChanged) {
+        itemUpdates[itemName] = newValue;
+      }
     });
 
     // Special items

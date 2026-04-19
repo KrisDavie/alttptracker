@@ -47,7 +47,6 @@ function MapEntranceLocation(props: MapEntranceLocationProps) {
 
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
-    console.log("click", e.button)
     if (e.button !== 0) return;
     if (currentMode === "connect" && selectedEntrance && selectedEntrance !== locName) {
       dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));

@@ -295,6 +295,7 @@ export const PrizeImages: Record<string, string> = {
 
 export const BossImages: Record<string, string> = {
   unknown: "/dungeons/unknown.png",
+  compass: "/dungeons/compass.png",
   armos: "/dungeons/armos.png",
   lanmolas: "/dungeons/lanmolas.png",
   moldorm: "/dungeons/moldorm.png",

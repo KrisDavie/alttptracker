@@ -45,8 +45,6 @@ function GoalSelector({ type }: GoalSelectorProps) {
     curOption = gtOpen;
   }
 
-  console.log(goal, gtOpen, ganonVulnerable, curOption);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>

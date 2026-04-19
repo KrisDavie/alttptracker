@@ -1,1 +1,1 @@
-DR, OR, VT (v31.x.x) and Prachack (>=14.4.0) supported.
+DR, OR, VT (v31.x.x) and Prachack (>=14.4.0) supported. If using SNI, version 0.0.96 or higher is required!

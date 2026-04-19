@@ -289,6 +289,9 @@ export class RequirementEvaluator {
         }
         if (ctx.dungeonId) {
           const dungeon = this.state.dungeons[ctx.dungeonId];
+          if (dungeon.boss === "unknown" || dungeon.boss === "compass") {
+            return Object.values(killableBosses).some((v) => v) ? "information" : "unavailable";
+          }
           return this.boolToStatus(killableBosses[dungeon.boss]);
         }
         return "unavailable";

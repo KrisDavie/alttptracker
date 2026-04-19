@@ -3,7 +3,7 @@ import { REMEMBER_REHYDRATED } from "redux-remember";
 import { DungeonsData } from "@/data/dungeonData";
 import type { SettingsState } from "./settingsSlice";
 
-export const BOSSES = ["unknown", "armos", "lanmolas", "moldorm", "helmasaurking", "arrghus", "mothula", "blind", "kholdstare", "vitreous", "trinexx", "agahnim", "agahnim2", "bnc"] as const;
+export const BOSSES = ["unknown", "armos", "lanmolas", "moldorm", "helmasaurking", "arrghus", "mothula", "blind", "kholdstare", "vitreous", "trinexx", "agahnim", "agahnim2", "bnc", "compass"] as const;
 export const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPendant", "pendant", "crystal", "redCrystal"];
 
 export interface DungeonState {
@@ -20,6 +20,7 @@ export interface DungeonState {
     smallKeys: number;
     maxSmallKeys: number;
     bossDefeated: boolean;
+    boss: boolean;
     prize: boolean;
     prizeCollected: boolean;
     bigKey: boolean;
@@ -44,6 +45,7 @@ const dungeonInitialState: DungeonState = {
     smallKeys: 0,
     maxSmallKeys: 0,
     bossDefeated: false,
+    boss: false,
     prize: false,
     prizeCollected: false,
     bigKey: false,
@@ -76,7 +78,6 @@ export const dungeonsSlice = createSlice({
     },
     setMaxSmallKeys: (state, action: PayloadAction<{ dungeon: string; maxSmallKeys: number }>) => {
       const { dungeon, maxSmallKeys } = action.payload;
-      console.log("Setting max small keys for", dungeon, "to", maxSmallKeys, "was", state[dungeon].manuallyChanged.maxSmallKeys);
       state[dungeon].manuallyChanged.maxSmallKeys = maxSmallKeys;
     },
     setBigKey: (state, action: PayloadAction<{ dungeon: string; hasBigKey: boolean }>) => {
@@ -104,8 +105,10 @@ export const dungeonsSlice = createSlice({
     incrementBoss: (state, action: PayloadAction<{ dungeon: string; decrement: boolean }>) => {
       const { dungeon, decrement } = action.payload;
       const current = state[dungeon].boss;
-      const currentIndex = BOSSES.indexOf(current);
-      const maxIndex = 10; // Exclude aga and bnc for cycling since they aren't shuffled bosses
+      // Treat "compass" like "unknown" for cycling (click → armos, right-click → trinexx)
+      const currentIndex = current === "compass" ? 0 : BOSSES.indexOf(current);
+      const maxIndex = 10; // Exclude aga, bnc, and compass for cycling since they aren't shuffled bosses
+      state[dungeon].manuallyChanged.boss = true;
 
       if (decrement) {
         state[dungeon].boss = currentIndex === -1 ? BOSSES[maxIndex] : BOSSES[(currentIndex - 1 + (maxIndex + 1)) % (maxIndex + 1)];
@@ -155,6 +158,17 @@ export const dungeonsSlice = createSlice({
         filteredState.prize = "map"
       }
 
+      // If SRAM says the compass was just picked up, and we don't yet know the boss,
+      // fall back to showing the compass icon (user can still manually override).
+      const incomingCompass = newState.compass ?? current.compass;
+      if (
+        incomingCompass &&
+        (current.boss === "unknown" || current.boss === "compass") &&
+        !current.manuallyChanged.boss
+      ) {
+        filteredState.boss = "compass";
+      }
+
       Object.assign(current, filteredState);
     },
   },
@@ -175,9 +189,11 @@ export const dungeonsSlice = createSlice({
           };
         }
       }
-      if (isBossShuffled) {
+      if (isBossShuffled ) {
         for (const key of Object.keys(merged)) {
-          merged[key].boss = "unknown";
+          if (!merged[key].manuallyChanged.boss){
+            merged[key].boss = "unknown";
+          }
         }
       }
       return merged;
