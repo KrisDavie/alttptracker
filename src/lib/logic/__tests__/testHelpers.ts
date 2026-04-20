@@ -125,6 +125,7 @@ function createDefaultDungeonState(dungeonId: string): DungeonState {
       smallKeys: 0,
       maxSmallKeys: 0,
       bigKey: false,
+      boss: false,
       bossDefeated: false,
       prize: false,
       prizeCollected: false,
