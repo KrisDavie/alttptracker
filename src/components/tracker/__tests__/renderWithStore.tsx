@@ -10,6 +10,7 @@ import entrancesReducer from "@/store/entrancesSlice";
 import autotrackerReducer from "@/store/autotrackerSlice";
 import trackerReducer from "@/store/trackerSlice";
 import overworldReducer from "@/store/overworldSlice";
+import scoutsReducer from "@/store/scoutsSlice";
 import type { RootState } from "@/store/store";
 
 /**
@@ -26,6 +27,7 @@ export function createTestStore(preloadedState?: Partial<RootState>) {
       entrances: entrancesReducer,
       autotracker: autotrackerReducer,
       overworld: overworldReducer,
+      scouts: scoutsReducer,
     },
     preloadedState: preloadedState as RootState,
   });

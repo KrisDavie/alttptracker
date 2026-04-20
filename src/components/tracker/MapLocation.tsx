@@ -6,11 +6,12 @@ import { locationsData, type LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { mapStatusBg } from "@/hooks/useStatusColors";
 import { LocationTooltip } from "./LocationTooltip";
-import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
+import { setSelectedEntrance, setCurrentMode, setSelectedLocation } from "@/store/trackerSlice";
 import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { useMemo } from "react";
 import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
+import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
 
 interface MapLocationProps {
   name: string;
@@ -30,6 +31,9 @@ function MapLocation(props: MapLocationProps) {
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
   const hoveredDungeon = useSelector((state: RootState) => state.trackerState.hoveredDungeon);
+  const hoveredScout = useSelector((state: RootState) => state.trackerState.hoveredScout);
+  const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
+  const scoutedItems = useSelector((state: RootState) => state.scouts.markers[locName]);
   const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
   const showInsetBossSquare = useSelector((state: RootState) => state.settings.showInsetBossSquare);
 
@@ -101,7 +105,20 @@ function MapLocation(props: MapLocationProps) {
       return;
     }
 
-    // Handle middle/right clicks (auxclick/contextmenu)
+    // Right click (contextmenu) on non-entrance markers: toggle scout mode for this marker.
+    if (!isEntrance && e.type === "contextmenu") {
+      e.preventDefault();
+      if (currentMode === "scout" && selectedLocation === locName) {
+        dispatch(setCurrentMode("none"));
+        dispatch(setSelectedLocation(null));
+      } else {
+        dispatch(setCurrentMode("scout"));
+        dispatch(setSelectedLocation(locName));
+      }
+      return;
+    }
+
+    // Handle middle/right clicks (auxclick/contextmenu) for entrances
     if (!isEntrance || entranceMode === "none") return;
 
     if (e.type === "contextmenu") {
@@ -144,6 +161,15 @@ function MapLocation(props: MapLocationProps) {
     ? (bossCheckStatus.checked ? mapStatusBg("checked") : mapStatusBg(bossCheckStatus.logic))
     : undefined;
 
+  const isScoutSelected = !isEntrance && currentMode === "scout" && selectedLocation === locName;
+  const isScoutHoverHighlighted =
+    !isEntrance &&
+    !!hoveredScout &&
+    !!scoutedItems &&
+    scoutedItems.some((s) => scoutedItemsEqual(s, hoveredScout));
+  const firstScout = !isEntrance && scoutedItems && scoutedItems.length > 0 ? scoutedItems[0] : undefined;
+  const firstScoutIcon = firstScout ? getScoutedItemIcon(firstScout) : undefined;
+
   return (
     <div
       key={locName}
@@ -158,7 +184,8 @@ function MapLocation(props: MapLocationProps) {
         selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup && "hidden",
         currentMode === "connect" && "cursor-crosshair",
         ((entranceCheck?.checked && !isLinked) || (status === "all")) ? "opacity-80" : "",
-        isHighlighted && "ring-2 ring-yellow-500"
+        (isHighlighted || isScoutHoverHighlighted) && "ring-2 ring-yellow-500",
+        isScoutSelected && "ring-2 ring-pink-500",
       )}
       style={{
         top: `${yPercent}%`,
@@ -177,6 +204,18 @@ function MapLocation(props: MapLocationProps) {
             bossBgClass,
             bossCheckStatus?.checked && "opacity-80"
           )}
+        />
+      )}
+      {firstScoutIcon && (
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${firstScoutIcon})`,
+            backgroundPosition: "center",
+            backgroundSize: "100%",
+            backgroundRepeat: "no-repeat",
+            imageRendering: "pixelated",
+          }}
         />
       )}
       {showTooltip && (
@@ -199,6 +238,7 @@ function MapLocation(props: MapLocationProps) {
           onCheckClick={handleCheckClick}
           onGroupExpand={handleGroupExpand}
           onClose={resetGroups}
+          scoutedItems={!isEntrance ? scoutedItems : undefined}
         />
       )}
     </div>

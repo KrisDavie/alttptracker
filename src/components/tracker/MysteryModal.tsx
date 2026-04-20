@@ -72,9 +72,9 @@ function MysteryModal() {
           <div className={`font-roboto text-sm border-black ${page === 2 ? "border-b-2 pb-1 mr-4 cursor-pointer" : "text-gray-500 mr-4 cursor-pointer"}`} onClick={() => setPage(2)}>
             Extra settings
           </div>
-          <div className={`font-roboto text-sm border-black ${page === 3 ? "border-b-2 pb-1 cursor-pointer" : "text-gray-500 cursor-pointer"}`} onClick={() => setPage(3)}>
+          {/* <div className={`font-roboto text-sm border-black ${page === 3 ? "border-b-2 pb-1 cursor-pointer" : "text-gray-500 cursor-pointer"}`} onClick={() => setPage(3)}>
             UI settings
-          </div>
+          </div> */}
         </div>
       </div>
       {/* Page 1 */}
@@ -140,26 +140,6 @@ function MysteryModal() {
                 <span>Big Keys</span>
               </label>
             </div>
-
-            <label className="font-medium">Goal:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.goal} onChange={(e) => handleInputChange("goal", e.target.value)}>
-              <option value="fast_ganon">Fast Ganon</option>
-              <option value="ganon">Defeat Ganon</option>
-              <option value="dungeons">All Dungeons</option>
-              <option value="pedestal">Pedestal</option>
-              <option value="triforce_hunt">Triforce Hunt</option>
-            </select>
-            <label className="font-medium">GT Crystals:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localSettings.gtOpen} onChange={(e) => handleInputChange("gtOpen", e.target.value)}>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-            </select>
 
             {/* <label className="font-medium">Item Pool:</label>
             <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" disabled value={localSettings.itemPool} onChange={(e) => handleInputChange("itemPool", e.target.value)}>

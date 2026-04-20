@@ -2,6 +2,8 @@ import { useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 import type { CheckStatus } from "@/store/checksSlice";
+import type { ScoutedItem } from "@/store/scoutsSlice";
+import { getScoutedItemIcon, getScoutedItemLabel } from "@/lib/scoutedItems";
 import { tooltipStatusText } from "@/hooks/useStatusColors";
 
 export type TooltipCheckInfo = { displayName: string; status: CheckStatus };
@@ -22,6 +24,7 @@ interface LocationTooltipProps {
   yPercent: number;
   items?: TooltipListItem[];
   singleCheck?: TooltipCheckInfo & { key: string };
+  scoutedItems?: ScoutedItem[];
   onCheckClick?: (key: string, checked: boolean) => void;
   onGroupExpand?: (key: string) => void;
   onClose?: () => void;
@@ -31,7 +34,7 @@ interface LocationTooltipProps {
   size?: "sm" | "md";
 }
 
-export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, onCheckClick, onGroupExpand, onClose, autoPosition = false, preventExpansion = false, size = "sm" }: LocationTooltipProps) {
+export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, scoutedItems, onCheckClick, onGroupExpand, onClose, autoPosition = false, preventExpansion = false, size = "sm" }: LocationTooltipProps) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const itemTextClass = size === "md" ? "text-2xs" : "text-4xs";
   const statusWidth = size === "md" ? "w-14" : "w-8";
@@ -182,6 +185,28 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
               </div>
             )}
           </>
+        )}
+        {scoutedItems && scoutedItems.length > 0 && (
+          <div className={cn("flex flex-wrap gap-1 items-center", (singleCheck || items) ? "mt-1 pt-1 border-t border-gray-600" : "")}>
+            <span className={cn("text-gray-300", size === "md" ? "text-2xs" : "text-4xs")}>Scouted:</span>
+            {scoutedItems.map((scout, idx) => {
+              const icon = getScoutedItemIcon(scout);
+              return icon ? (
+                <div
+                  key={`${scout.kind}:${scout.id}:${idx}`}
+                  title={getScoutedItemLabel(scout)}
+                  className="w-4 h-4 shrink-0"
+                  style={{
+                    backgroundImage: `url(${icon})`,
+                    backgroundPosition: "center",
+                    backgroundSize: "100%",
+                    backgroundRepeat: "no-repeat",
+                    imageRendering: "pixelated",
+                  }}
+                />
+              ) : null;
+            })}
+          </div>
         )}
       </div>
     </div>

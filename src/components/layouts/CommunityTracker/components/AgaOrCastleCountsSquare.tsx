@@ -5,8 +5,11 @@ import ChestCounter from "../../../tracker/ChestCounter";
 
 function AgaOrCastleCountsSquare() {
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
+  const alwaysShowHCCTCounts = useSelector((state: RootState) => state.settings.alwaysShowHCCTCounts);
 
-  if (wildSmallKeys === "inDungeon") {
+  const showDungeonCounts = alwaysShowHCCTCounts || wildSmallKeys !== "inDungeon";
+
+  if (!showDungeonCounts) {
     return (
       <div
         className="grid grid-cols-2 grid-rows-2 w-full h-full"

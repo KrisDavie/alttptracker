@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setBigKey } from "@/store/dungeonsSlice";
+import { toggleScoutedItem } from "@/store/scoutsSlice";
+import { setCurrentMode, setHoveredScout, setSelectedLocation } from "@/store/trackerSlice";
 
 interface BigKeyTrackerProps {
   dungeon: string;
@@ -10,6 +12,8 @@ interface BigKeyTrackerProps {
 function BigKeyTracker({ dungeon, size = "1x2" }: BigKeyTrackerProps) {
   const dispatch = useDispatch();
   const collectedBigKey = useSelector((state: RootState) => state.dungeons[dungeon]?.bigKey);
+  const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
+  const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
 
   function toggleBigKey() {
     dispatch(setBigKey({ dungeon, hasBigKey: !collectedBigKey }));   
@@ -18,11 +22,26 @@ function BigKeyTracker({ dungeon, size = "1x2" }: BigKeyTrackerProps) {
   return (
     <div
       className={`flex flex-row ${size === "1x1" ? "w-4 h-4" : "w-8 h-8"} relative`}
-      onClick={() => toggleBigKey()}
-      onContextMenu={(e) => {
-        e.preventDefault();
+      onClick={() => {
+        if (currentMode === "scout" && selectedLocation) {
+          dispatch(toggleScoutedItem({ marker: selectedLocation, item: { kind: "bigkey", id: dungeon } }));
+          dispatch(setCurrentMode("none"));
+          dispatch(setSelectedLocation(null));
+          return;
+        }
         toggleBigKey();
       }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        if (currentMode === "scout") {
+          dispatch(setCurrentMode("none"));
+          dispatch(setSelectedLocation(null));
+          return;
+        }
+        toggleBigKey();
+      }}
+      onMouseEnter={() => dispatch(setHoveredScout({ kind: "bigkey", id: dungeon }))}
+      onMouseLeave={() => dispatch(setHoveredScout(null))}
     >
       <div
         className="w-full h-full absolute top-0 left-0"

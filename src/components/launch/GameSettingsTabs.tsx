@@ -608,6 +608,9 @@ export function GameSettingsTabs({
                   <SettingSwitch label="Count Dungeon Items" checked={!!(settings.includeDungeonItemsInCounter ?? false)} onChange={(v) => updateSetting("includeDungeonItemsInCounter", v)} />
                   <SettingSwitch label="Coloured Chests" checked={settings.colouredChests} onChange={(v) => updateSetting("colouredChests", v)} />
                   <SettingSwitch label="Show Chest Tooltips" checked={settings.showChestTooltips} onChange={(v) => updateSetting("showChestTooltips", v)} />
+                  <SettingSwitch label="Always Show HC/CT Counts" checked={settings.alwaysShowHCCTCounts} onChange={(v) => updateSetting("alwaysShowHCCTCounts", v)} />
+                  <SettingSwitch label="Always Show Big Keys" checked={settings.alwaysShowBigKeys} onChange={(v) => updateSetting("alwaysShowBigKeys", v)} />
+                  <SettingSwitch label="Always Show Small Keys" checked={settings.alwaysShowSmallKeys} onChange={(v) => updateSetting("alwaysShowSmallKeys", v)} />
                   <SettingSwitch label="Show Inset Boss Square" checked={settings.showInsetBossSquare} onChange={(v) => updateSetting("showInsetBossSquare", v)} />
                 </div>
               </div>

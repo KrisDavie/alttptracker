@@ -5,8 +5,11 @@ import BossIcon from "../../../tracker/BossIcon";
 
 function MagicAgaSquare() {
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
+  const alwaysShowHCCTCounts = useSelector((state: RootState) => state.settings.alwaysShowHCCTCounts);
 
-  if (wildSmallKeys === "inDungeon") {
+  const showDungeonCounts = alwaysShowHCCTCounts || wildSmallKeys !== "inDungeon";
+  
+  if (!showDungeonCounts) {
     return <TrackerItem itemName="magic" />;
   }
 

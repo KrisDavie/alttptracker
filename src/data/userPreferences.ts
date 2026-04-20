@@ -25,6 +25,9 @@ export const REMEMBERED_SETTINGS = [
   "spriteName",
   "entranceLabelsMode",
   "showInsetBossSquare",
+  "alwaysShowHCCTCounts",
+  "alwaysShowBigKeys",
+  "alwaysShowSmallKeys",
 
   // Gameplay
   "autotracking",

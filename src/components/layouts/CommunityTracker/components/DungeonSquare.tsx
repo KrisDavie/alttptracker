@@ -20,11 +20,17 @@ function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps
   const wildSmallKeys = useSelector((state: RootState) => state.settings.wildSmallKeys);
   const wildBigKeys = useSelector((state: RootState) => state.settings.wildBigKeys);
   const bossShuffle = useSelector((state: RootState) => state.settings.bossShuffle);
+  const alwaysShowBigKeys = useSelector((state: RootState) => state.settings.alwaysShowBigKeys);
+  const alwaysShowSmallKeys = useSelector((state: RootState) => state.settings.alwaysShowSmallKeys);
+
+  const showSmallKeys = alwaysShowSmallKeys || wildSmallKeys === "wild";
+  const showBigKeys = alwaysShowBigKeys || wildBigKeys;
+
   const doors = false;
 
   const renderContent = () => {
     // Standard Mode
-    if (wildSmallKeys === "inDungeon" && !wildBigKeys && !doors) {
+    if (!showSmallKeys && !showBigKeys && !doors) {
       return <ChestCounter dungeon={dungeon} />;
     }
 
@@ -35,7 +41,7 @@ function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps
           <div className="col-span-1 row-span-1">
             <ChestCounter dungeon={dungeon} small />
           </div>
-          <div className="col-span-1 row-span-1">{wildSmallKeys === "wild" && <SmallKeyTracker dungeon={dungeon} size="1x1" />}</div>
+          <div className="col-span-1 row-span-1">{showSmallKeys && <SmallKeyTracker dungeon={dungeon} size="1x1" />}</div>
           {/* Add more door-specific slots here */}
         </div>
       );
@@ -47,8 +53,8 @@ function DungeonSquare({ dungeon, direction = "horizontal" }: DungeonSquareProps
         <div className="col-span-1 row-span-1">
           <ChestCounter dungeon={dungeon} small />
         </div>
-        <div className="col-span-1 row-span-1">{wildBigKeys && <BigKeyTracker dungeon={dungeon} />}</div>
-        <div className="col-span-2 row-span-1">{wildSmallKeys === "wild" && <SmallKeyTracker dungeon={dungeon} size="1x2" />}</div>
+        <div className="col-span-1 row-span-1">{showBigKeys && <BigKeyTracker dungeon={dungeon} />}</div>
+        <div className="col-span-2 row-span-1">{showSmallKeys && <SmallKeyTracker dungeon={dungeon} size="1x2" />}</div>
       </div>
     );
   };

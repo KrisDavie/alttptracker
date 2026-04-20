@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import DungeonsData from "@/data/dungeonData";
 import { incrementSmallKeyCount, setMaxSmallKeys } from "@/store/dungeonsSlice";
+import { toggleScoutedItem } from "@/store/scoutsSlice";
+import { setCurrentMode, setHoveredScout, setSelectedLocation } from "@/store/trackerSlice";
 
 interface SmallKeyTrackerProps {
   dungeon: string;
@@ -14,6 +16,8 @@ function SmallKeyTracker({ dungeon, size = "1x2", showTotal = true }: SmallKeyTr
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
   const settings = useSelector((state: RootState) => state.settings);
   const _collectedSmallKeys = useSelector((state: RootState) => state.dungeons[dungeon]?.smallKeys ?? 0);
+  const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
+  const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
 
   // Allow to still increment/decrement small keys even if manually changed, but keep track of manual changes to adjust the count accordingly
   const manuallyChangedSmallKeys = useSelector((state: RootState) => state.dungeons[dungeon]?.manuallyChanged.smallKeys ?? 0);
@@ -51,13 +55,26 @@ function SmallKeyTracker({ dungeon, size = "1x2", showTotal = true }: SmallKeyTr
     onWheel: handleWheel,
     onClick: (e: React.MouseEvent) => {
       e.stopPropagation();
+      if (currentMode === "scout" && selectedLocation) {
+        dispatch(toggleScoutedItem({ marker: selectedLocation, item: { kind: "smallkey", id: dungeon } }));
+        dispatch(setCurrentMode("none"));
+        dispatch(setSelectedLocation(null));
+        return;
+      }
       dispatch(incrementSmallKeyCount({ dungeon, decrement: false }));
     },
     onContextMenu: (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      if (currentMode === "scout") {
+        dispatch(setCurrentMode("none"));
+        dispatch(setSelectedLocation(null));
+        return;
+      }
       dispatch(incrementSmallKeyCount({ dungeon, decrement: true }));
     },
+    onMouseEnter: () => dispatch(setHoveredScout({ kind: "smallkey", id: dungeon })),
+    onMouseLeave: () => dispatch(setHoveredScout(null)),
   };
 
   const keyIcon = (

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { REMEMBER_REHYDRATED } from "redux-remember";
 import { getSessionInstanceId } from "@/lib/sessionHelper";
+import type { ScoutedItem } from "./scoutsSlice";
 
 export interface TrackerState {
    currentMode: "none" | "scout" | "connect" | "entrance_select" | "follower";
@@ -8,6 +9,7 @@ export interface TrackerState {
    selectedLocation: string | null;
    selectedEntrance: string | null;
    hoveredDungeon: string | null;
+   hoveredScout: ScoutedItem | null;
    instanceId: string;
    rehydrated: boolean;
 }
@@ -18,6 +20,7 @@ const initialState: TrackerState = {
     selectedLocation: null,
     selectedEntrance: null,
     hoveredDungeon: null,
+    hoveredScout: null,
     instanceId: getSessionInstanceId(),
     rehydrated: false,
 };
@@ -45,6 +48,9 @@ export const trackerSlice = createSlice({
     },
     setHoveredDungeon: (state, action) => {
       state.hoveredDungeon = action.payload;
+    },
+    setHoveredScout: (state, action: { payload: ScoutedItem | null }) => {
+      state.hoveredScout = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -54,5 +60,5 @@ export const trackerSlice = createSlice({
   },
 });
 
-export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode, setHoveredDungeon } = trackerSlice.actions;
+export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode, setHoveredDungeon, setHoveredScout } = trackerSlice.actions;
 export default trackerSlice.reducer;

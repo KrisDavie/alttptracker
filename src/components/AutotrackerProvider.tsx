@@ -211,7 +211,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       }
     };
 
-    const interval = setInterval(poll, 500);
+    const interval = setInterval(poll, isConnected ? 500 : 2000);
     poll();
 
     return () => clearInterval(interval);

@@ -135,6 +135,9 @@ export interface SettingsState {
   showChestTooltips: boolean;
   entranceLabelsMode: "off" | "labels" | "labels_lines";
   showInsetBossSquare: boolean;
+  alwaysShowHCCTCounts: boolean;
+  alwaysShowBigKeys: boolean;
+  alwaysShowSmallKeys: boolean;
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
@@ -198,6 +201,9 @@ export const initialState: SettingsState = {
   showChestTooltips: true,
   entranceLabelsMode: "labels_lines",
   showInsetBossSquare: true,
+  alwaysShowHCCTCounts: false,
+  alwaysShowBigKeys: false,
+  alwaysShowSmallKeys: false,
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,

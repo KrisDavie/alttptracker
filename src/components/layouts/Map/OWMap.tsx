@@ -23,6 +23,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === "entrance";
   const entranceLabelsMode = useSelector((state: RootState) => state.settings.entranceLabelsMode);
+  const entrances = useSelector((state: RootState) => state.entrances);
   const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
   const settings = useSelector((state: RootState) => state.settings);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
@@ -118,15 +119,19 @@ function OWMap({ world = "lw" }: OWMapProps) {
     if (location.entrance_modes?.[entranceMode] === "vanilla") return null;
     if (locationKey.includes("Inverted") && settings.worldState === "open") return null;
 
+    // If the entrance is linked to a dungeon entry, use the larger dungeon-size marker.
+    const linkedTo = entrances[locationKey]?.to;
+    const size = linkedTo && getDungeonIdForEntry(linkedTo) ? dungeonSize : entranceSize;
+
     mapMarkers.push({
       name: locationKey,
       location,
       type: "entrance" as const,
-      size: entranceSize,
+      size,
     });
 
-    const h = parseFloat(entranceSize.split(" ")[0].split("-")[1]) * 4;
-    const w = parseFloat(entranceSize.split(" ")[1].split("-")[1]) * 4;
+    const h = parseFloat(size.split(" ")[0].split("-")[1]) * 4;
+    const w = parseFloat(size.split(" ")[1].split("-")[1]) * 4;
 
     mapObstacles[locationKey] = {
       x: location.x,
