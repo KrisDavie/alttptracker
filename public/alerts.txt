@@ -1,2 +1,2 @@
-This ia an alpha version of Muffins Tracker 2.0. Please do not report any bugs or issues.
-Many features are not complete or not yet implemented - expect changes without warning or announcement.
+This ia a beta version of Muffins Tracker 2.0. Please report any bugs or issues to my discord server.
+Some features are still not complete or not yet implemented - expect changes without warning or announcement.
