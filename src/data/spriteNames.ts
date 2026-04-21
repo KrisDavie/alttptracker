@@ -406,7 +406,7 @@ const SPRITE_NAMES = [
   "santa_hat_link",
   "santa_link",
   "saria",
-  "saria_alternate",
+  "saria_alternate_mails",
   "scholar",
   "selan",
   "sevens1ns",

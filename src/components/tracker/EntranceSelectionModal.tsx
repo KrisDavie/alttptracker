@@ -46,6 +46,9 @@ function EntranceSelectionModal() {
         <Button variant="outline" size="sm" className="bg-purple-900/40 hover:bg-purple-900/60 border-purple-800/50" onClick={() => handleGenericLink("Generic Dark Cave")}>
           Dark
         </Button>
+        <Button variant="outline" size="sm" className="bg-purple-900/40 hover:bg-purple-900/60 border-purple-800/50" onClick={() => handleGenericLink("Unknown Connector")}>
+          Unknown Connector
+        </Button>
       </div>
 
       <div className="flex flex-col gap-2 w-full max-w-xs">

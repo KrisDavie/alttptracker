@@ -58,5 +58,6 @@ export const defaultEntranceLabels: Record<string, EntranceLabel> = {
     "Generic Rupee Cave": { label: "Rupee", color: "#a9a9a9" },
     "Generic Item NPC": { label: "Item", color: "#a9a9a9" },
     "Generic Dark Cave": { label: "Dark", color: "#a9a9a9" },
+    "Unknown Connector": { label: "Connector", color: "#a9a9a9" },
 
 }
