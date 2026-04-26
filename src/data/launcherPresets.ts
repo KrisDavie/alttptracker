@@ -146,7 +146,7 @@ export const allPresets: LauncherPreset[] = [
       "Bat Cave Drop": "Kakariko Well Drop",
       "Bat Cave Cave": "Kakariko Well Cave",
       "Desert Palace Entrance (West)": "Mini Moldorm Cave",
-      "Skull Woods Final Section Door": "Blinds Hideout",
+      "Skull Woods Final Section": "Blinds Hideout",
       "Mimic Cave": "Hype Cave",
       "Misery Mire": "Paradox Cave (Top)",
       "Agahnims Tower": "Paradox Cave (Middle)",
@@ -553,7 +553,7 @@ const adkdfIndex = allPresets.findIndex((p) => p.id === "adkdf");
 const adkdfCheckedLocations: Record<string, { scoutedItems?: string[] }> = {};
 const adkdfCheckedEntrances: string[] = [];
 
-const excludedEntrances = new Set(["Kakariko Well Drop", "Pyramid Hole", "Library"]);
+const excludedEntrances = new Set(["Kakariko Well Drop", "Pyramid Hole", "Library", "Skull Woods Final Section"]);
 
 const excludedLocations = new Set(["Master Sword Pedestal", "Desert Ledge", "Bottle Merchant"]);
 
