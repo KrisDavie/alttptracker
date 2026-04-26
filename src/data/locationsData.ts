@@ -2468,8 +2468,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Paradox Cave (Bottom)": {
-    x: 441.5,
-    y: 110.5,
+    x: 442,
+    y: 76.5,
     world: "lw",
     entrance: true,
     entrance_modes: {
@@ -2496,8 +2496,8 @@ export const baseLocationsData: Record<string, LocationData> = {
     bonk: false,
   },
   "Paradox Cave (Middle)": {
-    x: 442,
-    y: 76.5,
+    x: 441.5,
+    y: 110.5,
     world: "lw",
     entrance: true,
     entrance_modes: {

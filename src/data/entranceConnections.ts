@@ -44,6 +44,10 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
     type: "cave",
     entrances: ["Elder House (West)", "Elder House (East)"],
   },
+  "brothers_connector": {
+    type: "cave",
+    entrances: ["Two Brothers House (West)", "Two Brothers House (East)"],
+  },
   "hookshot_cave": {
     type: "cave",
     entrances: ["Hookshot Cave", "Hookshot Cave Back Entrance"],
