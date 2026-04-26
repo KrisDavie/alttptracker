@@ -119,6 +119,7 @@ export const allPresets: LauncherPreset[] = [
       "Hyrule Castle Entrance (East)": "Hyrule Castle Entrance (West)",
       "Hyrule Castle Entrance (West)": "Hyrule Castle Entrance (East)",
       Sanctuary: "Sanctuary",
+      "Sanctuary Grave": "Sanctuary Grave",
       "Blinds Hideout": "Eastern Palace",
       "Elder House (East)": "Tower of Hera",
       "Mire Shed": "Desert Palace Entrance (West)",
