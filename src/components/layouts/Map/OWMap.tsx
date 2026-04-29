@@ -43,7 +43,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
 
   const bgimg = world === "lw" ? "/lightworld.png" : "/darkworld.png";
 
-  let fullSize: string, smallSize: string, dungeonSize: string, entranceSize: string;
+  let fullSize: string, smallSize: string, dungeonSize: string, entranceSize: string, entranceDungeonSize: string;
 
   switch (mapMode) {
     case "vertical":
@@ -53,12 +53,14 @@ function OWMap({ world = "lw" }: OWMapProps) {
       fullSize = "h-4 w-4";
       smallSize = "h-2.5 w-2.5";
       dungeonSize = "h-5.5 w-5.5";
+      entranceDungeonSize = "h-4.5 w-4.5";
       entranceSize = "h-3 w-3";
       break;
     case "compact":
       fullSize = "h-2.5 w-2.5";
       smallSize = "h-1.5 w-1.5";
       dungeonSize = "h-3.5 w-3.5";
+      entranceDungeonSize = "h-3.0 w-3.0";
       entranceSize = "h-2.25 w-2.25";
       break;
   }
@@ -121,7 +123,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
 
     // If the entrance is linked to a dungeon entry, use the larger dungeon-size marker.
     const linkedTo = entrances[locationKey]?.to;
-    const size = linkedTo && getDungeonIdForEntry(linkedTo) ? dungeonSize : entranceSize;
+    const size = linkedTo && getDungeonIdForEntry(linkedTo) ? entranceDungeonSize : entranceSize;
 
     mapMarkers.push({
       name: locationKey,

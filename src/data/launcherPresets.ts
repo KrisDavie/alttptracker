@@ -132,7 +132,7 @@ export const allPresets: LauncherPreset[] = [
       "Mire Hint": "Dam",
       "Kakariko Well Cave": "Skull Woods First Section Door",
       "Kakariko Well Drop": "Skull Woods First Section Hole (North)",
-      "Skull Woods First Section Door": "Skull Woods Final Section Door",
+      "Skull Woods First Section Door": "Skull Woods Final Section",
       "Skull Woods Second Section Door (East)": "Skull Woods Second Section Door (East)",
       "Skull Woods Second Section Door (West)": "Skull Woods Second Section Door (West)",
       "Bush Covered House": "Thieves Town",

@@ -58,7 +58,7 @@ export const DungeonsData: Record<string, DungeonData> = {
       compass: true,
       prize: true,
     },
-    portals: ["Desert West Portal", "Desert Back Portal", "Desert South Portal"],
+    portals: ["Desert West Portal", "Desert Back Portal", "Desert South Portal", "Desert East Portal"],
   },
   toh: {
     name: "Tower of Hera",
