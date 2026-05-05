@@ -73,8 +73,6 @@ export const entrancesSlice = createSlice({
       } else {
         connectorGroup = connectorId;
       }
-
-
       state[source].to = `Generic Connector ${connectorGroup}`;
       state[destination].to = `Generic Connector ${connectorGroup}`;
       state[source].checked = true;

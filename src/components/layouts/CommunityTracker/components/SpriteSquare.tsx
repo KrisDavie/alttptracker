@@ -44,7 +44,7 @@ function SpriteSquare() {
       </div>
       {/* Mystery Flags */}
       <div className="flex items-center h-6 w-6 absolute top-12 left-0.5">
-        <Settings size={16} className="cursor-pointer text-gray-500" onClick={() => dispatch(setModalOpen("mystery"))} />
+        <Settings size={16} className="cursor-pointer text-gray-300" onClick={() => dispatch(setModalOpen("mystery"))} />
       </div>
       {/* Autotracking Icon */}
       {autotracking && (

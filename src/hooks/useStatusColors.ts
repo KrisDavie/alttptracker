@@ -27,7 +27,7 @@ export function useApplyStatusColors() {
 }
 
 /** Map bg class for a logic status on map markers */
-export function mapStatusBg(status: LogicStatus | "checked" | "selected" | "none"): string {
+export function mapStatusBg(status: LogicStatus | "checked" | "selected" | "connector" | "none"): string {
   switch (status) {
     case "available":
       return "bg-status-available";
@@ -43,6 +43,8 @@ export function mapStatusBg(status: LogicStatus | "checked" | "selected" | "none
       return "bg-status-checked";
     case "selected":
       return "bg-status-selected";
+    case "connector":
+      return "bg-status-connector";
     case "none":
     default:
       return "bg-status-none";

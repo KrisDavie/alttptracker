@@ -88,6 +88,7 @@ html, body {
   --status-unavailable: #ef4444;
   --status-checked: rgba(107, 114, 128, 0.7);
   --status-selected: #3b82f6;
+  --status-connector: #ff00f9ff;
   --status-none: #ffffff;
 
   /* Logic status colors — tooltip text */
@@ -177,6 +178,7 @@ body {
   --color-status-unavailable: var(--status-unavailable);
   --color-status-checked: var(--status-checked);
   --color-status-selected: var(--status-selected);
+  --color-status-connector: var(--status-connector);
   --color-status-text-available: var(--status-text-available);
   --color-status-text-possible: var(--status-text-possible);
   --color-status-text-ool: var(--status-text-ool);

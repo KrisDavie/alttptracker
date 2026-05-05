@@ -20,6 +20,10 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
     type: "cave",
     entrances: ["Bat Cave Drop", "Bat Cave Cave"],
   },
+  "hc_secret_entrance": {
+    type: "cave",
+    entrances: ["Hyrule Castle Secret Entrance Drop", "Hyrule Castle Secret Entrance Stairs"],
+  },
   "spectacle_rock_cave": {
     type: "cave",
     entrances: ["Spectacle Rock Cave (Bottom)", "Spectacle Rock Cave Peak", "Spectacle Rock Cave"],
@@ -98,3 +102,5 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
     ],
   },
 };
+
+export const allConnectorEntrances = Object.values(entranceConnectorGroups).flatMap(group => group.entrances);
