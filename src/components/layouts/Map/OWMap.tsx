@@ -8,7 +8,6 @@ import { getActiveLocations, getDungeonIdForEntry, isSecondaryEntrance, isReplac
 
 import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
 import { cn } from "@/lib/utils";
-import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
 import type { Rect } from "@/lib/labelPlacement";
 import EntranceLabelOverlay from "@/components/tracker/EntranceLabelOverlay";
 
@@ -21,14 +20,10 @@ function OWMap({ world = "lw" }: OWMapProps) {
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const bonkShuffle = useSelector((state: RootState) => state.settings.bonkShuffle);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
-  const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === "entrance";
   const entranceLabelsMode = useSelector((state: RootState) => state.settings.entranceLabelsMode);
   const entrances = useSelector((state: RootState) => state.entrances);
-  const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
   const settings = useSelector((state: RootState) => state.settings);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
-
-  const selectedWorld = selectedEntrance ? locationsData[selectedEntrance]?.world : "";
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -157,12 +152,6 @@ function OWMap({ world = "lw" }: OWMapProps) {
         justifyContent: "center",
       }}
     >
-      {entranceModalOpen && selectedWorld === world && mapMode !== "compact" && (
-        <div className="absolute top-0 left-0 w-full h-full z-100">
-          <EntranceSelectionModal />
-        </div>
-      )}
-
       {mapMarkers.map(({ name, location, type, size }) => (
         <MapLocation key={name} name={name} location={location} type={type} className={`hover:origin-center hover:scale-150 ${size}`} tooltip={true} isEntrance={type === "entrance"} />
       ))}

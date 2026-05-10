@@ -88,7 +88,7 @@ export function Tracker() {
         <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }} className="relative">
           <CommunityLayoutItems />
           {isCompact && entranceModalOpen && selectedEntrance && (
-            <div className="absolute top-0 left-0 w-full h-full z-100">
+            <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
               <EntranceSelectionModal />
             </div>
           )}
@@ -101,6 +101,11 @@ export function Tracker() {
               height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
             }}
             >
+            {entranceModalOpen && mapMode !== "compact" && (
+              <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
+                <EntranceSelectionModal />
+              </div>
+            )}
             <EntranceLinesOverlay />
             <div
               className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}

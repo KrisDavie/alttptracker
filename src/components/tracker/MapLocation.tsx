@@ -57,7 +57,7 @@ function MapLocation(props: MapLocationProps) {
 
   // ---- Derived entrance state ----
   const isLinked = !!(isEntrance && to);
-  const isConnector = !!(isEntrance && to && allConnectorEntrances.includes(to));
+  const isConnector = !!(isEntrance && to && (allConnectorEntrances.includes(to) || to.startsWith("Unknown Connector")));
   const dungeonId = getDungeonIdForEntry(to ?? "");
   const isLinkedToDungeon = isEntrance && to ? !!dungeonId : false;
   const showAsDiamond = isConnector && !isLinkedToDungeon;

@@ -36,6 +36,7 @@ export const defaultEntranceLabels: Record<string, EntranceLabel> = {
     "Old Man House (Bottom)": { label: "OM", color: "#98fb98" },
 
     // LW Important
+    "Potion Shop": { label: "Potion", color: "#00fa9a" }, // MediumSpringGreen
     "Sahasrahlas Hut": { label: "Saha", color: "#00fa9a" }, // MediumSpringGreen
     "Bat Cave Cave": { label: "Bat", color: "#00fa9a" },
     "Sick Kids House": { label: "Kid", color: "#00fa9a" },
@@ -56,8 +57,8 @@ export const defaultEntranceLabels: Record<string, EntranceLabel> = {
     // Generics
     "Generic Shop": { label: "Shop", color: "#a9a9a9" }, // DarkGray
     "Generic Rupee Cave": { label: "Rupee", color: "#a9a9a9" },
-    "Generic Item NPC": { label: "Item", color: "#a9a9a9" },
+    "Generic Item Cave": { label: "Item", color: "#a9a9a9" },
     "Generic Dark Cave": { label: "Dark", color: "#a9a9a9" },
-    "Unknown Connector": { label: "Connector", color: "#a9a9a9" },
+    "Unknown Connector": { label: "Conn", color: "#ff00f9" },
 
 }
