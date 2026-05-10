@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
 import { setDungeonCollectedCount } from "../../store/dungeonsSlice";
@@ -65,7 +66,34 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
 
   // TODO: Collected can be more than maxCount when settings are toggle off after collecting items.
   // This causes the remaining checks to go negative. We should probably clamp collected to maxCount when settings change.
-  const checksRemaining = Math.max(0, maxCount - numChecks - collected);
+  const rawChecksRemaining = Math.max(0, maxCount - numChecks - collected);
+
+  // Some game locations record the picked-up item in SRAM immediately but only mark the
+  // location as cleared after the player transitions rooms. When such a location holds a
+  // dungeon item (e.g. big key), `dungeonState.bigKey` flips on while the location's
+  // checked flag stays false, causing the formula above to transiently subtract 1 from
+  // `numChecks` without a corresponding increase, which spuriously increments the chest
+  // counter by 1 until the room transition occurs.
+  //
+  // Suppress that spurious increase: only allow the displayed remaining count to grow
+  // when something legitimately changed (manual `collected` decrease, settings change
+  // affecting maxCount, or a location being un-checked). Once the delayed location
+  // finally registers as cleared, `numChecks` rises and the underlying value
+  // re-converges, so we resume tracking normally without ever displaying the spike.
+  const [checksRemaining, setChecksRemaining] = useState(rawChecksRemaining);
+  const lastDepsRef = useRef({ collected, maxCount, numChecks });
+
+  useEffect(() => {
+    setChecksRemaining((prev) => {
+      const last = lastDepsRef.current;
+      const allowIncrease =
+        collected < last.collected ||
+        maxCount !== last.maxCount ||
+        numChecks < last.numChecks;
+      lastDepsRef.current = { collected, maxCount, numChecks };
+      return !allowIncrease && rawChecksRemaining > prev ? prev : rawChecksRemaining;
+    });
+  }, [rawChecksRemaining, collected, maxCount, numChecks]);
 
   function setCount(newCount: number) {
     let finalCount = newCount;
