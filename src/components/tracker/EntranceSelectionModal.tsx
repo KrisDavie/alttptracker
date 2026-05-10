@@ -111,9 +111,9 @@ function EntranceSelectionModal() {
           <div className="flex flex-col gap-1 w-full">
             <span className="text-xs font-bold text-gray-400">Starting Locations:</span>
             <div className="grid grid-cols-4 gap-1 w-full">
-              {getEntranceButton("Potion Shop")}
-              {getEntranceButton("Sick Kids House")}
-              {getEntranceButton("Sahasrahlas Hut")}
+              {getEntranceButton("Links House")}
+              {getEntranceButton("Sanctuary")}
+              {getEntranceButton("Old Man House (Bottom)")}
             </div>
           </div>
         </div>
