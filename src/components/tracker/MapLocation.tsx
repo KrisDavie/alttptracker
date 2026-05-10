@@ -32,14 +32,14 @@ function resolveEntranceGroup(name: string | null, entranceMode: string | undefi
 function MapLocation(props: MapLocationProps) {
   const { name: locName, location, isEntrance } = props;
   const dispatch = useDispatch();
-  const showTooltip = props.tooltip ?? false;
-
+  
   // ---- Settings / global UI state ----
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
   const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
   const showInsetBossSquare = useSelector((state: RootState) => state.settings.showInsetBossSquare);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
+  const showTooltip = useSelector((state: RootState) => state.settings.showMapTooltips);
   const hoveredDungeon = useSelector((state: RootState) => state.trackerState.hoveredDungeon);
   const hoveredScout = useSelector((state: RootState) => state.trackerState.hoveredScout);
   const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
