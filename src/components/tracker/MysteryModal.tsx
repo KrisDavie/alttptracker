@@ -2,10 +2,19 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { setSettings } from "../../store/settingsSlice";
+import { resetSettings, setSettings } from "../../store/settingsSlice";
 import { setModalClose } from "../../store/trackerSlice";
-import { resetBossesForShuffle } from "@/store/dungeonsSlice";
+import { resetBossesForShuffle, resetDungeons } from "@/store/dungeonsSlice";
 import { setAutotrackingSettings } from "@/store/autotrackerSlice";
+import { resetItems } from "@/store/itemsSlice";
+import { resetChecks } from "@/store/checksSlice";
+import { resetEntrances } from "@/store/entrancesSlice";
+import { resetScouts } from "@/store/scoutsSlice";
+import { resetOverworldState } from "@/store/overworldSlice";
+import { getSession } from "@/lib/sessionManager";
+import { getSessionInstanceId } from "@/lib/sessionHelper";
+import { buildPresetIDBState } from "@/lib/launchHelpers";
+import { getPresetById } from "@/data/launcherPresets";
 
 function MysteryModal() {
   const dispatch = useDispatch();
@@ -32,24 +41,35 @@ function MysteryModal() {
   type SettingsKey = keyof typeof trackerSettings;
   type SettingsValue = string | boolean;
 
-  type AutotrackerSettingsKey = keyof typeof autotrackerSettings;
-  type AutotrackerSettingsValue = string | boolean;
-
   const handleInputChange = (key: SettingsKey, value: SettingsValue) => {
     setLocalSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleAutotrackerInputChange = (key: AutotrackerSettingsKey, value: AutotrackerSettingsValue) => {
-    const nextState = { ...localAutotrackerSettings, [key]: value };
-    if (key === "connectionType") {
-      if (value === "sni") {
-        nextState.port = 8190;
-    } else if (value === "qusb2snes") {
-          nextState.port = 23074;
+  const handleFullReset = async () => {
+    if (window.confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
+      const sessionId = getSessionInstanceId();
+      const session = await getSession(sessionId);
+      
+      const presetId = session?.presetId;
+      const preset = presetId ? getPresetById(presetId) : undefined;
+      const startingItems = session?.startingItems || preset?.startingItems || {};
+      
+      const presetState = buildPresetIDBState(startingItems, preset);
+
+      dispatch(resetItems(presetState.items || undefined));
+      dispatch(resetChecks(presetState.checks || undefined));
+      dispatch(resetEntrances(presetState.entrances || undefined));
+      dispatch(resetDungeons(presetState.dungeons || undefined));
+      console.log(preset?.settings)
+      if (preset?.settings) {
+        dispatch(resetSettings(preset.settings));
       }
-    setLocalAutotrackerSettings(nextState);
+      
+      dispatch(resetOverworldState());
+      dispatch(resetScouts());
+      dispatch(setModalClose());
     }
-  }
+  };
 
   const handleSubmit = () => {
     dispatch(setSettings(localSettings));
@@ -57,7 +77,6 @@ function MysteryModal() {
       dispatch(resetBossesForShuffle({ bossShuffle: localSettings.bossShuffle }));
     }
     dispatch(setAutotrackingSettings(localAutotrackerSettings));
-
     dispatch(setModalClose());
   };
 
@@ -72,9 +91,9 @@ function MysteryModal() {
           <div className={`font-roboto text-sm border-black ${page === 2 ? "border-b-2 pb-1 mr-4 cursor-pointer" : "text-gray-500 mr-4 cursor-pointer"}`} onClick={() => setPage(2)}>
             Extra settings
           </div>
-          {/* <div className={`font-roboto text-sm border-black ${page === 3 ? "border-b-2 pb-1 cursor-pointer" : "text-gray-500 cursor-pointer"}`} onClick={() => setPage(3)}>
-            UI settings
-          </div> */}
+          <div className={`font-roboto text-sm border-black ${page === 3 ? "border-b-2 pb-1 cursor-pointer" : "text-gray-500 cursor-pointer"}`} onClick={() => setPage(3)}>
+            UI & Reset
+          </div>
         </div>
       </div>
       {/* Page 1 */}
@@ -210,15 +229,11 @@ function MysteryModal() {
               <option value="compact">Compact</option>
               <option value="vertical">Vertical</option>
             </select>
-            <label className="font-medium">Autotracking Protocol:</label>
-            <select className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.connectionType || "sni"} onChange={(e) => handleAutotrackerInputChange("connectionType", e.target.value)}>
-              <option value="sni">SNI gRPC</option>
-              <option value="qusb2snes">QUsb2snes</option>
-            </select>
-            <label className="font-medium">Autotracking host:</label>
-            <input type="text" className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.host || ""} onChange={(e) => handleAutotrackerInputChange("host", e.target.value)} />
-            <label className="font-medium">Autotracking port:</label>
-            <input type="number" className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400" value={localAutotrackerSettings.port || ""} onChange={(e) => handleAutotrackerInputChange("port", e.target.value)} />
+
+            <button className="bg-gray-300 font-roboto col-span-2" onClick={handleFullReset}>
+              Reset Tracker State
+            </button>
+            
           </div>
         </div>
       )}

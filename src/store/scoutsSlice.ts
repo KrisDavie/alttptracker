@@ -26,6 +26,7 @@ export const scoutsSlice = createSlice({
   name: "scouts",
   initialState,
   reducers: {
+    resetScouts: () => initialState,
     toggleScoutedItem: (
       state,
       action: PayloadAction<{ marker: string; item: ScoutedItem }>
@@ -57,5 +58,5 @@ export const scoutsSlice = createSlice({
   },
 });
 
-export const { toggleScoutedItem } = scoutsSlice.actions;
+export const { toggleScoutedItem, resetScouts } = scoutsSlice.actions;
 export default scoutsSlice.reducer;

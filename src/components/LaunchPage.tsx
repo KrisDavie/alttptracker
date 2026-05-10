@@ -187,7 +187,7 @@ const LaunchPage: React.FC = () => {
       if (isNewSession) {
         // Create session with current settings including the selected sprite
         const launchSettings = { ...settings, spriteName };
-        const session = await createSession(launchSettings, sessionName || undefined, spriteName, selectedPresetId ?? undefined);
+        const session = await createSession(launchSettings, sessionName || undefined, spriteName, selectedPresetId ?? undefined, undefined, startingItems);
         id = session.id;
         setSessions(await getSessions());
       }

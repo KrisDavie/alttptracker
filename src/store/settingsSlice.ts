@@ -23,15 +23,25 @@ export const DEFAULT_STATUS_COLORS: StatusColors = {
   selected: "#3b82f6",
 };
 
-export const DEFAULT_STATUS_TEXT_COLORS: StatusColors = {
-  available: "#4ade80",
-  possible: "#facc15",
-  ool: "#c084fc",
-  information: "#22d3ee",
-  unavailable: "#f87171",
-  checked: "#6b7280",
-  selected: "#3b82f6",
+/**
+ * Colourblind-friendly preset (Wong/Okabe-Ito-inspired palette).
+ * Uses hues distinguishable for the most common forms of colour blindness
+ * (deuteranopia, protanopia, tritanopia).
+ */
+export const COLOURBLIND_STATUS_COLORS: StatusColors = {
+  available: "#0072b2", // strong blue
+  possible: "#f0e442", // yellow
+  ool: "#cc79a7", // reddish purple
+  information: "#56b4e9", // sky blue
+  unavailable: "#d55e00", // vermillion
+  checked: "rgba(120, 120, 120, 0.7)",
+  selected: "#009e73", // bluish green
 };
+
+/** Default app background colour (applied to <body> and :root). */
+export const DEFAULT_APP_BACKGROUND = "#242424";
+/** Default colour for entrance connection lines. */
+export const DEFAULT_CONNECTION_LINE_COLOR = "#ff00f9ff";
 
 export const defaultUserSequenceBreaks = {
   // All false by default, users can toggle these on to allow the logic to consider them as "possible but not guaranteed" options
@@ -132,12 +142,14 @@ export interface SettingsState {
   connectionLineColor: string;
   spriteName: string;
   colouredChests: boolean;
+  showMapTooltips: boolean;
   showChestTooltips: boolean;
   entranceLabelsMode: "off" | "labels" | "labels_lines";
   showInsetBossSquare: boolean;
   alwaysShowHCCTCounts: boolean;
   alwaysShowBigKeys: boolean;
   alwaysShowSmallKeys: boolean;
+  showKeyTotals: boolean;
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
@@ -146,7 +158,8 @@ export interface SettingsState {
 
   // Custom colors
   customColors?: Partial<StatusColors>;
-  customTextColors?: Partial<StatusColors>;
+  /** App background colour. Use a transparent value for OBS browser-source overlays. */
+  appBackground: string;
 }
 
 export const initialState: SettingsState = {
@@ -198,23 +211,33 @@ export const initialState: SettingsState = {
   connectionLineColor: "#ff00f9ff",
   spriteName: "link",
   colouredChests: true,
+  showMapTooltips: true,
   showChestTooltips: true,
   entranceLabelsMode: "labels_lines",
   showInsetBossSquare: true,
   alwaysShowHCCTCounts: false,
   alwaysShowBigKeys: false,
   alwaysShowSmallKeys: false,
+  showKeyTotals: true,
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,
 
-  entranceLabelOverrides: {}
+  entranceLabelOverrides: {},
+
+  // Colours
+  appBackground: DEFAULT_APP_BACKGROUND,
 };
 
 export const settingsSlice = createSlice({
   name: "trackerSettings",
   initialState,
   reducers: {
+    resetSettings: (_state, action: { payload: Partial<SettingsState> }) => {
+      if (!action.payload) return applyLauncherPrefs(initialState, loadLauncherPrefs());
+      const merged = { ...initialState, ...action.payload };
+      return applyLauncherPrefs(merged as SettingsState, loadLauncherPrefs());
+    },
     setSettings: (state, action: { payload: Partial<SettingsState> }) => {
       const newState = { ...state, ...action.payload };
       return newState;
@@ -254,5 +277,5 @@ export const settingsSlice = createSlice({
   },
 });
 
-export const { setSettings, setWildSmallKeys, toggleWildBigKeys, setSequenceBreaks } = settingsSlice.actions;
+export const { setSettings, setWildSmallKeys, toggleWildBigKeys, setSequenceBreaks, resetSettings } = settingsSlice.actions;
 export default settingsSlice.reducer;

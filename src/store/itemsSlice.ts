@@ -32,6 +32,15 @@ export const itemsSlice = createSlice({
   name: "items",
   initialState,
   reducers: {
+    resetItems: (_state, action: PayloadAction<Record<string, { amount: number }> | undefined>) => {
+      const presetState = action.payload;
+      if (!presetState) return initialState;
+      const merged: Record<string, ItemState> = { ...initialState };
+      for (const [key, value] of Object.entries(presetState)) {
+        merged[key] = { ...itemInitialState, ...value };
+      }
+      return merged;
+    },
     setItemCount: (state, action: PayloadAction<{ itemName: string; count: number }>) => {
       const { itemName, count } = action.payload;
       if (state[itemName] === undefined) {
@@ -86,5 +95,5 @@ export const itemsSlice = createSlice({
   },
 });
 
-export const { setItemCount, incrementItemCount, updateMultipleItems } = itemsSlice.actions;
+export const { setItemCount, incrementItemCount, updateMultipleItems, resetItems } = itemsSlice.actions;
 export default itemsSlice.reducer;

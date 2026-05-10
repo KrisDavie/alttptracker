@@ -9,6 +9,7 @@ export interface TrackerSession {
   settings: Partial<SettingsState>;
   spriteName?: string;
   presetId?: string;
+  startingItems?: Record<string, number>;
   pinned?: boolean;
 }
 
@@ -55,12 +56,28 @@ export async function getSessions(): Promise<TrackerSession[]> {
   }
 }
 
+export async function getSession(id: string): Promise<TrackerSession | undefined> {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.get(id);
+      req.onsuccess = () => resolve(req.result as TrackerSession | undefined);
+      req.onerror = () => reject(req.error);
+    });
+  } catch {
+    return undefined;
+  }
+}
+
 export async function createSession(
   settings: Partial<SettingsState>,
   name?: string,
   spriteName?: string,
   presetId?: string,
-  providedId?: string
+  providedId?: string,
+  startingItems?: Record<string, number>
 ): Promise<TrackerSession> {
   const id = providedId || crypto.randomUUID().slice(0, 8);
   const session: TrackerSession = {
@@ -71,6 +88,7 @@ export async function createSession(
     settings,
     spriteName,
     presetId,
+    startingItems,
   };
   const db = await openDB();
   // Auto-prune BEFORE adding: remove oldest unpinned sessions to make room

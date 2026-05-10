@@ -43,6 +43,19 @@ export const entrancesSlice = createSlice({
   name: "trackerEntrances",
   initialState,
   reducers: {
+    resetEntrances: (_state, action: PayloadAction<Record<string, Partial<EntranceData>> | undefined>) => {
+      const presetState = action.payload;
+      if (!presetState) return initialState;
+      const merged: Record<string, EntranceData> = { ...initialState };
+      for (const [key, value] of Object.entries(presetState)) {
+        merged[key] = {
+          ...entranceInitialState,
+          ...value,
+          manuallyChanged: { ...entranceInitialState.manuallyChanged, ...value?.manuallyChanged },
+        };
+      }
+      return merged;
+    },
     incrementMedallionCount: (state, action: PayloadAction<{ entrance: string; decrement: boolean }>) => {
       const { entrance, decrement } = action.payload;
       const current = state[entrance].medallion ?? "unknown";
@@ -98,5 +111,5 @@ export const entrancesSlice = createSlice({
   },
 });
 
-export const { incrementMedallionCount, setEntranceLink, connectGenericConnector } = entrancesSlice.actions;
+export const { incrementMedallionCount, setEntranceLink, connectGenericConnector, resetEntrances } = entrancesSlice.actions;
 export default entrancesSlice.reducer;

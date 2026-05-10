@@ -9,7 +9,7 @@ export const PRIZES: NonNullable<DungeonState["prize"]>[] = ["unknown", "greenPe
 export interface DungeonState {
   collectedCount: number;
   bossDefeated: boolean;
-  boss: typeof BOSSES[number];
+  boss: (typeof BOSSES)[number];
   prize: "unknown" | "crystal" | "pendant" | "redCrystal" | "greenPendant" | "map";
   prizeCollected: boolean;
   smallKeys: number;
@@ -52,17 +52,32 @@ const dungeonInitialState: DungeonState = {
   },
 };
 
-
-const initialState: Record<string, DungeonState> = Object.keys(DungeonsData).reduce((acc, dungeon) => {
-  // TODO: If boss shuffle is enabled, always set boss to unknown
-  acc[dungeon] = { ...dungeonInitialState, boss: DungeonsData[dungeon].boss || "unknown" };
-  return acc;
-}, {} as Record<string, DungeonState>);
+const initialState: Record<string, DungeonState> = Object.keys(DungeonsData).reduce(
+  (acc, dungeon) => {
+    // TODO: If boss shuffle is enabled, always set boss to unknown
+    acc[dungeon] = { ...dungeonInitialState, boss: DungeonsData[dungeon].boss || "unknown" };
+    return acc;
+  },
+  {} as Record<string, DungeonState>,
+);
 
 export const dungeonsSlice = createSlice({
   name: "dungeons",
   initialState,
   reducers: {
+    resetDungeons: (_state, action: PayloadAction<Record<string, Partial<DungeonState>> | undefined>) => {
+      const presetState = action.payload;
+      if (!presetState) return initialState;
+      const merged: Record<string, DungeonState> = { ...initialState };
+      for (const [key, value] of Object.entries(presetState)) {
+        merged[key] = {
+          ...dungeonInitialState,
+          ...value,
+          manuallyChanged: { ...dungeonInitialState.manuallyChanged, ...value?.manuallyChanged },
+        };
+      }
+      return merged;
+    },
     setDungeonCollectedCount: (state, action: PayloadAction<{ dungeon: string; count: number }>) => {
       const { dungeon, count } = action.payload;
       state[dungeon].collectedCount = count;
@@ -128,17 +143,17 @@ export const dungeonsSlice = createSlice({
       } else {
         state[dungeon].prize = PRIZES[(currentIndex + 1) % (maxCount + 1)];
       }
-      
+
       state[dungeon].manuallyChanged.prize = true;
     },
     updateDungeonState: (state, action: PayloadAction<{ dungeon: string; newState: Partial<DungeonState> }>) => {
       const { dungeon, newState } = action.payload;
       const current = state[dungeon];
-      
+
       const filteredState = { ...newState };
 
       // Check these fields for manual changes
-      // If the new state is different from current state but the field has been manually changed, don't update it 
+      // If the new state is different from current state but the field has been manually changed, don't update it
       // (unless the new state is the same as the current state, in which case we can assume the manual change was meant to sync with the new state and we can reset the manually changed flag)
       const fields = ["bossDefeated", "bigKey", "prizeCollected", "prize"] as const;
       fields.forEach((field) => {
@@ -155,17 +170,13 @@ export const dungeonsSlice = createSlice({
 
       // Do we know the prize? If not, and the SRAM indicates we have the map, show map icom as long as the prize hasn't been manually changed to something else (other than unknown)
       if (!filteredState.prize && filteredState.map && (!current.manuallyChanged.prize || current.prize === "unknown")) {
-        filteredState.prize = "map"
+        filteredState.prize = "map";
       }
 
       // If SRAM says the compass was just picked up, and we don't yet know the boss,
       // fall back to showing the compass icon (user can still manually override).
       const incomingCompass = newState.compass ?? current.compass;
-      if (
-        incomingCompass &&
-        (current.boss === "unknown" || current.boss === "compass") &&
-        !current.manuallyChanged.boss
-      ) {
+      if (incomingCompass && (current.boss === "unknown" || current.boss === "compass") && !current.manuallyChanged.boss) {
         filteredState.boss = "compass";
       }
 
@@ -177,7 +188,7 @@ export const dungeonsSlice = createSlice({
       const rehydrated = (action as unknown as { payload: Record<string, unknown> }).payload.dungeons as Record<string, DungeonState> | undefined;
       const settings = (action as unknown as { payload: Record<string, unknown> }).payload.settings as { bossShuffle?: string } | undefined;
       const isBossShuffled = settings?.bossShuffle && settings.bossShuffle !== "none";
-  
+
       if (!rehydrated) return initialState;
       const merged = { ...initialState };
       for (const [key, value] of Object.entries(rehydrated)) {
@@ -189,9 +200,9 @@ export const dungeonsSlice = createSlice({
           };
         }
       }
-      if (isBossShuffled ) {
+      if (isBossShuffled) {
         for (const key of Object.keys(merged)) {
-          if (!merged[key].manuallyChanged.boss){
+          if (!merged[key].manuallyChanged.boss) {
             merged[key].boss = "unknown";
           }
         }
@@ -201,5 +212,6 @@ export const dungeonsSlice = createSlice({
   },
 });
 
-export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setBigKey, incrementBoss, resetBossesForShuffle, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys } = dungeonsSlice.actions;
+export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setBigKey, incrementBoss, resetBossesForShuffle, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys, resetDungeons } =
+  dungeonsSlice.actions;
 export default dungeonsSlice.reducer;

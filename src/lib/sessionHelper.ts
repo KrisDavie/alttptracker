@@ -78,6 +78,7 @@ function launchDirectSession(sessionId: string, urlParams: URLSearchParams) {
     savedPrefs.spriteName,
     presetId,
     sessionId,
+    startingItems
   ).catch(err => {
     if (err?.name === "ConstraintError") {
       touchSession(sessionId);

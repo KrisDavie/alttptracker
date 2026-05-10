@@ -41,6 +41,15 @@ export const checksSlice = createSlice({
   name: "checks",
   initialState,
   reducers: {
+    resetChecks: (_state, action: PayloadAction<Partial<ChecksState> | undefined>) => {
+      const presetState = action.payload;
+      if (!presetState) return initialState;
+      const merged: ChecksState = {
+        locationsChecks: { ...initialState.locationsChecks, ...presetState.locationsChecks },
+        entranceChecks: { ...initialState.entranceChecks, ...presetState.entranceChecks },
+      };
+      return merged;
+    },
     setLocationChecked: (state, action: PayloadAction<{ location: string; checked: boolean; manual?: boolean }>) => {
       const { location, checked, manual = true } = action.payload;
       state.locationsChecks[location] = {
@@ -97,5 +106,5 @@ export const checksSlice = createSlice({
   },
 });
 
-export const { setLocationChecked, setEntranceChecked, updateMultipleLocations, updateLogicStatuses } = checksSlice.actions;
+export const { setLocationChecked, setEntranceChecked, updateMultipleLocations, updateLogicStatuses, resetChecks } = checksSlice.actions;
 export default checksSlice.reducer;
