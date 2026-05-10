@@ -91,7 +91,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
         maxCount !== last.maxCount ||
         numChecks < last.numChecks;
       lastDepsRef.current = { collected, maxCount, numChecks };
-      return !allowIncrease && rawChecksRemaining > prev ? prev : rawChecksRemaining;
+      return !allowIncrease && rawChecksRemaining > prev ? rawChecksRemaining : rawChecksRemaining;
     });
   }, [rawChecksRemaining, collected, maxCount, numChecks]);
 

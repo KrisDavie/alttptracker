@@ -28,6 +28,7 @@ export const REMEMBERED_SETTINGS = [
   "alwaysShowHCCTCounts",
   "alwaysShowBigKeys",
   "alwaysShowSmallKeys",
+  "showKeyTotals",
 
   // Colours
   "appBackground",
