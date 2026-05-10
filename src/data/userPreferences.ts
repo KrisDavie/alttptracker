@@ -18,16 +18,21 @@ export const REMEMBERED_SETTINGS = [
   // UI / display
   "includeDungeonItemsInCounter",
   "colouredChests",
+  "showMapTooltips",
   "showChestTooltips",
   "mapMode",
   "connectionLinesMode",
-  "connectionLineColor",
   "spriteName",
   "entranceLabelsMode",
   "showInsetBossSquare",
   "alwaysShowHCCTCounts",
   "alwaysShowBigKeys",
   "alwaysShowSmallKeys",
+
+  // Colours
+  "appBackground",
+  "connectionLineColor",
+  "customColors",
 
   // Gameplay
   "autotracking",

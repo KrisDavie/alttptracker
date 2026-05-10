@@ -8,16 +8,16 @@ import { setCurrentMode, setHoveredScout, setSelectedLocation } from "@/store/tr
 interface SmallKeyTrackerProps {
   dungeon: string;
   size?: "1x1" | "1x2";
-  showTotal?: boolean;
 }
 
-function SmallKeyTracker({ dungeon, size = "1x2", showTotal = true }: SmallKeyTrackerProps) {
+function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
   const dispatch = useDispatch();
   const dungeonData = DungeonsData[dungeon as keyof typeof DungeonsData];
   const settings = useSelector((state: RootState) => state.settings);
   const _collectedSmallKeys = useSelector((state: RootState) => state.dungeons[dungeon]?.smallKeys ?? 0);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
   const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
+  const showKeyTotals = useSelector((state: RootState) => state.settings.showKeyTotals);
 
   // Allow to still increment/decrement small keys even if manually changed, but keep track of manual changes to adjust the count accordingly
   const manuallyChangedSmallKeys = useSelector((state: RootState) => state.dungeons[dungeon]?.manuallyChanged.smallKeys ?? 0);
@@ -96,7 +96,7 @@ function SmallKeyTracker({ dungeon, size = "1x2", showTotal = true }: SmallKeyTr
     return (
       <div className="grid grid-cols-2 grid-rows-2 w-8 h-8 relative" {...commonProps}>
         <div className="col-start-1 row-start-1 w-full h-full">{keyIcon}</div>
-        {!showTotal ? (
+        {!showKeyTotals ? (
           <div className={`col-start-1 row-start-1 col-span-2 row-span-2 font-bold font-arialblack text-xl ${statusColor} flex items-center justify-center select-none pl-2 pt-2`}>
             {collectedSmallKeys}
           </div>
@@ -118,7 +118,7 @@ function SmallKeyTracker({ dungeon, size = "1x2", showTotal = true }: SmallKeyTr
   return (
     <div className="flex flex-row w-16 h-8" {...commonProps}>
       <div className="w-8 h-8">{keyIcon}</div>
-      {!showTotal ? (
+      {!showKeyTotals ? (
         <div className={`min-w-8 min-h-8 font-bold font-arialblack text-xl ${statusColor} flex items-center justify-center select-none`}>
           {collectedSmallKeys}
         </div>

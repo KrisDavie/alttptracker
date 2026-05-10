@@ -1,29 +1,33 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
-import { DEFAULT_STATUS_COLORS, DEFAULT_STATUS_TEXT_COLORS } from "@/store/settingsSlice";
+import { DEFAULT_APP_BACKGROUND, DEFAULT_STATUS_COLORS } from "@/store/settingsSlice";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 /**
  * Syncs custom status colors from Redux settings → CSS custom properties on :root.
  * Call once near the app root (e.g. in SettingsProvider).
+ *
+ * Tooltip text uses the same value as the corresponding marker colour so a single
+ * setting drives both visuals consistently.
  */
 export function useApplyStatusColors() {
   const customColors = useSelector((state: RootState) => state.settings.customColors);
-  const customTextColors = useSelector((state: RootState) => state.settings.customTextColors);
+  const appBackground = useSelector((state: RootState) => state.settings.appBackground ?? DEFAULT_APP_BACKGROUND);
 
   useEffect(() => {
     const root = document.documentElement;
     const colors = { ...DEFAULT_STATUS_COLORS, ...customColors };
-    const textColors = { ...DEFAULT_STATUS_TEXT_COLORS, ...customTextColors };
 
     for (const [key, value] of Object.entries(colors)) {
       root.style.setProperty(`--status-${key}`, value);
-    }
-    for (const [key, value] of Object.entries(textColors)) {
       root.style.setProperty(`--status-text-${key}`, value);
     }
-  }, [customColors, customTextColors]);
+
+    // Apply background to both root and body so transparency works for OBS overlays.
+    root.style.background = appBackground;
+    document.body.style.background = appBackground;
+  }, [customColors, appBackground]);
 }
 
 /** Map bg class for a logic status on map markers */
