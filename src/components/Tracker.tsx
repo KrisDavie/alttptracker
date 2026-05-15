@@ -6,6 +6,7 @@ import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
 import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
 import { Loader2 } from "lucide-react";
+import StatusBar from "./tracker/StatusBar";
 
 const TILE = 448;
 
@@ -107,6 +108,7 @@ export function Tracker() {
               </div>
             )}
             <EntranceLinesOverlay />
+            <StatusBar />
             <div
               className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
               style={{

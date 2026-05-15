@@ -8,6 +8,7 @@ export interface EntranceData {
   connectorGroup: number | null;
   to: string | null;
   oneway: boolean;
+  note?: string;
   medallion?: "unknown" | "bombos" | "ether" | "quake";
   manuallyChanged?: {
     medallion?: boolean;
@@ -22,6 +23,7 @@ const entranceInitialState: EntranceData = {
   connectorGroup: null,
   to: null,
   oneway: false,
+  note: undefined,
   manuallyChanged: {
     medallion: false,
   },
@@ -71,6 +73,10 @@ export const entrancesSlice = createSlice({
         state[entrance].manuallyChanged.medallion = true;
       }
     },
+    setNote: (state, action: PayloadAction<{ entrance: string; note: string }>) => {
+      const { entrance, note } = action.payload;
+      state[entrance].note = note;
+    },
     setEntranceLink: (state, action: PayloadAction<{ entrance: string; to: string | null }>) => {
       const { entrance, to } = action.payload;
       state[entrance].to = to;
@@ -111,5 +117,5 @@ export const entrancesSlice = createSlice({
   },
 });
 
-export const { incrementMedallionCount, setEntranceLink, connectGenericConnector, resetEntrances } = entrancesSlice.actions;
+export const { incrementMedallionCount, setNote, setEntranceLink, connectGenericConnector, resetEntrances } = entrancesSlice.actions;
 export default entrancesSlice.reducer;

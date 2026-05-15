@@ -6,7 +6,7 @@ import { locationsData, type LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { mapStatusBg } from "@/hooks/useStatusColors";
 import { LocationTooltip } from "./LocationTooltip";
-import { setSelectedEntrance, setCurrentMode, setSelectedLocation } from "@/store/trackerSlice";
+import { setSelectedEntrance, setCurrentMode, setSelectedLocation, setHoveredMarker } from "@/store/trackerSlice";
 import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { useMemo } from "react";
@@ -32,7 +32,7 @@ function resolveEntranceGroup(name: string | null, entranceMode: string | undefi
 function MapLocation(props: MapLocationProps) {
   const { name: locName, location, isEntrance } = props;
   const dispatch = useDispatch();
-  
+
   // ---- Settings / global UI state ----
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
@@ -42,16 +42,19 @@ function MapLocation(props: MapLocationProps) {
   const showTooltip = useSelector((state: RootState) => state.settings.showMapTooltips);
   const hoveredDungeon = useSelector((state: RootState) => state.trackerState.hoveredDungeon);
   const hoveredScout = useSelector((state: RootState) => state.trackerState.hoveredScout);
+  const hoveredMarker = useSelector((state: RootState) => state.trackerState.hoveredMarker);
   const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
   const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
   const scoutedItems = useSelector((state: RootState) => state.scouts.markers[locName]);
+  const note = useSelector((state: RootState) => {
+    if (!isEntrance) return "";
+    return state.entrances[locName]?.note || "";
+  });
 
   // ---- Entrance-scoped store state ----
   const to = useSelector((state: RootState) => (isEntrance ? state.entrances[locName]?.to : undefined));
   const entranceCheck = useSelector((state: RootState) => (isEntrance ? state.checks.entranceChecks[locName] : undefined));
-  const maxConnectorGroup = useSelector((state: RootState) =>
-    Object.values(state.entrances).reduce((max, e) => (e.connectorGroup ? Math.max(max, e.connectorGroup) : max), 0),
-  );
+  const maxConnectorGroup = useSelector((state: RootState) => Object.values(state.entrances).reduce((max, e) => (e.connectorGroup ? Math.max(max, e.connectorGroup) : max), 0));
 
   const mergedLabels = useMemo(() => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }), [entranceLabelOverrides]);
 
@@ -86,6 +89,10 @@ function MapLocation(props: MapLocationProps) {
       if (isEntrance) {
         if (currentMode === "connect" && selectedEntrance) {
           dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));
+          dispatch(setSelectedEntrance([null, false]));
+          dispatch(setCurrentMode("none"));
+        } else if (currentMode === "generic_connect" && selectedEntrance !== locName && selectedEntrance) {
+          dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else {
@@ -139,6 +146,16 @@ function MapLocation(props: MapLocationProps) {
     }
   }
 
+  function handleMouseEnter() {
+    dispatch(setHoveredMarker(locName));
+  }
+
+  function handleMouseLeave() {
+    if (hoveredMarker === locName) {
+      dispatch(setHoveredMarker(null));
+    }
+  }
+
   const isHatched = (!isEntrance || isLinked) && status === "some";
 
   // let bgClass: string;
@@ -162,9 +179,7 @@ function MapLocation(props: MapLocationProps) {
       // Non-entrance: All items checked -> Internal logic status
       return mapStatusBg(status === "all" ? "checked" : maxLogicStatus);
     }
-
   }
-
 
   // Boss inner-square: when this marker maps to a dungeon and that dungeon has a "- Boss" check
   const bossLocationKey = resolvedDungeonId ? itemLocations.find((l) => l.endsWith(" - Boss")) : undefined;
@@ -184,25 +199,16 @@ function MapLocation(props: MapLocationProps) {
   const highlightGroup = !!(selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup);
 
   const tooltipName = isEntrance && targetName && targetName !== locName ? `${locName} → ${targetName}` : locName;
-  const singleCheck =
-    itemLocations.length === 1
-      ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] }
-      : isEntrance && !isLinked && entranceCheck
-        ? { key: locName, status: entranceCheck, displayName: locName }
-        : undefined;
+  const singleCheck = itemLocations.length === 1 ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] } : isEntrance && !isLinked && entranceCheck ? { key: locName, status: entranceCheck, displayName: locName } : undefined;
 
   const bgClass = getBgClass();
   return (
     <div
       key={locName}
-      className={cn(
-        "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20",
-        props.className,
-        hidden && "hidden",
-        currentMode === "connect" && "cursor-crosshair",
-        isFaded && "opacity-80",
-      )}
+      className={cn("absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20", props.className, hidden && "hidden", currentMode === "connect" && "cursor-crosshair", isFaded && "opacity-80")}
       style={{ top: `${yPercent}%`, left: `${xPercent}%` }}
+      onMouseOver={handleMouseEnter}
+      onMouseOut={handleMouseLeave}
       onClick={handleLocationClick}
       onAuxClick={handleLocationClick}
       onContextMenu={handleLocationClick}
@@ -212,7 +218,7 @@ function MapLocation(props: MapLocationProps) {
       <div
         className={cn(
           "absolute inset-0 border",
-          !labelColor && ((showAsDiamond && !["bg-status-connector", "bg-status-checked"].includes(bgClass)) ? "border-status-connector" : "border-black" ),
+          !labelColor && (showAsDiamond && !["bg-status-connector", "bg-status-checked"].includes(bgClass) ? "border-status-connector" : "border-black"),
           bgClass,
           isRound && "rounded-full",
           isHatched && "is-hatched",
@@ -223,9 +229,7 @@ function MapLocation(props: MapLocationProps) {
         )}
         style={labelColor ? { borderColor: labelColor, borderWidth: "2px" } : undefined}
       >
-        {showInsetBossSquare && bossBgClass && (
-          <div className={cn("absolute inset-1 border border-black pointer-events-none", bossBgClass, bossCheckStatus?.checked && "opacity-80")} />
-        )}
+        {showInsetBossSquare && bossBgClass && <div className={cn("absolute inset-1 border border-black pointer-events-none", bossBgClass, bossCheckStatus?.checked && "opacity-80")} />}
         {firstScoutIcon && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -250,6 +254,7 @@ function MapLocation(props: MapLocationProps) {
           onGroupExpand={handleGroupExpand}
           onClose={resetGroups}
           scoutedItems={!isEntrance ? scoutedItems : undefined}
+          note={note ?? undefined}
         />
       )}
     </div>

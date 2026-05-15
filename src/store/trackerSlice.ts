@@ -4,10 +4,11 @@ import { getSessionInstanceId } from "@/lib/sessionHelper";
 import type { ScoutedItem } from "./scoutsSlice";
 
 export interface TrackerState {
-   currentMode: "none" | "scout" | "connect" | "entrance_select" | "follower";
+   currentMode: "none" | "scout" | "connect" | "generic_connect" |  "entrance_select" | "follower";
    modalOpen: "none" | "mystery" | "entrance" 
    selectedLocation: string | null;
    selectedEntrance: string | null;
+   hoveredMarker: string | null;
    hoveredDungeon: string | null;
    hoveredScout: ScoutedItem | null;
    instanceId: string;
@@ -19,6 +20,7 @@ const initialState: TrackerState = {
     modalOpen: "entrance",
     selectedLocation: null,
     selectedEntrance: null,
+    hoveredMarker: null,
     hoveredDungeon: null,
     hoveredScout: null,
     instanceId: getSessionInstanceId(),
@@ -51,7 +53,10 @@ export const trackerSlice = createSlice({
     },
     setHoveredScout: (state, action: { payload: ScoutedItem | null }) => {
       state.hoveredScout = action.payload;
-    }
+    },
+    setHoveredMarker: (state, action) => {
+      state.hoveredMarker = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(REMEMBER_REHYDRATED, (state) => {
@@ -60,5 +65,5 @@ export const trackerSlice = createSlice({
   },
 });
 
-export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode, setHoveredDungeon, setHoveredScout } = trackerSlice.actions;
+export const { setModalOpen, setModalClose, setSelectedEntrance, setSelectedLocation, setCurrentMode, setHoveredDungeon, setHoveredScout, setHoveredMarker } = trackerSlice.actions;
 export default trackerSlice.reducer;

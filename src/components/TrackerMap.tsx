@@ -4,6 +4,8 @@ import type { RootState } from "@/store/store";
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
 import { Loader2 } from "lucide-react";
+import StatusBar from "./tracker/StatusBar";
+import EntranceSelectionModal from "./tracker/EntranceSelectionModal";
 
 const TILE = 448;
 
@@ -23,6 +25,8 @@ export function TrackerMap() {
   const rehydrated = useSelector((state: RootState) => state.trackerState.rehydrated);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const worldState = useSelector((state: RootState) => state.settings.worldState);
+  const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === "entrance";
+
   const { width, height } = useMemo(() => getLayoutDimensions(mapMode), [mapMode]);
 
   useEffect(() => {
@@ -83,7 +87,14 @@ export function TrackerMap() {
             height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
           }}
         >
+          {entranceModalOpen && mapMode !== "compact" && (
+            <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
+              <EntranceSelectionModal />
+            </div>
+          )}
           <EntranceLinesOverlay />
+          <StatusBar />
+
           <div
             className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
             style={{
