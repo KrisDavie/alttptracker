@@ -225,6 +225,7 @@ function MapLocation(props: MapLocationProps) {
           highlightGroup && "ring-2 ring-blue-500",
           (isHighlighted || isScoutHoverHighlighted) && "ring-2 ring-yellow-500",
           isScoutSelected && "ring-2 ring-pink-500",
+          note && "ring-2 ring-purple-500",
           showAsDiamond && "rotate-45",
         )}
         style={labelColor ? { borderColor: labelColor, borderWidth: "2px" } : undefined}
