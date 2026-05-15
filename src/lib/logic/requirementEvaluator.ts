@@ -10,6 +10,7 @@ export interface EvaluationContext {
   assumeSmallKey?: boolean;
   assumeBigKey?: boolean;
   canReachRegion?: (regionName: string) => LogicStatus;
+  canReachFromRegion?: (sourceRegionName: string, targetRegionName: string) => LogicStatus;
   /** OWR: Override world state for requirement evaluation on tiles whose effective
    *  world differs from the global setting (e.g., flipped tiles). */
   effectiveWorldState?: string;
@@ -354,7 +355,7 @@ export class RequirementEvaluator {
         // TODO Follower shuffle logic
         return this.resolveComplex("canReach|Old Man Cave (West)", ctx);
       case "canRescueOldMan":
-        return minimumStatus(this.resolveSimple("canCollectOldMan", ctx), this.resolveComplex("canReach|Old Man Drop Off", ctx));
+        return minimumStatus(this.resolveSimple("canCollectOldMan", ctx), this.resolveComplex("canReachFrom|Old Man Cave (West)|Old Man Drop Off", ctx));
       case "canCollectKiki":
         // TODO Follower shuffle logic
         return this.resolveComplex("canReach|Palace of Darkness Area", ctx);
@@ -367,17 +368,17 @@ export class RequirementEvaluator {
         // TODO Follower shuffle logic
         return this.resolveComplex("canReach|Frog Prison", ctx);
       case "canRescueBlacksmith":
-        return minimumStatus(this.resolveSimple("canCollectFrog", ctx), this.resolveComplex("canReach|Blacksmiths Hut", ctx));
+        return minimumStatus(this.resolveSimple("canCollectFrog", ctx), this.resolveComplex("canReachFrom|Frog Prison|Blacksmiths Hut", ctx));
       case "canCollectPurpleChest":
         // TODO Follower shuffle logic
         return minimumStatus(this.resolveComplex("canReach|Hammer Pegs Area", ctx), this.resolveSimple("canRescueBlacksmith", ctx));
       case "canDeliverPurpleChest":
-        return minimumStatus(this.resolveSimple("canCollectPurpleChest", ctx), this.resolveComplex("canReach|Middle Aged Man", ctx));
+        return minimumStatus(this.resolveSimple("canCollectPurpleChest", ctx), this.resolveComplex("canReachFrom|Hammer Pegs Area|Middle Aged Man", ctx));
       case "canCollectBigBomb":
         // TODO Follower shuffle logic
         return minimumStatus(this.resolveComplex("canReach|Big Bomb Shop", ctx), this.resolveSimple("canBuyBigBomb", ctx));
       case "canOpenPyramidFairy":
-        return minimumStatus(this.resolveSimple("canCollectBigBomb", ctx), this.resolveComplex("canReach|Pyramid Area", ctx));
+        return minimumStatus(this.resolveSimple("canCollectBigBomb", ctx), this.resolveComplex("canReachFrom|Big Bomb Shop|Pyramid Area", ctx));
       case "canOpenTTAttic":
         return minimumStatus(this.resolveComplex("canReach|Thieves Attic", ctx), this.resolveSimple("bomb", ctx));
       case "canCollectBlind":
@@ -615,6 +616,16 @@ export class RequirementEvaluator {
           return status === "information" ? "available" : status;
         }
         return "available"; // If no function provided, assume reachable
+      }
+
+      case "canReachFrom": {
+        const sourceRegionName = conditionParts.length >= 3 ? conditionParts[1] : ctx.regionName;
+        const targetRegionName = conditionParts.length >= 3 ? conditionParts[2] : conditionParts[1];
+        if (!sourceRegionName || !targetRegionName || !ctx.canReachFromRegion) {
+          return "unavailable";
+        }
+        const status = ctx.canReachFromRegion(sourceRegionName, targetRegionName);
+        return status === "information" ? "available" : status;
       }
 
       // Custom big keys for hmg logic

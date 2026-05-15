@@ -1,52 +1,35 @@
 /**
- * DungeonTraverser - Computes reachability and key requirements for dungeon regions.
+ * DungeonTraverser — reachability + key logic for a single dungeon.
  *
- * Determines which dungeon regions are reachable given the player's inventory
- * (especially small keys) and settings. Handles key doors, crystal switches,
- * big key doors, and inter-dungeon dependencies (canReach requirements).
+ * On construction, pre-computes ExitMeta for every dungeon exit
+ * (isSKDoor, isBKDoor, isPairedWithBK, isBidirectional, isOverworld).
  *
- * INITIALIZATION:
- * On construction, pre-computes ExitMeta for every dungeon exit (isSKDoor,
- * isBKDoor, isPairedWithBK, isBidirectional, isOverworld).
+ * THREE PHASES (only run for wildSmallKeys === "wild"):
  *
- * THREE-PHASE APPROACH (for wild small keys mode):
+ * 1. DIJKSTRA (minKeysUsed) — best-case keys to reach each region.
+ *    Uses actual inventory. Key doors are weight-1 edges. Iterates until
+ *    convergence (canReach deps may resolve mid-pass). A second pass without
+ *    BK populates minKeysUsedNoBK when the player lacks BK in partial mode.
  *
- * 1. DIJKSTRA (minKeysUsed): Finds best-case keys to reach each region.
- *    - Uses actual player inventory to evaluate non-key requirements.
- *    - Key doors = weight-1 edges; iterates until convergence (canReach deps).
- *    - Two passes: (a) with big key assumed (door discovery), (b) without big
- *      key (accurate minKeysUsedNoBK, only when player lacks BK in partial mode).
- *    - Bidirectional door pairs tracked: opening from one side is free from the other.
+ * 2. BFS (maxKeysUsed) — worst-case keys per region.
+ *    For each pending key door, defer it, explore everything else, then open
+ *    it last; regions reachable only after that door get elevated maxKeysUsed.
+ *    In partial mode runs once with all-items, then once with actual inventory
+ *    (items can hide contention when an alternate path needs an item the
+ *    player doesn't have). maxKeysUsed is then propagated through canReach
+ *    dependencies and parent→child edges.
  *
- * 2. BFS (maxKeysUsed): Finds worst-case key cost per region.
- *    - Uses all-items evaluator (partial mode) so all doors are visible.
- *    - Pre-computes adjacency graph, then for each pending key door: defers
- *      that door, explores everything else, opens deferred door last.
- *    - Regions found only after the deferred door get elevated maxKeysUsed.
- *    - Also pre-computes regions reachable without ANY key door (maxKeysUsed=0).
- *    - maxKeysUsed propagated through canReach dependencies and parent-child edges.
- *
- * 3. FINAL BFS: Computes accessibility status per region.
- *    - Discovery: BFS to find all traversable regions, tracking per-crystal-state
- *      entry statuses. Uses keyCountingEvaluator in partial mode for discovery.
- *    - Key counting: Fixed-point iteration counts accessible keys by threshold.
- *    - Status: For each region, determines "available", "possible", or "unavailable"
- *      based on keys available vs keys needed. Detects contention from branching
- *      paths, pottery-mode key shuffling, and constrained-path scenarios.
+ * 3. FINAL BFS — per-region status.
+ *    Discovery BFS tracks per-crystal-state entry statuses. A fixed-point
+ *    loop counts collectable keys by minKeys threshold. Status is then
+ *    "unavailable" (keys < minKeys), "possible" (contention) or "available".
  *
  * KEY CONCEPTS:
- * - Protection modes: "partial" assumes full inventory for key counting,
- *   "dangerous" uses actual inventory throughout.
- * - minKeysUsed: Best-case keys with actual inventory.
- *   maxKeysUsed: Worst-case keys with all items.
- * - Status: "unavailable" if keys < minKeysUsed, "possible" if contention
- *   exists, "available" if keys >= maxKeysUsed with no contention.
- * - Crystal switch state tracked per-region in finalBFS.
- * - Bidirectional door pairs canonically keyed as "regionA|regionB" (sorted).
- * - ExitMeta: Pre-computed per-exit flags (SK/BK/paired/bidirectional/overworld)
- *   built once in the constructor, shared by all phases.
- * - smallKeysCache: Per-region key location results cached after first computation.
- * - bossesKillStatus: Cached at the RequirementEvaluator level (since state is immutable).
+ * - Protection: "partial" assumes all items for key counting; "dangerous"
+ *   uses actual inventory throughout.
+ * - Bidirectional door pairs are canonically keyed "regionA|regionB" (sorted).
+ * - Caches: exitMeta + smallKeysCache + findCanReachTargets memo are immutable
+ *   for the lifetime of this instance (state is immutable per traverse pass).
  */
 
 import { type CrystalSwitchState, type GameState, type LogicState, type LogicStatus, type RegionLogic } from "@/data/logic/logicTypes";
@@ -54,6 +37,7 @@ import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { getLogicStateForWorld, createAllItemsState, isBetterStatus, minimumStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
+import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle } from "./dungeonConstants";
 
 export interface DungeonRegionState {
   status: LogicStatus;
@@ -101,8 +85,8 @@ export class DungeonTraverser {
   private exitToSourceRegion: Map<string, string> = new Map();
   // Cache for small keys per region (populated lazily, cleared never — state is immutable)
   private smallKeysCache: Map<string, string[]> = new Map();
-
-  private static readonly OVERWORLD_TYPES = new Set(["LightWorld", "DarkWorld"]);
+  // Memo for findCanReachTargets: requirements object identity → resolved targets list.
+  private canReachTargetsCache: WeakMap<object, string[]> = new WeakMap();
 
   private readonly actuallyHasBigKey: boolean;
   private readonly effectivelyHasBigKey: boolean;
@@ -124,15 +108,14 @@ export class DungeonTraverser {
   private buildExitMetadata(): void {
     // First pass: build SK/BK flags and source region map
     for (const [regionName, regionLogic] of Object.entries(this.regions)) {
-      if (regionLogic.type !== "Dungeon") continue;
-      if (!regionLogic.exits) continue;
+      if (regionLogic.type !== "Dungeon" || !regionLogic.exits) continue;
       for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
         if (!exit?.to) continue;
         this.exitToSourceRegion.set(exitName, regionName);
         const reqs = getLogicStateForWorld(this.state, exit.requirements);
-        const isSK = this.containsKeyType(reqs, "smallkey");
-        const isBK = this.containsKeyType(reqs, "bigkey");
-        const isOW = DungeonTraverser.OVERWORLD_TYPES.has(this.regions[exit.to]?.type || "");
+        // Single tree-walk to detect both key types.
+        const { isSK, isBK } = this.detectKeyTypes(reqs);
+        const isOW = OVERWORLD_REGION_TYPES.has(this.regions[exit.to]?.type || "");
         this.exitMeta.set(`${regionName}|${exitName}`, { isSKDoor: isSK, isBKDoor: isBK, isPairedWithBK: false, isBidirectional: false, isOverworld: isOW });
       }
     }
@@ -143,13 +126,11 @@ export class DungeonTraverser {
         if (!exit?.to) continue;
         const meta = this.exitMeta.get(`${regionName}|${exitName}`);
         if (!meta || !meta.isSKDoor) continue;
-        // Check reverse exits from exit.to back to regionName
         const targetLogic = this.regions[exit.to];
         if (!targetLogic?.exits) continue;
-        for (const [, reverseExit] of Object.entries(targetLogic.exits)) {
+        for (const [reverseExitName, reverseExit] of Object.entries(targetLogic.exits)) {
           if (reverseExit.to !== regionName) continue;
-          const reverseKey = `${exit.to}|${Object.keys(targetLogic.exits).find(k => targetLogic.exits[k] === reverseExit)!}`;
-          const reverseMeta = this.exitMeta.get(reverseKey);
+          const reverseMeta = this.exitMeta.get(`${exit.to}|${reverseExitName}`);
           if (reverseMeta?.isBKDoor) meta.isPairedWithBK = true;
           if (reverseMeta?.isSKDoor) meta.isBidirectional = true;
         }
@@ -1458,26 +1439,28 @@ export class DungeonTraverser {
   }
 
   private findCanReachTargets(requirements: Record<string, unknown>): string[] {
-    // Recursively find all canReach|X targets in the requirements
-    const targets: string[] = [];
+    // Memoized: the requirements object is part of the immutable regions graph
+    // so its canReach|X targets never change for the lifetime of this traverser.
+    if (requirements && typeof requirements === "object") {
+      const cached = this.canReachTargetsCache.get(requirements);
+      if (cached) return cached;
+    }
 
+    const targets: string[] = [];
     const search = (obj: unknown): void => {
       if (typeof obj === "string") {
-        if (obj.startsWith("canReach|")) {
-          targets.push(obj.slice("canReach|".length));
-        }
+        if (obj.startsWith("canReach|")) targets.push(obj.slice("canReach|".length));
       } else if (Array.isArray(obj)) {
-        for (const item of obj) {
-          search(item);
-        }
+        for (const item of obj) search(item);
       } else if (typeof obj === "object" && obj !== null) {
-        for (const value of Object.values(obj)) {
-          search(value);
-        }
+        for (const value of Object.values(obj)) search(value);
       }
     };
-
     search(requirements);
+
+    if (requirements && typeof requirements === "object") {
+      this.canReachTargetsCache.set(requirements, targets);
+    }
     return targets;
   }
 
@@ -1485,17 +1468,24 @@ export class DungeonTraverser {
     return from < to ? `${from}|${to}` : `${to}|${from}`;
   }
 
-  private containsKeyType(req: LogicState | string | undefined, keyType: "smallkey" | "bigkey"): boolean {
-    if (!req) return false;
-    if (req === keyType) return true;
-    if (typeof req === "object" && req !== null) {
-      const r = req as Record<string, unknown>;
-      if (r.always && this.containsKeyType(r.always, keyType)) return true;
-      if (r.logical && this.containsKeyType(r.logical, keyType)) return true;
-      if (r.allOf && Array.isArray(r.allOf)) return r.allOf.some((x) => this.containsKeyType(x, keyType));
-      if (r.anyOf && Array.isArray(r.anyOf)) return r.anyOf.some((x) => this.containsKeyType(x, keyType));
-    }
-    return false;
+  /** Single-pass detection of both smallkey and bigkey references in a requirement tree. */
+  private detectKeyTypes(req: LogicState | string | undefined): { isSK: boolean; isBK: boolean } {
+    let isSK = false;
+    let isBK = false;
+    const walk = (r: unknown): void => {
+      if (isSK && isBK) return;
+      if (!r) return;
+      if (r === "smallkey") { isSK = true; return; }
+      if (r === "bigkey") { isBK = true; return; }
+      if (typeof r !== "object") return;
+      const o = r as Record<string, unknown>;
+      if (o.always) walk(o.always);
+      if (o.logical) walk(o.logical);
+      if (Array.isArray(o.allOf)) for (const x of o.allOf) walk(x);
+      if (Array.isArray(o.anyOf)) for (const x of o.anyOf) walk(x);
+    };
+    walk(req);
+    return { isSK, isBK };
   }
 
   private smallKeysInRegion(regionName: string): string[] {
@@ -1523,11 +1513,11 @@ export class DungeonTraverser {
   }
 
   private isKeyLocation(name: string): boolean {
-    // Inverse logic here, when ARE keys here?
+    // Inverse logic: when ARE keys still here (i.e. not shuffled out)?
     const pottery = this.state.settings.pottery;
     const drops = this.state.settings.enemyDrop;
     if (name.endsWith("Pot Key") || name.includes("Hammer Block Key Drop")) {
-      return !["keys", "cavekeys", "lottery", "dungeon"].includes(pottery);
+      return !isPotteryKeyShuffle(pottery);
     }
     if (name.includes("Key Drop") && !name.includes("Hammer Block Key Drop") && !name.includes("Big Key Drop")) {
       return drops === "none";
@@ -1541,17 +1531,17 @@ export class DungeonTraverser {
    * This is used to determine if pottery-mode contention applies to this dungeon.
    */
   private shuffledKeysInDungeon(ctx: DungeonContext): number {
-    const pottery = this.state.settings.pottery;
-    const drops = this.state.settings.enemyDrop;
+    const potShuffled = isPotteryKeyShuffle(this.state.settings.pottery);
+    const dropsShuffled = this.state.settings.enemyDrop !== "none";
     let count = 0;
     for (const regionName of ctx.reachable.keys()) {
       const region = this.regions[regionName];
       if (!region?.locations) continue;
       for (const locationName of Object.keys(region.locations)) {
         if (locationName.endsWith("Pot Key") || locationName.includes("Hammer Block Key Drop")) {
-          if (["keys", "cavekeys", "lottery", "dungeon"].includes(pottery)) count++;
+          if (potShuffled) count++;
         } else if (locationName.includes("Key Drop") && !locationName.includes("Hammer Block Key Drop")) {
-          if (drops !== "none") count++;
+          if (dropsShuffled) count++;
         }
       }
     }
@@ -1582,16 +1572,23 @@ export class DungeonTraverser {
     return this.exitToSourceRegion.get(doorExitName);
   }
 
-  /** Find the reverse direction of a bidirectional key door based on naming patterns. */
+  /**
+   * Find the reverse direction of a bidirectional key door using the
+   * canonical door pair already known to ExitMeta.
+   */
   private findReverseDoor(doorName: string, pendingDoors: string[]): string | undefined {
-    // Try to find a matching bidirectional door by checking if another door leads to the source region
-    // This is a heuristic based on door naming patterns
+    const sourceRegion = this.exitToSourceRegion.get(doorName);
+    if (!sourceRegion) return undefined;
+    const destRegion = this.regions[sourceRegion]?.exits?.[doorName]?.to;
+    if (!destRegion) return undefined;
+    const destExits = this.regions[destRegion]?.exits;
+    if (!destExits) return undefined;
     for (const otherDoor of pendingDoors) {
       if (otherDoor === doorName) continue;
-      // Check if the doors share the same "Interior" or similar naming that indicates bidirectionality
-      if (doorName.includes("Interior") && otherDoor.includes("Interior") && doorName.replace(/ [NSEW]+$/, "") === otherDoor.replace(/ [NSEW]+$/, "")) {
-        return otherDoor;
-      }
+      if (this.exitToSourceRegion.get(otherDoor) !== destRegion) continue;
+      if (destExits[otherDoor]?.to !== sourceRegion) continue;
+      const meta = this.exitMeta.get(`${destRegion}|${otherDoor}`);
+      if (meta?.isSKDoor) return otherDoor;
     }
     return undefined;
   }

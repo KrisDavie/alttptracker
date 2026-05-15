@@ -47,6 +47,12 @@ import { createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } f
 import { DungeonsData } from "@/data/dungeonData";
 import { entranceLocations } from "@/data/locationsData";
 import { buildRegionMetadata, applyStandvertedState, type RegionMetadata } from "./regionsProvider";
+import {
+  BUNNY_EXEMPT_LOCATIONS,
+  DOOR_PREFIX_TO_DUNGEON,
+  PORTAL_TO_DUNGEON,
+  isPotteryKeyShuffle,
+} from "./dungeonConstants";
 
 interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
@@ -61,40 +67,14 @@ interface OverworldTraverserContext {
   overworldKeyCost: Map<string, number>;
 }
 
-const doorPrefixToDungeon: Record<string, string> = {
-  Sewers: "hc",
-  Castle: "hc",
-  Eastern: "ep",
-  Desert: "dp",
-  Hera: "toh",
-  Tower: "ct",
-  PoD: "pod",
-  Swamp: "sp",
-  Skull: "sw",
-  Thieves: "tt",
-  Ice: "ip",
-  Mire: "mm",
-  TR: "tr",
-  GT: "gt",
-};
+interface RouteSearchContext {
+  reachable: Map<string, RegionReachability>;
+  queue: string[];
+  blockedExits: { exitName: string; exit: ExitLogic[string]; from: string }[];
+}
 
-const portalToDungeon: Record<string, string> = {
-  Sanctuary: "hc",
-  "Hyrule Castle": "hc",
-  Sewer: "hc",
-  "Agahnims Tower": "ct",
-  Eastern: "ep",
-  Desert: "dp",
-  Hera: "toh",
-  "Palace of Darkness": "pod",
-  Swamp: "sp",
-  Skull: "sw",
-  "Thieves Town": "tt",
-  Ice: "ip",
-  Mire: "mm",
-  "Turtle Rock": "tr",
-  "Ganons Tower": "gt",
-};
+const doorPrefixToDungeon = DOOR_PREFIX_TO_DUNGEON;
+const portalToDungeon = PORTAL_TO_DUNGEON;
 
 export class OverworldTraverser {
   private state: GameState;
@@ -108,6 +88,10 @@ export class OverworldTraverser {
   private dungeonBigKeyGatedRegions: Map<string, Set<string>> = new Map();
   // Per-dungeon set of regions that are only reachable via small key doors
   private dungeonSmallKeyGatedRegions: Map<string, Set<string>> = new Map();
+  // Cache of DungeonTraverser instances reused across processPendingDungeons iterations.
+  // State is immutable for this traverser's lifetime, so exit metadata + key caches
+  // computed in the dungeon traverser's constructor can be reused.
+  private dungeonTraverserCache: Map<string, DungeonTraverser> = new Map();
 
   // Whether the world state counts as "inverted" (player starts in DW)
   private readonly isInverted: boolean;
@@ -115,6 +99,7 @@ export class OverworldTraverser {
   private isOwrActive: boolean = false;
   // Pre-computed metadata from the regions graph (shared with regionsProvider)
   private metadata: RegionMetadata;
+  private canReachFromInProgress: Set<string> = new Set();
 
   constructor(state: GameState, logicSet: LogicSet, metadataOrProtection?: RegionMetadata | "partial" | "dangerous", protection?: "partial" | "dangerous") {
     // Support legacy signature: (state, logicSet, protection?)
@@ -227,78 +212,155 @@ export class OverworldTraverser {
     return undefined;
   }
 
+  private resolveRouteRegionName(regionOrEntranceName: string): string | undefined {
+    if (this.regions[regionOrEntranceName]) return regionOrEntranceName;
+    return this.metadata.entranceToParentRegion.get(regionOrEntranceName);
+  }
+
+  private isResetRegion(regionName: string): boolean {
+    return regionName === "Menu" || regionName === "Flute Sky" || this.regions[regionName]?.type === "Menu";
+  }
+
+  private evaluateRouteExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: RouteSearchContext): LogicStatus {
+    const evalCtx: EvaluationContext = {
+      regionName: fromRegion,
+      canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
+      canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
+      effectiveWorldState: this.getEffectiveWorldState(fromRegion, exit.to),
+    };
+
+    return this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
+  }
+
+  private setRouteReachability(ctx: RouteSearchContext, regionName: string, status: LogicStatus, bunnyState: boolean): boolean {
+    const existing = ctx.reachable.get(regionName);
+    if (!existing) {
+      ctx.reachable.set(regionName, { status, bunnyState });
+      ctx.queue.push(regionName);
+      return true;
+    }
+
+    const combinedStatus = combineStatuses(existing.status, status);
+    const combinedBunnyState = existing.bunnyState && bunnyState;
+    if (combinedStatus !== existing.status || combinedBunnyState !== existing.bunnyState) {
+      ctx.reachable.set(regionName, { status: combinedStatus, bunnyState: combinedBunnyState });
+      ctx.queue.push(regionName);
+      return true;
+    }
+
+    return false;
+  }
+
+  private processRouteExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromReachability: RegionReachability, ctx: RouteSearchContext): boolean {
+    if (!exit?.to || this.isResetRegion(exit.to)) return false;
+
+    const exitStatus = this.evaluateRouteExitRequirements(exit, fromRegion, ctx);
+    if (exitStatus === "unavailable") {
+      ctx.blockedExits.push({ exitName, exit, from: fromRegion });
+      return false;
+    }
+
+    const newBunnyState = this.computeBunnyStateForExit(fromReachability.bunnyState, exit.type, exitName, exit.to);
+    const newStatus = minimumStatus(fromReachability.status, exitStatus);
+    return this.setRouteReachability(ctx, exit.to, newStatus, newBunnyState);
+  }
+
+  private reevaluateRouteBlockedExits(ctx: RouteSearchContext): boolean {
+    let madeProgress = false;
+    const stillBlocked: RouteSearchContext["blockedExits"] = [];
+
+    for (const { exitName, exit, from } of ctx.blockedExits) {
+      if (!exit?.to || this.isResetRegion(exit.to)) continue;
+      const fromReachability = ctx.reachable.get(from);
+      if (!fromReachability) {
+        stillBlocked.push({ exitName, exit, from });
+        continue;
+      }
+
+      const exitStatus = this.evaluateRouteExitRequirements(exit, from, ctx);
+      if (exitStatus === "unavailable") {
+        stillBlocked.push({ exitName, exit, from });
+        continue;
+      }
+
+      const newBunnyState = this.computeBunnyStateForExit(fromReachability.bunnyState, exit.type, exitName, exit.to);
+      const newStatus = minimumStatus(fromReachability.status, exitStatus);
+      if (this.setRouteReachability(ctx, exit.to, newStatus, newBunnyState)) {
+        madeProgress = true;
+      }
+    }
+
+    ctx.blockedExits = stillBlocked;
+    return madeProgress;
+  }
+
+  private searchRouteFromRegion(sourceRegion: string, targetRegion: string, sourceBunnyState: boolean): LogicStatus {
+    const ctx: RouteSearchContext = {
+      reachable: new Map([[sourceRegion, { status: "available", bunnyState: sourceBunnyState }]]),
+      queue: [sourceRegion],
+      blockedExits: [],
+    };
+
+    let madeProgress = true;
+    while (madeProgress) {
+      madeProgress = false;
+
+      while (ctx.queue.length > 0) {
+        const current = ctx.queue.shift()!;
+        const regionReachability = ctx.reachable.get(current)!;
+        const regionLogic = this.regions[current];
+        if (!regionLogic?.exits) continue;
+
+        for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+          if (this.processRouteExit(exitName, exit, current, regionReachability, ctx)) {
+            madeProgress = true;
+          }
+        }
+      }
+
+      if (this.reevaluateRouteBlockedExits(ctx)) {
+        madeProgress = true;
+      }
+    }
+
+    return ctx.reachable.get(targetRegion)?.status ?? "unavailable";
+  }
+
+  private canReachFromRegion(sourceRegionName: string, targetRegionName: string, knownReachable?: Map<string, RegionReachability>): LogicStatus {
+    const sourceRegion = this.resolveRouteRegionName(sourceRegionName);
+    const targetRegion = this.resolveRouteRegionName(targetRegionName);
+    if (!sourceRegion || !targetRegion) return "unavailable";
+
+    const knownSource = knownReachable?.get(sourceRegion);
+    if (knownReachable && (!knownSource || knownSource.status === "unavailable")) {
+      return "unavailable";
+    }
+
+    if (sourceRegion === targetRegion) {
+      return knownSource?.status ?? "available";
+    }
+
+    const searchKey = `${sourceRegion}\u0000${targetRegion}`;
+    if (this.canReachFromInProgress.has(searchKey)) {
+      return "unavailable";
+    }
+
+    this.canReachFromInProgress.add(searchKey);
+    try {
+      const sourceStatus = knownSource?.status ?? "available";
+      const routeStatus = this.searchRouteFromRegion(sourceRegion, targetRegion, knownSource?.bunnyState ?? false);
+      return minimumStatus(sourceStatus, routeStatus);
+    } finally {
+      this.canReachFromInProgress.delete(searchKey);
+    }
+  }
+
   public calculateAll() {
     const reachableRegions = this.traverse();
     const locationsLogic = this.evaluateLocations(reachableRegions);
     const entrancesLogic = this.evaluateEntrances(reachableRegions);
     return { locationsLogic, entrancesLogic };
   }
-
-  private bunnyExemptLocations: Set<string> = new Set([
-    "Link's Uncle",
-    "Sahasrahla",
-    "Sick Kid",
-    "Lost Woods Hideout",
-    "Lumberjack Tree",
-    "Checkerboard Cave",
-    "Potion Shop",
-    "Spectacle Rock Cave",
-    "Pyramid",
-    "Old Man",
-    "Hype Cave - Generous Guy",
-    "Peg Cave",
-    "Bumper Cave Ledge",
-    "Dark Blacksmith Ruins",
-    "Spectacle Rock",
-    "Bombos Tablet",
-    "Ether Tablet",
-    "Purple Chest",
-    "Blacksmith",
-    "Master Sword Pedestal",
-    "Bottle Merchant",
-    "Sunken Treasure", // TODO - Only if dam can be pulled
-    "Desert Ledge",
-    "Stumpy",
-    "Murahdahla",
-    "Kakariko Shop - Left",
-    "Kakariko Shop - Middle",
-    "Kakariko Shop - Right",
-    "Lake Hylia Shop - Left",
-    "Lake Hylia Shop - Middle",
-    "Lake Hylia Shop - Right",
-    "Potion Shop - Left",
-    "Potion Shop - Middle",
-    "Potion Shop - Right",
-    "Capacity Upgrade - Left",
-    "Capacity Upgrade - Right",
-    "Village of Outcasts Shop - Left",
-    "Village of Outcasts Shop - Middle",
-    "Village of Outcasts Shop - Right",
-    "Dark Lake Hylia Shop - Left",
-    "Dark Lake Hylia Shop - Middle",
-    "Dark Lake Hylia Shop - Right",
-    "Dark Death Mountain Shop - Left",
-    "Dark Death Mountain Shop - Middle",
-    "Dark Death Mountain Shop - Right",
-    "Dark Lumberjack Shop - Left",
-    "Dark Lumberjack Shop - Middle",
-    "Dark Lumberjack Shop - Right",
-    "Dark Potion Shop - Left",
-    "Dark Potion Shop - Middle",
-    "Dark Potion Shop - Right",
-    "Red Shield Shop - Left",
-    "Red Shield Shop - Middle",
-    "Red Shield Shop - Right",
-    "Old Man Sword Cave Item 1",
-    "Take - Any  # 1 Item 1",
-    "Take - Any  # 1 Item 2",
-    "Take - Any  # 2 Item 1",
-    "Take - Any  # 2 Item 2",
-    "Take - Any  # 3 Item 1",
-    "Take - Any  # 3 Item 2",
-    "Take - Any  # 4 Item 1",
-    "Take - Any  # 4 Item 2",
-  ]);
 
   private getDungeonIdFromRegion(regionName: string): string | undefined {
     const dungeonPrefixes = Object.keys(doorPrefixToDungeon);
@@ -406,6 +468,7 @@ export class OverworldTraverser {
     const evalCtx: EvaluationContext = {
       regionName: fromRegion,
       canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
+      canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
       effectiveWorldState: this.getEffectiveWorldState(fromRegion, exit.to),
     };
 
@@ -517,7 +580,11 @@ export class OverworldTraverser {
       const inventoryKeys = this.state.dungeons[dungeonId]?.smallKeys ?? 0;
 
       // Traverse the dungeon with a canReach callback for overworld regions.
-      const dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId, "partial");
+      let dungeonTraverser = this.dungeonTraverserCache.get(dungeonId);
+      if (!dungeonTraverser) {
+        dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId, "partial");
+        this.dungeonTraverserCache.set(dungeonId, dungeonTraverser);
+      }
       const canReachOverworldRegion = (regionName: string): LogicStatus => {
         const regionReach = ctx.reachable.get(regionName);
         if (!regionReach) return "unavailable";
@@ -622,7 +689,7 @@ export class OverworldTraverser {
         }
 
         // TODO: Refactor this to generically determine bunny availability
-        if (regionReachability?.bunnyState && !this.bunnyExemptLocations.has(locationName)) {
+        if (regionReachability?.bunnyState && !BUNNY_EXEMPT_LOCATIONS.has(locationName)) {
           locationStatuses[locationName] = "unavailable";
           continue;
         }
@@ -642,6 +709,7 @@ export class OverworldTraverser {
           crystalStates: regionReachability.crystalStates,
           isBunny: regionReachability.bunnyState,
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
+          canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, reachable),
           effectiveWorldState: this.getEffectiveWorldState(regionName),
         };
 
@@ -650,46 +718,46 @@ export class OverworldTraverser {
       }
     }
 
-    // Post-process: Apply big key inference for non-wild big keys
-    // When BK is NOT in the world pool, infer whether BK-locked locations are accessible
-    // based on whether the player can reach all potential BK locations in the dungeon
-    if (!this.state.settings.wildBigKeys) {
-      const bkAvailability = this.computeDungeonKeyAvailability(locationStatuses, "bigKey");
+    // Post-process: Apply key inference for non-wild big/small keys.
+    // When a key type is NOT in the world pool, infer whether key-locked
+    // locations are accessible based on whether the player can reach all
+    // potential key locations in the dungeon.
+    type KeyInferencePass = {
+      enabled: boolean;
+      keyType: "bigKey" | "smallKey";
+      gatedRegions: Map<string, Set<string>>;
+      isLocked: (locationName: string, regionName: string, gated: Set<string> | undefined) => boolean;
+    };
+    const passes: KeyInferencePass[] = [
+      {
+        enabled: !this.state.settings.wildBigKeys,
+        keyType: "bigKey",
+        gatedRegions: this.dungeonBigKeyGatedRegions,
+        isLocked: (locationName, regionName, gated) =>
+          (gated?.has(regionName) ?? false) || locationName.includes("Big Chest"),
+      },
+      {
+        enabled: this.state.settings.wildSmallKeys === "inDungeon",
+        keyType: "smallKey",
+        gatedRegions: this.dungeonSmallKeyGatedRegions,
+        isLocked: (_locationName, regionName, gated) => gated?.has(regionName) ?? false,
+      },
+    ];
+
+    for (const pass of passes) {
+      if (!pass.enabled) continue;
+      const availabilityMap = this.computeDungeonKeyAvailability(locationStatuses, pass.keyType);
 
       for (const [regionName, regionLogic] of Object.entries(this.regions)) {
         if (!regionLogic.locations || regionLogic.type !== "Dungeon") continue;
         const dungeonId = this.getDungeonIdFromRegion(regionName);
         if (!dungeonId) continue;
-        const availability = bkAvailability.get(dungeonId);
+        const availability = availabilityMap.get(dungeonId);
         if (!availability || availability === "available") continue;
 
-        const bkGated = this.dungeonBigKeyGatedRegions.get(dungeonId);
+        const gated = pass.gatedRegions.get(dungeonId);
         for (const locationName of Object.keys(regionLogic.locations)) {
-          const isBKLocked = bkGated?.has(regionName) || locationName.includes("Big Chest");
-          if (isBKLocked && locationStatuses[locationName] !== undefined) {
-            locationStatuses[locationName] = minimumStatus(locationStatuses[locationName], availability);
-          }
-        }
-      }
-    }
-
-    // Post-process: Apply small key inference for non-wild small keys
-    // When SK is NOT in the world pool (inDungeon), infer whether SK-locked locations are accessible
-    // based on whether the player can reach all potential SK locations in the dungeon
-    if (this.state.settings.wildSmallKeys === "inDungeon") {
-      const skAvailability = this.computeDungeonKeyAvailability(locationStatuses, "smallKey");
-
-      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
-        if (!regionLogic.locations || regionLogic.type !== "Dungeon") continue;
-        const dungeonId = this.getDungeonIdFromRegion(regionName);
-        if (!dungeonId) continue;
-        const availability = skAvailability.get(dungeonId);
-        if (!availability || availability === "available") continue;
-
-        const skGated = this.dungeonSmallKeyGatedRegions.get(dungeonId);
-        for (const locationName of Object.keys(regionLogic.locations)) {
-          const isSKLocked = skGated?.has(regionName);
-          if (isSKLocked && locationStatuses[locationName] !== undefined) {
+          if (pass.isLocked(locationName, regionName, gated) && locationStatuses[locationName] !== undefined) {
             locationStatuses[locationName] = minimumStatus(locationStatuses[locationName], availability);
           }
         }
@@ -723,6 +791,7 @@ export class OverworldTraverser {
         const evalCtx: EvaluationContext = {
           regionName: parentRegion,
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
+          canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, reachable),
           effectiveWorldState: this.getEffectiveWorldState(parentRegion, exitDef.to),
         };
         const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exitDef.requirements, evalCtx);
@@ -787,8 +856,7 @@ export class OverworldTraverser {
       if (!isBigKey) {
         const dungeonData = DungeonsData[dungeonId]?.totalLocations;
         const hasChestKeys = (dungeonData?.smallkeys ?? 0) > 0;
-        // TODO: Extract keys, cavekeys - use POT_KEY_SHUFFLE_MODES
-        const hasPotteryKeys = ["keys", "cavekeys", "lottery", "dungeon"].includes(this.state.settings.pottery) && (dungeonData?.keypots ?? 0) > 0;
+        const hasPotteryKeys = isPotteryKeyShuffle(this.state.settings.pottery) && (dungeonData?.keypots ?? 0) > 0;
         const hasDropKeys = this.state.settings.enemyDrop !== "none" && (dungeonData?.keydrops ?? 0) > 0;
         if (!hasChestKeys && !hasPotteryKeys && !hasDropKeys) {
           result.set(dungeonId, "available");
@@ -829,7 +897,7 @@ export class OverworldTraverser {
           // Key Drop/Pot Key: when their respective settings are off, these locations
           // have fixed keys and aren't part of the shuffle pool (applies to both BK and SK).
           if (locationName.includes("Key Drop") && this.state.settings.enemyDrop === "none") continue;
-          if (locationName.endsWith("Pot Key") && !["keys", "cavekeys", "lottery", "dungeon"].includes(this.state.settings.pottery)) continue;
+          if (locationName.endsWith("Pot Key") && !isPotteryKeyShuffle(this.state.settings.pottery)) continue;
 
           hasAnyNonGatedLocation = true;
           const status = locationStatuses[locationName];
@@ -879,6 +947,7 @@ export class OverworldTraverser {
         regionName: from,
         isBunny: fromRegionReachability.bunnyState,
         canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
+        canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
         effectiveWorldState: this.getEffectiveWorldState(from, exit.to),
       };
 
@@ -926,6 +995,7 @@ export class OverworldTraverser {
         const evalCtx: EvaluationContext = {
           regionName: current,
           canReachRegion: (name: string) => (actuallyReachable.has(name) ? "available" : "unavailable"),
+          canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target),
           effectiveWorldState: this.getEffectiveWorldState(current, exit.to),
         };
         const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
@@ -939,59 +1009,48 @@ export class OverworldTraverser {
       }
     }
 
-    // BFS with all-items to find ALL dungeon portals
-    const visited = new Set<string>();
+    // BFS with all-items to find ALL dungeon portals.
+    const visited = new Set<string>(["Menu", "Flute Sky"]);
     const queue = ["Menu", "Flute Sky"];
-
-    for (const region of queue) {
-      visited.add(region);
-    }
 
     while (queue.length > 0) {
       const current = queue.shift()!;
       const regionLogic = this.regions[current];
-
       if (!regionLogic?.exits) continue;
 
       for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
-        if (!exit?.to) continue; // Severed exit — skip
+        if (!exit?.to) continue;
 
-        // Evaluate with all-items evaluator
         const evalCtx: EvaluationContext = {
           regionName: current,
           canReachRegion: (name: string) => (visited.has(name) ? "available" : "unavailable"),
+          canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target),
           effectiveWorldState: this.getEffectiveWorldState(current, exit.to),
         };
         const status = this.allItemsEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
-
         if (status === "unavailable") continue;
 
-        // If this is a dungeon portal, register it
         if (exit.type === "Dungeon") {
           const dungeonId = this.getDungeonIdFromPortal(exit.to);
-          if (dungeonId) {
-            if (!ctx.allDiscoveredPortals.has(dungeonId)) {
-              ctx.allDiscoveredPortals.set(dungeonId, new Map());
-            }
-            if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
-              // Discovery only — status starts as "unavailable" and will be set
-              // accurately by the main BFS (processExit), which accounts for
-              // accumulated path degradation (e.g., ool from dark rooms).
-              const portalBunny = actuallyReachable.has(current)
-                ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, exit.type ?? "Dungeon", exitName, exit.to)
-                : false;
-
-              ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
-                bunnyState: portalBunny,
-                status: "unavailable",
-                keyCost: 0,
-              });
-            }
+          if (!dungeonId) continue;
+          if (!ctx.allDiscoveredPortals.has(dungeonId)) {
+            ctx.allDiscoveredPortals.set(dungeonId, new Map());
+          }
+          if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
+            // Status starts as "unavailable" — main BFS upgrades it. Bunny
+            // state is computed from the actual-reachable source if known.
+            const portalBunny = actuallyReachable.has(current)
+              ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, exit.type ?? "Dungeon", exitName, exit.to)
+              : false;
+            ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
+              bunnyState: portalBunny,
+              status: "unavailable",
+              keyCost: 0,
+            });
           }
           continue;
         }
 
-        // For overworld regions, add to discovery queue
         if (!visited.has(exit.to)) {
           visited.add(exit.to);
           queue.push(exit.to);
