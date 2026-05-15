@@ -61,7 +61,7 @@ describe("MapLocation", () => {
     renderWithStore(
       <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
-    const el = document.querySelector(".absolute") as HTMLElement;
+    const el = document.querySelector(".absolute.inset-0") as HTMLElement;
     expect(el).toBeTruthy();
     expect(el.className).toContain("bg-status-unavailable");
   });
@@ -71,7 +71,7 @@ describe("MapLocation", () => {
     renderWithStore(
       <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
-    const el = document.querySelector(".absolute") as HTMLElement;
+    const el = document.querySelector(".absolute.inset-0") as HTMLElement;
     expect(el.className).toContain("bg-status-available");
   });
 
@@ -80,7 +80,7 @@ describe("MapLocation", () => {
     renderWithStore(
       <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
-    const el = document.querySelector(".absolute") as HTMLElement;
+    const el = document.querySelector(".absolute.inset-0") as HTMLElement;
     expect(el.className).toContain("bg-status-possible");
   });
 
@@ -90,7 +90,7 @@ describe("MapLocation", () => {
     renderWithStore(
       <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
-    const el = document.querySelector(".absolute") as HTMLElement;
+    const el = document.querySelector(".absolute.inset-0") as HTMLElement;
     expect(el.className).toContain("bg-status-checked");
   });
 
@@ -99,7 +99,7 @@ describe("MapLocation", () => {
     renderWithStore(
       <MapLocation name="Test Location" location={defaultLocation} type="item" isEntrance={false} />,
     );
-    const el = document.querySelector(".absolute") as HTMLElement;
+    const el = document.querySelector(".absolute.inset-0") as HTMLElement;
     expect(el.className).toContain("is-hatched");
   });
 

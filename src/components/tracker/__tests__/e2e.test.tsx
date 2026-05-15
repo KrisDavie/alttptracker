@@ -38,7 +38,7 @@ describe("E2E: Default settings", () => {
     // LogicProvider runs the logic engine in a useEffect, so we need to wait
     // for the Redux dispatch cycle to complete and the component to re-render.
     await waitFor(() => {
-      const el = document.querySelector(".absolute") as HTMLElement;
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
       expect(el.className).toContain("bg-status-available");
     });
@@ -60,7 +60,7 @@ describe("E2E: Default settings", () => {
     renderLocationWithLogic("Mini Moldorm Cave", store);
 
     await waitFor(() => {
-      const el = document.querySelector(".absolute") as HTMLElement;
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
       expect(el.className).toContain("bg-status-available");
     });
@@ -79,7 +79,7 @@ describe("E2E: Default settings", () => {
     renderLocationWithLogic("Kakariko Well");
 
     await waitFor(() => {
-      const el = document.querySelector(".absolute") as HTMLElement;
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
       // Not all locations are available, so the square should reflect the best status
       expect(el.className).toContain("bg-status-available");
@@ -121,7 +121,7 @@ describe("E2E: Keysanity with ool checks", () => {
     renderLocationWithLogic("Tower of Hera", store);
 
     await waitFor(() => {
-      const el = document.querySelector(".absolute") as HTMLElement;
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
       // Not all locations are available, so the square should reflect the best status
       expect(el.className).toContain("bg-status-ool");
@@ -158,7 +158,7 @@ describe("E2E: Keysanity with ool checks", () => {
     renderLocationWithLogic("Tower of Hera", store);
 
     await waitFor(() => {
-      const el = document.querySelector(".absolute") as HTMLElement;
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
       // Not all locations are available, so the square should reflect the best status
       expect(el.className).toContain("bg-status-ool");
