@@ -368,17 +368,20 @@ export class RequirementEvaluator {
         // TODO Follower shuffle logic
         return this.resolveComplex("canReach|Frog Prison", ctx);
       case "canRescueBlacksmith":
-        return minimumStatus(this.resolveSimple("canCollectFrog", ctx), this.resolveComplex("canReachFrom|Frog Prison|Blacksmiths Hut", ctx));
+        return minimumStatus(this.resolveSimple("canCollectFrog", ctx), this.resolveComplex("canReach|Blacksmiths Hut", ctx));
       case "canCollectPurpleChest":
         // TODO Follower shuffle logic
         return minimumStatus(this.resolveComplex("canReach|Hammer Pegs Area", ctx), this.resolveSimple("canRescueBlacksmith", ctx));
       case "canDeliverPurpleChest":
-        return minimumStatus(this.resolveSimple("canCollectPurpleChest", ctx), this.resolveComplex("canReachFrom|Hammer Pegs Area|Middle Aged Man", ctx));
+        return minimumStatus(this.resolveSimple("canCollectPurpleChest", ctx), this.resolveComplex("canReach|Middle Aged Man", ctx));
       case "canCollectBigBomb":
         // TODO Follower shuffle logic
         return minimumStatus(this.resolveComplex("canReach|Big Bomb Shop", ctx), this.resolveSimple("canBuyBigBomb", ctx));
       case "canOpenPyramidFairy":
-        return minimumStatus(this.resolveSimple("canCollectBigBomb", ctx), this.resolveComplex("canReachFrom|Big Bomb Shop|Pyramid Area", ctx));
+        return minimumStatus(
+          this.resolveSimple("canCollectBigBomb", ctx),
+          this.state.settings.followerShuffle || ["inverted", "standverted"].includes(this.state.settings.worldState) ? this.resolveComplex("canReach|Pyramid Area", ctx) : this.resolveComplex("canReachFrom|Big Bomb Shop|Pyramid Area", ctx),
+        );
       case "canOpenTTAttic":
         return minimumStatus(this.resolveComplex("canReach|Thieves Attic", ctx), this.resolveSimple("bomb", ctx));
       case "canCollectBlind":
@@ -523,15 +526,15 @@ export class RequirementEvaluator {
       case "canTombRaider":
         return this.state.settings.sequenceBreaks.canTombRaider && this.hasItem("hookshot") && (this.state.items.sword.amount >= 2 || this.hasItem("bomb")) ? "ool" : "unavailable";
       case "canSpeckyClip":
-        return this.state.settings.sequenceBreaks.canSpeckyClip && (this.hasItem("hookshot") && this.hasItem("bomb")) ? "ool" : "unavailable";
+        return this.state.settings.sequenceBreaks.canSpeckyClip && this.hasItem("hookshot") && this.hasItem("bomb") ? "ool" : "unavailable";
       case "canHeraPot":
         return this.state.settings.sequenceBreaks.canHeraPot && this.hasItem("hookshot") ? "ool" : "unavailable";
       case "canMimicClip":
         return this.state.settings.sequenceBreaks.canMimicClip ? "ool" : "unavailable";
       case "canMoldormBounce":
-        return this.state.settings.sequenceBreaks.canMoldormBounce && (this.hasItem("bomb") && this.hasItem("sword")) ? "ool" : "unavailable";
+        return this.state.settings.sequenceBreaks.canMoldormBounce && this.hasItem("bomb") && this.hasItem("sword") ? "ool" : "unavailable";
       case "canBombOrBonkCameraUnlock":
-        return this.state.settings.sequenceBreaks.canBombOrBonkCameraUnlock && (this.hasItem("bomb") && this.hasItem("boots")) ? "ool" : "unavailable";
+        return this.state.settings.sequenceBreaks.canBombOrBonkCameraUnlock && this.hasItem("bomb") && this.hasItem("boots") ? "ool" : "unavailable";
       case "canDarkRoomNavigateBlind":
       case "canTorchRoomNavigateBlind":
       case "canFairyReviveHover":
