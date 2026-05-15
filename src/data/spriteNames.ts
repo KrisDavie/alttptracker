@@ -250,6 +250,7 @@ const SPRITE_NAMES = [
   "lest",
   "lestat",
   "lily",
+  "lil_arge",
   "linja",
   "link",
   "link_redrawn",
