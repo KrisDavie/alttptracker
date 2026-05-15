@@ -238,7 +238,7 @@ export const allPresets: LauncherPreset[] = [
     name: "Crosskeys KD Flute Inv PB ZW",
     description: "Inverted crosskeys with key drop, activated flute, pseudoboots",
     settings: {
-      worldState: "inverted",
+      worldState: "inverted_1",
       goal: "fast_ganon",
       entranceMode: "crossed",
       pottery: "keys",
@@ -279,7 +279,7 @@ export const allPresets: LauncherPreset[] = [
     id: "invertedcrosskeys",
     name: "Inverted Crosskeys",
     description: "Inverted Crosskeys",
-    settings: { worldState: "inverted", goal: "fast_ganon", entranceMode: "crossed", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
+    settings: { worldState: "inverted_1", goal: "fast_ganon", entranceMode: "crossed", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
   },
 
   // ── Crisscross / Doors ──────────────────────────────────────────────────
@@ -307,39 +307,39 @@ export const allPresets: LauncherPreset[] = [
     id: "inverted",
     name: "Inverted",
     description: "Inverted mode, defeat Ganon",
-    settings: { worldState: "inverted" },
+    settings: { worldState: "inverted_1" },
   },
   {
     id: "inverted_startflute",
     name: "Inverted (Start Flute)",
     description: "Inverted mode with activated starting flute",
-    settings: { worldState: "inverted", activatedFlute: true },
+    settings: { worldState: "inverted_1", activatedFlute: true },
     startingItems: { flute: 1 },
   },
   {
     id: "invertedkeysanity",
     name: "Inverted Keysanity",
     description: "Inverted mode with full keysanity",
-    settings: { worldState: "inverted", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
+    settings: { worldState: "inverted_1", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
   },
   {
     id: "invertedadkeysanity",
     name: "Inverted AD Keysanity",
     description: "Inverted mode, all dungeons, full keysanity",
-    settings: { worldState: "inverted", goal: "ganon", ganonVulnerable: "ad", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
+    settings: { worldState: "inverted_1", goal: "ganon", ganonVulnerable: "ad", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true },
   },
   {
     id: "influkeys",
     name: "Influkeys",
     description: "Inverted, keysanity, activated flute, start with flute",
-    settings: { worldState: "inverted", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, activatedFlute: true },
+    settings: { worldState: "inverted_1", wildSmallKeys: "wild", wildBigKeys: true, wildMaps: true, wildCompasses: true, activatedFlute: true },
     startingItems: { flute: 1 },
   },
   {
     id: "invrosia",
     name: "Invrosia",
     description: "Inverted mode with assured sword, wild big keys and guaranteed non-dungeon item on the boss",
-    settings: { worldState: "inverted", swords: "assured", wildBigKeys: true, ambrosia: true },
+    settings: { worldState: "inverted_1", swords: "assured", wildBigKeys: true, ambrosia: true },
   },
 
   // ── Swordless / Combat Variants ─────────────────────────────────────────

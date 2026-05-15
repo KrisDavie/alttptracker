@@ -109,10 +109,13 @@ export function formatRelativeTime(timestamp: number): string {
 /**
  * Build IDB-ready state objects from starting items and preset fields.
  * Returns only the keys that need to be written (undefined = skip).
+ *
+ * @param effectiveSettings - Override for settings. Defaults to `preset.settings`.
  */
 export function buildPresetIDBState(
   startingItems: Record<string, number>,
   preset?: LauncherPreset,
+  effectiveSettings?: SettingsState,
 ): {
   items?: Record<string, { amount: number }>;
   checks?: ChecksState;
@@ -146,6 +149,8 @@ export function buildPresetIDBState(
 
   if (!preset) return result;
 
+  const settings = effectiveSettings ?? (preset.settings as SettingsState);
+
   // --- Checks (locations + entrances) ---
   const hasCheckedLocations = preset.checkedLocations && Object.keys(preset.checkedLocations).length > 0;
   const hasCheckedEntrances = preset.checkedEntrances && preset.checkedEntrances.length > 0;
@@ -171,7 +176,7 @@ export function buildPresetIDBState(
   }
 
   // --- Entrance placements ---
-  if (preset.entrancePlacements && Object.keys(preset.entrancePlacements).length > 0) {
+  if (settings.entranceMode !== "none" && preset.entrancePlacements && Object.keys(preset.entrancePlacements).length > 0) {
     const entrancesState: Record<string, Partial<EntranceData>> = {};
     for (const [entrance, destination] of Object.entries(preset.entrancePlacements)) {
       entrancesState[entrance] = {
@@ -183,6 +188,20 @@ export function buildPresetIDBState(
       };
     }
     result.entrances = entrancesState;
+  }
+
+  if (settings.entranceMode !== "none" && !settings.shuffleLinks) {
+    const entrances = result.entrances || {};
+    if (!entrances["Links House"]) {
+      entrances["Links House"] = {
+          checked: true,
+          connector: false,
+          connectorGroup: null,
+          to: "Links House",
+          oneway: false,
+        };
+    }
+    result.entrances = entrances;
   }
 
   // --- Dungeon state ---

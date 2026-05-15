@@ -202,7 +202,7 @@ const LaunchPage: React.FC = () => {
         await idbDriver.setItem(prefix + "settings", JSON.stringify({ ...settings, spriteName }));
 
         const preset = selectedPresetId ? getPresetById(selectedPresetId) : undefined;
-        const presetState = buildPresetIDBState(startingItems, preset);
+        const presetState = buildPresetIDBState(startingItems, preset, settings);
         if (presetState.items) await idbDriver.setItem(prefix + "items", JSON.stringify(presetState.items));
         if (presetState.checks) await idbDriver.setItem(prefix + "checks", JSON.stringify(presetState.checks));
         if (presetState.entrances) await idbDriver.setItem(prefix + "entrances", JSON.stringify(presetState.entrances));

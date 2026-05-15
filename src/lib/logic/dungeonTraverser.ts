@@ -209,6 +209,13 @@ export class DungeonTraverser {
         ctx.regionMaxKeysUsed.set(regionName, entryKeyCost.get(regionName) ?? 0);
       }
       this.bfsMaxKeys(ctx, entryRegions, entryKeyCost, keyCountingEvaluator);
+      // In partial mode, also run bfsMaxKeys with the player's actual inventory.
+      // The all-items pass can mask contention when items (e.g. hookshot) open
+      // alternate paths the actual player can't take. Taking max ensures
+      // worst-case key spending is reflected even when items are missing.
+      if (this.protection === "partial") {
+        this.bfsMaxKeys(ctx, entryRegions, entryKeyCost, this.requirementEvaluator);
+      }
       this.propagateMaxKeysThroughCanReach(ctx);
 
       // Default maxKeysUsed = minKeysUsed for regions with no key door choices

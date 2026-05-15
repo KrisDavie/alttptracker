@@ -93,7 +93,7 @@ function launchDirectSession(sessionId: string, urlParams: URLSearchParams) {
 
   // Pre-seed preset state (items, checks, entrances, dungeons)
   const preset = presetId ? getPresetById(presetId) : undefined;
-  const presetState = buildPresetIDBState(startingItems, preset);
+  const presetState = buildPresetIDBState(startingItems, preset, settings);
   if (presetState.items) idbDriver.setItem(prefix + "items", JSON.stringify(presetState.items)).catch(() => {});
   if (presetState.checks) idbDriver.setItem(prefix + "checks", JSON.stringify(presetState.checks)).catch(() => {});
   if (presetState.entrances) idbDriver.setItem(prefix + "entrances", JSON.stringify(presetState.entrances)).catch(() => {});

@@ -283,11 +283,7 @@ function applyEntranceShuffle(
     const pool = locData.entrance_modes?.[entranceMode];
     if (!pool || pool === "vanilla") continue;
 
-    // When Link's House isn't shuffled, keep the S&Q destination vanilla.
-    // Links House is always kept (Open/Standard/Inverted_1 S&Q destination).
-    // Big Bomb Shop is only kept in Inverted mode (it's the Inverted S&Q destination).
     if (!state.settings.shuffleLinks) {
-      if (entranceName === "Links House") continue;
       if (entranceName === "Big Bomb Shop" && state.settings.worldState === "inverted") continue;
     }
 
@@ -332,7 +328,6 @@ function applyEntranceShuffle(
 
     // Skip entrances kept vanilla above
     if (!state.settings.shuffleLinks) {
-      if (entranceName === "Links House") continue;
       if (entranceName === "Big Bomb Shop" && state.settings.worldState === "inverted") continue;
     }
 

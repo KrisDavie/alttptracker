@@ -1,3 +1,4 @@
+// TODO: Consider marking one way entrances differently
 export interface EntranceConnectorGroup {
   type: 'cave' | 'dungeon';
   entrances: string[];
@@ -43,6 +44,14 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
   "death_mountain_return_cave": {
     type: "cave",
     entrances: ["Death Mountain Return Cave (West)", "Death Mountain Return Cave (East)"],
+  },
+  "old_man_cave": {
+    type: "cave",
+    entrances: ["Old Man Cave (East)", "Old Man Cave (West)"],
+  },
+  "old_man_house": {
+    type: "cave",
+    entrances: ["Old Man House (Bottom)", "Old Man House (Top)"],
   },
   "elder_house": {
     type: "cave",

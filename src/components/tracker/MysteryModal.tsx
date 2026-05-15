@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { resetSettings, setSettings } from "../../store/settingsSlice";
+import { resetSettings, setSettings, type SettingsState } from "../../store/settingsSlice";
 import { setModalClose } from "../../store/trackerSlice";
 import { resetBossesForShuffle, resetDungeons } from "@/store/dungeonsSlice";
 import { setAutotrackingSettings } from "@/store/autotrackerSlice";
@@ -53,16 +53,19 @@ function MysteryModal() {
       const presetId = session?.presetId;
       const preset = presetId ? getPresetById(presetId) : undefined;
       const startingItems = session?.startingItems || preset?.startingItems || {};
-      
-      const presetState = buildPresetIDBState(startingItems, preset);
+
+      // Use the settings the player launched with (stored on the session),
+      // falling back to the preset defaults if no session settings are stored.
+      const launchSettings = (session?.settings ?? preset?.settings) as SettingsState | undefined;
+
+      const presetState = buildPresetIDBState(startingItems, preset, launchSettings);
 
       dispatch(resetItems(presetState.items || undefined));
       dispatch(resetChecks(presetState.checks || undefined));
       dispatch(resetEntrances(presetState.entrances || undefined));
       dispatch(resetDungeons(presetState.dungeons || undefined));
-      console.log(preset?.settings)
-      if (preset?.settings) {
-        dispatch(resetSettings(preset.settings));
+      if (launchSettings) {
+        dispatch(resetSettings(launchSettings));
       }
       
       dispatch(resetOverworldState());

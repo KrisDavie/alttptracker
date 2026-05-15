@@ -588,6 +588,32 @@ describe("LogicEngine", () => {
   });
 
   describe("IP Key Logic", () => {
+    it("[SK] should mark the spike chest as possible with 0 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("ip", { smallKeys: 0, bigKey: false }).build();
+
+      state.items.somaria.amount = 0; // Remove somaria to force key usage
+      state.items.hookshot.amount = 0; // Remove hookshot to force key usage
+      // Start with 0 keys
+      // Collect Jelly Key Drop - now 1 key
+      // Open Ice Jelly Key Down Stairs - now 0 keys
+      // Collect Conveyor Key Drop - now 1 key
+      // Open Ice Conveyor SW - now 0 keys
+      // Collect Ice Palace - Many Pots Pot Key - now 1 key
+      // Open Ice Lonely Freezor NE - now 0 keys
+      // No more keys available to collect (Hammer Block Key Drop is behind a locked door or hookshot)
+      // Cannot open Ice Spike Cross ES - needs another key
+      // Cannot open Ice Switch Room ES - needs another key
+      // Cannot canReach|Ice Switch Room
+      // Without somaria, cannot get to antechamber
+      // Without hookshot, cannot reach Spike room
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Ice Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Ice Palace - Spike Room"]).toBe("possible");
+    });
     it("[SK] should mark the boss as possible with less than 2 wild small keys", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("ip", { smallKeys: 1, bigKey: true }).build();
 

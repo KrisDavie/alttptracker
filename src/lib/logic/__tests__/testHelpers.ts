@@ -1,5 +1,5 @@
 import type { ItemsState } from "@/store/itemsSlice";
-import { type SettingsState, type UserSequenceBreaks} from "@/store/settingsSlice";
+import { type SettingsState, type UserSequenceBreaks } from "@/store/settingsSlice";
 import type { DungeonState, DungeonsState } from "@/store/dungeonsSlice";
 import type { EntranceData, EntrancesState } from "@/store/entrancesSlice";
 import type { OverworldState } from "@/store/overworldSlice";
@@ -11,7 +11,6 @@ import { getLogicSet, type LogicMode } from "../logicMapper";
 import { buildEffectiveRegions } from "../regionsProvider";
 import type { RegionLogic } from "@/data/logic/logicTypes";
 import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
-
 
 /**
  * Helper to create a default items state with all items at 0
@@ -100,9 +99,9 @@ export function createSettings(overrides: Partial<SettingsState>): SettingsState
   // Set all sequence breaks to false by default for easier testing, then apply overrides
   // Loop through all sequence break keys and set to false if not overridden
   for (const key of Object.keys(settings.sequenceBreaks) as (keyof UserSequenceBreaks)[]) {
-      settings.sequenceBreaks[key] = false;
-    }
-  
+    settings.sequenceBreaks[key] = false;
+  }
+
   return { ...settings, ...overrides };
 }
 
@@ -129,7 +128,7 @@ function createDefaultDungeonState(dungeonId: string): DungeonState {
       bossDefeated: false,
       prize: false,
       prizeCollected: false,
-    }
+    },
   };
 }
 
@@ -195,17 +194,17 @@ export function createEntrances(config: Record<string, Partial<EntranceData>>): 
  */
 
 const vanillaPrizes = {
-  "ep": "greenPendant",
-  "dp": "pendant",
-  "toh": "pendant",
-  "pod": "crystal",
-  "sp": "crystal",
-  "sw": "crystal",
-  "tt": "crystal",
-  "ip": "redCrystal",
-  "mm": "redCrystal",
-  "tr": "crystal",
-}
+  ep: "greenPendant",
+  dp: "pendant",
+  toh: "pendant",
+  pod: "crystal",
+  sp: "crystal",
+  sw: "crystal",
+  tt: "crystal",
+  ip: "redCrystal",
+  mm: "redCrystal",
+  tr: "crystal",
+};
 
 export class GameStateBuilder {
   private items: ItemsState;
@@ -368,6 +367,16 @@ export class GameStateBuilder {
   }
 
   build() {
+    if (this.settings.entranceMode !== "none" && !this.settings.shuffleLinks) {
+      this.entrances["Links House"] = {
+        checked: true,
+        connector: false,
+        connectorGroup: null,
+        to: "Links House",
+        oneway: false,
+      };
+    }
+
     return {
       items: this.items,
       settings: this.settings,
@@ -393,7 +402,7 @@ export function gameState(): GameStateBuilder {
 export function getDungeonKeyInfo(
   dungeonId: string,
   state: ReturnType<GameStateBuilder["build"]>,
-  logicMode: LogicMode = "noglitches"
+  logicMode: LogicMode = "noglitches",
 ): {
   inventoryKeys: number;
   potentialKeys: string[];
@@ -402,39 +411,39 @@ export function getDungeonKeyInfo(
   const logicSet = getLogicSet(logicMode);
   const { regions: effectiveRegions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
   const engine = new OverworldTraverser(state, { ...logicSet, regions: effectiveRegions }, metadata);
-  
+
   // Run calculation to populate internal state
   engine.calculateAll();
-  
+
   const inventoryKeys = state.dungeons[dungeonId]?.smallKeys || 0;
   const potentialKeys: string[] = [];
   const keyDoorsFound: string[] = [];
-  
+
   // Scan regions for key locations
   const regions = logicSet.regions as Record<string, { locations?: Record<string, unknown>; exits?: Record<string, { to: string }> }>;
-  
+
   const dungeonPrefixes: Record<string, string[]> = {
-    "hc": ["Sewers", "Castle"],
-    "ep": ["Eastern"],
-    "dp": ["Desert"],
-    "toh": ["Hera"],
-    "ct": ["Tower"],
-    "pod": ["PoD"],
-    "sp": ["Swamp"],
-    "sw": ["Skull"],
-    "tt": ["Thieves"],
-    "ip": ["Ice"],
-    "mm": ["Mire"],
-    "tr": ["TR"],
-    "gt": ["GT"],
+    hc: ["Sewers", "Castle"],
+    ep: ["Eastern"],
+    dp: ["Desert"],
+    toh: ["Hera"],
+    ct: ["Tower"],
+    pod: ["PoD"],
+    sp: ["Swamp"],
+    sw: ["Skull"],
+    tt: ["Thieves"],
+    ip: ["Ice"],
+    mm: ["Mire"],
+    tr: ["TR"],
+    gt: ["GT"],
   };
-  
+
   const prefixes = dungeonPrefixes[dungeonId] || [];
-  
+
   for (const [regionName, region] of Object.entries(regions)) {
-    const belongsToDungeon = prefixes.some(p => regionName.startsWith(p));
+    const belongsToDungeon = prefixes.some((p) => regionName.startsWith(p));
     if (!belongsToDungeon) continue;
-    
+
     // Check for key locations
     if (region.locations) {
       for (const locName of Object.keys(region.locations)) {
@@ -443,7 +452,7 @@ export function getDungeonKeyInfo(
         }
       }
     }
-    
+
     // Check for key doors (exits that require small keys)
     if (region.exits) {
       for (const [exitName, exit] of Object.entries(region.exits)) {
@@ -454,7 +463,7 @@ export function getDungeonKeyInfo(
       }
     }
   }
-  
+
   console.log(`=== Key Info for ${dungeonId.toUpperCase()} ===`);
   console.log(`Inventory Keys: ${inventoryKeys}`);
   console.log(`Potential Key Locations (${potentialKeys.length}):`);
@@ -465,6 +474,6 @@ export function getDungeonKeyInfo(
   for (const door of keyDoorsFound) {
     console.log(`  - ${door}`);
   }
-  
+
   return { inventoryKeys, potentialKeys, keyDoorsFound };
 }
