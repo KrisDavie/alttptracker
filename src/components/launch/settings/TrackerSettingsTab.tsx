@@ -92,6 +92,7 @@ export function TrackerSettingsTab({
             <div className="flex flex-col gap-2">
               <SettingSwitch label="Count Dungeon Items" checked={!!(settings.includeDungeonItemsInCounter ?? false)} onChange={(v) => updateSetting("includeDungeonItemsInCounter", v)} />
               <SettingSwitch label="Coloured Chests" checked={settings.colouredChests} onChange={(v) => updateSetting("colouredChests", v)} />
+              <SettingSwitch label="Proportional Chest Colors" checked={settings.proportionalChestColors ?? false} onChange={(v) => updateSetting("proportionalChestColors", v)} />
               <SettingSwitch label="Show Map Tooltips" checked={settings.showMapTooltips} onChange={(v) => updateSetting("showMapTooltips", v)} />
               <SettingSwitch label="Show Chest Tooltips" checked={settings.showChestTooltips} onChange={(v) => updateSetting("showChestTooltips", v)} />
               <SettingSwitch label="Always Show HC/CT Counts" checked={settings.alwaysShowHCCTCounts} onChange={(v) => updateSetting("alwaysShowHCCTCounts", v)} />

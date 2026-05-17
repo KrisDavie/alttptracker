@@ -144,6 +144,7 @@ export interface SettingsState {
   connectionLineColor: string;
   spriteName: string;
   colouredChests: boolean;
+  proportionalChestColors: boolean;
   showMapTooltips: boolean;
   showChestTooltips: boolean;
   entranceLabelsMode: "off" | "labels" | "labels_lines";
@@ -213,6 +214,7 @@ export const initialState: SettingsState = {
   connectionLineColor: "#ff00f9ff",
   spriteName: "link",
   colouredChests: true,
+  proportionalChestColors: false,
   showMapTooltips: true,
   showChestTooltips: true,
   entranceLabelsMode: "labels_lines",

@@ -9,6 +9,16 @@ import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { LocationTooltip } from "./LocationTooltip";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
+function sliceToPath(startAngle: number, endAngle: number): string {
+  const cx = 50, cy = 50, r = 50;
+  const x1 = cx + r * Math.cos(startAngle);
+  const y1 = cy + r * Math.sin(startAngle);
+  const x2 = cx + r * Math.cos(endAngle);
+  const y2 = cy + r * Math.sin(endAngle);
+  const large = endAngle - startAngle > Math.PI ? 1 : 0;
+  return `M${cx},${cy} L${x1},${y1} A${r},${r},0,${large},1,${x2},${y2} Z`;
+}
+
 interface ChestCounterProps {
   dungeon: string;
   small?: boolean;
@@ -19,6 +29,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const settings = useSelector((state: RootState) => state.settings);
   const showChestTooltips = useSelector((state: RootState) => state.settings.showChestTooltips ?? true);
   const colouredChests = useSelector((state: RootState) => state.settings.colouredChests ?? true);
+  const proportionalChestColors = useSelector((state: RootState) => state.settings.proportionalChestColors ?? false);
   const collected = useSelector((state: RootState) => state.dungeons[dungeon]?.collectedCount ?? 0);
   const checks = useSelector((state: RootState) => state.checks);
   const dungeonState = useSelector((state: RootState) => state.dungeons[dungeon]);
@@ -40,6 +51,23 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   // Save before dungeon-item adjustments: used by the spurious-spike suppression
   // logic to detect only real location un-checks, not autotracker item state changes.
   const numChecksFromLocations = numChecks;
+
+  const STATUS_ORDER = ["available", "possible", "ool", "information", "unavailable"] as const;
+  const statusCounts = proportionalChestColors
+    ? STATUS_ORDER.map((status) => ({
+        status,
+        count: dungeonChecks.filter((loc) => !checks.locationsChecks[loc]?.checked && checks.locationsChecks[loc]?.logic === status).length,
+      })).filter(({ count }) => count > 0)
+    : [];
+
+  const total = statusCounts.reduce((sum, { count }) => sum + count, 0);
+  const slices: { status: typeof STATUS_ORDER[number]; startAngle: number; endAngle: number }[] = [];
+  let sliceAngle = -Math.PI / 2;
+  for (const { status, count } of statusCounts) {
+    const startAngle = sliceAngle;
+    sliceAngle += (count / total) * 2 * Math.PI;
+    slices.push({ status, startAngle, endAngle: sliceAngle });
+  }
 
   const wildBigKeys = settings.wildBigKeys;
   const wildSmallKeys = settings.wildSmallKeys;
@@ -116,20 +144,6 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     dispatch(setDungeonCollectedCount({ dungeon, count: finalCount }));
   }
 
-  let finalMaxLogicStatus: LogicStatus | "someAvailable"
-
-  const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
-
-  if ( itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
-    finalMaxLogicStatus = "someAvailable";
-  } else {
-    finalMaxLogicStatus = maxLogicStatus;
-  }
-
-
-  const bgClass = status === "none" && maxLogicStatus === "unavailable" ? mapStatusBg("none") : status === "all" ? mapStatusBg("checked") : mapStatusBg(finalMaxLogicStatus);
-
-
   return (
     <>
       <div
@@ -151,13 +165,56 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
           setCount(collected - 1);
         }}
       >
-        <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 ${colouredChests ? bgClass : "bg-white"} bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
-          <div
-            className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`}
-          >
-            {checksRemaining}
+        {proportionalChestColors ? (
+          <div className={`relative h-7/10 w-7/10 flex items-center justify-center ${checksRemaining === 0 ? "invisible" : ""}`}>
+            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
+              {colouredChests && slices.length > 0 ? (
+                slices.length === 1 ? (
+                  <circle cx="50" cy="50" r="50" style={{ fill: `var(--status-${slices[0].status})` }} fillOpacity={0.8} />
+                ) : (
+                  slices.map(({ status, startAngle, endAngle }) => (
+                    <path key={status} d={sliceToPath(startAngle, endAngle)} style={{ fill: `var(--status-${status})` }} fillOpacity={0.8} />
+                  ))
+                )
+              ) : (
+                <circle cx="50" cy="50" r="50" fill="white" fillOpacity={0.6} />
+              )}
+              <circle cx="50" cy="50" r="49" fill="none" stroke="black" strokeWidth={small ? 2 : 3} />
+            </svg>
+            <div
+              className={`relative text-black ${small ? "text-xs" : checksRemaining > 99 ? "text-xl" : "text-3xl"} select-none font-roboto font-black leading-none z-10`}
+              style={{ textShadow: "0 0 3px white, 0 0 3px white" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCount(collected + 1);
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setCount(collected - 1);
+              }}
+            >
+              {checksRemaining}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 ${colouredChests ? (status === "none" && maxLogicStatus === "unavailable" ? mapStatusBg("none") : status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus)) : "bg-white"} bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
+            <div
+              className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCount(collected + 1);
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setCount(collected - 1);
+              }}
+            >
+              {checksRemaining}
+            </div>
+          </div>
+        )}
         {showChestTooltips && (
           <LocationTooltip
             name={dungeonData.name}
