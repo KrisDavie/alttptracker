@@ -156,6 +156,8 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     dispatch(setDungeonCollectedCount({ dungeon, count: finalCount }));
   }
 
+  const bgClass = status === "none" && maxLogicStatus === "unavailable" ? mapStatusBg("none") : status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus);
+
   return (
     <>
       <div
@@ -210,7 +212,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
             </div>
           </div>
         ) : (
-          <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 ${colouredChests ? (status === "none" && maxLogicStatus === "unavailable" ? mapStatusBg("none") : status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus)) : "bg-white"} bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
+          <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 ${colouredChests ? bgClass : "bg-white"} bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
             <div
               className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`}
               onClick={(e) => {
