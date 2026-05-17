@@ -9,14 +9,26 @@ import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { LocationTooltip } from "./LocationTooltip";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
-function sliceToPath(startAngle: number, endAngle: number): string {
-  const cx = 50, cy = 50, r = 50;
-  const x1 = cx + r * Math.cos(startAngle);
-  const y1 = cy + r * Math.sin(startAngle);
-  const x2 = cx + r * Math.cos(endAngle);
-  const y2 = cy + r * Math.sin(endAngle);
-  const large = endAngle - startAngle > Math.PI ? 1 : 0;
-  return `M${cx},${cy} L${x1},${y1} A${r},${r},0,${large},1,${x2},${y2} Z`;
+function squareSlicePath(startAngle: number, endAngle: number): string {
+  const cx = 50, cy = 50, half = 50;
+  function perimeterPoint(angle: number): [number, number] {
+    const cos = Math.cos(angle), sin = Math.sin(angle);
+    const absCos = Math.abs(cos), absSin = Math.abs(sin);
+    const t = absCos < 1e-10 ? half / absSin : absSin < 1e-10 ? half / absCos : Math.min(half / absCos, half / absSin);
+    return [cx + cos * t, cy + sin * t];
+  }
+  // Corner angles (clockwise from top, range -π/2 … 3π/2)
+  const corners = [
+    { angle: -Math.PI / 4, x: 100, y: 0 },
+    { angle:  Math.PI / 4, x: 100, y: 100 },
+    { angle: 3 * Math.PI / 4, x: 0, y: 100 },
+    { angle: 5 * Math.PI / 4, x: 0, y: 0 },
+  ];
+  const [x1, y1] = perimeterPoint(startAngle);
+  const [x2, y2] = perimeterPoint(endAngle);
+  const mid = corners.filter(c => c.angle > startAngle && c.angle < endAngle);
+  const pts: [number, number][] = [[x1, y1], ...mid.map(c => [c.x, c.y] as [number, number]), [x2, y2]];
+  return `M${cx},${cy} ${pts.map(([x, y]) => `L${x},${y}`).join(" ")} Z`;
 }
 
 interface ChestCounterProps {
@@ -170,16 +182,16 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
             <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
               {colouredChests && slices.length > 0 ? (
                 slices.length === 1 ? (
-                  <circle cx="50" cy="50" r="50" style={{ fill: `var(--status-${slices[0].status})` }} fillOpacity={0.8} />
+                  <rect x="0" y="0" width="100" height="100" style={{ fill: `var(--status-${slices[0].status})` }} fillOpacity={0.8} />
                 ) : (
                   slices.map(({ status, startAngle, endAngle }) => (
-                    <path key={status} d={sliceToPath(startAngle, endAngle)} style={{ fill: `var(--status-${status})` }} fillOpacity={0.8} />
+                    <path key={status} d={squareSlicePath(startAngle, endAngle)} style={{ fill: `var(--status-${status})` }} fillOpacity={0.8} />
                   ))
                 )
               ) : (
-                <circle cx="50" cy="50" r="50" fill="white" fillOpacity={0.6} />
+                <rect x="0" y="0" width="100" height="100" fill="white" fillOpacity={0.6} />
               )}
-              <circle cx="50" cy="50" r="49" fill="none" stroke="black" strokeWidth={small ? 2 : 3} />
+              <rect x="1" y="1" width="98" height="98" fill="none" stroke="black" strokeWidth={small ? 2 : 3} />
             </svg>
             <div
               className={`relative text-black ${small ? "text-xs" : checksRemaining > 99 ? "text-xl" : "text-3xl"} select-none font-roboto font-black leading-none z-10`}
