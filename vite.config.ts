@@ -39,7 +39,7 @@ export default defineConfig({
     },
   },
   test: {
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: ["./src/components/tracker/__tests__/setup.ts"],
   },
 });
