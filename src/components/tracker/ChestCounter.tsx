@@ -9,7 +9,7 @@ import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { LocationTooltip } from "./LocationTooltip";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
-function squareSlicePath(startAngle: number, endAngle: number): string {
+export function squareSlicePath(startAngle: number, endAngle: number): string {
   const cx = 50, cy = 50, half = 50;
   function perimeterPoint(angle: number): [number, number] {
     const cos = Math.cos(angle), sin = Math.sin(angle);
