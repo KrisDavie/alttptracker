@@ -20,6 +20,7 @@ import { logic_regions } from "@/data/logic/logic_regions";
 import type { SettingsState } from "@/store/settingsSlice";
 import { baseLocationsData } from "@/data/locationsData";
 import { DungeonsData } from "@/data/dungeonData";
+import { isPotteryKeyShuffle } from "./dungeonConstants";
 
 export type LocationCategory = "chest" | "keyDrop" | "potKey" | "pot" | "enemy" | "shop" | "prize" | "bonk" | "event";
 
@@ -419,7 +420,7 @@ function isLocationActive(loc: LocationInfo, settings: SettingsState): boolean {
       return settings.enemyDrop !== "none";
 
     case "potKey":
-      return settings.pottery !== "none";
+      return isPotteryKeyShuffle(settings.pottery);
 
     case "pot":
       // Pots are active based on pottery mode
