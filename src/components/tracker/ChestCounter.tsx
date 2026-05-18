@@ -179,7 +179,7 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
           setCount(collected - 1);
         }}
       >
-        {proportionalChestColors ? (
+        {proportionalChestColors && maxLogicStatus !== "unavailable" ? (
           <div className={`relative h-7/10 w-7/10 flex items-center justify-center ${checksRemaining === 0 ? "invisible" : ""}`}>
             <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
               {colouredChests && slices.length > 0 ? (
