@@ -77,3 +77,52 @@ describe("ChestCounter", () => {
     expect(Number(el.textContent)).toBe(3);
   });
 });
+
+// ─── Enemy drop locations in statusCounts ─────────────────────────────────────
+
+describe("ChestCounter – enemy drop locations in proportionalChestColors", () => {
+  const EP_UNDERWORLD_LOCS = getActiveLocations("Eastern Palace", { ...settingsInitialState, enemyDrop: "underworld" });
+  const EP_ENEMY_LOCS = EP_UNDERWORLD_LOCS.filter((loc) => loc.includes("Enemy #"));
+  const EP_KEYDROP_LOCS = EP_UNDERWORLD_LOCS.filter((loc) => loc.includes("Key Drop"));
+  const EP_KEYS_LOCS = getActiveLocations("Eastern Palace", { ...settingsInitialState, enemyDrop: "keys" });
+
+  it("enemy locations appear when enemyDrop is underworld", () => {
+    expect(EP_ENEMY_LOCS.length).toBeGreaterThan(0);
+  });
+
+  it("key drop locations appear when enemyDrop is underworld", () => {
+    expect(EP_KEYDROP_LOCS.length).toBeGreaterThan(0);
+  });
+
+  it("key drop locations appear when enemyDrop is keys", () => {
+    expect(EP_KEYS_LOCS.filter((loc) => loc.includes("Key Drop")).length).toBeGreaterThan(0);
+  });
+
+  it("enemy locations do not appear when enemyDrop is keys", () => {
+    expect(EP_KEYS_LOCS.filter((loc) => loc.includes("Enemy #")).length).toBe(0);
+  });
+
+  it("enemy and key drop locations contribute to statusCounts when enemyDrop is underworld", () => {
+    const store = createTestStore();
+    store.dispatch(setSettings({ proportionalChestColors: true, enemyDrop: "underworld" }));
+    // Set ALL active locations (chests + enemy + keyDrop) to "available" → single status
+    setLocationsToStatus(store, EP_UNDERWORLD_LOCS, "available");
+
+    const { container } = renderChestCounter("ep", store);
+    const svg = container.querySelector("svg[viewBox='0 0 100 100']")!;
+    // All unchecked locations share one status → single colored rect (not paths)
+    expect(svg.querySelector("rect[fill-opacity]")).toBeTruthy();
+    expect(svg.querySelectorAll("path")).toHaveLength(0);
+  });
+
+  it("enemy locations do not appear in statusCounts when enemyDrop is none", () => {
+    const store = createTestStore();
+    store.dispatch(setSettings({ proportionalChestColors: true, enemyDrop: "none" }));
+    // Even if we set enemy-named locations to available, they shouldn't be active
+    setLocationsToStatus(store, EP_ENEMY_LOCS, "available");
+
+    // EP_LOCATIONS (default/none settings) doesn't include enemy locs
+    const defaultLocs = getActiveLocations("Eastern Palace", settingsInitialState);
+    expect(defaultLocs.filter((loc) => loc.includes("Enemy #")).length).toBe(0);
+  });
+});
