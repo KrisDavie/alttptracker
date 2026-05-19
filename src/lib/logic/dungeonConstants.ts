@@ -52,6 +52,12 @@ export const PORTAL_TO_DUNGEON: Record<string, string> = {
 export const OVERWORLD_REGION_TYPES = new Set(["LightWorld", "DarkWorld"]);
 
 /**
+ * Exits where superbunny entry (mirror-cancel on frame of transition) is
+ * NOT possible. Names are the exit-key strings used in `logic_regions.ts`.
+ */
+export const SUPERBUNNY_BLOCKED_EXITS: Set<string> = new Set([]);
+
+/**
  * Locations the player can interact with even while in bunny state. Most are
  * overworld pickups that don't require sword/items, plus shop slots and
  * static tablets.

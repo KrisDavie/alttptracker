@@ -11,6 +11,17 @@ export type LogicStatus = "unavailable" | "possible" | "ool" |  "available" | "i
 
 export type CrystalSwitchState = "blue" | "orange" | "unknown";
 
+/**
+ * Tri-state of the player's form in a given region.
+ * - "link": full Link (moonpearl in DW, or LW). All actions available.
+ * - "superbunny": bunny who has entered a non-overworld area; can open chests,
+ *   swing sword, dash, bonk, use sword beams, bunny-pocket, and die-to-revive in dungeons.
+ * - "bunny": cannot perform any actions; can only walk/pick up some items.
+ *
+ * Ordering for "best path wins": link > superbunny > bunny.
+ */
+export type LinkState = "link" | "bunny" | "superbunny";
+
 export interface LogicState {
   always?: LogicRequirement;
   logical?: LogicRequirement;
@@ -50,7 +61,7 @@ export interface RegionLogic {
 
 export interface RegionReachability {
   status: LogicStatus;
-  bunnyState: boolean;
+  linkState: LinkState;
   crystalStates?: Set<CrystalSwitchState>; 
 }
 

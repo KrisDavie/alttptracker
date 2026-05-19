@@ -26,7 +26,7 @@
  *    Dungeons may unlock overworld regions that unlock new dungeon portals.
  *
  * KEY CONCEPTS:
- * - RegionReachability: Tracks status and bunnyState for each region
+ * - RegionReachability: Tracks status and linkState (link / bunny / superbunny) for each region
  * - Portal discovery: In partial mode, finds all potential portals before main traversal
  * - Entry status propagation: Portals inherit status from how they were reached
  * - Bunny state: Tracks whether player is a bunny (in Dark World without Moon Pearl)
@@ -39,11 +39,11 @@
  * - dangerous: Uses actual inventory throughout (may miss key contention in unreachable areas)
  */
 
-import { type RegionReachability, type ExitLogic, type GameState, type RegionLogic, type LogicStatus } from "@/data/logic/logicTypes";
+import { type RegionReachability, type ExitLogic, type GameState, type LinkState, type RegionLogic, type LogicStatus } from "@/data/logic/logicTypes";
 import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { DungeonTraverser } from "./dungeonTraverser";
-import { createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } from "./logicHelpers";
+import { combineLinkStates, createAllItemsState, isBetterStatus, combineStatuses, minimumStatus } from "./logicHelpers";
 import { DungeonsData } from "@/data/dungeonData";
 import { entranceLocations } from "@/data/locationsData";
 import { buildRegionMetadata, applyStandvertedState, type RegionMetadata } from "./regionsProvider";
@@ -51,6 +51,7 @@ import {
   BUNNY_EXEMPT_LOCATIONS,
   DOOR_PREFIX_TO_DUNGEON,
   PORTAL_TO_DUNGEON,
+  SUPERBUNNY_BLOCKED_EXITS,
   isPotteryKeyShuffle,
 } from "./dungeonConstants";
 
@@ -58,10 +59,10 @@ interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
   queue: string[];
   blockedExits: { exitName: string; exit: ExitLogic[string]; from: string }[];
-  pendingDungeons: Map<string, Map<string, { bunnyState: boolean; status: LogicStatus; keyCost: number }>>;
+  pendingDungeons: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>;
   // Track ALL discovered portals for each dungeon across all iterations
   // keyCost tracks how many keys were used to reach this portal (if reached via dungeon exit)
-  allDiscoveredPortals: Map<string, Map<string, { bunnyState: boolean; status: LogicStatus; keyCost: number }>>;
+  allDiscoveredPortals: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>;
   // Track key cost for overworld regions reached via dungeon exits
   // This maps overworld region name -> minimum keys used to reach it via any dungeon exit
   overworldKeyCost: Map<string, number>;
@@ -232,18 +233,18 @@ export class OverworldTraverser {
     return this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
   }
 
-  private setRouteReachability(ctx: RouteSearchContext, regionName: string, status: LogicStatus, bunnyState: boolean): boolean {
+  private setRouteReachability(ctx: RouteSearchContext, regionName: string, status: LogicStatus, linkState: LinkState): boolean {
     const existing = ctx.reachable.get(regionName);
     if (!existing) {
-      ctx.reachable.set(regionName, { status, bunnyState });
+      ctx.reachable.set(regionName, { status, linkState });
       ctx.queue.push(regionName);
       return true;
     }
 
     const combinedStatus = combineStatuses(existing.status, status);
-    const combinedBunnyState = existing.bunnyState && bunnyState;
-    if (combinedStatus !== existing.status || combinedBunnyState !== existing.bunnyState) {
-      ctx.reachable.set(regionName, { status: combinedStatus, bunnyState: combinedBunnyState });
+    const combinedLinkState = combineLinkStates(existing.linkState, linkState);
+    if (combinedStatus !== existing.status || combinedLinkState !== existing.linkState) {
+      ctx.reachable.set(regionName, { status: combinedStatus, linkState: combinedLinkState });
       ctx.queue.push(regionName);
       return true;
     }
@@ -260,9 +261,9 @@ export class OverworldTraverser {
       return false;
     }
 
-    const newBunnyState = this.computeBunnyStateForExit(fromReachability.bunnyState, exit.type, exitName, exit.to);
+    const newLinkState = this.computeLinkStateForExit(fromReachability.linkState, exit.type, exitName, exit.to);
     const newStatus = minimumStatus(fromReachability.status, exitStatus);
-    return this.setRouteReachability(ctx, exit.to, newStatus, newBunnyState);
+    return this.setRouteReachability(ctx, exit.to, newStatus, newLinkState);
   }
 
   private reevaluateRouteBlockedExits(ctx: RouteSearchContext): boolean {
@@ -283,9 +284,9 @@ export class OverworldTraverser {
         continue;
       }
 
-      const newBunnyState = this.computeBunnyStateForExit(fromReachability.bunnyState, exit.type, exitName, exit.to);
+      const newLinkState = this.computeLinkStateForExit(fromReachability.linkState, exit.type, exitName, exit.to);
       const newStatus = minimumStatus(fromReachability.status, exitStatus);
-      if (this.setRouteReachability(ctx, exit.to, newStatus, newBunnyState)) {
+      if (this.setRouteReachability(ctx, exit.to, newStatus, newLinkState)) {
         madeProgress = true;
       }
     }
@@ -294,9 +295,9 @@ export class OverworldTraverser {
     return madeProgress;
   }
 
-  private searchRouteFromRegion(sourceRegion: string, targetRegion: string, sourceBunnyState: boolean): LogicStatus {
+  private searchRouteFromRegion(sourceRegion: string, targetRegion: string, sourceLinkState: LinkState): LogicStatus {
     const ctx: RouteSearchContext = {
-      reachable: new Map([[sourceRegion, { status: "available", bunnyState: sourceBunnyState }]]),
+      reachable: new Map([[sourceRegion, { status: "available", linkState: sourceLinkState }]]),
       queue: [sourceRegion],
       blockedExits: [],
     };
@@ -348,7 +349,7 @@ export class OverworldTraverser {
     this.canReachFromInProgress.add(searchKey);
     try {
       const sourceStatus = knownSource?.status ?? "available";
-      const routeStatus = this.searchRouteFromRegion(sourceRegion, targetRegion, knownSource?.bunnyState ?? false);
+      const routeStatus = this.searchRouteFromRegion(sourceRegion, targetRegion, knownSource?.linkState ?? "link");
       return minimumStatus(sourceStatus, routeStatus);
     } finally {
       this.canReachFromInProgress.delete(searchKey);
@@ -388,7 +389,7 @@ export class OverworldTraverser {
     for (const regionName of startRegions) {
       reachable.set(regionName, {
         status: "available",
-        bunnyState: false, // This might need tweaking if entrance shuffle and start in non-home world
+        linkState: "link", // This might need tweaking if entrance shuffle and start in non-home world
       });
     }
 
@@ -396,21 +397,36 @@ export class OverworldTraverser {
       reachable,
       queue: [...startRegions],
       blockedExits: [],
-      pendingDungeons: new Map<string, Map<string, { bunnyState: boolean; status: LogicStatus; keyCost: number }>>(),
-      allDiscoveredPortals: new Map<string, Map<string, { bunnyState: boolean; status: LogicStatus; keyCost: number }>>(),
+      pendingDungeons: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>(),
+      allDiscoveredPortals: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>(),
       overworldKeyCost: new Map<string, number>(),
     };
   }
 
-  private computeBunnyStateForExit(
-    currentBunnyState: boolean,
+  /**
+   * Compute the destination region's LinkState for a given exit transition.
+   *
+   * - Moon Pearl: always returns "link" regardless of destination.
+   * - Overworld destinations (LightWorld/DarkWorld, or OWR-resolved): the
+   *   destination's effective world determines link vs bunny. Superbunny
+   *   never persists through an overworld return.
+   * - Non-overworld destinations (entrance into a cave/dungeon/etc.): the
+   *   player's current state is preserved by default. If they are currently
+   *   a bunny but have the Mirror, they can mirror-cancel on the frame of
+   *   entry to become a superbunny inside the entrance \u2014 gated by
+   *   logicMode (in logic for owglitches/hybridglitches, a sequence break
+   *   in noglitches) and by the per-exit `SUPERBUNNY_BLOCKED_EXITS` list.
+   */
+  private computeLinkStateForExit(
+    currentLinkState: LinkState,
     exitType: string,
     exitName?: string,
     destRegionName?: string,
-  ): boolean {
-    if (this.state.items.moonpearl.amount > 0) return false; //Never a bunny if we have moon pearl
+  ): LinkState {
+    if (this.state.items.moonpearl.amount > 0) return "link"; // Never a bunny if we have moon pearl
 
     const isInverted = this.isInverted;
+    const bunnyIf = (becomesBunny: boolean): LinkState => (becomesBunny ? "bunny" : "link");
 
     // OWR: determine bunny state from effective world of destination tile
     if (this.isOwrActive && destRegionName) {
@@ -428,33 +444,58 @@ export class OverworldTraverser {
           }
         }
 
-        if (effectiveWorld === "dark") return !isInverted;
-        if (effectiveWorld === "light") return isInverted;
+        if (effectiveWorld === "dark") return bunnyIf(!isInverted);
+        if (effectiveWorld === "light") return bunnyIf(isInverted);
       }
     }
 
     // Vanilla logic: bunny state determined by exit type
-    if (exitType === "LightWorld") return isInverted;
-    if (exitType === "DarkWorld") return !isInverted;
+    if (exitType === "LightWorld") return bunnyIf(isInverted);
+    if (exitType === "DarkWorld") return bunnyIf(!isInverted);
 
-    return currentBunnyState;
+    // Non-overworld destination (cave/dungeon entrance). If currently a bunny
+    // with the Mirror, the player can mirror-cancel on the frame of entry to
+    // become a superbunny inside the entrance.
+    if (
+      currentLinkState === "bunny"
+      && this.canSuperBunny()
+      && this.state.items.mirror?.amount > 0
+      && (!exitName || !SUPERBUNNY_BLOCKED_EXITS.has(exitName))
+    ) {
+      return "superbunny";
+    }
+
+    return currentLinkState;
   }
 
-  private updateIfBetter(regionName: string, newStatus: LogicStatus, newBunnyState: boolean, ctx: OverworldTraverserContext): void {
+  /**
+   * Whether superbunny entry is currently allowed. In logic for
+   * overworldglitches/hybridglitches (and nologic), a sequence break in
+   * noglitches gated by `settings.sequenceBreaks.canSuperBunny`.
+   */
+  private canSuperBunny(): boolean {
+    const mode = this.state.settings.logicMode;
+    if (mode !== "noglitches") return true;
+    return !!this.state.settings.sequenceBreaks?.canSuperBunny;
+  }
+
+  private updateIfBetter(regionName: string, newStatus: LogicStatus, newLinkState: LinkState, ctx: OverworldTraverserContext): void {
     const current = ctx.reachable.get(regionName);
     if (!current) return; // Can't update non-existent region, shouldn't happen though
 
-    if (current.bunnyState && !newBunnyState) {
+    const combinedLinkState = combineLinkStates(current.linkState, newLinkState);
+    if (combinedLinkState !== current.linkState) {
+      // A better link-state path has been found; combine status too.
       ctx.reachable.set(regionName, {
         status: combineStatuses(current.status, newStatus),
-        bunnyState: newBunnyState,
+        linkState: combinedLinkState,
       });
     } else {
       const combinedStatus = combineStatuses(current.status, newStatus);
       if (combinedStatus !== current.status) {
         ctx.reachable.set(regionName, {
           status: combinedStatus,
-          bunnyState: current.bunnyState,
+          linkState: current.linkState,
         });
       }
     }
@@ -506,7 +547,7 @@ export class OverworldTraverser {
     if (exit.type === "Dungeon") {
       const dungeonId = this.getDungeonIdFromPortal(exit.to);
       if (dungeonId) {
-        const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type, exitName, exit.to);
+        const newLinkState = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
         // For dungeon portals in partial mode, compute actual status with real
         // inventory (the exitStatus came from the all-items evaluator for discovery).
         const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx, false) : exitStatus;
@@ -528,12 +569,12 @@ export class OverworldTraverser {
         // Add or update portal status (main traversal may find a better status)
         const existingPortal = ctx.allDiscoveredPortals.get(dungeonId)!.get(exit.to);
         if (!existingPortal) {
-          ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { bunnyState: newBunnyState, status: newStatus, keyCost: regionKeyCost });
-          ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { bunnyState: newBunnyState, status: newStatus, keyCost: regionKeyCost });
+          ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost });
+          ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost });
         } else if (isBetterStatus(newStatus, existingPortal.status)) {
           // Update to better status
           existingPortal.status = newStatus;
-          existingPortal.bunnyState = newBunnyState && existingPortal.bunnyState;
+          existingPortal.linkState = combineLinkStates(newLinkState, existingPortal.linkState);
           existingPortal.keyCost = Math.min(existingPortal.keyCost, regionKeyCost);
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, existingPortal);
         }
@@ -541,17 +582,17 @@ export class OverworldTraverser {
       return; // We process dungeon entrances separately
     }
 
-    const newBunnyState = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type, exitName, exit.to);
+    const newLinkState = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
     const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
     if (!currentReachability) {
       ctx.reachable.set(exit.to, {
         status: newStatus,
-        bunnyState: newBunnyState,
+        linkState: newLinkState,
       });
       ctx.queue.push(exit.to);
     } else {
-      this.updateIfBetter(exit.to, newStatus, newBunnyState, ctx);
+      this.updateIfBetter(exit.to, newStatus, newLinkState, ctx);
     }
   }
 
@@ -563,14 +604,14 @@ export class OverworldTraverser {
       const allPortals = ctx.allDiscoveredPortals.get(dungeonId);
       if (!allPortals || allPortals.size === 0) continue;
 
-      const entryMap = new Map<string, { bunnyState: boolean }>();
+      const entryMap = new Map<string, { linkState: LinkState }>();
       const entryStatus = new Map<string, LogicStatus>();
       const entryKeyCost = new Map<string, number>();
 
       // Use ALL discovered portals for this dungeon
       for (const [portalName, portalData] of allPortals) {
         entryMap.set(portalName, {
-          bunnyState: portalData.bunnyState,
+          linkState: portalData.linkState,
         });
         entryStatus.set(portalName, portalData.status);
         entryKeyCost.set(portalName, portalData.keyCost);
@@ -589,9 +630,9 @@ export class OverworldTraverser {
         const regionReach = ctx.reachable.get(regionName);
         if (!regionReach) return "unavailable";
 
-        // If the player is a bunny at this region, they can't interact
-        // Return unavailable for bunny regions since canReach implies interaction
-        if (regionReach.bunnyState) {
+        // If the player is a bunny (or superbunny) at this region, they can't interact
+        // Return unavailable for non-link regions since canReach implies interaction
+        if (regionReach.linkState !== "link") {
           return "unavailable";
         }
 
@@ -614,14 +655,14 @@ export class OverworldTraverser {
         if (!existing) {
           ctx.reachable.set(regionName, {
             status: regionState.status,
-            bunnyState: regionState.bunnyState,
+            linkState: regionState.linkState,
             crystalStates: regionState.crystalStates,
           });
           madeProgress = true;
         } else if (existing.status !== regionState.status) {
           ctx.reachable.set(regionName, {
             status: regionState.status,
-            bunnyState: existing.bunnyState && regionState.bunnyState,
+            linkState: combineLinkStates(existing.linkState, regionState.linkState),
             crystalStates: regionState.crystalStates,
           });
           madeProgress = true;
@@ -645,10 +686,10 @@ export class OverworldTraverser {
         }
 
         if (!ctx.reachable.has(resolvedTo)) {
-          const newBunny = this.computeBunnyStateForExit(exitInfo.bunnyState, resolvedType, exitName, resolvedTo);
+          const newLink = this.computeLinkStateForExit(exitInfo.linkState, resolvedType, exitName, resolvedTo);
           ctx.reachable.set(resolvedTo, {
             status: exitInfo.status,
-            bunnyState: newBunny,
+            linkState: newLink,
           });
           ctx.queue.push(resolvedTo);
           madeProgress = true;
@@ -688,8 +729,11 @@ export class OverworldTraverser {
           continue;
         }
 
-        // TODO: Refactor this to generically determine bunny availability
-        if (regionReachability?.bunnyState && !BUNNY_EXEMPT_LOCATIONS.has(locationName)) {
+        // Bunny: cannot interact with most locations.
+        // Superbunny: can interact with locations unless they require swimming
+        // (flippers) or damage-boosting (canTakeDamage) — those are blocked
+        // inside resolveSimple/canTakeDamage when linkState === "superbunny".
+        if (regionReachability?.linkState === "bunny" && !BUNNY_EXEMPT_LOCATIONS.has(locationName)) {
           locationStatuses[locationName] = "unavailable";
           continue;
         }
@@ -707,14 +751,19 @@ export class OverworldTraverser {
           regionName: regionName,
           dungeonId: this.getDungeonIdFromRegion(regionName),
           crystalStates: regionReachability.crystalStates,
-          isBunny: regionReachability.bunnyState,
+          linkState: regionReachability.linkState,
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
           canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, reachable),
           effectiveWorldState: this.getEffectiveWorldState(regionName),
         };
 
         const locationStatus = this.requirementEvaluator.evaluateWorldLogic(locationLogic.requirements, evalCtx);
-        locationStatuses[locationName] = minimumStatus(regionReachability.status, locationStatus);
+        let finalStatus = minimumStatus(regionReachability.status, locationStatus);
+        // In noglitches, superbunny is a sequence break — cap all accessible locations at ool.
+        if (regionReachability.linkState === "superbunny" && this.state.settings.logicMode === "noglitches") {
+          finalStatus = minimumStatus(finalStatus, "ool");
+        }
+        locationStatuses[locationName] = finalStatus;
       }
     }
 
@@ -945,7 +994,7 @@ export class OverworldTraverser {
 
       const evalCtx: EvaluationContext = {
         regionName: from,
-        isBunny: fromRegionReachability.bunnyState,
+        linkState: fromRegionReachability.linkState,
         canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
         canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
         effectiveWorldState: this.getEffectiveWorldState(from, exit.to),
@@ -954,12 +1003,12 @@ export class OverworldTraverser {
       const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
       if (exitStatus !== "unavailable") {
-        const newBunny = this.computeBunnyStateForExit(fromRegionReachability.bunnyState, exit.type, exitName, exit.to);
+        const newLink = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
         const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
 
         ctx.reachable.set(exit.to, {
           status: newStatus,
-          bunnyState: newBunny,
+          linkState: newLink,
         });
         ctx.queue.push(exit.to);
         madeProgress = true;
@@ -980,9 +1029,9 @@ export class OverworldTraverser {
     if (!this.allItemsEvaluator) return;
 
     // BFS with actual inventory to find truly reachable overworld regions
-    const actuallyReachable = new Map<string, boolean>();
+    const actuallyReachable = new Map<string, LinkState>();
     const actualQueue = ["Menu", "Flute Sky"];
-    for (const r of actualQueue) actuallyReachable.set(r, false);
+    for (const r of actualQueue) actuallyReachable.set(r, "link");
 
     while (actualQueue.length > 0) {
       const current = actualQueue.shift()!;
@@ -1001,9 +1050,9 @@ export class OverworldTraverser {
         const status = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
 
         if (status !== "unavailable" && !actuallyReachable.has(exit.to)) {
-          const currentBunny = actuallyReachable.get(current) ?? false;
-          const newBunny = this.computeBunnyStateForExit(currentBunny, exit.type ?? "LightWorld", exitName, exit.to);
-          actuallyReachable.set(exit.to, newBunny);
+          const currentLink = actuallyReachable.get(current) ?? "link";
+          const newLink = this.computeLinkStateForExit(currentLink, exit.type ?? "LightWorld", exitName, exit.to);
+          actuallyReachable.set(exit.to, newLink);
           actualQueue.push(exit.to);
         }
       }
@@ -1037,13 +1086,13 @@ export class OverworldTraverser {
             ctx.allDiscoveredPortals.set(dungeonId, new Map());
           }
           if (!ctx.allDiscoveredPortals.get(dungeonId)!.has(exit.to)) {
-            // Status starts as "unavailable" — main BFS upgrades it. Bunny
+            // Status starts as "unavailable" — main BFS upgrades it. Link
             // state is computed from the actual-reachable source if known.
-            const portalBunny = actuallyReachable.has(current)
-              ? this.computeBunnyStateForExit(actuallyReachable.get(current) ?? false, exit.type ?? "Dungeon", exitName, exit.to)
-              : false;
+            const portalLink = actuallyReachable.has(current)
+              ? this.computeLinkStateForExit(actuallyReachable.get(current) ?? "link", exit.type ?? "Dungeon", exitName, exit.to)
+              : "link";
             ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, {
-              bunnyState: portalBunny,
+              linkState: portalLink,
               status: "unavailable",
               keyCost: 0,
             });

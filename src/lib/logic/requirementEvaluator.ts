@@ -1,11 +1,11 @@
-import type { CrystalSwitchState, LogicRequirement, LogicState, LogicStatus, RegionLogic, WorldLogic } from "@/data/logic/logicTypes";
+import type { CrystalSwitchState, LinkState, LogicRequirement, LogicState, LogicStatus, RegionLogic, WorldLogic } from "@/data/logic/logicTypes";
 import type { GameState } from "@/data/logic/logicTypes";
 import { getLogicStateForWorld, minimumStatus, maximumStatus } from "./logicHelpers";
 
 export interface EvaluationContext {
   dungeonId?: string;
   regionName?: string;
-  isBunny?: boolean;
+  linkState?: LinkState;
   crystalStates?: Set<CrystalSwitchState>;
   assumeSmallKey?: boolean;
   assumeBigKey?: boolean;
@@ -220,6 +220,7 @@ export class RequirementEvaluator {
 
   private resolveSimple(condition: string, ctx: EvaluationContext): LogicStatus {
     const items = this.state.items;
+    const bunnyUsableItems = ['lantern', 'book', 'mirror', 'boots']
     let killableBosses;
 
     // Other complex checks
@@ -229,11 +230,13 @@ export class RequirementEvaluator {
       case "agahnim2":
         return this.boolToStatus(this.state.dungeons["gt"].bossDefeated);
       case "bombs":
+        if (ctx.linkState !== "link") return "unavailable";
         return this.boolToStatus(this.hasItem("bomb"));
       case "bottle":
         return this.boolToStatus(this.getBottleCount() > 0);
       case "bow":
         // Bow requires 2 to use (1 to have, 1 to use)
+        if (ctx.linkState !== "link") return "unavailable";
         return this.boolToStatus(items.bow.amount > 1);
       case "lantern":
         if (items.lantern.amount > 0) {
@@ -250,11 +253,13 @@ export class RequirementEvaluator {
         }
         return this.resolveComplex("canReach|Kakariko Village", ctx);
       case "cane":
+        if (ctx.linkState !== "link") return "unavailable";
         return this.boolToStatus(this.hasItem("somaria") || this.hasItem("byrna"));
       case "rod":
+        if (ctx.linkState !== "link") return "unavailable";
         return this.boolToStatus(this.hasItem("firerod") || this.hasItem("icerod"));
       case "melee":
-        return this.boolToStatus(this.hasItem("sword") || this.hasItem("hammer"));
+        return this.boolToStatus(this.hasItem("sword") || (this.hasItem("hammer") && (ctx.linkState === "link")));
       case "melee_bow":
         return maximumStatus(this.resolveSimple("melee", ctx), this.resolveSimple("bow", ctx));
       case "melee_bow_bomb":
@@ -278,6 +283,7 @@ export class RequirementEvaluator {
       case "canUseMedallionPad":
         return this.boolToStatus(this.hasItem("sword")); // || TODO: Add swordless logic
       case "canTakeDamage":
+        if (ctx.linkState === "superbunny") return "unavailable";
         return "available"; // TODO: Add logic for OHKO
       // Enemies and Bosses
       case "canKillSomeBosses":
@@ -566,9 +572,15 @@ export class RequirementEvaluator {
       case "canBootsClip":
         return this.boolToStatus(this.state.settings.logicMode !== "noglitches" && this.hasItem("boots"));
 
-      // Everything below here needs user settings for logic added
+      // The player is in superbunny state right now (this is decided by the
+      // OverworldTraverser; we only mirror the decision here). In noglitches
+      // it's a sequence-break path (returns "ool"); in glitched modes it's
+      // in logic.
       case "canMirrorSuperBunny":
-        return this.boolToStatus(this.state.settings.logicMode !== "noglitches" && this.hasItem("mirror"));
+        if (ctx.linkState !== "superbunny") return "unavailable";
+        return this.state.settings.logicMode === "noglitches" ? "ool" : "available";
+
+      // Everything below here needs user settings for logic added
       case "canDungeonBunnyRevive":
       case "canFakeFlipper":
         return this.boolToStatus(this.state.settings.logicMode !== "noglitches");
@@ -578,10 +590,10 @@ export class RequirementEvaluator {
         return this.boolToStatus(this.state.settings.logicMode !== "noglitches" && this.hasItem("boots") && (this.hasItem("mirror") || this.getBottleCount() > 0));
       case "canSpinSpeedClip":
         return this.boolToStatus(this.state.settings.logicMode !== "noglitches" && this.hasItem("boots") && (this.hasItem("sword") || this.hasItem("hookshot")));
-
       default:
         // Covers all simple item checks - works because all items are counted now rather than boolean
         // Putting this here allows us to use more complex logic conditions above (i.e. flute)
+        if (ctx.linkState === "superbunny" && !bunnyUsableItems.includes(condition)) return "unavailable";
         if (condition in items) return this.boolToStatus(this.hasItem(condition));
 
         // console.error(`Unknown simple logic condition: ${condition}`);
@@ -677,6 +689,18 @@ export class RequirementEvaluator {
       }
       case "exception":
         return "unavailable";
+
+      case "owg": {
+        if (!['overworldglitches', 'hybridglitches', 'nologic'].includes(this.state.settings.logicMode)) return "unavailable";
+        const innerCondition = conditionParts.slice(1).join("|");
+        return this.evaluateRequirement(innerCondition, ctx);
+      }
+
+      case "hmg": {
+        if (!['hybridglitches', 'nologic'].includes(this.state.settings.logicMode)) return "unavailable";
+        const innerCondition = conditionParts.slice(1).join("|");
+        return this.evaluateRequirement(innerCondition, ctx);
+      }
 
       // TODO Check if we need these
       case "hasFoundEntrance":

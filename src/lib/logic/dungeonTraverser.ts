@@ -32,22 +32,23 @@
  *   for the lifetime of this instance (state is immutable per traverse pass).
  */
 
-import { type CrystalSwitchState, type GameState, type LogicState, type LogicStatus, type RegionLogic } from "@/data/logic/logicTypes";
+import { type CrystalSwitchState, type GameState, type LinkState, type LogicState, type LogicStatus, type RegionLogic } from "@/data/logic/logicTypes";
 import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { getLogicStateForWorld, createAllItemsState, isBetterStatus, minimumStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
 import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle } from "./dungeonConstants";
+import { bunnyRevivableEntrances, superbunnyRevivableEntrances, swordSuperbunnyRevivableEntrances } from "@/data/logic/superbunnyLogic";
 
 export interface DungeonRegionState {
   status: LogicStatus;
-  bunnyState: boolean;
+  linkState: LinkState;
   crystalStates: Set<CrystalSwitchState>;
 }
 
 export interface DungeonTraversalResult {
   regionStatuses: Map<string, DungeonRegionState>; // Internal region statuses
-  externalExits: Map<string, { to: string; status: LogicStatus; bunnyState: boolean; keysUsedToReach: number }>; // Dungeon -> Overworld exits
+  externalExits: Map<string, { to: string; status: LogicStatus; linkState: LinkState; keysUsedToReach: number }>; // Dungeon -> Overworld exits
   bigKeyGatedRegions: Set<string>; // Regions only reachable via big key doors
   smallKeyGatedRegions: Set<string>; // Regions only reachable via small key doors
 }
@@ -143,8 +144,27 @@ export class DungeonTraverser {
     return this.exitMeta.get(`${regionName}|${exitName}`) ?? { isSKDoor: false, isBKDoor: false, isPairedWithBK: false, isBidirectional: false, isOverworld: false };
   }
 
+  /**
+   * If the player is superbunny in a room that allows die-to-revive, they can
+   * die and respawn as Link, gaining full Link abilities from that room onward.
+   * Returns the effective link state and a status cap (ool in noglitches, available otherwise).
+   */
+  private getDieReviveState(regionName: string, linkState: LinkState): { linkState: LinkState; reviveCap: LogicStatus } {
+    if (linkState !== "superbunny") return { linkState, reviveCap: "available" };
+
+    const canRevive =
+      bunnyRevivableEntrances.has(regionName) ||
+      superbunnyRevivableEntrances.has(regionName) ||
+      (swordSuperbunnyRevivableEntrances.has(regionName) && this.state.items.sword.amount > 1);
+
+    if (!canRevive) return { linkState: "superbunny", reviveCap: "available" };
+
+    const reviveCap: LogicStatus = this.state.settings.logicMode === "noglitches" ? "ool" : "available";
+    return { linkState: "link", reviveCap };
+  }
+
   public traverse(
-    entryRegions: Map<string, { bunnyState: boolean }>,
+    entryRegions: Map<string, { linkState: LinkState }>,
     entryStatus: Map<string, LogicStatus>,
     inventoryKeys: number,
     entryKeyCost: Map<string, number> = new Map(),
@@ -211,7 +231,7 @@ export class DungeonTraverser {
     this.finalBFS(ctx, entryRegions, entryStatus, inventoryKeys, keyCountingEvaluator);
 
     // Collect external exits (dungeon -> overworld)
-    const externalExits = new Map<string, { to: string; status: LogicStatus; bunnyState: boolean; keysUsedToReach: number }>();
+    const externalExits = new Map<string, { to: string; status: LogicStatus; linkState: LinkState; keysUsedToReach: number }>();
     for (const [regionName, regionState] of ctx.reachable) {
       const regionLogic = this.regions[regionName];
       const minKeysForRegion = ctx.regionMinKeysUsed.get(regionName) ?? 0;
@@ -223,7 +243,7 @@ export class DungeonTraverser {
           const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, {
             regionName,
             dungeonId: this.dungeonId,
-            isBunny: regionState.bunnyState,
+            linkState: regionState.linkState,
             crystalStates: regionState.crystalStates,
             canReachRegion: (target: string) => {
               if (ctx.reachable.has(target)) return ctx.reachable.get(target)!.status;
@@ -234,7 +254,7 @@ export class DungeonTraverser {
           externalExits.set(exitName, {
             to: exit.to,
             status: minimumStatus(regionState.status, exitStatus),
-            bunnyState: regionState.bunnyState,
+            linkState: regionState.linkState,
             keysUsedToReach: minKeysForRegion,
           });
         }
@@ -257,7 +277,7 @@ export class DungeonTraverser {
    */
   private computeKeyGatedRegions(
     ctx: DungeonContext,
-    entryRegions: Map<string, { bunnyState: boolean }>,
+    entryRegions: Map<string, { linkState: LinkState }>,
   ): { bigKeyGated: Set<string>; smallKeyGated: Set<string> } {
     const reachableNoBK = new Set<string>();
     const reachableNoSK = new Set<string>();
@@ -312,7 +332,7 @@ export class DungeonTraverser {
     return { bigKeyGated, smallKeyGated };
   }
 
-  private dijkstraMinKeys(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator, assumeBigKey: boolean = true, targetMap?: Map<string, number>) {
+  private dijkstraMinKeys(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator, assumeBigKey: boolean = true, targetMap?: Map<string, number>) {
     // Dijkstra with key doors as weight-1 edges. Iterates until convergence
     // (canReach deps may depend on regions discovered in the same pass).
     // Updates regionMinKeysUsed (assumeBigKey=true) or regionMinKeysUsedNoBK (false),
@@ -380,7 +400,7 @@ export class DungeonTraverser {
               regionName: region,
               dungeonId: this.dungeonId,
               crystalStates: new Set([crystalState]),
-              isBunny: regionState?.bunnyState ?? false,
+              linkState: regionState?.linkState ?? "link",
               assumeSmallKey: meta.isSKDoor,
               assumeBigKey: hasBigKey,
               canReachRegion: (targetRegion: string) => {
@@ -415,7 +435,7 @@ export class DungeonTraverser {
               regionName: region,
               dungeonId: this.dungeonId,
               crystalStates: new Set([crystalState]),
-              isBunny: regionState?.bunnyState ?? false,
+              linkState: regionState?.linkState ?? "link",
             })
           ) {
             pq.enqueue({ region, crystalState: this.toggleCrystalState(crystalState), keysUsed, fromRegion: undefined, usedKey: false });
@@ -431,7 +451,7 @@ export class DungeonTraverser {
     }
   }
 
-  private bfsMaxKeys(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator) {
+  private bfsMaxKeys(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator) {
     // BFS that defers each key door in turn to find worst-case key costs.
     // For each pending door, we explore everything else first, then open that door last.
     // Regions found only after opening the deferred door get maxKeysUsed set.
@@ -536,7 +556,7 @@ export class DungeonTraverser {
                 regionName: region,
                 dungeonId: this.dungeonId,
                 crystalStates: new Set([crystalState]),
-                isBunny: regionState?.bunnyState ?? false,
+                linkState: regionState?.linkState ?? "link",
                 assumeSmallKey: meta.isSKDoor,
                 assumeBigKey: this.effectivelyHasBigKey,
                 canReachRegion: (targetRegion: string) => {
@@ -582,7 +602,7 @@ export class DungeonTraverser {
                 regionName: region,
                 dungeonId: this.dungeonId,
                 crystalStates: new Set([crystalState]),
-                isBunny: regionState?.bunnyState ?? false,
+                linkState: regionState?.linkState ?? "link",
               })
             ) {
               exitQueue.enqueue({ from: region, exitName: "crystal_switch", to: region, crystalState: this.toggleCrystalState(crystalState), priority: keysUsed, isKeyDoor: false });
@@ -615,7 +635,7 @@ export class DungeonTraverser {
     }
   }
 
-  private finalBFS(ctx: DungeonContext, entryRegions: Map<string, { bunnyState: boolean }>, entryStatus: Map<string, LogicStatus>, inventoryKeys: number, keyCountingEvaluator: RequirementEvaluator) {
+  private finalBFS(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryStatus: Map<string, LogicStatus>, inventoryKeys: number, keyCountingEvaluator: RequirementEvaluator) {
     // Phase 1: Discover all traversable regions (ignoring key counts).
     // Phase 2: Fixed-point key counting. Phase 3: Compute final status.
     // Partial mode uses keyCountingEvaluator (all items) for discovery.
@@ -649,12 +669,19 @@ export class DungeonTraverser {
     // Best entry status per "region|crystalState" (prevents cross-crystal-state borrowing).
     const regionEntryStatus = new Map<string, LogicStatus>();
 
-    for (const [regionName, { bunnyState }] of entryRegions) {
+    // Track whether entry regions have been upgraded to Link via die-to-revive.
+    // When any deep room triggers die-to-revive, we re-queue entry regions as Link
+    // (player respawns at entry and can re-traverse as Link).
+    let entryUpgradedToLink = false;
+
+    for (const [regionName, { linkState }] of entryRegions) {
       const thisEntryStatus = entryStatus.get(regionName) ?? "available";
       queue.push({ region: regionName, crystalState: "orange", fromEntryStatus: thisEntryStatus });
+      // Apply die-to-revive for entry regions.
+      const { linkState: effectiveLinkState } = this.getDieReviveState(regionName, linkState);
       ctx.reachable.set(regionName, {
         status: "available", // Placeholder, will be updated in Phase 3
-        bunnyState,
+        linkState: effectiveLinkState,
         crystalStates: new Set(["orange"]),
       });
       // Use the best status if this region is also another entry portal
@@ -679,6 +706,39 @@ export class DungeonTraverser {
       const regionLogic = this.regions[region];
       if (!regionLogic) continue;
 
+      // Die-to-revive: superbunny in a revivable room can die and become Link.
+      // Upgrade the room's linkState in-place so location evaluation sees "link".
+      const baseRegionLinkState = regionState?.linkState ?? "link";
+      const { linkState: effectiveLinkState, reviveCap } = this.getDieReviveState(region, baseRegionLinkState);
+      if (effectiveLinkState !== baseRegionLinkState && regionState) {
+        regionState.linkState = effectiveLinkState;
+        // When a deep room triggers die-to-revive, the player dies and respawns at the
+        // dungeon entrance as Link. Re-queue all entry regions as Link so previously-visited
+        // rooms can be re-traversed with full Link capabilities.
+        if (!entryUpgradedToLink) {
+          entryUpgradedToLink = true;
+          for (const [entryName, { linkState: entryLinkState }] of entryRegions) {
+            const { linkState: entryEffective, reviveCap: entryCap } = this.getDieReviveState(entryName, entryLinkState);
+            // If this entry region wasn't already upgraded, upgrade it now.
+            const entryState = ctx.reachable.get(entryName);
+            if (entryState && entryState.linkState !== "link") {
+              entryState.linkState = "link";
+            }
+            const entryReviveCap = entryEffective === "link" ? entryCap : reviveCap;
+            const entryStatus2 = minimumStatus(entryStatus.get(entryName) ?? "available", entryReviveCap);
+            // Clear visited so re-processing happens with the link state.
+            for (const crystalState2 of (ctx.reachable.get(entryName)?.crystalStates ?? ["orange"])) {
+              for (const st of ["available", "ool", "possible", "unavailable"] as LogicStatus[]) {
+                visited.delete(`${entryName}|${crystalState2}|${st}`);
+              }
+            }
+            queue.push({ region: entryName, crystalState: "orange", fromEntryStatus: entryStatus2 });
+          }
+        }
+      }
+      // Cap the current entry status by the revive penalty (ool for noglitches).
+      const cappedRegionEntryStatus = minimumStatus(currentRegionEntryStatus, reviveCap);
+
       if (regionLogic.exits) {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
           if (!exit.to) continue;
@@ -692,7 +752,7 @@ export class DungeonTraverser {
             regionName: region,
             dungeonId: this.dungeonId,
             crystalStates: new Set([crystalState]),
-            isBunny: regionState?.bunnyState ?? false,
+            linkState: effectiveLinkState,
             assumeSmallKey: meta.isSKDoor,
             assumeBigKey: this.effectivelyHasBigKey,
             canReachRegion: (targetRegion: string) => {
@@ -711,7 +771,7 @@ export class DungeonTraverser {
             regionName: region,
             dungeonId: this.dungeonId,
             crystalStates: new Set([crystalState]),
-            isBunny: regionState?.bunnyState ?? false,
+            linkState: effectiveLinkState,
             assumeSmallKey: meta.isSKDoor,
             assumeBigKey: this.actuallyHasBigKey,
             canReachRegion: (targetRegion: string) => {
@@ -741,14 +801,14 @@ export class DungeonTraverser {
           });
 
           // Effective entry status = min(region's entry status, actual traversability)
-          const effectiveEntryStatus = minimumStatus(currentRegionEntryStatus, actualStatus);
+          const effectiveEntryStatus = minimumStatus(cappedRegionEntryStatus, actualStatus);
 
           // Add to reachable if not already there
           if (!ctx.reachable.has(exit.to)) {
-            const bunnyState = regionState?.bunnyState ?? false;
+            const linkState = effectiveLinkState;
             ctx.reachable.set(exit.to, {
               status: "available", // Placeholder
-              bunnyState,
+              linkState,
               crystalStates: new Set([crystalState]),
             });
             regionEntryStatus.set(`${exit.to}|${crystalState}`, effectiveEntryStatus);
@@ -782,11 +842,11 @@ export class DungeonTraverser {
             regionName: region,
             dungeonId: this.dungeonId,
             crystalStates: new Set([crystalState]),
-            isBunny: regionState?.bunnyState ?? false,
+            linkState: effectiveLinkState,
           })
         ) {
           const newCrystalState = this.toggleCrystalState(crystalState);
-          queue.push({ region, crystalState: newCrystalState, fromEntryStatus: currentRegionEntryStatus });
+          queue.push({ region, crystalState: newCrystalState, fromEntryStatus: cappedRegionEntryStatus });
         }
       }
     }
@@ -1044,7 +1104,7 @@ export class DungeonTraverser {
     }
   }
 
-  private initializeDungeonContext(entryRegions: Map<string, { bunnyState: boolean }>, inventoryKeys: number, entryKeyCost: Map<string, number> = new Map()): DungeonContext {
+  private initializeDungeonContext(entryRegions: Map<string, { linkState: LinkState }>, inventoryKeys: number, entryKeyCost: Map<string, number> = new Map()): DungeonContext {
     const ctx: DungeonContext = {
       reachable: new Map<string, DungeonRegionState>(),
       pendingKeyDoors: [],
@@ -1056,10 +1116,12 @@ export class DungeonTraverser {
     };
 
     const initialCrystalState: CrystalSwitchState = "orange";
-    for (const [regionName, { bunnyState }] of entryRegions) {
+    for (const [regionName, { linkState }] of entryRegions) {
+      // Apply die-to-revive for entry regions: superbunny can die and become Link.
+      const { linkState: effectiveLinkState } = this.getDieReviveState(regionName, linkState);
       const initialState: DungeonRegionState = {
         status: "available",
-        bunnyState,
+        linkState: effectiveLinkState,
         crystalStates: new Set([initialCrystalState]),
       };
       ctx.reachable.set(regionName, initialState);
@@ -1227,7 +1289,7 @@ export class DungeonTraverser {
    * Regions reachable this way have maxKeysUsed = 0 (no key commitment needed).
    */
   private computeRegionsReachableWithoutKeys(
-    entryRegions: Map<string, { bunnyState: boolean }>,
+    entryRegions: Map<string, { linkState: LinkState }>,
     entryKeyCost: Map<string, number>,
     evaluator: RequirementEvaluator,
   ): Set<string> {
@@ -1259,7 +1321,7 @@ export class DungeonTraverser {
           regionName: region,
           dungeonId: this.dungeonId,
           crystalStates: new Set<CrystalSwitchState>(["orange"]),
-          isBunny: false,
+          linkState: "link",
           assumeSmallKey: false,
           assumeBigKey: this.effectivelyHasBigKey,
         });
@@ -1281,7 +1343,7 @@ export class DungeonTraverser {
    */
   private preComputeReachableWithoutAdj(
     ctx: DungeonContext,
-    entryRegions: Map<string, { bunnyState: boolean }>,
+    entryRegions: Map<string, { linkState: LinkState }>,
     entryKeyCost: Map<string, number>,
     evaluator: RequirementEvaluator,
   ): { adj: Map<string, { exitName: string; to: string }[]>; entrySet: Set<string> } {
@@ -1317,7 +1379,7 @@ export class DungeonTraverser {
             regionName: region,
             dungeonId: this.dungeonId,
             crystalStates: new Set<CrystalSwitchState>(["orange", "blue"]),
-            isBunny: regionState?.bunnyState ?? false,
+            linkState: regionState?.linkState ?? "link",
             assumeSmallKey: true,
             assumeBigKey: this.effectivelyHasBigKey,
             canReachRegion: (targetRegion: string) => {
@@ -1501,7 +1563,7 @@ export class DungeonTraverser {
           regionName,
           dungeonId: this.dungeonId,
           crystalStates: new Set<CrystalSwitchState>(),
-          isBunny: false,
+          linkState: "link",
         });
         if (status === "available" || status === "possible" || status === "ool") {
           locationKeys.push(locationName);

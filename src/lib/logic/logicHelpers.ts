@@ -1,7 +1,15 @@
-import type { GameState, LogicRequirement, LogicState, LogicStatus, WorldLogic } from "@/data/logic/logicTypes";
+import type { GameState, LinkState, LogicRequirement, LogicState, LogicStatus, WorldLogic } from "@/data/logic/logicTypes";
 
 /** Status ordering from worst to best. Numeric lookup for O(1) comparisons. */
 const STATUS_RANK: Record<string, number> = { unavailable: 0, information: 1, possible: 2, ool: 3, available: 4 };
+
+/** LinkState ordering from worst to best (bunny → superbunny → link). */
+const LINK_STATE_RANK: Record<LinkState, number> = { bunny: 0, superbunny: 1, link: 2 };
+
+/** Returns the better (most capable) of two link states. */
+export function combineLinkStates(a: LinkState, b: LinkState): LinkState {
+  return LINK_STATE_RANK[a] >= LINK_STATE_RANK[b] ? a : b;
+}
 
 /** Returns true if newStatus is better (more available) than oldStatus */
 export function isBetterStatus(newStatus: LogicStatus, oldStatus: LogicStatus): boolean {

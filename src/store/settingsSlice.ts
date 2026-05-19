@@ -83,6 +83,8 @@ export const defaultUserSequenceBreaks = {
   canTamSwam: false,
   canBunnyCitrus: false,
   canMirrorWrap: false,
+  
+  canSuperBunny: false,
 };
 
 // Type allows boolean values for all sequence break keys
