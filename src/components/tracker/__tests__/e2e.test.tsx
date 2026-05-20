@@ -102,13 +102,54 @@ describe("E2E: Default settings", () => {
   });
 });
 
-describe("E2E: Keysanity with ool checks", () => {
+describe("E2E: ool checks", () => {
+    it("Dark cross ool reason", async () => {
+    const store = createTestStore();
+
+    store.dispatch(setSequenceBreaks({ canNavigateDarkRooms: true }));
+
+    renderLocationWithLogic("Hyrule Castle", store);
+
+    await waitFor(() => {
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
+      expect(el).toBeTruthy();
+      expect(el.className).toContain("bg-status-available");
+    });
+
+    // Dark cross should be ool, and show why
+    const availableTexts = screen.getAllByText("ool ?");
+    expect(availableTexts).toHaveLength(1);
+    expect(availableTexts[0].title).toContain("Requires: Dark Room Navigation");
+  });
+
+  it("Old man ool reason", async () => {
+    const store = createTestStore();
+    store.dispatch(setSequenceBreaks({ canNavigateDarkRooms: true }));
+    store.dispatch(
+      updateMultipleItems({
+        glove: 1,
+      }),
+    );
+
+    renderLocationWithLogic("Old Man", store);
+
+    await waitFor(() => {
+      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
+      expect(el).toBeTruthy();
+      expect(el.className).toContain("bg-status-ool");
+    });
+
+    // Old man should be ool, and show why
+    const availableTexts = screen.getAllByText("ool ?");
+    expect(availableTexts).toHaveLength(1);
+    expect(availableTexts[0].title).toContain("Requires: Dark Room Navigation");
+  });
+
   it("Hera with no lamp, but with FR", async () => {
     const store = createTestStore();
 
     // Mountain climbable
     store.dispatch(setSequenceBreaks({ canNavigateDarkRooms: true }));
-    store.dispatch(setSettings({ wildSmallKeys: "inDungeon", wildBigKeys: false }));
     store.dispatch(
       updateMultipleItems({
         glove: 1,
@@ -127,8 +168,12 @@ describe("E2E: Keysanity with ool checks", () => {
       expect(el.className).toContain("bg-status-ool");
     });
 
-    const availableTexts = screen.getAllByText("ool");
+    // Should propagate dark room navigation
+    const availableTexts = screen.getAllByText("ool ?");
     expect(availableTexts).toHaveLength(6);
+    expect(availableTexts[0].title).toContain("Requires: Dark Room Navigation");
+
+
   });
 
   it("Hera with no lamp, but with FR, keysanity", async () => {
@@ -164,7 +209,7 @@ describe("E2E: Keysanity with ool checks", () => {
       expect(el.className).toContain("bg-status-ool");
     });
 
-    const availableTexts = screen.getAllByText("ool");
+    const availableTexts = screen.getAllByText("ool ?");
     expect(availableTexts).toHaveLength(6);
   });
 });

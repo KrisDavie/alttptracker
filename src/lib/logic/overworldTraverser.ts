@@ -59,10 +59,10 @@ interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
   queue: string[];
   blockedExits: { exitName: string; exit: ExitLogic[string]; from: string }[];
-  pendingDungeons: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>;
+  pendingDungeons: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>;
   // Track ALL discovered portals for each dungeon across all iterations
   // keyCost tracks how many keys were used to reach this portal (if reached via dungeon exit)
-  allDiscoveredPortals: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>;
+  allDiscoveredPortals: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>;
   // Track key cost for overworld regions reached via dungeon exits
   // This maps overworld region name -> minimum keys used to reach it via any dungeon exit
   overworldKeyCost: Map<string, number>;
@@ -76,6 +76,13 @@ interface RouteSearchContext {
 
 const doorPrefixToDungeon = DOOR_PREFIX_TO_DUNGEON;
 const portalToDungeon = PORTAL_TO_DUNGEON;
+
+/** Merge two oolReasons arrays into a deduplicated string array, or undefined if both are empty. */
+function mergeOolReasons(a?: string[], b?: string[]): string[] | undefined {
+  if (!a?.length && !b?.length) return undefined;
+  const set = new Set<string>([...(a ?? []), ...(b ?? [])]);
+  return set.size > 0 ? Array.from(set) : undefined;
+}
 
 export class OverworldTraverser {
   private state: GameState;
@@ -358,9 +365,9 @@ export class OverworldTraverser {
 
   public calculateAll() {
     const reachableRegions = this.traverse();
-    const locationsLogic = this.evaluateLocations(reachableRegions);
+    const { locationStatuses: locationsLogic, locationReasons } = this.evaluateLocations(reachableRegions);
     const entrancesLogic = this.evaluateEntrances(reachableRegions);
-    return { locationsLogic, entrancesLogic };
+    return { locationsLogic, locationReasons, entrancesLogic };
   }
 
   private getDungeonIdFromRegion(regionName: string): string | undefined {
@@ -397,8 +404,8 @@ export class OverworldTraverser {
       reachable,
       queue: [...startRegions],
       blockedExits: [],
-      pendingDungeons: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>(),
-      allDiscoveredPortals: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number }>>(),
+      pendingDungeons: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>(),
+      allDiscoveredPortals: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>(),
       overworldKeyCost: new Map<string, number>(),
     };
   }
@@ -479,16 +486,18 @@ export class OverworldTraverser {
     return !!this.state.settings.sequenceBreaks?.canSuperBunny;
   }
 
-  private updateIfBetter(regionName: string, newStatus: LogicStatus, newLinkState: LinkState, ctx: OverworldTraverserContext): void {
+  private updateIfBetter(regionName: string, newStatus: LogicStatus, newLinkState: LinkState, ctx: OverworldTraverserContext, newOolReasons?: string[]): void {
     const current = ctx.reachable.get(regionName);
     if (!current) return; // Can't update non-existent region, shouldn't happen though
 
     const combinedLinkState = combineLinkStates(current.linkState, newLinkState);
     if (combinedLinkState !== current.linkState) {
       // A better link-state path has been found; combine status too.
+      const combinedStatus = combineStatuses(current.status, newStatus);
       ctx.reachable.set(regionName, {
-        status: combineStatuses(current.status, newStatus),
+        status: combinedStatus,
         linkState: combinedLinkState,
+        oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
       });
     } else {
       const combinedStatus = combineStatuses(current.status, newStatus);
@@ -496,6 +505,7 @@ export class OverworldTraverser {
         ctx.reachable.set(regionName, {
           status: combinedStatus,
           linkState: current.linkState,
+          oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
         });
       }
     }
@@ -504,13 +514,15 @@ export class OverworldTraverser {
   /**
    * Evaluate exit requirements. When `forDiscovery` is true, uses the all-items
    * evaluator (partial mode) to discover portals reachable with full inventory.
+   * Pass `reasons` to collect sequence-break keys when the result is "ool".
    */
-  private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext, forDiscovery = false): LogicStatus {
+  private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext, forDiscovery = false, reasons?: Set<string>): LogicStatus {
     const evalCtx: EvaluationContext = {
       regionName: fromRegion,
       canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
       canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
       effectiveWorldState: this.getEffectiveWorldState(fromRegion, exit.to),
+      reasons: forDiscovery ? undefined : reasons,
     };
 
     const evaluator = forDiscovery ? (this.allItemsEvaluator ?? this.requirementEvaluator) : this.requirementEvaluator;
@@ -536,8 +548,10 @@ export class OverworldTraverser {
     const currentReachability = ctx.reachable.get(exit.to);
 
     // For dungeon exits in partial mode, use all-items evaluator to discover portals
-    // that would be reachable with full inventory
-    const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx, exit.type === "Dungeon" && !!this.allItemsEvaluator);
+    // that would be reachable with full inventory.
+    // Collect reasons for non-dungeon exits so oolReasons can be propagated.
+    const exitReasons = (exit.type !== "Dungeon") ? new Set<string>() : undefined;
+    const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx, exit.type === "Dungeon" && !!this.allItemsEvaluator, exitReasons);
 
     if (exitStatus === "unavailable") {
       ctx.blockedExits.push({ exitName, exit, from: fromRegion });
@@ -550,8 +564,12 @@ export class OverworldTraverser {
         const newLinkState = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
         // For dungeon portals in partial mode, compute actual status with real
         // inventory (the exitStatus came from the all-items evaluator for discovery).
-        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx, false) : exitStatus;
+        const portalExitReasons = new Set<string>();
+        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx, false, portalExitReasons) : exitStatus;
         const newStatus = minimumStatus(fromRegionReachability.status, actualExitStatus === "unavailable" ? "unavailable" : actualExitStatus);
+        const portalOolReasons = newStatus === "ool"
+          ? mergeOolReasons(fromRegionReachability.oolReasons, portalExitReasons.size ? Array.from(portalExitReasons) : undefined)
+          : undefined;
 
         // Get the key cost to reach this overworld region (if it was reached via a dungeon exit)
         const regionKeyCost = ctx.overworldKeyCost.get(fromRegion) ?? 0;
@@ -569,13 +587,14 @@ export class OverworldTraverser {
         // Add or update portal status (main traversal may find a better status)
         const existingPortal = ctx.allDiscoveredPortals.get(dungeonId)!.get(exit.to);
         if (!existingPortal) {
-          ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost });
-          ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost });
+          ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
+          ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
         } else if (isBetterStatus(newStatus, existingPortal.status)) {
           // Update to better status
           existingPortal.status = newStatus;
           existingPortal.linkState = combineLinkStates(newLinkState, existingPortal.linkState);
           existingPortal.keyCost = Math.min(existingPortal.keyCost, regionKeyCost);
+          existingPortal.oolReasons = portalOolReasons;
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, existingPortal);
         }
       }
@@ -584,15 +603,19 @@ export class OverworldTraverser {
 
     const newLinkState = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
     const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
+    const newOolReasons = newStatus === "ool"
+      ? mergeOolReasons(fromRegionReachability.oolReasons, exitReasons?.size ? Array.from(exitReasons) : undefined)
+      : undefined;
 
     if (!currentReachability) {
       ctx.reachable.set(exit.to, {
         status: newStatus,
         linkState: newLinkState,
+        oolReasons: newOolReasons,
       });
       ctx.queue.push(exit.to);
     } else {
-      this.updateIfBetter(exit.to, newStatus, newLinkState, ctx);
+      this.updateIfBetter(exit.to, newStatus, newLinkState, ctx, newOolReasons);
     }
   }
 
@@ -607,6 +630,7 @@ export class OverworldTraverser {
       const entryMap = new Map<string, { linkState: LinkState }>();
       const entryStatus = new Map<string, LogicStatus>();
       const entryKeyCost = new Map<string, number>();
+      const entryOolReasons = new Map<string, string[]>();
 
       // Use ALL discovered portals for this dungeon
       for (const [portalName, portalData] of allPortals) {
@@ -615,6 +639,9 @@ export class OverworldTraverser {
         });
         entryStatus.set(portalName, portalData.status);
         entryKeyCost.set(portalName, portalData.keyCost);
+        if (portalData.oolReasons?.length) {
+          entryOolReasons.set(portalName, portalData.oolReasons);
+        }
       }
 
       // Get dungeon keys and big key status
@@ -639,7 +666,7 @@ export class OverworldTraverser {
         return regionReach.status;
       };
 
-      const result = dungeonTraverser.traverse(entryMap, entryStatus, inventoryKeys, entryKeyCost, canReachOverworldRegion);
+      const result = dungeonTraverser.traverse(entryMap, entryStatus, inventoryKeys, entryKeyCost, canReachOverworldRegion, entryOolReasons);
 
       // Store key-gated regions from first traversal only (most conservative set).
       if (result.bigKeyGatedRegions && !this.dungeonBigKeyGatedRegions.has(dungeonId)) {
@@ -657,6 +684,7 @@ export class OverworldTraverser {
             status: regionState.status,
             linkState: regionState.linkState,
             crystalStates: regionState.crystalStates,
+            oolReasons: regionState.oolReasons,
           });
           madeProgress = true;
         } else if (existing.status !== regionState.status) {
@@ -664,6 +692,7 @@ export class OverworldTraverser {
             status: regionState.status,
             linkState: combineLinkStates(existing.linkState, regionState.linkState),
             crystalStates: regionState.crystalStates,
+            oolReasons: regionState.oolReasons,
           });
           madeProgress = true;
         }
@@ -703,8 +732,9 @@ export class OverworldTraverser {
     return madeProgress;
   }
 
-  public evaluateLocations(reachable: Map<string, RegionReachability>): Record<string, LogicStatus> {
+  public evaluateLocations(reachable: Map<string, RegionReachability>): { locationStatuses: Record<string, LogicStatus>; locationReasons: Record<string, string[]> } {
     const locationStatuses: Record<string, LogicStatus> = {};
+    const locationReasons: Record<string, string[]> = {};
 
     if (this.state.settings.logicMode === "nologic") {
       // Return all locations as available
@@ -714,7 +744,7 @@ export class OverworldTraverser {
           locationStatuses[locationName] = "available";
         }
       }
-      return locationStatuses;
+      return { locationStatuses, locationReasons };
     }
 
     for (const [regionName, regionLogic] of Object.entries(this.regions)) {
@@ -747,6 +777,7 @@ export class OverworldTraverser {
           }
         }
 
+        const reasons = new Set<string>();
         const evalCtx: EvaluationContext = {
           regionName: regionName,
           dungeonId: this.getDungeonIdFromRegion(regionName),
@@ -755,6 +786,7 @@ export class OverworldTraverser {
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
           canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, reachable),
           effectiveWorldState: this.getEffectiveWorldState(regionName),
+          reasons,
         };
 
         const locationStatus = this.requirementEvaluator.evaluateWorldLogic(locationLogic.requirements, evalCtx);
@@ -762,8 +794,16 @@ export class OverworldTraverser {
         // In noglitches, superbunny is a sequence break — cap all accessible locations at ool.
         if (regionReachability.linkState === "superbunny" && this.state.settings.logicMode === "noglitches") {
           finalStatus = minimumStatus(finalStatus, "ool");
+          if (finalStatus === "ool") reasons.add("canMirrorSuperBunny");
+        }
+        // Merge region-level ool reasons (e.g. from dungeon traversal: die-to-revive, hover)
+        if (finalStatus === "ool" && regionReachability.oolReasons) {
+          for (const r of regionReachability.oolReasons) reasons.add(r);
         }
         locationStatuses[locationName] = finalStatus;
+        if (finalStatus === "ool" && reasons.size > 0) {
+          locationReasons[locationName] = Array.from(reasons);
+        }
       }
     }
 
@@ -813,7 +853,7 @@ export class OverworldTraverser {
       }
     }
 
-    return locationStatuses;
+    return { locationStatuses, locationReasons };
   }
 
   public evaluateEntrances(reachable: Map<string, RegionReachability>): Record<string, LogicStatus> {

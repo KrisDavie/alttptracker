@@ -9,6 +9,8 @@ export interface CheckStatus {
   logic: LogicStatus;
   manuallyChecked: boolean;
   scoutedItems: string[];
+  /** Sequence-break keys that caused this location to be "ool". Only populated when logic === "ool". */
+  oolReasons?: string[];
 }
 
 // We have to keep entrances and locations separate because some locations and entrances may share names
@@ -71,11 +73,21 @@ export const checksSlice = createSlice({
         manuallyChecked: manual,
       };
     },
-    updateLogicStatuses: (state, action: PayloadAction<{ locationsLogic: Record<string, LogicStatus>; entrancesLogic: Record<string, LogicStatus> }>) => {
-      const { locationsLogic, entrancesLogic } = action.payload;
+    updateLogicStatuses: (state, action: PayloadAction<{ locationsLogic: Record<string, LogicStatus>; locationReasons?: Record<string, string[]>; entrancesLogic: Record<string, LogicStatus> }>) => {
+      const { locationsLogic, locationReasons, entrancesLogic } = action.payload;
       Object.entries(locationsLogic).forEach(([location, logicStatus]) => {
         if (state.locationsChecks[location]) {
           state.locationsChecks[location].logic = logicStatus;
+          const newReasons = logicStatus === "ool" ? (locationReasons?.[location] ?? undefined) : undefined;
+          const oldReasons = state.locationsChecks[location].oolReasons;
+          // Only update if changed to avoid Redux referential equality causing infinite loops.
+          const reasonsChanged =
+            newReasons === undefined
+              ? oldReasons !== undefined
+              : !oldReasons || newReasons.length !== oldReasons.length || newReasons.some((r, i) => r !== oldReasons[i]);
+          if (reasonsChanged) {
+            state.locationsChecks[location].oolReasons = newReasons;
+          }
         }
       });
       Object.entries(entrancesLogic).forEach(([entrance, logicStatus]) => {

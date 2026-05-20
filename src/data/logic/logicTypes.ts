@@ -62,7 +62,9 @@ export interface RegionLogic {
 export interface RegionReachability {
   status: LogicStatus;
   linkState: LinkState;
-  crystalStates?: Set<CrystalSwitchState>; 
+  crystalStates?: Set<CrystalSwitchState>;
+  /** Sequence-break reason keys that caused this region to have "ool" status. */
+  oolReasons?: string[];
 }
 
 export interface DungeonTraversalResult {

@@ -44,6 +44,8 @@ export interface DungeonRegionState {
   status: LogicStatus;
   linkState: LinkState;
   crystalStates: Set<CrystalSwitchState>;
+  /** Sequence-break reason keys that caused this region to have "ool" status. */
+  oolReasons?: string[];
 }
 
 export interface DungeonTraversalResult {
@@ -61,6 +63,10 @@ interface DungeonContext {
   regionMinKeysUsedNoBK: Map<string, number>;
   discoveredKeyLocations: Set<string>;
   totalKeysAvailable: number;
+  /** reviveCap applied to each region (only "ool" when die-to-revive is needed in noglitches). */
+  regionReviveCap: Map<string, LogicStatus>;
+  /** Per-region accumulated ool reasons from entry traversal. */
+  regionEntryOolReasons: Map<string, Set<string>>;
 }
 
 /** Pre-computed metadata for a single exit, avoiding repeated requirement parsing. */
@@ -169,6 +175,7 @@ export class DungeonTraverser {
     inventoryKeys: number,
     entryKeyCost: Map<string, number> = new Map(),
     canReachOverworldRegion?: (regionName: string) => LogicStatus,
+    entryOolReasons?: Map<string, string[]>,
   ): DungeonTraversalResult {
     // For Dijkstra (minKeys), penalize unavailable entries so they don't
     // provide cheap best-case paths. BFS maxKeys still uses all entries at
@@ -228,7 +235,7 @@ export class DungeonTraverser {
     }
 
     // Compile final reachable regions with statuses
-    this.finalBFS(ctx, entryRegions, entryStatus, inventoryKeys, keyCountingEvaluator);
+    this.finalBFS(ctx, entryRegions, entryStatus, inventoryKeys, keyCountingEvaluator, entryOolReasons);
 
     // Collect external exits (dungeon -> overworld)
     const externalExits = new Map<string, { to: string; status: LogicStatus; linkState: LinkState; keysUsedToReach: number }>();
@@ -635,7 +642,7 @@ export class DungeonTraverser {
     }
   }
 
-  private finalBFS(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryStatus: Map<string, LogicStatus>, inventoryKeys: number, keyCountingEvaluator: RequirementEvaluator) {
+  private finalBFS(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryStatus: Map<string, LogicStatus>, inventoryKeys: number, keyCountingEvaluator: RequirementEvaluator, entryOolReasons?: Map<string, string[]>) {
     // Phase 1: Discover all traversable regions (ignoring key counts).
     // Phase 2: Fixed-point key counting. Phase 3: Compute final status.
     // Partial mode uses keyCountingEvaluator (all items) for discovery.
@@ -684,6 +691,13 @@ export class DungeonTraverser {
         linkState: effectiveLinkState,
         crystalStates: new Set(["orange"]),
       });
+      // Seed entry ool reasons from portal (e.g. dark room navigation to reach dungeon)
+      const portalReasons = entryOolReasons?.get(regionName);
+      if (thisEntryStatus === "ool" && portalReasons?.length) {
+        let set = ctx.regionEntryOolReasons.get(regionName);
+        if (!set) { set = new Set<string>(); ctx.regionEntryOolReasons.set(regionName, set); }
+        for (const r of portalReasons) set.add(r);
+      }
       // Use the best status if this region is also another entry portal
       const entryKey = `${regionName}|orange`;
       const currentStatus = regionEntryStatus.get(entryKey);
@@ -738,6 +752,10 @@ export class DungeonTraverser {
       }
       // Cap the current entry status by the revive penalty (ool for noglitches).
       const cappedRegionEntryStatus = minimumStatus(currentRegionEntryStatus, reviveCap);
+      // Track revive cap per region so Phase 3 can attribute "canDungeonBunnyRevive"
+      if (reviveCap === "ool") {
+        ctx.regionReviveCap.set(region, "ool");
+      }
 
       if (regionLogic.exits) {
         for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
@@ -767,6 +785,7 @@ export class DungeonTraverser {
           if (requirementStatus === "unavailable") continue;
 
           // Evaluate actual traversability (real inventory, not assumptions).
+          const exitReasons = new Set<string>();
           const actualStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, {
             regionName: region,
             dungeonId: this.dungeonId,
@@ -774,6 +793,7 @@ export class DungeonTraverser {
             linkState: effectiveLinkState,
             assumeSmallKey: meta.isSKDoor,
             assumeBigKey: this.actuallyHasBigKey,
+            reasons: exitReasons,
             canReachRegion: (targetRegion: string) => {
               if (this.regions[targetRegion]?.type === "Dungeon") {
                 // canReach target not needed by key-counting evaluator (e.g., somaria
@@ -802,6 +822,28 @@ export class DungeonTraverser {
 
           // Effective entry status = min(region's entry status, actual traversability)
           const effectiveEntryStatus = minimumStatus(cappedRegionEntryStatus, actualStatus);
+
+          // Propagate exit ool reasons to destination region
+          if (exitReasons.size > 0) {
+            let destReasons = ctx.regionEntryOolReasons.get(exit.to);
+            if (!destReasons) { destReasons = new Set<string>(); ctx.regionEntryOolReasons.set(exit.to, destReasons); }
+            for (const r of exitReasons) destReasons.add(r);
+          }
+          // If this region's revive cap caused ool for exit traversal, propagate it too
+          if (reviveCap === "ool" && cappedRegionEntryStatus === "ool") {
+            let destReasons = ctx.regionEntryOolReasons.get(exit.to);
+            if (!destReasons) { destReasons = new Set<string>(); ctx.regionEntryOolReasons.set(exit.to, destReasons); }
+            destReasons.add("canDungeonBunnyRevive");
+          }
+          // If entry status (from portal) is ool, propagate those reasons to children too
+          if (cappedRegionEntryStatus === "ool") {
+            const regionEntryReasons = ctx.regionEntryOolReasons.get(region);
+            if (regionEntryReasons?.size) {
+              let destReasons = ctx.regionEntryOolReasons.get(exit.to);
+              if (!destReasons) { destReasons = new Set<string>(); ctx.regionEntryOolReasons.set(exit.to, destReasons); }
+              for (const r of regionEntryReasons) destReasons.add(r);
+            }
+          }
 
           // Add to reachable if not already there
           if (!ctx.reachable.has(exit.to)) {
@@ -1101,6 +1143,21 @@ export class DungeonTraverser {
 
       // Final status is the combination of entry status and key status
       regionState.status = minimumStatus(entryRegionStatus, keyStatus);
+
+      // Populate ool reasons for this region
+      if (regionState.status === "ool") {
+        const reasons = new Set<string>();
+        // Reasons from entry traversal (exit requirements that returned ool, e.g. hover)
+        const entryReasons = ctx.regionEntryOolReasons.get(regionName);
+        if (entryReasons) for (const r of entryReasons) reasons.add(r);
+        // If die-to-revive cap caused ool for this region itself
+        if (ctx.regionReviveCap.get(regionName) === "ool") {
+          reasons.add("canDungeonBunnyRevive");
+        }
+        if (reasons.size > 0) regionState.oolReasons = Array.from(reasons);
+      } else {
+        regionState.oolReasons = undefined;
+      }
     }
   }
 
@@ -1113,6 +1170,8 @@ export class DungeonTraverser {
       regionMinKeysUsedNoBK: new Map<string, number>(),
       discoveredKeyLocations: new Set<string>(),
       totalKeysAvailable: inventoryKeys,
+      regionReviveCap: new Map<string, LogicStatus>(),
+      regionEntryOolReasons: new Map<string, Set<string>>(),
     };
 
     const initialCrystalState: CrystalSwitchState = "orange";

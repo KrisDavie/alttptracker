@@ -14,6 +14,8 @@ export interface EvaluationContext {
   /** OWR: Override world state for requirement evaluation on tiles whose effective
    *  world differs from the global setting (e.g., flipped tiles). */
   effectiveWorldState?: string;
+  /** Accumulates sequence-break reason keys whenever "ool" is returned. */
+  reasons?: Set<string>;
 }
 
 export class RequirementEvaluator {
@@ -242,7 +244,11 @@ export class RequirementEvaluator {
         if (items.lantern.amount > 0) {
           return "available";
         }
-        return this.state.settings.sequenceBreaks.canNavigateDarkRooms ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canNavigateDarkRooms) {
+          ctx.reasons?.add("canNavigateDarkRooms");
+          return "ool";
+        }
+        return "unavailable";
       case "canFlute":
       case "flute":
         if (items.flute.amount == 0) {
@@ -517,30 +523,41 @@ export class RequirementEvaluator {
         return this.boolToStatus(this.hasItem("hammer") && this.met("melee_bow", ctx));
 
       case "canIceBreak":
-        return this.state.settings.sequenceBreaks.canIceBreak && this.hasItem("somaria") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canIceBreak && this.hasItem("somaria")) { ctx.reasons?.add("canIceBreak"); return "ool"; }
+        return "unavailable";
 
       case "canHover":
-        return this.state.settings.sequenceBreaks.canHover && this.hasItem("boots") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canHover && this.hasItem("boots")) { ctx.reasons?.add("canHover"); return "ool"; }
+        return "unavailable";
       case "canHoverAlot":
-        return this.state.settings.sequenceBreaks.canHoverAlot && this.hasItem("boots") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canHoverAlot && this.hasItem("boots")) { ctx.reasons?.add("canHoverAlot"); return "ool"; }
+        return "unavailable";
       // TODO
       case "canQirnJump":
         // TODO Bunny check
-        return this.state.settings.sequenceBreaks.canQirnJump && this.hasItem("bomb") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canQirnJump && this.hasItem("bomb")) { ctx.reasons?.add("canQirnJump"); return "ool"; }
+        return "unavailable";
       case "canFakePowder":
-        return this.state.settings.sequenceBreaks.canFakePowder && this.hasItem("mushroom") && this.hasItem("somaria") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canFakePowder && this.hasItem("mushroom") && this.hasItem("somaria")) { ctx.reasons?.add("canFakePowder"); return "ool"; }
+        return "unavailable";
       case "canTombRaider":
-        return this.state.settings.sequenceBreaks.canTombRaider && this.hasItem("hookshot") && (this.state.items.sword.amount >= 2 || this.hasItem("bomb")) ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canTombRaider && this.hasItem("hookshot") && (this.state.items.sword.amount >= 2 || this.hasItem("bomb"))) { ctx.reasons?.add("canTombRaider"); return "ool"; }
+        return "unavailable";
       case "canSpeckyClip":
-        return this.state.settings.sequenceBreaks.canSpeckyClip && this.hasItem("hookshot") && this.hasItem("bomb") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canSpeckyClip && this.hasItem("hookshot") && this.hasItem("bomb")) { ctx.reasons?.add("canSpeckyClip"); return "ool"; }
+        return "unavailable";
       case "canHeraPot":
-        return this.state.settings.sequenceBreaks.canHeraPot && this.hasItem("hookshot") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canHeraPot && this.hasItem("hookshot")) { ctx.reasons?.add("canHeraPot"); return "ool"; }
+        return "unavailable";
       case "canMimicClip":
-        return this.state.settings.sequenceBreaks.canMimicClip ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canMimicClip) { ctx.reasons?.add("canMimicClip"); return "ool"; }
+        return "unavailable";
       case "canMoldormBounce":
-        return this.state.settings.sequenceBreaks.canMoldormBounce && this.hasItem("bomb") && this.hasItem("sword") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canMoldormBounce && this.hasItem("bomb") && this.hasItem("sword")) { ctx.reasons?.add("canMoldormBounce"); return "ool"; }
+        return "unavailable";
       case "canBombOrBonkCameraUnlock":
-        return this.state.settings.sequenceBreaks.canBombOrBonkCameraUnlock && this.hasItem("bomb") && this.hasItem("boots") ? "ool" : "unavailable";
+        if (this.state.settings.sequenceBreaks.canBombOrBonkCameraUnlock && this.hasItem("bomb") && this.hasItem("boots")) { ctx.reasons?.add("canBombOrBonkCameraUnlock"); return "ool"; }
+        return "unavailable";
       case "canDarkRoomNavigateBlind":
       case "canTorchRoomNavigateBlind":
       case "canFairyReviveHover":
@@ -578,7 +595,11 @@ export class RequirementEvaluator {
       // in logic.
       case "canMirrorSuperBunny":
         if (ctx.linkState !== "superbunny") return "unavailable";
-        return this.state.settings.logicMode === "noglitches" ? "ool" : "available";
+        if (this.state.settings.logicMode === "noglitches") {
+          ctx.reasons?.add("canMirrorSuperBunny");
+          return "ool";
+        }
+        return "available";
 
       // Everything below here needs user settings for logic added
       case "canDungeonBunnyRevive":
