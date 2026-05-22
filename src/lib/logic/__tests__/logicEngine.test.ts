@@ -134,6 +134,23 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("unavailable");
     });
 
+    it("[SK BK] should mark entire front as available with no big key", () => {
+      const state = gameState().withAllItems().withSettings({ wildBigKeys: true, wildSmallKeys: "wild" }).withDungeon("ep", { bigKey: false }).build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+      // This test should pass with the same logic as above, as the only small keys in EP are in pots/enemy drops (not shuffled in this test)
+      // and one of those keys, and one of the two small key doors are both locked by the big key. So without the big key, the player can reach
+      // 1 small key and only 1 small key door. Therefore Big Key Chest should be available, not possible.
+      // Key contention should not be an issue because the logic should recognize that the small key and small key door behind the big key door cannot be accessed
+
+      expect(result.locationsLogic["Eastern Palace - Compass Chest"]).toBe("available");
+      expect(result.locationsLogic["Eastern Palace - Big Key Chest"]).toBe("available");
+      expect(result.locationsLogic["Eastern Palace - Big Chest"]).toBe("unavailable");
+      expect(result.locationsLogic["Eastern Palace - Boss"]).toBe("unavailable");
+    });
+
     it("[SK BK Pottery]should mark all as available when player has 1 wild small keys", () => {
       const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", pottery: "keys" }).withDungeon("ep", { smallKeys: 1, bigKey: true }).build();
 

@@ -940,7 +940,24 @@ export class DungeonTraverser {
 
     // Pottery mode: only applies if this dungeon has shuffled pot/keydrop keys.
     const isPotteryKeyMode = this.shuffledKeysInDungeon(ctx) > 0;
-    const estimatedUniqueDoors = Math.ceil(ctx.pendingKeyDoors.length / 2);
+    // Count unique door pairs whose source region is reachable under the effective
+    // map (excludes doors that are only reachable past the BK door when the player
+    // lacks the big key). This prevents inflated contention from inaccessible doors.
+    let estimatedUniqueDoors = 0;
+    {
+      const seenDoorPairs = new Set<string>();
+      for (const doorName of ctx.pendingKeyDoors) {
+        const sourceRegion = this.findDoorSourceRegion(doorName);
+        if (!sourceRegion) continue;
+        if (effectiveMinKeysMap.get(sourceRegion) === undefined) continue;
+        const exitData = this.regions[sourceRegion]?.exits?.[doorName];
+        const destRegion = exitData?.to;
+        const pairKey = destRegion ? this.getDoorPairKey(sourceRegion, destRegion) : doorName;
+        if (seenDoorPairs.has(pairKey)) continue;
+        seenDoorPairs.add(pairKey);
+        estimatedUniqueDoors++;
+      }
+    }
 
     // Count doors at threshold 0 (branching paths from start).
     let doorsAtThreshold0 = 0;
@@ -1059,8 +1076,15 @@ export class DungeonTraverser {
 
           // Count keys collectible BEFORE reaching this region
           let keysAvailableBeforeRegion = inventoryKeys;
-          // effectiveMaxKeys >= minKeysUsed (no-BK path may require more keys)
-          const effectiveMaxKeys = Math.max(maxKeysUsed ?? minKeysUsed, minKeysUsed);
+          // effectiveMaxKeys >= minKeysUsed (no-BK path may require more keys).
+          // When the player lacks the big key (and we're not in pottery-key mode
+          // where contention can come from shuffled pot/drop keys), cap by the
+          // count of SK doors reachable without BK — the player can never spend
+          // more keys than there are doors they can actually reach.
+          const rawMaxKeys = Math.max(maxKeysUsed ?? minKeysUsed, minKeysUsed);
+          const effectiveMaxKeys = !this.actuallyHasBigKey && !isPotteryKeyMode
+            ? Math.max(minKeysUsed, Math.min(rawMaxKeys, estimatedUniqueDoors))
+            : rawMaxKeys;
 
           for (const [, keys] of keysByThreshold) {
             if (keysAvailableBeforeRegion >= effectiveMaxKeys) break; // Already have enough keys
