@@ -6,6 +6,7 @@ import { AdvancedTab } from "./settings/AdvancedTab";
 import { LogicBreaksTab } from "./settings/LogicBreaksTab";
 import { TrackerSettingsTab } from "./settings/TrackerSettingsTab";
 import { ColoursTab } from "./settings/ColoursTab";
+import { EntranceLabelsTab } from "./settings/EntranceLabelsTab";
 
 interface GameSettingsTabsProps {
   settings: SettingsState;
@@ -47,6 +48,7 @@ export function GameSettingsTabs({
             <div>
               <TabsTrigger value="tracker">Tracker Settings</TabsTrigger>
               <TabsTrigger value="colours">Colours</TabsTrigger>
+              <TabsTrigger value="entranceLabels">Entrance Labels</TabsTrigger>
             </div>
           </div>
         </TabsList>
@@ -71,6 +73,7 @@ export function GameSettingsTabs({
           setAutotrackPort={setAutotrackPort}
         />
         <ColoursTab settings={settings} updateSetting={updateSetting} />
+        <EntranceLabelsTab settings={settings} updateSetting={updateSetting} />
       </Tabs>
     </TooltipProvider>
   );

@@ -35,6 +35,9 @@ export const REMEMBERED_SETTINGS = [
   "connectionLineColor",
   "customColors",
 
+  // Entrance labels
+  "entranceLabelOverrides",
+
   // Gameplay
   "autotracking",
   "sequenceBreaks",

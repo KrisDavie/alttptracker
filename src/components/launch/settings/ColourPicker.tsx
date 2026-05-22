@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface ColourPickerProps {
   /** CSS colour string. Supports `#RGB`, `#RRGGBB`, `#RRGGBBAA` and `rgba(...)`. */
@@ -70,14 +70,51 @@ function buildColour(rgbHex: string, alpha: number, withAlpha: boolean) {
 }
 
 export function ColourPicker({ value, onChange, alpha = false, label, description }: ColourPickerProps) {
-  const parsed = useMemo(() => parseColour(value), [value]);
+  // Local state mirrors the external value but updates immediately while the
+  // user is dragging the colour or alpha controls. The expensive upstream
+  // onChange (which typically dispatches Redux and re-renders large slices of
+  // the app) is debounced so it only fires once the user settles on a value.
+  const [localValue, setLocalValue] = useState(value);
+  const [prevProp, setPrevProp] = useState(value);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Derived state from prop: when the external value changes (e.g. preset reset),
+  // sync local state. This is the React-recommended pattern for prop-derived state
+  // (https://react.dev/reference/react/useState#storing-information-from-previous-renders).
+  // During an in-progress debounce, value (from Redux) hasn't updated yet so
+  // prevProp === value and this branch is skipped — no mid-edit interruption.
+  if (prevProp !== value) {
+    setPrevProp(value);
+    setLocalValue(value);
+  }
+
+  // Flush any pending debounced update on unmount.
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
+  }, []);
+
+  const scheduleEmit = (next: string) => {
+    setLocalValue(next);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      debounceRef.current = null;
+      onChange(next);
+    }, 80);
+  };
+
+  const parsed = useMemo(() => parseColour(localValue), [localValue]);
 
   const handleColourChange = (newRgbHex: string) => {
-    onChange(buildColour(newRgbHex, parsed.alpha, alpha));
+    scheduleEmit(buildColour(newRgbHex, parsed.alpha, alpha));
   };
 
   const handleAlphaChange = (newAlpha: number) => {
-    onChange(buildColour(parsed.rgbHex, newAlpha, true));
+    scheduleEmit(buildColour(parsed.rgbHex, newAlpha, true));
   };
 
   const swatchStyle: React.CSSProperties = {
