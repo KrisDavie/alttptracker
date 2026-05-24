@@ -281,7 +281,8 @@ export class RequirementEvaluator {
       case "goldSword":
         return this.boolToStatus(items.sword.amount >= 4);
       case "greenPendant":
-        return this.boolToStatus(Object.values(this.state.dungeons).some((d) => d.prizeCollected && d.prize === "greenPendant"));
+        // If the player has 3 pendants, we assume they have the green one
+        return this.boolToStatus((Object.values(this.state.dungeons).some((d) => d.prizeCollected && d.prize === "greenPendant")) || this.getPendantCount() >= 3) ;
       case "canPullPedestal":
         return this.boolToStatus(this.getPendantCount() >= 3);
       case "canUseSilverArrows":
@@ -357,7 +358,8 @@ export class RequirementEvaluator {
         return "unavailable";
       case "canBuyBigBombMaybe":
       case "canBuyBigBomb":
-        return this.boolToStatus(this.getRedCrystalCount() >= 2);
+        // If the player has 7 crystals, we assume they have the 2 red ones
+        return this.boolToStatus((this.getRedCrystalCount() >= 2) || this.getCrystalCount() >= 7);
       case "canOpenTR":
         return minimumStatus(this.resolveComplex("medallion|tr", ctx), this.resolveComplex("canReach|Turtle Rock Ledge", ctx), this.resolveSimple("canUseMedallionPad", ctx));
       case "canOpenMM":
