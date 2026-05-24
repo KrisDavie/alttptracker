@@ -5,6 +5,7 @@ import { setSettings, type SettingsState } from "@/store/settingsSlice";
 import { SettingsContext } from "@/hooks/useSettings";
 import { useApplyStatusColors } from "@/hooks/useStatusColors";
 import { idbDriver } from "@/lib/idbDriver";
+import { loadLauncherPrefs, LAUNCHER_PREFS_KEY } from "@/lib/launchHelpers";
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
@@ -25,6 +26,22 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (Object.keys(urlSettings).length > 0) {
       dispatch(setSettings(urlSettings));
     }
+  }, [dispatch]);
+
+  // All remembered preferences are owned by the launcher. Re-apply them
+  // whenever another tab writes to the launcher prefs key so that changes
+  // (colours, display toggles, etc.) are immediately visible in open tracker sessions.
+  useEffect(() => {
+    const apply = () => {
+      const prefs = loadLauncherPrefs();
+      if (prefs && Object.keys(prefs).length > 0) dispatch(setSettings(prefs));
+    };
+    apply();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === null || e.key === LAUNCHER_PREFS_KEY) apply();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, [dispatch]);
 
   // Poll IndexedDB for settings changes from other windows (e.g., Launcher)
