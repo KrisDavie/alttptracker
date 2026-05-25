@@ -1,46 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
+import { TILE, getMapPopoutDimensions } from "@/lib/trackerSizing";
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
 import { Loader2 } from "lucide-react";
 import StatusBar from "./tracker/StatusBar";
 import EntranceSelectionModal from "./tracker/EntranceSelectionModal";
 
-const TILE = 448;
-
-function getLayoutDimensions(mapMode: "off" | "normal" | "compact" | "vertical" | "popoutNormal" | "popoutVertical") {
-  switch (mapMode) {
-    case "popoutNormal":
-      return { width: TILE * 2, height: TILE };
-    case "popoutVertical":
-      return { width: TILE, height: TILE * 2 };
-    default:
-      return { width: TILE, height: TILE };
-  }
-}
-
 export function TrackerMap() {
-  const [scale, setScale] = useState(1);
   const rehydrated = useSelector((state: RootState) => state.trackerState.rehydrated);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const worldState = useSelector((state: RootState) => state.settings.worldState);
   const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === "entrance";
 
-  const { width, height } = useMemo(() => getLayoutDimensions(mapMode), [mapMode]);
+  const { width: mapWidth, height: mapHeight } = useMemo(() => getMapPopoutDimensions(mapMode), [mapMode]);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const handleResize = () => {
-      const scaleW = window.innerWidth / width;
-      const scaleH = window.innerHeight / height;
+      const scaleW = window.innerWidth / mapWidth;
+      const scaleH = window.innerHeight / mapHeight;
       setScale(Math.min(scaleW, scaleH, 1));
     };
-
     window.addEventListener("resize", handleResize);
     handleResize();
-
     return () => window.removeEventListener("resize", handleResize);
-  }, [width, height]);
+  }, [mapWidth, mapHeight]);
 
   const isVertical = mapMode === "vertical" || mapMode === "popoutVertical";
   const isCompact = mapMode === "compact";
@@ -72,8 +58,8 @@ export function TrackerMap() {
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top left",
-          width: `${width}px`,
-          height: `${height}px`,
+          width: `${mapWidth}px`,
+          height: `${mapHeight}px`,
           flexShrink: 0,
           position: "relative",
           zIndex: 1,

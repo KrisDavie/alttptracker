@@ -34,13 +34,21 @@ interface SettingSwitchProps {
   label: string;
   checked: boolean;
   onChange: (value: boolean) => void;
+  disabled?: boolean;
 }
 
-export function SettingSwitch({ label, checked, onChange }: SettingSwitchProps) {
+export function SettingSwitch({ label, checked, onChange, disabled = false }: SettingSwitchProps) {
   return (
     <div className="flex items-center justify-between">
-      <Label className="text-xs cursor-pointer" onClick={() => onChange(!checked)}>{label}</Label>
-      <Switch checked={checked} onCheckedChange={onChange} />
+      <Label
+        className={`text-xs ${disabled ? "cursor-not-allowed text-muted-foreground" : "cursor-pointer"}`}
+        onClick={() => {
+          if (!disabled) onChange(!checked);
+        }}
+      >
+        {label}
+      </Label>
+      <Switch checked={checked} disabled={disabled} onCheckedChange={onChange} />
     </div>
   );
 }

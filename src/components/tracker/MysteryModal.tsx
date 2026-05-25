@@ -11,10 +11,12 @@ import { resetChecks } from "@/store/checksSlice";
 import { resetEntrances } from "@/store/entrancesSlice";
 import { resetScouts } from "@/store/scoutsSlice";
 import { resetOverworldState } from "@/store/overworldSlice";
+import { resetEventLog } from "@/store/eventLogSlice";
 import { getSession } from "@/lib/sessionManager";
 import { getSessionInstanceId } from "@/lib/sessionHelper";
 import { buildPresetIDBState } from "@/lib/launchHelpers";
 import { getPresetById } from "@/data/launcherPresets";
+import { cn } from "@/lib/utils";
 
 function MysteryModal() {
   const dispatch = useDispatch();
@@ -49,7 +51,7 @@ function MysteryModal() {
     if (window.confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
       const sessionId = getSessionInstanceId();
       const session = await getSession(sessionId);
-      
+
       const presetId = session?.presetId;
       const preset = presetId ? getPresetById(presetId) : undefined;
       const startingItems = session?.startingItems || preset?.startingItems || {};
@@ -60,14 +62,15 @@ function MysteryModal() {
 
       const presetState = buildPresetIDBState(startingItems, preset, launchSettings);
 
-      dispatch(resetItems(presetState.items || undefined));
+      dispatch({ ...resetItems(presetState.items || undefined), meta: { skipEventLog: true } });
       dispatch(resetChecks(presetState.checks || undefined));
       dispatch(resetEntrances(presetState.entrances || undefined));
-      dispatch(resetDungeons(presetState.dungeons || undefined));
+      dispatch({ ...resetDungeons(presetState.dungeons || undefined), meta: { skipEventLog: true } });
+      dispatch(resetEventLog());
       if (launchSettings) {
         dispatch(resetSettings(launchSettings));
       }
-      
+
       dispatch(resetOverworldState());
       dispatch(resetScouts());
       dispatch(setModalClose());
@@ -82,6 +85,7 @@ function MysteryModal() {
     dispatch(setAutotrackingSettings(localAutotrackerSettings));
     dispatch(setModalClose());
   };
+  const eventLogOptionsDisabled = localSettings.eventLogMode === "off";
 
   return (
     <div className="w-100 h-100 bg-white m-6 border-gray-800 border-4 text-black grid grid-rows-7">
@@ -232,11 +236,37 @@ function MysteryModal() {
               <option value="compact">Compact</option>
               <option value="vertical">Vertical</option>
             </select>
+            <label className="font-medium">Event Log:</label>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              <select
+                className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400"
+                value={localSettings.eventLogMode}
+                onChange={(e) => handleInputChange("eventLogMode", e.target.value)}
+              >
+                <option value="off">Off</option>
+                <option value="attached">Attached</option>
+              </select>
+              <label
+                className={cn(
+                  "flex items-center space-x-1",
+                  eventLogOptionsDisabled ? "cursor-not-allowed text-gray-400" : "cursor-pointer"
+                )}
+                aria-disabled={eventLogOptionsDisabled}
+              >
+                <input
+                  type="checkbox"
+                  checked={localSettings.logTriforcePieces}
+                  disabled={eventLogOptionsDisabled}
+                  onChange={(e) => handleInputChange("logTriforcePieces", e.target.checked)}
+                />
+                <span>Log triforce pieces</span>
+              </label>
+            </div>
 
             <button className="bg-gray-300 font-roboto col-span-2" onClick={handleFullReset}>
               Reset Tracker State
             </button>
-            
+
           </div>
         </div>
       )}

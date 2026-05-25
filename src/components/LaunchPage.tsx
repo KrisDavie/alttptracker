@@ -14,6 +14,7 @@ import { LaunchCard } from "./launch/LaunchCard";
 import { GameSettingsTabs } from "./launch/GameSettingsTabs";
 import { SpriteSelector } from "./launch/SpriteSelector";
 import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
+import { getEventLogPopoutDimensions, getMapPopoutDimensions, getTrackerWindowSizeForEventLogMode, TILE } from "@/lib/trackerSizing";
 
 const LaunchPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -209,28 +210,24 @@ const LaunchPage: React.FC = () => {
         if (presetState.dungeons) await idbDriver.setItem(prefix + "dungeons", JSON.stringify(presetState.dungeons));
       }
 
-      const isMapPopout = settings.mapMode === "popoutNormal" || settings.mapMode === "popoutVertical";
+      const { mapMode, eventLogMode } = settings;
+      const isMapPopout = mapMode === "popoutNormal" || mapMode === "popoutVertical";
+      const isEventLogPopout = eventLogMode === "popout";
 
       if (isMapPopout) {
-        const mapUrl = `/map?id=${encodeURIComponent(id!)}`;
-        const trackerUrl = `/tracker?id=${encodeURIComponent(id!)}`;
+        const trackerSize = getTrackerWindowSizeForEventLogMode(mapMode, eventLogMode);
+        const mapSize = getMapPopoutDimensions(mapMode);
 
-        window.open(trackerUrl, "_blank", `width=${448},height=${448}`);
-
-        const w = settings.mapMode === "popoutNormal" ? 896 : 448;
-        const h = settings.mapMode === "popoutVertical" ? 896 : 448;
-        window.open(mapUrl, "_blank", `width=${w},height=${h}`);
-
+        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${TILE},height=${trackerSize.height}`);
+        window.open(`/map?id=${encodeURIComponent(id!)}`, "_blank", `width=${mapSize.width},height=${mapSize.height}`);
       } else {
+        const { width, height } = getTrackerWindowSizeForEventLogMode(mapMode, eventLogMode);
+        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${width},height=${height}`);
+      }
 
-        const windowSizes: Record<string, { w: number; h: number }> = {
-          off: { w: 448, h: 448 },
-          normal: { w: 1344, h: 449 },
-          compact: { w: 448, h: 672 },
-          vertical: { w: 448, h: 1344 },
-        };
-        const { w, h } = windowSizes[settings.mapMode] ?? windowSizes.normal;
-        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${w},height=${h}`);
+      if (isEventLogPopout) {
+        const { width, height } = getEventLogPopoutDimensions();
+        window.open(`/event-log?id=${encodeURIComponent(id!)}`, "_blank", `width=${width},height=${height}`);
       }
     },
     [settings, spriteName, sessionName, selectedPresetId, startingItems],

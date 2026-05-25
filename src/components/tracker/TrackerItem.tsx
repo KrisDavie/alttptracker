@@ -24,10 +24,10 @@ function TrackerItem({ itemName, storageKey, skipFirstImgOnCollect = false }: Tr
 
   if (itemName === "boots" && collected === 0 && pseudoboots) {
     itemImage = "/items/pseudoboots.png";
-    collected = 1; 
+    collected = 1;
   } else if (itemName === "mirror" && collected === 0 && mirrorScroll) {
     itemImage = "/items/mirrorscroll.png";
-    collected = 1; 
+    collected = 1;
   }
 
   const scoutItem = { kind: "item" as const, id: key };

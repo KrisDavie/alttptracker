@@ -20,7 +20,7 @@ function LogicProvider({ children }: LogicProviderProps) {
   const overworld = useSelector((state: RootState) => state.overworld);
 
   const url = new URL(window.location.href);
-  const isMapPage = url.pathname === "/map";
+  const isPassivePage = url.pathname === "/map" || url.pathname === "/event-log";
 
   // Pre-mutate the logic graph when topology-affecting state changes.
   // Skips recomputation when only items/dungeons/checks change.
@@ -32,8 +32,8 @@ function LogicProvider({ children }: LogicProviderProps) {
   }, [settings, entrances, overworld, logicSet]);
 
   useEffect(() => {
-    if (isMapPage) {
-      // Don't run logic on the map page, the item page manages this
+    if (isPassivePage) {
+      // Don't run logic on popout-only pages; the tracker page manages this.
       return;
     }
     // Build checks record with just { checked } for the logic engine
@@ -58,7 +58,7 @@ function LogicProvider({ children }: LogicProviderProps) {
     const newResults = traverser.calculateAll();
 
     dispatch(updateLogicStatuses(newResults));
-  }, [items, settings, dungeons, entrances, locationsChecks, overworld, effectiveGraph, dispatch, isMapPage]); 
+  }, [items, settings, dungeons, entrances, locationsChecks, overworld, effectiveGraph, dispatch, isPassivePage]); 
 
   return <>{children}</>;
 }

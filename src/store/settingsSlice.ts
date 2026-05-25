@@ -90,6 +90,9 @@ export const defaultUserSequenceBreaks = {
 // Type allows boolean values for all sequence break keys
 export type UserSequenceBreaks = { [K in keyof typeof defaultUserSequenceBreaks]: boolean };
 
+export type MapMode = "off" | "normal" | "compact" | "vertical" | "popoutNormal" | "popoutVertical";
+export type EventLogMode = "off" | "attached" | "popout";
+
 export type goalTypes = "ganon" | "fast_ganon" | "ad" | "pedestal" | "triforce_hunt" | "ganonhunt" | "trinity" | "completionist";
 export type gtOpenTypes = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "locksmith";
 export type ganonVulnerableTypes = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "random" | "completionist" | "ad" | "triforce" | "other";
@@ -124,12 +127,12 @@ export interface SettingsState {
   zelgaWoods: boolean;
 
   // DR Stuff
-  doors: "vanilla" | "basic" | "partitioned" | "crossed" 
+  doors: "vanilla" | "basic" | "partitioned" | "crossed"
 
   // OW Stuff
-  owLayout: "vanilla" | "grid" | "wild" 
-  owCrossed: "none" | "grouped" | "polar" | "unrestricted" 
-  owMixed: boolean 
+  owLayout: "vanilla" | "grid" | "wild"
+  owCrossed: "none" | "grouped" | "polar" | "unrestricted"
+  owMixed: boolean
   owParallel: boolean
   owTerrain: boolean
   owKeepSimilar: boolean
@@ -138,7 +141,7 @@ export interface SettingsState {
 
   // UI settings
   autotracking: boolean;
-  mapMode: "off" | "normal" | "compact" | "vertical" | "popoutNormal" | "popoutVertical";
+  mapMode: MapMode;
   includeDungeonItemsInCounter?: boolean;
   connectionLinesMode: "none" | "caves" | "dungeons" | "all";
   connectionLineColor: string;
@@ -152,6 +155,8 @@ export interface SettingsState {
   alwaysShowBigKeys: boolean;
   alwaysShowSmallKeys: boolean;
   showKeyTotals: boolean;
+  eventLogMode: EventLogMode;
+  logTriforcePieces: boolean;
 
   // Player sequence break settings
   sequenceBreaks: UserSequenceBreaks;
@@ -221,6 +226,8 @@ export const initialState: SettingsState = {
   alwaysShowBigKeys: false,
   alwaysShowSmallKeys: false,
   showKeyTotals: true,
+  eventLogMode: "off",
+  logTriforcePieces: true,
 
   // Sequence breaks
   sequenceBreaks: defaultUserSequenceBreaks,
