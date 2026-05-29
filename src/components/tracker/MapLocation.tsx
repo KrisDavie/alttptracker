@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
 import { allConnectorEntrances } from "@/data/entranceConnections";
+import type { LogicStatus } from "@/data/logic/logicTypes";
 
 interface MapLocationProps {
   name: string;
@@ -60,7 +61,7 @@ function MapLocation(props: MapLocationProps) {
 
   // ---- Derived entrance state ----
   const isLinked = !!(isEntrance && to);
-  const isConnector = !!(isEntrance && to && (allConnectorEntrances.includes(to) || to.startsWith("Unknown Connector")  || to.startsWith("Generic Connector")));
+  const isConnector = !!(isEntrance && to && (allConnectorEntrances.includes(to) || to.startsWith("Unknown Connector") || to.startsWith("Generic Connector")));
   const dungeonId = getDungeonIdForEntry(to ?? "");
   const isLinkedToDungeon = isEntrance && to ? !!dungeonId : false;
   const showAsDiamond = isConnector && !isLinkedToDungeon;
@@ -201,7 +202,14 @@ function MapLocation(props: MapLocationProps) {
   const tooltipName = isEntrance && targetName && targetName !== locName ? `${locName} → ${targetName}` : locName;
   const singleCheck = itemLocations.length === 1 ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] } : isEntrance && !isLinked && entranceCheck ? { key: locName, status: entranceCheck, displayName: locName } : undefined;
 
-  const bgClass = getBgClass();
+  let bgClass = getBgClass();
+
+  const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
+
+  if (itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
+    bgClass = "bg-status-some-available";
+  }
+
   return (
     <div
       key={locName}
