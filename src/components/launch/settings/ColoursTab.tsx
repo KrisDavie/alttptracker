@@ -26,6 +26,7 @@ interface StatusColourRow {
 
 const STATUS_ROWS: StatusColourRow[] = [
   { key: "available", label: "Available", description: "Locations you can reach right now" },
+  { key: "someAvailable", label: "Some Available", description: "Chest colour when some locations, but not all are available" },
   { key: "possible", label: "Possible", description: "Reachable depending on key/door choices" },
   { key: "ool", label: "Out of logic", description: "Reachable but outside the logic ruleset" },
   { key: "information", label: "Information", description: "Informational hints / scouts" },

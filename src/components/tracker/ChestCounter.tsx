@@ -7,6 +7,7 @@ import { mapStatusBg } from "@/hooks/useStatusColors";
 import { getActiveLocations } from "@/lib/logic/locationMapper";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { LocationTooltip } from "./LocationTooltip";
+import type { LogicStatus } from "@/data/logic/logicTypes";
 
 interface ChestCounterProps {
   dungeon: string;
@@ -115,7 +116,19 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     dispatch(setDungeonCollectedCount({ dungeon, count: finalCount }));
   }
 
-  const bgClass = status === "none" && maxLogicStatus === "unavailable" ? mapStatusBg("none") : status === "all" ? mapStatusBg("checked") : mapStatusBg(maxLogicStatus);
+  let finalMaxLogicStatus: LogicStatus | "someAvailable"
+
+  const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
+
+  if ( itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
+    finalMaxLogicStatus = "someAvailable";
+  } else {
+    finalMaxLogicStatus = maxLogicStatus;
+  }
+
+
+  const bgClass = status === "none" && maxLogicStatus === "unavailable" ? mapStatusBg("none") : status === "all" ? mapStatusBg("checked") : mapStatusBg(finalMaxLogicStatus);
+
 
   return (
     <>
