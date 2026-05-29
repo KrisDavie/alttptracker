@@ -82,7 +82,7 @@ html, body {
 
   /* Logic status colors — map markers (bg) */
   --status-available: #22c55e;
-  --status-some-available: #049a04;
+  --status-someAvailable: #049a04;
   --status-possible: #eab308;
   --status-ool: #7e22ce;
   --status-information: #06b6d4;
@@ -172,7 +172,7 @@ body {
 
   /* Status colors as Tailwind theme colors */
   --color-status-available: var(--status-available);
-  --color-status-some-available: var(--status-some-available);
+  --color-status-someAvailable: var(--status-someAvailable);
   --color-status-none: var(--status-none);
   --color-status-possible: var(--status-possible);
   --color-status-ool: var(--status-ool);

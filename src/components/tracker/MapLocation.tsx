@@ -207,7 +207,7 @@ function MapLocation(props: MapLocationProps) {
   const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
 
   if (itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
-    bgClass = "bg-status-some-available";
+    bgClass = "bg-status-someAvailable";
   }
 
   return (

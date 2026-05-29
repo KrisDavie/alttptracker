@@ -36,7 +36,7 @@ export function mapStatusBg(status: LogicStatus | "checked" | "selected" | "conn
     case "available":
       return "bg-status-available";
     case "someAvailable":
-      return "bg-status-some-available";
+      return "bg-status-someAvailable";
     case "possible":
       return "bg-status-possible";
     case "ool":
