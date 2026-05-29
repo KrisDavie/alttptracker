@@ -36,6 +36,9 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
 
   let maxCount = dungeonChecks.length;
   let numChecks = dungeonChecks.map((loc) => checks.locationsChecks[loc])?.filter((check) => check?.checked).length || 0;
+  // Save before dungeon-item adjustments: used by the spurious-spike suppression
+  // logic to detect only real location un-checks, not autotracker item state changes.
+  const numChecksFromLocations = numChecks;
 
   const wildBigKeys = settings.wildBigKeys;
   const wildSmallKeys = settings.wildSmallKeys;
@@ -56,7 +59,8 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
 
     // Only count dungeon items
     numChecks -= dungeonState.smallKeys && wildSmallKeys !== "wild" ? dungeonState.smallKeys : 0;
-    numChecks -= dungeonState.bigKey && !wildBigKeys ? 1 : 0;
+    // HC BK is a special case as it's dropped, so we need to see if enemy drops are enabled to know whether to subtract it or not
+    numChecks -= dungeonState.bigKey && !wildBigKeys && (dungeon != 'hc' || settings.enemyDrop != 'none') ? 1 : 0;
     numChecks -= dungeonState.compass && !wildCompasses ? 1 : 0;
     numChecks -= dungeonState.map && !wildMaps ? 1 : 0;
     // Dungeon-item subtractions above use tracker counts (smallKeys, bigKey, etc.)
@@ -66,8 +70,6 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     numChecks = Math.max(0, numChecks);
   }
 
-  // TODO: Collected can be more than maxCount when settings are toggle off after collecting items.
-  // This causes the remaining checks to go negative. We should probably clamp collected to maxCount when settings change.
   const rawChecksRemaining = Math.max(0, maxCount - numChecks - collected);
 
   // Some game locations record the picked-up item in SRAM immediately but only mark the
@@ -83,19 +85,25 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   // finally registers as cleared, `numChecks` rises and the underlying value
   // re-converges, so we resume tracking normally without ever displaying the spike.
   const [checksRemaining, setChecksRemaining] = useState(rawChecksRemaining);
-  const lastDepsRef = useRef({ collected, maxCount, numChecks });
+  const lastDepsRef = useRef({ collected, maxCount, numChecksFromLocations });
 
   useEffect(() => {
     setChecksRemaining((prev) => {
       const last = lastDepsRef.current;
+      // Only allow the displayed count to grow for legitimate reasons:
+      // - manual collected decrease, settings change (maxCount), or a location un-check.
+      // Dungeon-item autotracker state (bigKey/smallKeys/etc.) changing before the
+      // location's check flag fires would reduce numChecksFromLocations only once the
+      // location is actually cleared, so it correctly stays out of this condition.
       const allowIncrease =
         collected < last.collected ||
         maxCount !== last.maxCount ||
-        numChecks < last.numChecks;
-      lastDepsRef.current = { collected, maxCount, numChecks };
-      return !allowIncrease && rawChecksRemaining > prev ? rawChecksRemaining : rawChecksRemaining;
+        numChecksFromLocations < last.numChecksFromLocations;
+      lastDepsRef.current = { collected, maxCount, numChecksFromLocations };
+      // Disable by swapping the true/false branches from prev : rawChecksRemaining to rawChecksRemaining : rawChecksRemaining
+      return !allowIncrease && rawChecksRemaining > prev ? prev : rawChecksRemaining;
     });
-  }, [rawChecksRemaining, collected, maxCount, numChecks]);
+  }, [rawChecksRemaining, collected, maxCount, numChecksFromLocations]);
 
   function setCount(newCount: number) {
     let finalCount = newCount;
@@ -133,15 +141,6 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
         <div className={`flex flex-col items-center justify-center h-7/10 w-7/10 ${colouredChests ? bgClass : "bg-white"} bg-opacity-50 ${small ? "border" : "border-2"} border-black ${checksRemaining === 0 ? "invisible" : ""}`}>
           <div
             className={`text-black ${small ? (checksRemaining > 99 ? "text-xs" : "") : checksRemaining > 99 ? "text-2xl" : "text-4xl"} select-none font-roboto font-black`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setCount(collected + 1);
-            }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setCount(collected - 1);
-            }}
           >
             {checksRemaining}
           </div>
