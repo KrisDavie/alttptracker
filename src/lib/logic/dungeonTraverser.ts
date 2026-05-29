@@ -37,7 +37,7 @@ import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { getLogicStateForWorld, createAllItemsState, isBetterStatus, minimumStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
-import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle } from "./dungeonConstants";
+import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle, DOOR_PREFIX_TO_DUNGEON } from "./dungeonConstants";
 import { bunnyRevivableEntrances, superbunnyRevivableEntrances, swordSuperbunnyRevivableEntrances } from "@/data/logic/superbunnyLogic";
 
 export interface DungeonRegionState {
@@ -61,6 +61,10 @@ interface DungeonContext {
   regionMaxKeysUsed: Map<string, number>;
   regionMinKeysUsed: Map<string, number>;
   regionMinKeysUsedNoBK: Map<string, number>;
+  /** Min-keys map assuming BK, seeded from every internal entrance region (partial mode). */
+  regionMinKeysUsedContention: Map<string, number>;
+  /** Min-keys map without BK, seeded from every internal entrance region (partial mode). */
+  regionMinKeysUsedNoBKContention: Map<string, number>;
   discoveredKeyLocations: Set<string>;
   totalKeysAvailable: number;
   /** reviveCap applied to each region (only "ool" when die-to-revive is needed in noglitches). */
@@ -97,6 +101,7 @@ export class DungeonTraverser {
 
   private readonly actuallyHasBigKey: boolean;
   private readonly effectivelyHasBigKey: boolean;
+  private readonly allEntranceRegions: Set<string>;
 
   constructor(state: GameState, logicSet: LogicSet, dungeonId: string, protection: "partial" | "dangerous" = "partial") {
     this.state = state;
@@ -109,6 +114,32 @@ export class DungeonTraverser {
     this.actuallyHasBigKey = !state.settings.wildBigKeys || !!state.dungeons[dungeonId]?.bigKey;
     this.buildExitMetadata();
     this.effectivelyHasBigKey = protection === "partial" || this.actuallyHasBigKey;
+    this.allEntranceRegions = this.computeAllEntranceRegions();
+  }
+
+  /** Find every region this dungeon's entrances lead to (regardless of overworld link state). */
+  private computeAllEntranceRegions(): Set<string> {
+    const result = new Set<string>();
+    const prefixes = Object.entries(DOOR_PREFIX_TO_DUNGEON)
+      .filter(([, id]) => id === this.dungeonId)
+      .map(([prefix]) => prefix);
+    if (prefixes.length === 0) return result;
+    for (const regionLogic of Object.values(this.regions)) {
+      if (!regionLogic.exits) continue;
+      // Only consider portal regions: those with at least one exit back to
+      // an overworld region. Excludes internal dungeon-to-dungeon plumbing.
+      const hasOverworldExit = Object.values(regionLogic.exits).some(
+        (e) => e.type !== undefined && OVERWORLD_REGION_TYPES.has(e.type),
+      );
+      if (!hasOverworldExit) continue;
+      for (const exit of Object.values(regionLogic.exits)) {
+        if (exit.type !== "Dungeon" || !exit.to) continue;
+        if (prefixes.some((p) => exit.to!.startsWith(p))) {
+          result.add(exit.to);
+        }
+      }
+    }
+    return result;
   }
 
   /** Pre-compute exit metadata for all dungeon regions once. */
@@ -209,6 +240,36 @@ export class DungeonTraverser {
       } else {
         for (const [region, keys] of ctx.regionMinKeysUsed) {
           ctx.regionMinKeysUsedNoBK.set(region, keys);
+        }
+      }
+
+      // Pass 3 (partial mode): contention dijkstra seeded from every internal
+      // entrance region with the all-items evaluator. Drives door-counting so
+      // worst-case key spending reflects items/entrances the player may have.
+      if (this.protection === "partial") {
+        const contentionEntries = new Map<string, { linkState: LinkState }>(entryRegions);
+        const contentionKeyCost = new Map<string, number>(dijkstraKeyCost);
+        for (const regionName of this.allEntranceRegions) {
+          if (!contentionEntries.has(regionName)) {
+            contentionEntries.set(regionName, { linkState: "link" });
+            contentionKeyCost.set(regionName, 0);
+          }
+        }
+        this.dijkstraMinKeys(ctx, contentionEntries, contentionKeyCost, keyCountingEvaluator, true, ctx.regionMinKeysUsedContention, true);
+        if (!actuallyHasBigKey) {
+          this.dijkstraMinKeys(ctx, contentionEntries, contentionKeyCost, keyCountingEvaluator, false, ctx.regionMinKeysUsedNoBKContention, false);
+        } else {
+          for (const [region, keys] of ctx.regionMinKeysUsedContention) {
+            ctx.regionMinKeysUsedNoBKContention.set(region, keys);
+          }
+        }
+      } else {
+        // Dangerous mode: contention map mirrors actual-inventory map.
+        for (const [region, keys] of ctx.regionMinKeysUsed) {
+          ctx.regionMinKeysUsedContention.set(region, keys);
+        }
+        for (const [region, keys] of ctx.regionMinKeysUsedNoBK) {
+          ctx.regionMinKeysUsedNoBKContention.set(region, keys);
         }
       }
 
@@ -339,7 +400,7 @@ export class DungeonTraverser {
     return { bigKeyGated, smallKeyGated };
   }
 
-  private dijkstraMinKeys(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator, assumeBigKey: boolean = true, targetMap?: Map<string, number>) {
+  private dijkstraMinKeys(ctx: DungeonContext, entryRegions: Map<string, { linkState: LinkState }>, entryKeyCost: Map<string, number>, evaluator: RequirementEvaluator, assumeBigKey: boolean = true, targetMap?: Map<string, number>, collectPendingDoors: boolean = true) {
     // Dijkstra with key doors as weight-1 edges. Iterates until convergence
     // (canReach deps may depend on regions discovered in the same pass).
     // Updates regionMinKeysUsed (assumeBigKey=true) or regionMinKeysUsedNoBK (false),
@@ -396,7 +457,7 @@ export class DungeonTraverser {
             const countsAsKeyDoor = meta.isSKDoor && !meta.isPairedWithBK && !doorAlreadyOpened;
 
             // Collect pending doors for BFS (first pass only, real key-consuming doors)
-            if (assumeBigKey && meta.isSKDoor && !meta.isPairedWithBK && !ctx.pendingKeyDoors.includes(exitName)) {
+            if (collectPendingDoors && assumeBigKey && meta.isSKDoor && !meta.isPairedWithBK && !ctx.pendingKeyDoors.includes(exitName)) {
               ctx.pendingKeyDoors.push(exitName);
             }
 
@@ -649,6 +710,11 @@ export class DungeonTraverser {
 
     const actuallyHasBigKey = this.actuallyHasBigKey;
     const effectiveMinKeysMap = actuallyHasBigKey ? ctx.regionMinKeysUsed : ctx.regionMinKeysUsedNoBK;
+    // Contention map: in partial mode, this is computed with all-items + all
+    // dungeon entrance regions assumed reachable. Used for door-counting and
+    // worst-case contention analysis so the player COULD-have-it case is
+    // reflected even when current inventory/entrances don't reach some doors.
+    const effectiveMinKeysMapContention = actuallyHasBigKey ? ctx.regionMinKeysUsedContention : ctx.regionMinKeysUsedNoBKContention;
 
     // Pre-compute total keys from Dijkstra data (for canReach contention checks).
     let prelimTotalKeys = inventoryKeys;
@@ -949,7 +1015,7 @@ export class DungeonTraverser {
       for (const doorName of ctx.pendingKeyDoors) {
         const sourceRegion = this.findDoorSourceRegion(doorName);
         if (!sourceRegion) continue;
-        if (effectiveMinKeysMap.get(sourceRegion) === undefined) continue;
+        if (effectiveMinKeysMapContention.get(sourceRegion) === undefined) continue;
         const exitData = this.regions[sourceRegion]?.exits?.[doorName];
         const destRegion = exitData?.to;
         const pairKey = destRegion ? this.getDoorPairKey(sourceRegion, destRegion) : doorName;
@@ -959,24 +1025,31 @@ export class DungeonTraverser {
       }
     }
 
-    // Count doors at threshold 0 (branching paths from start).
+    // Count threshold-0 doors (front-side branching choices).
+    // In partial mode with entrance shuffle, also count extra branches that
+    // contention exposes but the actual-inventory dijkstra didn't reach —
+    // these represent doors a player could waste keys on via unlinked entrances.
     let doorsAtThreshold0 = 0;
+    let extraContentionBranches = 0;
+    const trackExtra = this.protection === "partial" && this.state.settings.entranceMode !== "none";
     {
-      const seenDoorPairs = new Set<string>();
+      const seenContention = new Set<string>();
+      const seenExtra = new Set<string>();
       for (const doorName of ctx.pendingKeyDoors) {
         const sourceRegion = this.findDoorSourceRegion(doorName);
         if (!sourceRegion) continue;
-
-        const sourceMinKeys = effectiveMinKeysMap.get(sourceRegion);
-        // Skip doors whose source region wasn't reached by Dijkstra
-        if (sourceMinKeys === undefined) continue;
-        if (sourceMinKeys === 0) {
-          const reverseDoor = this.findReverseDoor(doorName, ctx.pendingKeyDoors);
-          if (reverseDoor && seenDoorPairs.has(reverseDoor)) {
-            continue;
-          }
-          seenDoorPairs.add(doorName);
+        const contentionMin = effectiveMinKeysMapContention.get(sourceRegion);
+        if (contentionMin !== 0) continue;
+        const reverseDoor = this.findReverseDoor(doorName, ctx.pendingKeyDoors);
+        if (!(reverseDoor && seenContention.has(reverseDoor))) {
+          seenContention.add(doorName);
           doorsAtThreshold0++;
+        }
+        if (trackExtra && effectiveMinKeysMap.get(sourceRegion) !== 0) {
+          if (!(reverseDoor && seenExtra.has(reverseDoor))) {
+            seenExtra.add(doorName);
+            extraContentionBranches++;
+          }
         }
       }
     }
@@ -1005,7 +1078,7 @@ export class DungeonTraverser {
       const fullReachable = new Set<string>();
       {
         const q: string[] = [];
-        for (const [entryName, entryMinKeys] of effectiveMinKeysMap) {
+        for (const [entryName, entryMinKeys] of effectiveMinKeysMapContention) {
           if (entryMinKeys === 0) { q.push(entryName); fullReachable.add(entryName); }
         }
         while (q.length > 0) {
@@ -1029,7 +1102,7 @@ export class DungeonTraverser {
         // BFS from entries excluding this region
         const reachableWithout = new Set<string>();
         const bfsQueue: string[] = [];
-        for (const [entryName, entryMinKeys] of effectiveMinKeysMap) {
+        for (const [entryName, entryMinKeys] of effectiveMinKeysMapContention) {
           if (entryMinKeys === 0 && entryName !== regionName) {
             bfsQueue.push(entryName);
             reachableWithout.add(entryName);
@@ -1067,7 +1140,6 @@ export class DungeonTraverser {
       // Only apply key-based status logic when wild small keys is enabled
       if (isWildKeys) {
         // If Dijkstra couldn't reach this region (using effective map), mark as unavailable
-        // This means some requirement couldn't be satisfied
         if (!effectiveMinKeysMap.has(regionName)) {
           keyStatus = "unavailable";
         } else {
@@ -1148,6 +1220,14 @@ export class DungeonTraverser {
                 // Constrained-path contention: missing items force a more expensive
                 // path (minKeys > maxKeys), with branching choices and limited keys.
                 keyStatus = "possible";
+              } else if (
+                this.protection === "partial" &&
+                extraContentionBranches > 0 &&
+                minKeysUsed + extraContentionBranches > ctx.totalKeysAvailable
+              ) {
+                // Entrance-shuffle contention: extra branching exposed by
+                // unlinked entrances could absorb keys needed on this path.
+                keyStatus = "possible";
               } else {
                 keyStatus = "available";
               }
@@ -1192,6 +1272,8 @@ export class DungeonTraverser {
       regionMaxKeysUsed: new Map<string, number>(),
       regionMinKeysUsed: new Map<string, number>(),
       regionMinKeysUsedNoBK: new Map<string, number>(),
+      regionMinKeysUsedContention: new Map<string, number>(),
+      regionMinKeysUsedNoBKContention: new Map<string, number>(),
       discoveredKeyLocations: new Set<string>(),
       totalKeysAvailable: inventoryKeys,
       regionReviveCap: new Map<string, LogicStatus>(),

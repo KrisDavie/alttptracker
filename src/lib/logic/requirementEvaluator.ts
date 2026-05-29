@@ -160,14 +160,17 @@ export class RequirementEvaluator {
     return this.resolveSimple(condition, ctx) !== "unavailable";
   }
 
-  // Cached boss killability (computed lazily, immutable for a given state)
-  private _bossesKillCache?: Record<string, boolean>;
+  // Cached boss killability per linkState (computed lazily, immutable for a given state)
+  private _bossesKillCache: Partial<Record<LinkState, Record<string, boolean>>> = {};
 
-  private bossesKillStatus() {
-    if (this._bossesKillCache) return this._bossesKillCache;
+  private bossesKillStatus(ctx: EvaluationContext) {
+    const linkState: LinkState = ctx.linkState ?? "link";
+    const cached = this._bossesKillCache[linkState];
+    if (cached) return cached;
     const killableBosses: Record<string, boolean> = {};
-    const m = (c: string) => this.met(c, {});
-    const cx = (c: string) => this.resolveComplex(c, {}) !== "unavailable";
+    const subCtx: EvaluationContext = { ...ctx, linkState };
+    const m = (c: string) => this.met(c, subCtx);
+    const cx = (c: string) => this.resolveComplex(c, subCtx) !== "unavailable";
 
     killableBosses["armos"] = m("melee_bow") || m("boomerang") || m("cane") || m("rod");
 
@@ -196,7 +199,7 @@ export class RequirementEvaluator {
     killableBosses["agahnim2"] = m("melee") || m("net");
     killableBosses["bnc"] = true;
 
-    this._bossesKillCache = killableBosses;
+    this._bossesKillCache[linkState] = killableBosses;
     return killableBosses;
   }
 
@@ -294,10 +297,10 @@ export class RequirementEvaluator {
         return "available"; // TODO: Add logic for OHKO
       // Enemies and Bosses
       case "canKillSomeBosses":
-        killableBosses = this.bossesKillStatus();
+        killableBosses = this.bossesKillStatus(ctx);
         return this.boolToStatus(Object.values(killableBosses).some((v) => v));
       case "canKillBoss":
-        killableBosses = this.bossesKillStatus();
+        killableBosses = this.bossesKillStatus(ctx);
         if (Object.values(killableBosses).every((v) => v)) {
           return "available";
         }
@@ -316,7 +319,7 @@ export class RequirementEvaluator {
       case "canKillHookableEneimies":
         return maximumStatus(this.resolveSimple("canKillOrExplodeMostEnemies", ctx), this.resolveSimple("hookshot", ctx));
       case "canFightAgahnim":
-        killableBosses = this.bossesKillStatus();
+        killableBosses = this.bossesKillStatus(ctx);
         return this.boolToStatus(killableBosses["agahnim"]);
 
       case "canLightFires":

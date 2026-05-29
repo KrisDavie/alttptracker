@@ -91,6 +91,10 @@ export const dungeonsSlice = createSlice({
       const { dungeon, decrement } = action.payload;
       state[dungeon].manuallyChanged.smallKeys = state[dungeon].manuallyChanged.smallKeys + (decrement ? -1 : 1);
     },
+    setSmallKeyManualOffset: (state, action: PayloadAction<{ dungeon: string; offset: number }>) => {
+      const { dungeon, offset } = action.payload;
+      state[dungeon].manuallyChanged.smallKeys = offset;
+    },
     setMaxSmallKeys: (state, action: PayloadAction<{ dungeon: string; maxSmallKeys: number }>) => {
       const { dungeon, maxSmallKeys } = action.payload;
       state[dungeon].manuallyChanged.maxSmallKeys = maxSmallKeys;
@@ -212,6 +216,6 @@ export const dungeonsSlice = createSlice({
   },
 });
 
-export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setBigKey, incrementBoss, resetBossesForShuffle, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys, resetDungeons } =
+export const { setDungeonCollectedCount, toggleDungeonBoss, incrementSmallKeyCount, setSmallKeyManualOffset, setBigKey, incrementBoss, resetBossesForShuffle, incrementPrizeCount, togglePrizeCollected, updateDungeonState, setMaxSmallKeys, resetDungeons } =
   dungeonsSlice.actions;
 export default dungeonsSlice.reducer;

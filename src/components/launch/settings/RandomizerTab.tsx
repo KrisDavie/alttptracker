@@ -41,8 +41,8 @@ export function RandomizerTab({ settings, updateSetting, startingItems, setStart
             onChange={(v) => updateSetting("logicMode", v as SettingsState["logicMode"])}
             options={[
               { value: "noglitches", label: "No Glitches" },
-              // { value: "overworldglitches", label: "Overworld Glitches" },
-              // { value: "hybridglitches", label: "Hybrid Glitches" },
+              { value: "overworldglitches", label: "Overworld Glitches" },
+              { value: "hybridglitches", label: "Hybrid Glitches" },
               { value: "nologic", label: "No Logic" },
             ]}
           />

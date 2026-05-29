@@ -7,6 +7,8 @@ import { useApplyStatusColors } from "@/hooks/useStatusColors";
 import { idbDriver } from "@/lib/idbDriver";
 import { loadLauncherPrefs, LAUNCHER_PREFS_KEY } from "@/lib/launchHelpers";
 
+const EXCLUDED_IMMEDIATE_SETTINGS = ["mapMode"]; // We don't want to apply these immediately
+
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
 
@@ -34,7 +36,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const apply = () => {
       const prefs = loadLauncherPrefs();
-      if (prefs && Object.keys(prefs).length > 0) dispatch(setSettings(prefs));
+      if (prefs && Object.keys(prefs).length > 0) {
+        const filteredPrefs = Object.fromEntries(Object.entries(prefs).filter(([key]) => !EXCLUDED_IMMEDIATE_SETTINGS.includes(key)));
+        if (Object.keys(filteredPrefs).length > 0) dispatch(setSettings(filteredPrefs));
+      }
     };
     apply();
     const onStorage = (e: StorageEvent) => {
@@ -68,16 +73,15 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     }, 2000);
 
-    return () => { cancelled = true; clearInterval(interval); };
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, [dispatch, storageKey]);
 
   const saveSettings = (newSettings: Partial<SettingsState>) => {
     dispatch(setSettings(newSettings));
   };
 
-  return (
-    <SettingsContext.Provider value={{ saveSettings }}>
-      {children}
-    </SettingsContext.Provider>
-  );
+  return <SettingsContext.Provider value={{ saveSettings }}>{children}</SettingsContext.Provider>;
 };

@@ -4,13 +4,16 @@ import { setModalClose, setCurrentMode, setSelectedEntrance } from "../../store/
 import { setEntranceLink, setNote } from "../../store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { Button } from "../ui/button";
-import type { JSX } from "react";
+import { useMemo, type JSX } from "react";
 import { Input } from "../ui/input";
 
 function EntranceSelectionModal() {
   const dispatch = useDispatch();
   const selectedEntrance = useSelector((state: RootState) => state.trackerState.selectedEntrance);
   const entranceModalOpen = useSelector((state: RootState) => state.trackerState.modalOpen) === "entrance";
+  const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
+  const mergedLabels = useMemo(() => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }), [entranceLabelOverrides]);
+
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const note = useSelector((state: RootState) => {
     if (!selectedEntrance) return "";
@@ -41,8 +44,7 @@ function EntranceSelectionModal() {
   };
 
   function getEntranceButton(entrance: string): JSX.Element {
-    const entranceInfo = defaultEntranceLabels[entrance];
-    // TODO: Update with custom info added by player
+    const entranceInfo = mergedLabels[entrance] || defaultEntranceLabels[entrance];
     const label = entranceInfo ? entranceInfo.label : entrance;
     const color = entranceInfo ? entranceInfo.color : "#888888";
 

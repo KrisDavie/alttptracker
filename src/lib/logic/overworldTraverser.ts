@@ -650,7 +650,7 @@ export class OverworldTraverser {
       // Traverse the dungeon with a canReach callback for overworld regions.
       let dungeonTraverser = this.dungeonTraverserCache.get(dungeonId);
       if (!dungeonTraverser) {
-        dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId, "partial");
+        dungeonTraverser = new DungeonTraverser(this.state, this.logicSet, dungeonId, this.protection);
         this.dungeonTraverserCache.set(dungeonId, dungeonTraverser);
       }
       const canReachOverworldRegion = (regionName: string): LogicStatus => {

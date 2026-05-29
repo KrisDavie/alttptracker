@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import type { RootState } from "../../store/store";
 import DungeonsData from "@/data/dungeonData";
-import { incrementSmallKeyCount, setMaxSmallKeys } from "@/store/dungeonsSlice";
+import { incrementSmallKeyCount, setMaxSmallKeys, setSmallKeyManualOffset } from "@/store/dungeonsSlice";
 import { toggleScoutedItem } from "@/store/scoutsSlice";
 import { setCurrentMode, setHoveredScout, setSelectedLocation } from "@/store/trackerSlice";
 
@@ -40,6 +41,15 @@ function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
     collectedSmallKeys = 0;
   }
 
+  // Clamp manuallyChangedSmallKeys after setting changes
+  useEffect(() => {
+    const raw = _collectedSmallKeys + manuallyChangedSmallKeys;
+    const clamped = Math.max(0, Math.min(maxSmallKeys, raw));
+    if (clamped !== raw) {
+      dispatch(setSmallKeyManualOffset({ dungeon, offset: clamped - _collectedSmallKeys }));
+    }
+  }, [dispatch, dungeon, _collectedSmallKeys, manuallyChangedSmallKeys, maxSmallKeys]);
+
   const MAX_CHANGABLE = false;
 
   function handleWheel(e: React.WheelEvent) {
@@ -61,6 +71,9 @@ function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
         dispatch(setSelectedLocation(null));
         return;
       }
+      // Cap at maxSmallKeys: don't drift the underlying manuallyChanged counter
+      // past what the displayed value can represent.
+      if (collectedSmallKeys >= maxSmallKeys) return;
       dispatch(incrementSmallKeyCount({ dungeon, decrement: false }));
     },
     onContextMenu: (e: React.MouseEvent) => {
@@ -71,6 +84,7 @@ function SmallKeyTracker({ dungeon, size = "1x2" }: SmallKeyTrackerProps) {
         dispatch(setSelectedLocation(null));
         return;
       }
+      if (collectedSmallKeys <= 0) return;
       dispatch(incrementSmallKeyCount({ dungeon, decrement: true }));
     },
     onMouseEnter: () => dispatch(setHoveredScout({ kind: "smallkey", id: dungeon })),

@@ -245,6 +245,47 @@ describe("Entrance Shuffle", () => {
     });
   });
 
+  describe("Partial logic should account for accessibility to all entrances", () => {
+    it("DP boss should be possible without the small key even if desert main is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 0, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (North)")
+      );
+
+      // The LOGIC still assumes the player can reach the main DP area and waste a key even if not placed
+      // Partial logic should assume that the player has access to all regions for minimum key logic
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("possible")
+    });
+
+   it("DP boss should be available with the small key even if desert main is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 1, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (North)")
+      );
+
+      expect(result.locationsLogic["Desert Palace - Boss"]).toBe("available")
+    });
+
+    it("DP right side should be unavailable without the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 0, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has no access to a key at all because they have not found the desert north entrance, and cannot find a pot key
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("unavailable")
+    });
+  });
+
   describe("Unlinked dungeon accessibility", () => {
     it("TT dungeon locations should be unavailable when TT entrance is not linked", () => {
       const result = calculate(

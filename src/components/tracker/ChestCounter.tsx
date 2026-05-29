@@ -44,12 +44,10 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
   const wildPrizes = settings.prizeShuffle;
   const totLocs = dungeonData?.totalLocations;
 
-  const hasPrize = totLocs?.prize ?? false;
-
   // Count small keys in the active location set
   const totSKeys = dungeonChecks.filter((loc) => loc.includes("Key Drop") || loc.includes("Pot Key")).length + (totLocs?.smallkeys || 0);
 
-  const totPrizes = dungeonChecks.filter((loc) => loc.includes("Prize")).length + (hasPrize ? 1 : 0);
+  const totPrizes = dungeonChecks.filter((loc) => loc.includes("Prize")).length;
 
   // Adjust maxCount based on settings
   // Subtract out dungeon items that are not shuffled into the pool
@@ -61,7 +59,11 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
     numChecks -= dungeonState.bigKey && !wildBigKeys ? 1 : 0;
     numChecks -= dungeonState.compass && !wildCompasses ? 1 : 0;
     numChecks -= dungeonState.map && !wildMaps ? 1 : 0;
-    numChecks -= hasPrize && wildPrizes !== "wild" ? 1 : 0;
+    // Dungeon-item subtractions above use tracker counts (smallKeys, bigKey, etc.)
+    // which can exceed the count of actually-checked dungeon-item locations when
+    // the player tracks an item before its location is checked. Clamp to avoid
+    // a negative `numChecks` inflating the displayed remaining count.
+    numChecks = Math.max(0, numChecks);
   }
 
   // TODO: Collected can be more than maxCount when settings are toggle off after collecting items.
