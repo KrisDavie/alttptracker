@@ -118,7 +118,12 @@ function ChestCounter({ dungeon, small = false }: ChestCounterProps) {
 
   let finalMaxLogicStatus: LogicStatus | "someAvailable"
 
-  const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
+  const itemChecksStatusSet = new Set(
+    itemLocations
+      .filter((loc) => !itemChecks?.[loc]?.status.checked)
+      .map((loc) => itemChecks?.[loc]?.status.logic)
+      .filter((status): status is LogicStatus => !!status)
+  );
 
   if ( itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
     finalMaxLogicStatus = "someAvailable";
