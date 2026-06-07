@@ -5,6 +5,7 @@ import { applyLauncherPrefs, loadLauncherPrefs } from "@/lib/launchHelpers";
 
 export interface StatusColors {
   available: string;
+  someAvailable: string;
   possible: string;
   ool: string;
   information: string;
@@ -15,6 +16,7 @@ export interface StatusColors {
 
 export const DEFAULT_STATUS_COLORS: StatusColors = {
   available: "#22c55e",
+  someAvailable: "#049a04",
   possible: "#eab308",
   ool: "#7e22ce",
   information: "#06b6d4",
@@ -30,6 +32,7 @@ export const DEFAULT_STATUS_COLORS: StatusColors = {
  */
 export const COLOURBLIND_STATUS_COLORS: StatusColors = {
   available: "#0072b2", // strong blue
+  someAvailable: "#56b4e9", // sky blue
   possible: "#f0e442", // yellow
   ool: "#cc79a7", // reddish purple
   information: "#56b4e9", // sky blue
