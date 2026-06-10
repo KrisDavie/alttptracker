@@ -81,8 +81,8 @@ describe("E2E: Default settings", () => {
     await waitFor(() => {
       const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
-      // Not all locations are available, so the square should reflect the best status
-      expect(el.className).toContain("bg-status-available");
+      // Some but not all locations are available, so the square reflects the mixed state
+      expect(el.className).toContain("bg-status-someAvailable");
     });
 
     // The 4 chests in the top section (no bombs needed) should be available
@@ -113,7 +113,8 @@ describe("E2E: ool checks", () => {
     await waitFor(() => {
       const el = document.querySelector(".absolute.inset-0") as HTMLElement;
       expect(el).toBeTruthy();
-      expect(el.className).toContain("bg-status-available");
+      // Mixed available + ool locations render as someAvailable
+      expect(el.className).toContain("bg-status-someAvailable");
     });
 
     // Dark cross should be ool, and show why

@@ -4,6 +4,7 @@ import { setEntranceChecked } from "../../store/checksSlice";
 import { cn } from "@/lib/utils";
 import { locationsData, type LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
+import { useDungeonChestRemaining } from "@/hooks/useDungeonChestRemaining";
 import { mapStatusBg } from "@/hooks/useStatusColors";
 import { LocationTooltip } from "./LocationTooltip";
 import { setSelectedEntrance, setCurrentMode, setSelectedLocation, setHoveredMarker } from "@/store/trackerSlice";
@@ -78,6 +79,12 @@ function MapLocation(props: MapLocationProps) {
   // We use the `to` field if it's an entrance and it's resolved, otherwise the name itself
   const targetLocationName = isEntrance && to ? to : locName;
   const { itemLocations, itemChecks, displayList, status, maxLogicStatus, handleCheckClick, handleGroupExpand, toggleAllChecks, resetGroups, targetName } = useLocationTooltipData(isEntrance ? (to ?? "") : targetLocationName);
+
+  // When this marker maps to a dungeon, mirror its chest counter: once nothing
+  // collectable remains (e.g. un-shuffled dungeon items still sit in "available"
+  // locations) grey the marker out even though logic still reports availability.
+  const { remaining: dungeonChestRemaining } = useDungeonChestRemaining(resolvedDungeonId ?? "");
+  const noNonDungeonItemsLeft = !!resolvedDungeonId && itemLocations.length > 0 && dungeonChestRemaining === 0 && status !== "all";
 
   const xPercent = (location.x / 512) * 100;
   const yPercent = (location.y / 512) * 100;
@@ -157,7 +164,7 @@ function MapLocation(props: MapLocationProps) {
     }
   }
 
-  const isHatched = (!isEntrance || isLinked) && status === "some";
+  const isHatched = (!isEntrance || isLinked) && status === "some" && !noNonDungeonItemsLeft;
 
   // let bgClass: string;
 
@@ -193,7 +200,7 @@ function MapLocation(props: MapLocationProps) {
   const firstScoutIcon = firstScout ? getScoutedItemIcon(firstScout) : undefined;
 
   const isRound = isEntrance && itemLocations.length === 0 && !showAsDiamond;
-  const isFaded = ((entranceCheck?.checked && !isLinked) || status === "all") && !showAsDiamond;
+  const isFaded = ((entranceCheck?.checked && !isLinked) || status === "all" || noNonDungeonItemsLeft) && !showAsDiamond;
   // Hide entrances that don't match the currently selected entrance group
   const hidden = !!(selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup);
   // Highlight entrances in the same group as the selected entrance
@@ -204,16 +211,26 @@ function MapLocation(props: MapLocationProps) {
 
   let bgClass = getBgClass();
 
-  const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
+  const itemChecksStatusSet = new Set(
+    itemLocations
+      .filter((loc) => !itemChecks?.[loc]?.status.checked)
+      .map((loc) => itemChecks?.[loc]?.status.logic)
+      .filter((status): status is LogicStatus => !!status)
+  );
 
   if (itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
     bgClass = "bg-status-someAvailable";
   }
 
+  // No non-dungeon items left: grey out regardless of remaining logic availability.
+  if (noNonDungeonItemsLeft) {
+    bgClass = mapStatusBg("checked");
+  }
+
   return (
     <div
       key={locName}
-      className={cn("absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20", props.className, hidden && "hidden", currentMode === "connect" && "cursor-crosshair", isFaded && "opacity-80")}
+      className={cn("absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20", props.className, hidden && "hidden", currentMode === "connect" && "cursor-crosshair")}
       style={{ top: `${yPercent}%`, left: `${xPercent}%` }}
       onMouseOver={handleMouseEnter}
       onMouseOut={handleMouseLeave}
@@ -226,6 +243,7 @@ function MapLocation(props: MapLocationProps) {
       <div
         className={cn(
           "absolute inset-0 border",
+          isFaded && "opacity-80",
           !labelColor && (showAsDiamond && !["bg-status-connector", "bg-status-checked"].includes(bgClass) ? "border-status-connector" : "border-black"),
           bgClass,
           isRound && "rounded-full",
