@@ -1039,13 +1039,24 @@ export class DungeonTraverser {
         const sourceRegion = this.findDoorSourceRegion(doorName);
         if (!sourceRegion) continue;
         const contentionMin = effectiveMinKeysMapContention.get(sourceRegion);
-        if (contentionMin !== 0) continue;
         const reverseDoor = this.findReverseDoor(doorName, ctx.pendingKeyDoors);
-        if (!(reverseDoor && seenContention.has(reverseDoor))) {
-          seenContention.add(doorName);
-          doorsAtThreshold0++;
-        }
-        if (trackExtra && effectiveMinKeysMap.get(sourceRegion) !== 0) {
+        if (contentionMin === 0) {
+          // Front-side branching doors reachable without spending a key (assuming all entrances).
+          if (!(reverseDoor && seenContention.has(reverseDoor))) {
+            seenContention.add(doorName);
+            doorsAtThreshold0++;
+          }
+          if (trackExtra && effectiveMinKeysMap.get(sourceRegion) !== 0) {
+            if (!(reverseDoor && seenExtra.has(reverseDoor))) {
+              seenExtra.add(doorName);
+              extraContentionBranches++;
+            }
+          }
+        } else if (trackExtra && contentionMin !== undefined && effectiveMinKeysMap.get(sourceRegion) === undefined) {
+          // Doors in a wing reachable ONLY via an entrance that isn't placed on
+          // the tracker yet. Key logic assumes the player could find that
+          // entrance and waste keys back there, so these count toward worst-case
+          // contention even at deeper key thresholds.
           if (!(reverseDoor && seenExtra.has(reverseDoor))) {
             seenExtra.add(doorName);
             extraContentionBranches++;

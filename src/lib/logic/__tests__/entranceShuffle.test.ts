@@ -284,6 +284,21 @@ describe("Entrance Shuffle", () => {
       // The player has no access to a key at all because they have not found the desert north entrance, and cannot find a pot key
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("unavailable")
     });
+
+    it("DP right side should be unavailable without the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild", pottery: "keys" })
+          .withDungeon("dp", { smallKeys: 3, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has three of four keys, but even though they have not found the desert north entrance the key 
+      // logic still accounts for them having access to it for door key logic purposes and therefore they could potentially
+      // spend all three on the key doors in the back, this means that this location is possible even though there is only one key door
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible")
+    });
   });
 
   describe("Unlinked dungeon accessibility", () => {
