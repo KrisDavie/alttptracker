@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setEntranceChecked } from "../../store/checksSlice";
+import { setEntranceChecked, type CheckStatus } from "../../store/checksSlice";
+import { toggleDungeonBoss } from "../../store/dungeonsSlice";
 import { cn } from "@/lib/utils";
 import { locationsData, type LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { useDungeonChestRemaining } from "@/hooks/useDungeonChestRemaining";
 import { mapStatusBg } from "@/hooks/useStatusColors";
-import { LocationTooltip } from "./LocationTooltip";
+import { LocationTooltip, type TooltipListItem } from "./LocationTooltip";
 import { setSelectedEntrance, setCurrentMode, setSelectedLocation, setHoveredMarker } from "@/store/trackerSlice";
 import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
@@ -189,10 +190,36 @@ function MapLocation(props: MapLocationProps) {
     }
   }
 
-  // Boss inner-square: when this marker maps to a dungeon and that dungeon has a "- Boss" check
-  const bossLocationKey = resolvedDungeonId ? itemLocations.find((l) => l.endsWith(" - Boss")) : undefined;
-  const bossCheckStatus = bossLocationKey ? itemChecks[bossLocationKey]?.status : undefined;
+  // Boss inner-square: standard dungeons use a "- Boss" location check.
+  // CT/GT have no boss item location; their inset mirrors the Agahnim 1/2 boss
+  // item on the main tracker (dungeon.bossDefeated), coloured by the Agahnim
+  // location's current logic status.
+  const agaLocationName = resolvedDungeonId === "ct" ? "Agahnim 1" : resolvedDungeonId === "gt" ? "Agahnim 2" : null;
+  const agaBossDefeated = useSelector((state: RootState) => (resolvedDungeonId === "ct" || resolvedDungeonId === "gt" ? (state.dungeons[resolvedDungeonId]?.bossDefeated ?? false) : false));
+  const agaLocationLogic = useSelector((state: RootState) =>
+    resolvedDungeonId === "ct" ? state.checks.locationsChecks["Agahnim 1"]?.logic : resolvedDungeonId === "gt" ? state.checks.locationsChecks["Agahnim 2"]?.logic : undefined,
+  );
+
+  const bossLocationKey = resolvedDungeonId && !agaLocationName ? itemLocations.find((l) => l.endsWith(" - Boss")) : undefined;
+  const bossCheckStatus: CheckStatus | undefined = agaLocationName
+    ? { checked: agaBossDefeated, logic: agaLocationLogic ?? "unavailable", manuallyChecked: false, scoutedItems: [] }
+    : bossLocationKey
+      ? itemChecks[bossLocationKey]?.status
+      : undefined;
   const bossBgClass = bossCheckStatus ? (bossCheckStatus.checked ? mapStatusBg("checked") : mapStatusBg(bossCheckStatus.logic)) : undefined;
+
+  // CT/GT: surface the Agahnim boss as a tooltip entry. Clicking it toggles the
+  // main tracker's Aga boss item (dungeon.bossDefeated) rather than a location check.
+  const bossTooltipItem: TooltipListItem | undefined =
+    agaLocationName && bossCheckStatus ? { type: "item", key: agaLocationName, info: { displayName: agaLocationName, status: bossCheckStatus } } : undefined;
+
+  function handleTooltipCheckClick(key: string, checked: boolean) {
+    if (agaLocationName && key === agaLocationName && (resolvedDungeonId === "ct" || resolvedDungeonId === "gt")) {
+      dispatch(toggleDungeonBoss({ dungeon: resolvedDungeonId }));
+      return;
+    }
+    handleCheckClick(key, checked);
+  }
 
   const isScoutSelected = !isEntrance && currentMode === "scout" && selectedLocation === locName;
   const isScoutHoverHighlighted = !isEntrance && !!hoveredScout && !!scoutedItems && scoutedItems.some((s) => scoutedItemsEqual(s, hoveredScout));
@@ -256,7 +283,6 @@ function MapLocation(props: MapLocationProps) {
         )}
         style={labelColor ? { borderColor: labelColor, borderWidth: "2px" } : undefined}
       >
-        {showInsetBossSquare && bossBgClass && <div className={cn("absolute inset-1 border border-black pointer-events-none", bossBgClass, bossCheckStatus?.checked && "opacity-80")} />}
         {firstScoutIcon && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -270,14 +296,19 @@ function MapLocation(props: MapLocationProps) {
           />
         )}
       </div>
+      {/* Boss inset rendered as a sibling so it keeps its own colour/opacity
+          instead of inheriting the faded square's opacity when greyed out. */}
+      {showInsetBossSquare && bossBgClass && (
+        <div className={cn("absolute inset-1 border border-black pointer-events-none", showAsDiamond && "rotate-45", bossBgClass, bossCheckStatus?.checked && "opacity-80")} />
+      )}
       {showTooltip && (
         <LocationTooltip
           name={tooltipName}
           xPercent={xPercent}
           yPercent={yPercent}
-          items={itemLocations.length > 1 ? displayList : undefined}
-          singleCheck={singleCheck}
-          onCheckClick={handleCheckClick}
+          items={bossTooltipItem ? [...displayList, bossTooltipItem] : itemLocations.length > 1 ? displayList : undefined}
+          singleCheck={bossTooltipItem ? undefined : singleCheck}
+          onCheckClick={handleTooltipCheckClick}
           onGroupExpand={handleGroupExpand}
           onClose={resetGroups}
           scoutedItems={!isEntrance ? scoutedItems : undefined}
