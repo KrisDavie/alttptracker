@@ -240,9 +240,9 @@ export class RequirementEvaluator {
       case "bottle":
         return this.boolToStatus(this.getBottleCount() > 0);
       case "bow":
-        // Bow requires 2 to use (1 to have, 1 to use)
+        // Bow requires 3 to use (1 is empty bow, 2 is only silvers, 3+ is bow + ammo)
         if (ctx.linkState !== "link") return "unavailable";
-        return this.boolToStatus(items.bow.amount > 1);
+        return this.boolToStatus(items.bow.amount > 2);
       case "lantern":
         if (items.lantern.amount > 0) {
           return "available";
@@ -521,7 +521,7 @@ export class RequirementEvaluator {
 
       // Requires bow
       case "canKillRedEyegore":
-        return this.boolToStatus(this.hasItem("bow"));
+        return this.resolveSimple("bow", ctx);
 
       // Hammer melee
       case "canKillTerrorpin":
