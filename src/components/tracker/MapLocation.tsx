@@ -15,6 +15,7 @@ import { useMemo } from "react";
 import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
 import { allConnectorEntrances } from "@/data/entranceConnections";
+import { buildEntranceTooltipName } from "@/lib/entranceTrace";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 interface MapLocationProps {
@@ -58,6 +59,14 @@ function MapLocation(props: MapLocationProps) {
   const to = useSelector((state: RootState) => (isEntrance ? state.entrances[locName]?.to : undefined));
   const entranceCheck = useSelector((state: RootState) => (isEntrance ? state.checks.entranceChecks[locName] : undefined));
   const maxConnectorGroup = useSelector((state: RootState) => Object.values(state.entrances).reduce((max, e) => (e.connectorGroup ? Math.max(max, e.connectorGroup) : max), 0));
+  // Connector-aware tooltip name. Returns a primitive string so the component
+  // only re-renders when the displayed trace actually changes.
+  const connectorTooltipName = useSelector((state: RootState) => {
+    if (!isEntrance) return locName;
+    const linkedTo = state.entrances[locName]?.to;
+    if (!linkedTo) return locName;
+    return buildEntranceTooltipName(locName, linkedTo, state.entrances);
+  });
 
   const mergedLabels = useMemo(() => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }), [entranceLabelOverrides]);
 
@@ -233,7 +242,7 @@ function MapLocation(props: MapLocationProps) {
   // Highlight entrances in the same group as the selected entrance
   const highlightGroup = !!(selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup);
 
-  const tooltipName = isEntrance && targetName && targetName !== locName ? `${locName} → ${targetName}` : locName;
+  const tooltipName = isEntrance && targetName && targetName !== locName ? connectorTooltipName : locName;
   const singleCheck = itemLocations.length === 1 ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] } : isEntrance && !isLinked && entranceCheck ? { key: locName, status: entranceCheck, displayName: locName } : undefined;
 
   let bgClass = getBgClass();
