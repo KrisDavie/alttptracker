@@ -12,6 +12,7 @@ import { getAllPossibleLocations } from "@/lib/logic/locationMapper";
 import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
 import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
+import { addEvent } from "@/store/eventLogSlice";
 
 /** Send a QUsb2snes command and await its single response message. */
 function qusb2snesRequest(ws: WebSocket, opcode: string, operands: string[] = []): Promise<MessageEvent> {
@@ -52,7 +53,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
   const checksRef = useRef(checks);
 
   const url = new URL(window.location.href);
-  const isMapPage = url.pathname === "/map";
+  const isPassivePage = url.pathname === "/map" || url.pathname === "/event-log";
 
   // Keep the ref updated with the latest checks state
   useEffect(() => {
@@ -66,10 +67,12 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     itemsRef.current = items;
   }, [items]);
 
+  const lastGoalCounterRef = useRef<number | null>(null);
+
   // Connecting and querying data
   useEffect(() => {
-    // We gate autotracking on being on the tracker page, do not run on the map page
-    if (!autotrackingEnabled || isMapPage) {
+    // We gate autotracking on being on the tracker page, do not run on popout-only pages.
+    if (!autotrackingEnabled || isPassivePage) {
       return;
     }
 
@@ -77,7 +80,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       console.error("Host or port not set for autotracker connection");
       return;
     }
-    
+
     if (connectionType === "qusb2snes") {
       if (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN) {
         const ws = new WebSocket(`ws://${host}:${port}`);
@@ -215,7 +218,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     poll();
 
     return () => clearInterval(interval);
-  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled, qusb2Websocket, isMapPage]);
+  }, [isConnected, connectionType, selectedDevice, romName, host, port, dispatch, autotrackingEnabled, qusb2Websocket, isPassivePage]);
 
   // Actually process the data and mark things as checked etc.
   useEffect(() => {
@@ -386,6 +389,21 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
           dungeonUpdates[dungeon].smallKeys = 1;
         }
       }
+    }
+
+    // Counter is shared by any mode that uses a "goal item"
+    const goalCounter = getWord(0xf5f418);
+    const pieceGoal = settings.goal === "triforce_hunt" || settings.goal === "ganonhunt";
+    if (goalCounter !== null && pieceGoal) {
+      const previous = lastGoalCounterRef.current;
+      if (settings.eventLogMode !== "off" && settings.logTriforcePieces && previous !== null && goalCounter > previous) {
+        for (let i = 0; i < goalCounter - previous; i++) {
+          dispatch(addEvent({ title: "Triforce Piece", image: "/dungeons/triforce_hunt.png" }));
+        }
+      }
+      lastGoalCounterRef.current = goalCounter;
+    } else {
+      lastGoalCounterRef.current = null;
     }
 
     if (Object.keys(updates).length > 0) dispatch(updateMultipleLocations(updates));

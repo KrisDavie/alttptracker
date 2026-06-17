@@ -21,6 +21,42 @@ interface DungeonData {
   additionalEntries?: string[];
 }
 
+export const BossImages: Record<string, string> = {
+  unknown: "/dungeons/unknown.png",
+  compass: "/dungeons/compass.png",
+  armos: "/dungeons/armos.png",
+  lanmolas: "/dungeons/lanmolas.png",
+  moldorm: "/dungeons/moldorm.png",
+  helmasaurking: "/dungeons/helmasaur_king.png",
+  arrghus: "/dungeons/arrghus.png",
+  mothula: "/dungeons/mothula.png",
+  blind: "/dungeons/blind.png",
+  kholdstare: "/dungeons/kholdstare.png",
+  vitreous: "/dungeons/vitreous.png",
+  trinexx: "/dungeons/trinexx.png",
+  agahnim: "/dungeons/agahnim0.png",
+  agahnim2: "/dungeons/agahnim20.png",
+  bnc: "/dungeons/ballnchain.png",
+};
+
+export const BossNames: Record<string, string> = {
+  unknown: "Boss Defeated",
+  compass: "Boss Defeated",
+  armos: "Armos Knights",
+  lanmolas: "Lanmolas",
+  moldorm: "Moldorm",
+  helmasaurking: "Helmasaur King",
+  arrghus: "Arrghus",
+  mothula: "Mothula",
+  blind: "Blind",
+  kholdstare: "Kholdstare",
+  vitreous: "Vitreous",
+  trinexx: "Trinexx",
+  agahnim: "Agahnim",
+  agahnim2: "Agahnim 2",
+  bnc: "Ball and Chain Guard",
+};
+
 export const DungeonsData: Record<string, DungeonData> = {
   ep: {
     name: "Eastern Palace",

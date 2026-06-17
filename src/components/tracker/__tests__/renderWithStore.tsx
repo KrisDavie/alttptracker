@@ -11,6 +11,8 @@ import autotrackerReducer from "@/store/autotrackerSlice";
 import trackerReducer from "@/store/trackerSlice";
 import overworldReducer from "@/store/overworldSlice";
 import scoutsReducer from "@/store/scoutsSlice";
+import eventLogReducer from "@/store/eventLogSlice";
+import { createEventLogMiddleware } from "@/store/eventLogMiddleware";
 import type { RootState } from "@/store/store";
 
 /**
@@ -28,8 +30,10 @@ export function createTestStore(preloadedState?: Partial<RootState>) {
       autotracker: autotrackerReducer,
       overworld: overworldReducer,
       scouts: scoutsReducer,
+      eventLog: eventLogReducer,
     },
     preloadedState: preloadedState as RootState,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(createEventLogMiddleware()),
   });
 }
 

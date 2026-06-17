@@ -1,49 +1,40 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
+import { EVENT_LOG_GAP, EVENT_LOG_HEIGHT, TILE, getEventLogColumnCount, getTrackerLayoutDimensions } from "@/lib/trackerSizing";
 import CommunityLayoutItems from "@/components/layouts/CommunityTracker/CommunityLayoutItems";
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
 import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
 import { Loader2 } from "lucide-react";
 import StatusBar from "./tracker/StatusBar";
-
-const TILE = 448;
-
-function getLayoutDimensions(mapMode: "off" | "normal" | "compact" | "vertical" | "popoutNormal" | "popoutVertical") {
-  switch (mapMode) {
-    case "off":
-    case "popoutNormal":
-    case "popoutVertical":
-      return { width: TILE, height: TILE };
-    case "normal":
-      return { width: TILE * 3, height: TILE };
-    case "compact":
-      return { width: TILE, height: TILE * 1.5 };
-    case "vertical":
-      return { width: TILE, height: TILE * 3 };
-  }
-}
+import EventLogPanel from "./tracker/EventLogPanel";
 
 export function Tracker() {
-  const [scale, setScale] = useState(1);
   const rehydrated = useSelector((state: RootState) => state.trackerState.rehydrated);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const worldState = useSelector((state: RootState) => state.settings.worldState);
-  const { width, height } = useMemo(() => getLayoutDimensions(mapMode), [mapMode]);
+  const eventLogMode = useSelector((state: RootState) => state.settings.eventLogMode);
+  const showAttachedEventLog = eventLogMode === "attached";
+  const { width: trackerWidth, height: trackerHeight } = useMemo(() => getTrackerLayoutDimensions(mapMode), [mapMode]);
+  const eventLogHeight = showAttachedEventLog ? EVENT_LOG_HEIGHT : 0;
+  const eventLogColumns = useMemo(() => getEventLogColumnCount(mapMode), [mapMode]);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const handleResize = () => {
-      const scaleW = window.innerWidth / width;
-      const scaleH = window.innerHeight / height;
-      setScale(Math.min(scaleW, scaleH, 1));
+      const widthScale = Math.min(window.innerWidth / trackerWidth, 1);
+      const gap = showAttachedEventLog ? EVENT_LOG_GAP : 0;
+      const totalHeight = trackerHeight + eventLogHeight + gap;
+      const heightScale = Math.min(window.innerHeight / totalHeight, 1);
+      setScale(Math.min(widthScale, heightScale));
     };
-
     window.addEventListener("resize", handleResize);
     handleResize();
-
     return () => window.removeEventListener("resize", handleResize);
-  }, [width, height]);
+  }, [trackerWidth, trackerHeight, showAttachedEventLog, eventLogHeight]);
+
+  const height = trackerHeight + eventLogHeight + (showAttachedEventLog ? EVENT_LOG_GAP : 0);
 
   const showMaps = mapMode !== "off";
   const isVertical = mapMode === "vertical";
@@ -78,48 +69,55 @@ export function Tracker() {
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top left",
-          width: `${width}px`,
+          width: `${trackerWidth}px`,
           height: `${height}px`,
+          gap: showAttachedEventLog ? `${EVENT_LOG_GAP}px` : undefined,
           flexShrink: 0,
           position: "relative",
           zIndex: 1,
         }}
-        className={`flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
+        className="flex flex-col items-start"
       >
-        <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }} className="relative">
-          <CommunityLayoutItems />
-          {isCompact && entranceModalOpen && selectedEntrance && (
-            <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
-              <EntranceSelectionModal />
-            </div>
-          )}
-        </div>
-        {showMaps && !['popoutNormal', 'popoutVertical'].includes(mapMode) && (
-          <div
-            className="relative"
-            style={{
-              width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
-              height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
-            }}
-            >
-            {entranceModalOpen && mapMode !== "compact" && (
+        <div
+          style={{ width: `${trackerWidth}px`, height: `${trackerHeight}px`, flexShrink: 0 }}
+          className={`flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
+        >
+          <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }} className="relative">
+            <CommunityLayoutItems />
+            {isCompact && entranceModalOpen && selectedEntrance && (
               <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
                 <EntranceSelectionModal />
               </div>
             )}
-            <EntranceLinesOverlay />
-            <StatusBar />
+          </div>
+          {showMaps && !['popoutNormal', 'popoutVertical'].includes(mapMode) && (
             <div
-              className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
+              className="relative"
               style={{
                 width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
                 height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
               }}
-            >
-              {maps}
+              >
+              {entranceModalOpen && !isCompact && (
+                <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
+                  <EntranceSelectionModal />
+                </div>
+              )}
+              <EntranceLinesOverlay />
+              <StatusBar />
+              <div
+                className={`flex ${isVertical ? "flex-col" : "flex-row"} items-start relative`}
+                style={{
+                  width: isVertical || isCompact ? `${TILE}px` : `${TILE * 2}px`,
+                  height: isVertical ? `${TILE * 2}px` : isCompact ? `${TILE / 2}px` : `${TILE}px`,
+                }}
+              >
+                {maps}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        {showAttachedEventLog && <EventLogPanel height={eventLogHeight} columns={eventLogColumns} />}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { incrementBoss } from "@/store/dungeonsSlice";
 import { cn } from "@/lib/utils";
-import { BossImages } from "@/data/itemData";
+import { BossImages } from "@/data/dungeonData";
 
 interface BossSelectorProps {
   dungeon: string;

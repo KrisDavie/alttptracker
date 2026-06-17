@@ -29,6 +29,8 @@ export const REMEMBERED_SETTINGS = [
   "alwaysShowBigKeys",
   "alwaysShowSmallKeys",
   "showKeyTotals",
+  "eventLogMode",
+  "logTriforcePieces",
 
   // Colours
   "appBackground",

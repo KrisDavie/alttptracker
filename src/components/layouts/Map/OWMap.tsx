@@ -41,22 +41,19 @@ function OWMap({ world = "lw" }: OWMapProps) {
   let fullSize: string, smallSize: string, dungeonSize: string, entranceSize: string, entranceDungeonSize: string;
 
   switch (mapMode) {
-    case "vertical":
-    case "normal":
-    case "popoutNormal":
-    case "popoutVertical":
-      fullSize = "h-4 w-4";
-      smallSize = "h-2.5 w-2.5";
-      dungeonSize = "h-5.5 w-5.5";
-      entranceDungeonSize = "h-4.75 w-4.75";
-      entranceSize = "h-3 w-3";
-      break;
     case "compact":
       fullSize = "h-2.5 w-2.5";
       smallSize = "h-1.5 w-1.5";
       dungeonSize = "h-3.5 w-3.5";
       entranceDungeonSize = "h-3.25 w-3.25";
       entranceSize = "h-2.25 w-2.25";
+      break;
+    default:
+      fullSize = "h-4 w-4";
+      smallSize = "h-2.5 w-2.5";
+      dungeonSize = "h-5.5 w-5.5";
+      entranceDungeonSize = "h-4.75 w-4.75";
+      entranceSize = "h-3 w-3";
       break;
   }
 
