@@ -491,24 +491,15 @@ export class OverworldTraverser {
     if (!current) return; // Can't update non-existent region, shouldn't happen though
 
     const combinedLinkState = combineLinkStates(current.linkState, newLinkState);
-    if (combinedLinkState !== current.linkState) {
-      // A better link-state path has been found; combine status too.
-      const combinedStatus = combineStatuses(current.status, newStatus);
-      ctx.reachable.set(regionName, {
-        status: combinedStatus,
-        linkState: combinedLinkState,
-        oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
-      });
-    } else {
-      const combinedStatus = combineStatuses(current.status, newStatus);
-      if (combinedStatus !== current.status) {
-        ctx.reachable.set(regionName, {
-          status: combinedStatus,
-          linkState: current.linkState,
-          oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
-        });
-      }
-    }
+    const combinedStatus = combineStatuses(current.status, newStatus);
+    // Nothing improved — leave the region untouched.
+    if (combinedLinkState === current.linkState && combinedStatus === current.status) return;
+
+    ctx.reachable.set(regionName, {
+      status: combinedStatus,
+      linkState: combinedLinkState,
+      oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
+    });
   }
 
   /**
@@ -679,18 +670,11 @@ export class OverworldTraverser {
       // Incorporate dungeon region statuses (always use latest traversal).
       for (const [regionName, regionState] of result.regionStatuses) {
         const existing = ctx.reachable.get(regionName);
-        if (!existing) {
+        if (!existing || existing.status !== regionState.status) {
           ctx.reachable.set(regionName, {
             status: regionState.status,
-            linkState: regionState.linkState,
-            crystalStates: regionState.crystalStates,
-            oolReasons: regionState.oolReasons,
-          });
-          madeProgress = true;
-        } else if (existing.status !== regionState.status) {
-          ctx.reachable.set(regionName, {
-            status: regionState.status,
-            linkState: combineLinkStates(existing.linkState, regionState.linkState),
+            // Combine link states when the region was already known; otherwise adopt the dungeon's.
+            linkState: existing ? combineLinkStates(existing.linkState, regionState.linkState) : regionState.linkState,
             crystalStates: regionState.crystalStates,
             oolReasons: regionState.oolReasons,
           });

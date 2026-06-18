@@ -289,6 +289,47 @@ describe("Entrance Shuffle", () => {
       const result = calculate(
         gameState()
           .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 0, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has no access to a key at all because they have not found the desert north entrance, and cannot find a pot key
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("unavailable")
+    });
+
+    it("DP right side should be available with the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 1, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has a small key and can reach the right side of DP. Accessing DP north gives as many keys as small key doors, 
+      // so this location is available even though the desert north entrance is not placed and those keys are unreachable
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available")
+    });
+
+        it("DP right side should be available with the small key if desert north is placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 1, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+          .withEntranceLink("Library", "Desert Palace Entrance (North)")
+      );
+
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available")
+    });
+
+
+    it("DP right side should be unavailable without the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
           .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild", pottery: "keys" })
           .withDungeon("dp", { smallKeys: 3, bigKey: true })
           .withEntranceLink("Dam", "Desert Palace Entrance (East)")
