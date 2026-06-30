@@ -394,6 +394,18 @@ export function getAllPossibleLocations(entryKey: string): LocationInfo[] {
 }
 
 /**
+ * Locations tracked for logic status only — not collectable items, so they are
+ * deliberately excluded from item lists, chest counts and active-location sets.
+ *
+ * These are classified as "event" (so they don't pollute a dungeon's item
+ * locations), but the traverser still emits a reachability status for them and
+ * the UI needs it — e.g. the Agahnim 1/2 boss events drive the CT/GT boss inset
+ * squares. They must be registered explicitly so checksSlice creates a status
+ * entry that updateLogicStatuses can populate.
+ */
+export const LOGIC_ONLY_LOCATIONS = ["Agahnim 1", "Agahnim 2"] as const;
+
+/**
  * Get ALL possible location names across all entries.
  * Used for checksSlice initialization.
  */
@@ -403,6 +415,11 @@ export function getAllPossibleLocationNames(): string[] {
     for (const loc of locs) {
       allNames.add(loc.name);
     }
+  }
+  // Include logic-only tracked locations (e.g. Agahnim boss events) so their
+  // status can be stored even though they aren't item locations.
+  for (const name of LOGIC_ONLY_LOCATIONS) {
+    allNames.add(name);
   }
   return [...allNames];
 }
