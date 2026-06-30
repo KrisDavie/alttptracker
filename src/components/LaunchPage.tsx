@@ -123,7 +123,7 @@ const LaunchPage: React.FC = () => {
         try {
           await fetch(`http://${autotrackHost}:${autotrackPort}`, {
             mode: "no-cors",
-            signal: AbortSignal.timeout(2000),
+            signal: AbortSignal.timeout(500),
           });
           if (!cancelled) setAutotrackStatus("connected");
         } catch {
@@ -144,12 +144,12 @@ const LaunchPage: React.FC = () => {
               ws.close();
               if (!cancelled) setAutotrackStatus("disconnected");
             }
-          }, 2000);
+          }, 500);
         } catch {
           if (!cancelled) setAutotrackStatus("disconnected");
         }
       }
-    }, 10000);
+    }, 1000);
     return () => {
       cancelled = true;
       clearTimeout(timer);

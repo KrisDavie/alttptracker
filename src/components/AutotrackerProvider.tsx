@@ -176,7 +176,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
           await connectToDevice(devices);
         } catch (error) {
           console.error("Error during device discovery:", error);
-          dispatch(setConnectionStatus("device discovery failed"));
+          dispatch(setConnectionStatus("device discovery failed - ensure SNI/QUsb2snes is running and reachable"));
         }
       } else {
         const newData: Record<string, Uint8Array> = {};
