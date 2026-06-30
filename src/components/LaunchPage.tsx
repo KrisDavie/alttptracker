@@ -7,6 +7,7 @@ import { getPresetById, resolvePresetFromSlug } from "@/data/launcherPresets";
 import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
+import { parseSnapshotJson, importSnapshotToNewSession } from "@/lib/stateSnapshot";
 import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
@@ -36,6 +37,7 @@ const LaunchPage: React.FC = () => {
   const [alerts, setAlerts] = useState<string | null>(null);
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [nextLadder, setNextLadder] = useState<{ presetId: string; name: string; time: Date } | null>(null);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
 
   // Load sessions from IndexedDB
   useEffect(() => {
@@ -244,6 +246,20 @@ const LaunchPage: React.FC = () => {
     setSessions(await getSessions());
   }, []);
 
+  // Restore a session from a downloaded state file: seeds a new session and opens it.
+  const handleRestoreFile = useCallback(async (file: File) => {
+    setRestoreError(null);
+    try {
+      const text = await file.text();
+      const snapshot = parseSnapshotJson(text);
+      const id = await importSnapshotToNewSession(snapshot);
+      setSessions(await getSessions());
+      launchTracker(id);
+    } catch (err) {
+      setRestoreError(`Could not import session: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }, [launchTracker]);
+
   const unpinnedCount = sessions.filter((s) => !s.pinned).length;
   const canCreateSession = unpinnedCount > 0 || sessions.length < MAX_SESSIONS;
 
@@ -270,6 +286,14 @@ const LaunchPage: React.FC = () => {
             </div>
           )}
 
+          {/* Session restore error */}
+          {restoreError && (
+            <div className="flex items-start gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm text-red-600">
+              <AlertOctagon className="size-4 mt-0.5 shrink-0" />
+              <span className="whitespace-pre-line">{restoreError}</span>
+            </div>
+          )}
+
           <PresetSection nextLadder={nextLadder} applyPreset={applyPreset} />
 
           <LaunchCard
@@ -283,6 +307,7 @@ const LaunchPage: React.FC = () => {
             onLaunch={launchTracker}
             onDeleteSession={handleDeleteSession}
             onTogglePin={handleTogglePin}
+            onRestoreFile={handleRestoreFile}
           />
 
           <div className="relative flex flex-col lg:block">

@@ -16,7 +16,9 @@ import { getSessionInstanceId } from '@/lib/sessionHelper';
 import { createBroadcastMiddleware } from './broadcastMiddleware';
 import { createEventLogMiddleware } from './eventLogMiddleware';
 
-const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances', 'overworld', 'scouts', 'eventLog'];
+/** Slices persisted by redux-remember. Single source of truth for what gets saved/restored. */
+export const rememberedKeys = ['items', 'dungeons', 'checks', 'settings', 'entrances', 'overworld', 'scouts', 'eventLog'] as const;
+export type RememberedKey = (typeof rememberedKeys)[number];
 
 const instanceId = getSessionInstanceId();
 
@@ -39,7 +41,7 @@ export const store = configureStore({
   enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat(
     rememberEnhancer(
       idbDriver,
-      rememberedKeys,
+      [...rememberedKeys],
       { prefix: `alttptracker_session_${instanceId}_` }
     )
   ),

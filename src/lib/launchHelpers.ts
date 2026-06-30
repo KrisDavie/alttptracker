@@ -31,11 +31,14 @@ export function saveLauncherPrefs(prefs: LauncherPrefs) {
  * Picks all REMEMBERED_SETTINGS keys automatically.
  */
 export function buildLauncherPrefs(settings: SettingsState): LauncherPrefs {
-  const prefs: Record<string, unknown> = {};
+  const prefs = {} as LauncherPrefs;
+  const assign = <K extends RememberedSettingsKey>(key: K, value: LauncherPrefs[K]) => {
+    prefs[key] = value;
+  };
   for (const key of REMEMBERED_SETTINGS) {
-    prefs[key] = settings[key];
+    assign(key, settings[key]);
   }
-  return prefs as LauncherPrefs;
+  return prefs;
 }
 
 /**
@@ -45,18 +48,19 @@ export function buildLauncherPrefs(settings: SettingsState): LauncherPrefs {
  */
 export function applyLauncherPrefs(base: SettingsState, saved: Partial<LauncherPrefs>): SettingsState {
   const result = { ...base };
+  const assign = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
+    result[key] = value;
+  };
   for (const key of REMEMBERED_SETTINGS) {
-    if (key in saved) {
-      const baseVal = base[key];
-      const savedVal = (saved as Record<string, unknown>)[key];
-      if (typeof baseVal === "object" && baseVal !== null && !Array.isArray(baseVal)) {
-        // Shallow-merge object values (e.g. sequenceBreaks)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (result as any)[key] = { ...(baseVal as any), ...(savedVal as any) };
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (result as any)[key] = savedVal;
-      }
+    if (!(key in saved)) continue;
+    const baseVal = base[key];
+    const savedVal = saved[key];
+    if (savedVal === undefined) continue;
+    if (typeof baseVal === "object" && baseVal !== null && !Array.isArray(baseVal)) {
+      // Shallow-merge object values (e.g. sequenceBreaks, customColors)
+      assign(key, { ...(baseVal as object), ...(savedVal as object) } as SettingsState[typeof key]);
+    } else {
+      assign(key, savedVal as SettingsState[typeof key]);
     }
   }
   return result;

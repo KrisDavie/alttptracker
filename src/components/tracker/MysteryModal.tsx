@@ -1,7 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, useStore } from "react-redux";
 import type { RootState } from "../../store/store";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../ui/button";
+import { buildStateSnapshot, parseSnapshotJson, importSnapshotToNewSession, snapshotToJsonDocument } from "@/lib/stateSnapshot";
+import { collectClientMetadata } from "@/lib/clientMetadata";
 import { resetSettings, setSettings, type SettingsState } from "../../store/settingsSlice";
 import { setModalClose } from "../../store/trackerSlice";
 import { resetBossesForShuffle, resetDungeons } from "@/store/dungeonsSlice";
@@ -20,7 +22,10 @@ import { cn } from "@/lib/utils";
 
 function MysteryModal() {
   const dispatch = useDispatch();
+  const store = useStore<RootState>();
   const [page, setPage] = useState(1);
+  const [snapshotStatus, setSnapshotStatus] = useState<{ kind: "idle" | "ok" | "error"; message: string }>({ kind: "idle", message: "" });
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const trackerSettings = useSelector((state: RootState) => state.settings);
   const [localSettings, setLocalSettings] = useState(trackerSettings);
   const [prevTrackerSettings, setPrevTrackerSettings] = useState(trackerSettings);
@@ -74,6 +79,44 @@ function MysteryModal() {
       dispatch(resetOverworldState());
       dispatch(resetScouts());
       dispatch(setModalClose());
+    }
+  };
+
+  const handleDownloadJson = async () => {
+    try {
+      const meta = await collectClientMetadata();
+      const snapshot = buildStateSnapshot(store.getState(), import.meta.env.VITE_APP_VERSION, meta);
+      const json = snapshotToJsonDocument(snapshot);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+      a.href = url;
+      a.download = `muffinstracker-state-${stamp}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setSnapshotStatus({ kind: "ok", message: "Downloaded state JSON." });
+    } catch (err) {
+      setSnapshotStatus({ kind: "error", message: `Download failed: ${err instanceof Error ? err.message : String(err)}` });
+    }
+  };
+
+  // Import always loads into a NEW session, preserving the importer's current session.
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file later
+    if (!file) return;
+    if (!window.confirm("Load this state into a NEW session and switch to it? Your current session is kept.")) return;
+    try {
+      const text = await file.text();
+      const snapshot = parseSnapshotJson(text);
+      const id = await importSnapshotToNewSession(snapshot);
+      setSnapshotStatus({ kind: "ok", message: "Imported — opening the new session…" });
+      window.location.href = `/tracker?id=${id}`;
+    } catch (err) {
+      setSnapshotStatus({ kind: "error", message: `Import failed: ${err instanceof Error ? err.message : String(err)}` });
     }
   };
 
@@ -237,7 +280,8 @@ function MysteryModal() {
               <option value="vertical">Vertical</option>
             </select>
             <label className="font-medium">Event Log:</label>
-            <div className="flex flex-wrap gap-x-4 gap-y-1">
+
+          <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 items-center text-sm font-roboto">
               <select
                 className="border border-gray-400 rounded px-1 bg-white w-full max-w-50 disabled:text-gray-400"
                 value={localSettings.eventLogMode}
@@ -267,17 +311,37 @@ function MysteryModal() {
               Reset Tracker State
             </button>
 
+            <div className="col-span-2 mt-2 border-t border-gray-300 pt-2">
+              <div className="font-medium mb-1">Bug Report</div>
+              <p className="text-xs text-gray-600 mb-2">Save the complete tracker state to a file so a developer can reproduce a bug. Importing loads it into a new session and switches to it; your current session is kept.</p>
+              <div className="flex flex-wrap gap-2 mb-1">
+                <button className="bg-gray-300 font-roboto px-2 py-1" onClick={handleDownloadJson}>
+                  Download State File
+                </button>
+                <button className="bg-gray-300 font-roboto px-2 py-1" onClick={() => fileInputRef.current?.click()}>
+                  Import State File…
+                </button>
+              </div>
+              <input ref={fileInputRef} type="file" accept="application/json,.json" className="hidden" onChange={handleFileSelected} />
+              {snapshotStatus.kind !== "idle" && (
+                <div className={cn("text-xs mt-1", snapshotStatus.kind === "error" ? "text-red-600" : "text-green-700")}>{snapshotStatus.message}</div>
+              )}
+            </div>
+
           </div>
         </div>
       )}
       {/* Footer */}
-      <div className="row-span-1 flex flex-row justify-center items-center mx-3 space-x-3">
+      <div className="row-span-1 relative flex flex-row justify-center items-center mx-3 space-x-3">
         <Button variant="outline" className="bg-gray-300 font-roboto" size="sm" onClick={() => dispatch(setModalClose())}>
           Close
         </Button>
         <Button variant="outline" className="bg-gray-300 font-roboto" size="sm" onClick={handleSubmit}>
           Submit
         </Button>
+        <div className="absolute right-0 text-2xs text-gray-500 select-text" title="App build / git commit">
+          Build {import.meta.env.VITE_APP_VERSION || "unknown"}
+        </div>
       </div>
     </div>
   );
