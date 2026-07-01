@@ -3,6 +3,7 @@ import type { RootState } from "../../store/store";
 import { setModalClose, setCurrentMode, setSelectedEntrance } from "../../store/trackerSlice";
 import { setEntranceLink, setNote } from "../../store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
+import { getEntrancePool } from "@/lib/dropdowns";
 import { Button } from "../ui/button";
 import { useMemo, type JSX } from "react";
 import { Input } from "../ui/input";
@@ -15,6 +16,8 @@ function EntranceSelectionModal() {
   const mergedLabels = useMemo(() => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }), [entranceLabelOverrides]);
 
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
+  const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
+  const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
   const note = useSelector((state: RootState) => {
     if (!selectedEntrance) return "";
     return state.entrances[selectedEntrance]?.note || "";
@@ -22,8 +25,12 @@ function EntranceSelectionModal() {
 
   if (mapMode === "off" || !entranceModalOpen || !selectedEntrance) return null;
 
+  // Restrict valid link targets to the selected entrance's pool: dropdowns only
+  // link to dropdowns, paired doors only to paired doors (outside insanity).
+  const selectedPool = getEntrancePool(selectedEntrance, entranceMode, zelgaWoods);
+
   const handleGenericLink = (to: string | null) => {
-    dispatch(setEntranceLink({ entrance: selectedEntrance, to }));
+    dispatch(setEntranceLink({ entrance: selectedEntrance, to, zelgaWoods, entranceMode }));
     dispatch(setModalClose());
     dispatch(setSelectedEntrance([null, false]));
   };
@@ -47,12 +54,15 @@ function EntranceSelectionModal() {
     const entranceInfo = mergedLabels[entrance] || defaultEntranceLabels[entrance];
     const label = entranceInfo ? entranceInfo.label : entrance;
     const color = entranceInfo ? entranceInfo.color : "#888888";
+    // Only targets in the same pool as the selected entrance are valid.
+    const disabled = getEntrancePool(entrance, entranceMode, zelgaWoods) !== selectedPool;
 
     return (
       <Button
         variant="outline"
         size={["compact"].includes(mapMode) ? "xs" : "sm"}
         className="uppercase"
+        disabled={disabled}
         style={{
           backgroundColor: `${color}50`,
           borderColor: `${color}`,
@@ -183,7 +193,7 @@ function EntranceSelectionModal() {
           <Button variant="default" className="flex bg-indigo-600 hover:bg-indigo-500 font-bold" onClick={handleSelectFromMap}>
             Select Destination on Map
           </Button>
-          <Button variant="default" className="w-35 flex font-bold bg-indigo-600 hover:bg-indigo-500" onClick={handleConnectButton}>
+          <Button variant="default" disabled={selectedPool !== "normal"} className="w-35 flex font-bold bg-indigo-600 hover:bg-indigo-500" onClick={handleConnectButton}>
             Connect
           </Button>
         </div>

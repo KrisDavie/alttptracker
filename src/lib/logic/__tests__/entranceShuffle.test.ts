@@ -169,6 +169,23 @@ describe("Entrance Shuffle", () => {
       // No pearl, cannot open bonk rocks
       expect(result.entrancesLogic["Bonk Fairy (Dark)"]).toBe("unavailable");
     });
+
+     it("crossworld connectors make entrances in the other world available 2 - pyramid fairy", () => {
+      const result = calculate(
+        gameState()
+        .withItems({ bomb: 1 })
+        .withSettings({ entranceMode: "crossed", shuffleLinks: true })
+        .withEntranceLink("Links House", "Links House")
+        .withEntranceLink("Dam", "Elder House (East)")
+        .withEntranceLink("Pyramid Fairy", "Elder House (West)")
+      );
+
+      // Expect east DW entrances to be available due to Dam → Pyramid Fairy connector
+      expect(result.entrancesLogic["Dark Lake Hylia Fairy"]).toBe("available");
+      expect(result.entrancesLogic["Bonk Fairy (Dark)"]).toBe("unavailable");
+
+    });
+   
   });
 
   describe("LW / DW isolation", () => {

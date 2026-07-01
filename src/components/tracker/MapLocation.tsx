@@ -16,6 +16,7 @@ import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
 import { allConnectorEntrances } from "@/data/entranceConnections";
 import { buildEntranceTooltipName } from "@/lib/entranceTrace";
+import { isDropdown, isPairedEntrance, getEntrancePool } from "@/lib/dropdowns";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 interface MapLocationProps {
@@ -29,8 +30,16 @@ interface MapLocationProps {
 
 function resolveEntranceGroup(name: string | null, entranceMode: string | undefined, zelgaWoods: boolean) {
   if (!name) return null;
-  const group = locationsData[name]?.entrance_modes?.[entranceMode || "none"] ?? null;
-  return group === "skull_doors" && zelgaWoods ? "shuffle" : group;
+  let group = locationsData[name]?.entrance_modes?.[entranceMode || "none"] ?? null;
+  if (group === "skull_doors" && zelgaWoods) group = "shuffle";
+  // Dropdown pooling intersected with the base group: a dropdown may only link
+  // to dropdowns sharing the same base group (e.g. same district), and (outside
+  // insanity) a paired door only to paired doors within that base group.
+  if (group && group !== "vanilla") {
+    if (isDropdown(name, zelgaWoods)) return `${group}:dropdown`;
+    if (entranceMode !== "insanity" && isPairedEntrance(name, zelgaWoods)) return `${group}:pairedDoor`;
+  }
+  return group;
 }
 
 function MapLocation(props: MapLocationProps) {
@@ -106,11 +115,16 @@ function MapLocation(props: MapLocationProps) {
     if (e.button === 0 && e.type === "click") {
       if (isEntrance) {
         if (currentMode === "connect" && selectedEntrance) {
-          dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));
+          dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName, zelgaWoods, entranceMode }));
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else if (currentMode === "generic_connect" && selectedEntrance !== locName && selectedEntrance) {
-          dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+          // Dropdowns/paired doors can't form generic connectors — the synthetic
+          // connector is two-way and would let a player exit back through a
+          // one-way hole (and bypass forced pairing).
+          if (getEntrancePool(selectedEntrance, entranceMode, zelgaWoods) === "normal" && getEntrancePool(locName, entranceMode, zelgaWoods) === "normal") {
+            dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+          }
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else {
@@ -152,7 +166,10 @@ function MapLocation(props: MapLocationProps) {
         dispatch(setSelectedEntrance([locName, false]));
         dispatch(setCurrentMode("connect"));
       } else if (currentMode === "connect" && selectedEntrance !== locName) {
-        dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+        // Dropdowns/paired doors can't form generic connectors (see above).
+        if (getEntrancePool(selectedEntrance, entranceMode, zelgaWoods) === "normal" && getEntrancePool(locName, entranceMode, zelgaWoods) === "normal") {
+          dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+        }
         dispatch(setSelectedEntrance([null, false]));
         dispatch(setCurrentMode("none"));
       }
