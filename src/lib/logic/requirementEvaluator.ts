@@ -375,7 +375,7 @@ export class RequirementEvaluator {
         return minimumStatus(this.resolveSimple("canCollectOldMan", ctx), this.resolveComplex("canReachFrom|Old Man Cave (West)|Old Man Drop Off", ctx));
       case "canCollectKiki":
         // TODO Follower shuffle logic
-        return this.resolveComplex("canReach|Palace of Darkness Area", ctx);
+        return minimumStatus(this.resolveComplex("canReach|Palace of Darkness Area", ctx), this.resolveSimple("moonpearl", ctx));
       case "canOpenPod":
         return minimumStatus(this.resolveSimple("canCollectKiki", ctx), this.resolveComplex("canReach|Palace of Darkness Area", ctx));
       case "canCollectLocksmith":

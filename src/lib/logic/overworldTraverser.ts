@@ -581,9 +581,16 @@ export class OverworldTraverser {
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
           ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
         } else if (isBetterStatus(newStatus, existingPortal.status)) {
-          // Update to better status
+          // Update to better status. If the previous status was the partial-mode
+          // discovery placeholder ("unavailable"), its link state is a fiction —
+          // it defaults to "link" when the source region isn't actually reachable
+          // (which happens for portals only reachable through a dungeon connector,
+          // since the actual-inventory BFS skips Dungeon exits). Replace it with
+          // the real reaching link state instead of combining, so a portal only
+          // reachable as a bunny isn't wrongly upgraded to "link".
+          const wasPlaceholder = existingPortal.status === "unavailable";
           existingPortal.status = newStatus;
-          existingPortal.linkState = combineLinkStates(newLinkState, existingPortal.linkState);
+          existingPortal.linkState = wasPlaceholder ? newLinkState : combineLinkStates(newLinkState, existingPortal.linkState);
           existingPortal.keyCost = Math.min(existingPortal.keyCost, regionKeyCost);
           existingPortal.oolReasons = portalOolReasons;
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, existingPortal);
@@ -671,10 +678,16 @@ export class OverworldTraverser {
       for (const [regionName, regionState] of result.regionStatuses) {
         const existing = ctx.reachable.get(regionName);
         if (!existing || existing.status !== regionState.status) {
+          // If the region was previously only "unavailable" (e.g. from an earlier
+          // traversal seeded by a placeholder portal entry), its link state is a
+          // fiction — adopt the new one rather than combining, so a genuinely
+          // bunny-only dungeon region isn't wrongly upgraded to "link".
+          const staleUnavailable = !!existing && existing.status === "unavailable";
           ctx.reachable.set(regionName, {
             status: regionState.status,
-            // Combine link states when the region was already known; otherwise adopt the dungeon's.
-            linkState: existing ? combineLinkStates(existing.linkState, regionState.linkState) : regionState.linkState,
+            // Combine link states when the region was already genuinely known;
+            // otherwise adopt the dungeon's.
+            linkState: existing && !staleUnavailable ? combineLinkStates(existing.linkState, regionState.linkState) : regionState.linkState,
             crystalStates: regionState.crystalStates,
             oolReasons: regionState.oolReasons,
           });

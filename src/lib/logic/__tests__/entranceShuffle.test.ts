@@ -437,7 +437,49 @@ describe("Entrance Shuffle", () => {
       // Can reach Dam and use it to drain swamp, which should make Swamp Palace entrance chest available
       expect(result.entrancesLogic["Mire Hint"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
-    });    
+    });   
+    
+    
+    it("cannot open chests in swamp palace in entrance modes without moonpearl", () => {
+      const state = gameState()
+        .withItems({ bomb: 1, flippers: 1})
+        .withDungeon("sp", { smallKeys: 1 })
+        .withSequenceBreaks({ canSuperBunny: true })
+        .withSettings({ entranceMode: "crossed", wildMaps: true, wildCompasses: true, wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" })
+        .withEntranceLink("Links House", "Links House")
+        .withEntranceLink("Tavern (Front)", "Desert Palace Entrance (East)")
+        .withEntranceLink("Pyramid Fairy", "Desert Palace Entrance (West)")
+        .withEntranceLink("Dark Lake Hylia Fairy", "Swamp Palace")
+        .withEntranceLink("Lake Hylia Fortune Teller", "Dam")
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("unavailable");
+      expect(result.locationsLogic["Pyramid"]).toBe("available");
+    }); 
+
+    
+    it("can reach crystaroller with both mid-TR entrances places", () => {
+      const state = gameState()
+        .withItems({ bomb: 1, sword: 1 })
+        .withDungeon("tr", { bigKey: true })
+        .withSettings({ entranceMode: "crossed", wildMaps: true, wildCompasses: true, wildSmallKeys: "wild", wildBigKeys: true })
+        .withEntranceLink("Links House", "Links House")
+        .withEntranceLink("Lake Hylia Fortune Teller", "Dark Death Mountain Ledge (East)")
+        .withEntranceLink("Lake Hylia Shop", "Dark Death Mountain Ledge (West)")
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Turtle Rock - Crystaroller Room"]).toBe("available");
+    }); 
 
   });
 });

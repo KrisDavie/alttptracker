@@ -902,8 +902,13 @@ export class DungeonTraverser {
             const existing = ctx.reachable.get(exit.to)!;
             if (!existing.crystalStates.has(crystalState)) {
               existing.crystalStates.add(crystalState);
-              // Set entry status for this new crystal state path
-              regionEntryStatus.set(`${exit.to}|${crystalState}`, effectiveEntryStatus);
+              // Set entry status for this new crystal state path, but never
+              // downgrade a better value already recorded (e.g. by a crystal
+              // switch toggle) — the upgrade check below handles improvements.
+              const existingEntry = regionEntryStatus.get(`${exit.to}|${crystalState}`);
+              if (!existingEntry || isBetterStatus(effectiveEntryStatus, existingEntry)) {
+                regionEntryStatus.set(`${exit.to}|${crystalState}`, effectiveEntryStatus);
+              }
               queue.push({ region: exit.to, crystalState, fromEntryStatus: effectiveEntryStatus });
             }
           }
@@ -930,7 +935,16 @@ export class DungeonTraverser {
           })
         ) {
           const newCrystalState = this.toggleCrystalState(crystalState);
-          queue.push({ region, crystalState: newCrystalState, fromEntryStatus: cappedRegionEntryStatus });
+          // The toggled crystal state is reached with THIS region's entry status.
+          // Record it (upgrading if better) so a worse-status path that already
+          // reached the region in the toggled state — e.g. an unavailable gap
+          // crossing from another entrance — can't suppress this better path.
+          const toggleKey = `${region}|${newCrystalState}`;
+          const currentToggleStatus = regionEntryStatus.get(toggleKey);
+          if (!currentToggleStatus || isBetterStatus(cappedRegionEntryStatus, currentToggleStatus)) {
+            regionEntryStatus.set(toggleKey, cappedRegionEntryStatus);
+            queue.push({ region, crystalState: newCrystalState, fromEntryStatus: cappedRegionEntryStatus });
+          }
         }
       }
     }
