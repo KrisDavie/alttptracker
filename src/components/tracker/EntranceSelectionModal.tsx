@@ -109,7 +109,7 @@ function EntranceSelectionModal() {
               {getEntranceButton("Potion Shop")}
               {getEntranceButton("Sick Kids House")}
               {getEntranceButton("Blacksmiths Hut")}
-              {getEntranceButton("Bat Cave Cave")}
+              {getEntranceButton("Bat Cave Drop")}
               {getEntranceButton("Library")}
             </div>
             <div className="grid grid-cols-5 gap-1 w-full">

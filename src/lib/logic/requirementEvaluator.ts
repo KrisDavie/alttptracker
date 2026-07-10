@@ -273,6 +273,8 @@ export class RequirementEvaluator {
         return maximumStatus(this.resolveSimple("melee", ctx), this.resolveSimple("bow", ctx));
       case "melee_bow_bomb":
         return maximumStatus(this.resolveSimple("melee_bow", ctx), this.resolveSimple("bomb", ctx));
+      case "melee_bow_bomb_cane":
+        return maximumStatus(this.resolveSimple("melee_bow_bomb", ctx), this.resolveSimple("cane", ctx));
       case "mitts":
         return this.boolToStatus(items.glove.amount > 1);
       case "mirrorshield":
@@ -330,10 +332,6 @@ export class RequirementEvaluator {
         return maximumStatus(this.resolveSimple("lantern", ctx), this.boolToStatus(this.hasItem("firerod")));
       case "canDefeatCurtains":
         return this.boolToStatus(this.hasItem("sword")); // TODO: Add swordless logic
-      case "canKillWizzrobes":
-        return maximumStatus(this.resolveSimple("melee_bow", ctx), this.resolveSimple("cane", ctx), this.resolveSimple("firerod", ctx), minimumStatus(this.resolveSimple("icerod", ctx), this.resolveSimple("hookshot", ctx)));
-      case "canCrossMireGap":
-        return maximumStatus(this.resolveSimple("boots", ctx), this.resolveSimple("hookshot", ctx));
       case "canBurnThings":
       case "canBurnThingsMaybeSwordless": // TODO: Differentiate swordless logic
         return this.boolToStatus(this.hasItem("firerod") || (this.hasItem("bombos") && this.hasItem("sword")));
@@ -343,8 +341,6 @@ export class RequirementEvaluator {
         return this.resolveSimple("swordbeams", ctx);
       case "canBreakTablets":
         return minimumStatus(this.resolveSimple("swordbeams", ctx), this.resolveSimple("book", ctx)); // TODO: Add swordless logic
-      case "canOpenBonkWalls":
-        return maximumStatus(this.resolveSimple("boots", ctx), this.resolveSimple("bomb", ctx));
       case "canHitRangedSwitch":
         // Previous didnt have beams, but did have rods
         return maximumStatus(this.resolveSimple("bomb", ctx), this.resolveSimple("bow", ctx), this.resolveSimple("boomerang", ctx), this.resolveSimple("rod", ctx), this.resolveSimple("swordbeams", ctx), this.resolveSimple("somaria", ctx));
@@ -463,7 +459,7 @@ export class RequirementEvaluator {
 
       // Icerod can kill
       case "canKillGreenGuard":
-        return this.boolToStatus(this.met("icerod", ctx) || this.met("melee_bow_bomb", ctx));
+        return this.boolToStatus(this.met("icerod", ctx) || this.met("melee_bow_bomb_cane", ctx));
 
       // Hookshot can kill
       case "canKillBabasu":
@@ -475,12 +471,12 @@ export class RequirementEvaluator {
       case "canKillPopo":
       case "canKillPopo2":
       case "canKillRedBari":
-        return this.boolToStatus(this.met("hookshot", ctx) || this.met("melee_bow_bomb", ctx));
+        return this.boolToStatus(this.met("hookshot", ctx) || this.met("melee_bow_bomb_cane", ctx));
 
       // Boomerang can kill
       case "canKillStalfos":
       case "canKillFloatingSkull":
-        return this.boolToStatus(this.met("boomerang", ctx) || this.met("melee_bow_bomb", ctx));
+        return this.boolToStatus(this.met("boomerang", ctx) || this.met("melee_bow_bomb_cane", ctx));
 
       case "canKillStalfosKnight":
         return this.boolToStatus(this.met("boomerang", ctx) || this.met("melee", ctx) || this.met("bomb", ctx));
@@ -496,7 +492,7 @@ export class RequirementEvaluator {
       // No bombs
       case "canKillSluggula":
       case "canKillWizzrobe":
-        return this.resolveSimple("melee_bow", ctx);
+        return maximumStatus(this.resolveSimple("melee_bow", ctx), this.resolveSimple("cane", ctx), this.resolveSimple("firerod", ctx), minimumStatus(this.resolveSimple("icerod", ctx), this.resolveSimple("hookshot", ctx)));
 
       case "canKillBallNChain":
       case "canKillBlob":
@@ -517,7 +513,7 @@ export class RequirementEvaluator {
       case "canKillRedSpearGuard":
       case "canKillRedZazak":
       case "canKillSnake":
-        return this.resolveSimple("melee_bow_bomb", ctx);
+        return this.resolveSimple("melee_bow_bomb_cane", ctx);
 
       // Requires bow
       case "canKillRedEyegore":
