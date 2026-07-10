@@ -53405,8 +53405,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Big Key Room",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canKillBoss|armos"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillBoss|armos"
+                            ]
+                        }
+                    }
                 }
             },
             "GT Ice Armos WS": {
@@ -54446,8 +54458,20 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "to": "GT Quad Pot",
                 "type": "Dungeon",
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canKillBoss|lanmolas"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillBoss|lanmolas"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -55368,8 +55392,20 @@ export const logic_regions: Record<string, RegionLogic> = {
         "locations": {
             "Ganons Tower - Validation Chest": {
                 "requirements": {
-                    "Open": {},
-                    "Inverted": {}
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canKillBoss|moldorm"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canKillBoss|moldorm"
+                            ]
+                        }
+                    }
                 }
             }
         },

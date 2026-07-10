@@ -669,6 +669,25 @@ export class RequirementEvaluator {
         return status === "information" ? "available" : status;
       }
 
+      case "canKillBoss": {
+        const bossName = conditionParts[1];
+        const killableBosses = this.bossesKillStatus(ctx);
+        // Fixed bosses in boss shuffle not handled yet
+        if (this.state.settings.bossShuffle !== "none") {
+          if (Object.values(killableBosses).every((v) => v)) {
+            return "available";
+          }
+          if (Object.values(killableBosses).some((v) => v)) {
+            return "possible";
+          }
+        }
+        if (bossName in killableBosses) {
+          return this.boolToStatus(killableBosses[bossName]);
+        }
+        return "unavailable";
+      }
+
+
       // Custom big keys for hmg logic
       case "bigkey":
         if (!this.state.settings.wildBigKeys) {
