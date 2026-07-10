@@ -43,7 +43,7 @@ import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { getLogicStateForWorld, createAllItemsState, isBetterStatus, minimumStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
-import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle, DOOR_PREFIX_TO_DUNGEON } from "./dungeonConstants";
+import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle, DOOR_PREFIX_TO_DUNGEON, PORTAL_TO_DUNGEON } from "./dungeonConstants";
 import { bunnyRevivableEntrances, superbunnyRevivableEntrances, swordSuperbunnyRevivableEntrances } from "@/data/logic/superbunnyLogic";
 
 export interface DungeonRegionState {
@@ -71,6 +71,13 @@ interface DungeonContext {
   regionMinKeysUsedContention: Map<string, number>;
   /** Min-keys map without BK, seeded from every internal entrance region (partial mode). */
   regionMinKeysUsedNoBKContention: Map<string, number>;
+  /**
+   * Min-keys map seeded from every internal entrance region but evaluated with
+   * the player's ACTUAL items (partial mode). Used to tell entrance-gated wings
+   * (countable as entrance-shuffle contention) apart from item-gated wings that
+   * the player couldn't enter even if the entrance were placed.
+   */
+  regionMinKeysUsedContentionActual: Map<string, number>;
   discoveredKeyLocations: Set<string>;
   totalKeysAvailable: number;
   /** reviveCap applied to each region (only "ool" when die-to-revive is needed in noglitches). */
@@ -129,7 +136,6 @@ export class DungeonTraverser {
     const prefixes = Object.entries(DOOR_PREFIX_TO_DUNGEON)
       .filter(([, id]) => id === this.dungeonId)
       .map(([prefix]) => prefix);
-    if (prefixes.length === 0) return result;
     for (const regionLogic of Object.values(this.regions)) {
       if (!regionLogic.exits) continue;
       // Only consider portal regions: those with at least one exit back to
@@ -143,6 +149,30 @@ export class DungeonTraverser {
         if (prefixes.some((p) => exit.to!.startsWith(p))) {
           result.add(exit.to);
         }
+      }
+    }
+
+    // Also identify portal regions directly by name. This catches portals whose
+    // entrance exit has been severed by entrance shuffle (so `exit.to` above is
+    // null) and portals whose region name isn't matched by the door prefixes
+    // (e.g. "Hyrule Castle South Portal"). A portal is a dungeon-side region
+    // (non-overworld) that still exposes an overworld-typed return exit.
+    //
+    // Only in entrance shuffle: these represent entrances the player could have
+    // linked but hasn't. In vanilla the player is restricted to the actual
+    // entrance, so seeding every portal would over-inflate key contention.
+    if (this.state.settings.entranceMode !== "none") {
+      const portalPrefixes = Object.entries(PORTAL_TO_DUNGEON)
+        .filter(([, id]) => id === this.dungeonId)
+        .map(([prefix]) => prefix);
+      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
+        if (!regionLogic.exits) continue;
+        if (OVERWORLD_REGION_TYPES.has(regionLogic.type)) continue;
+        if (!portalPrefixes.some((p) => regionName.startsWith(p))) continue;
+        const hasOverworldExit = Object.values(regionLogic.exits).some(
+          (e) => e.type !== undefined && OVERWORLD_REGION_TYPES.has(e.type),
+        );
+        if (hasOverworldExit) result.add(regionName);
       }
     }
     return result;
@@ -265,6 +295,10 @@ export class DungeonTraverser {
         } else {
           DungeonTraverser.copyMap(ctx.regionMinKeysUsedContention, ctx.regionMinKeysUsedNoBKContention);
         }
+        // All-entrances reachability with ACTUAL items, so entrance-shuffle
+        // contention can exclude wings the player couldn't enter anyway (e.g.
+        // hammer-gated) even if their entrance were placed.
+        this.dijkstraMinKeys(ctx, contentionEntries, contentionKeyCost, this.requirementEvaluator, true, ctx.regionMinKeysUsedContentionActual, false);
       } else {
         // Dangerous mode: contention map mirrors actual-inventory map.
         DungeonTraverser.copyMap(ctx.regionMinKeysUsed, ctx.regionMinKeysUsedContention);
@@ -1030,19 +1064,24 @@ export class DungeonTraverser {
         if (!sourceRegion) continue;
         const contentionMin = effectiveMinKeysMapContention.get(sourceRegion);
         const reverseDoor = this.findReverseDoor(doorName, ctx.pendingKeyDoors);
+        // A door only creates entrance-shuffle contention if its source is
+        // reachable with the player's ACTUAL items via some entrance. Item-gated
+        // wings (e.g. requiring hammer) can't absorb keys even if their entrance
+        // were placed, so they must not inflate worst-case contention.
+        const itemReachableViaAnyEntrance = ctx.regionMinKeysUsedContentionActual.has(sourceRegion);
         if (contentionMin === 0) {
           // Front-side branching doors reachable without spending a key (assuming all entrances).
           if (!(reverseDoor && seenContention.has(reverseDoor))) {
             seenContention.add(doorName);
             doorsAtThreshold0++;
           }
-          if (trackExtra && effectiveMinKeysMap.get(sourceRegion) !== 0) {
+          if (trackExtra && itemReachableViaAnyEntrance && effectiveMinKeysMap.get(sourceRegion) !== 0) {
             if (!(reverseDoor && seenExtra.has(reverseDoor))) {
               seenExtra.add(doorName);
               extraContentionBranches++;
             }
           }
-        } else if (trackExtra && contentionMin !== undefined && effectiveMinKeysMap.get(sourceRegion) === undefined) {
+        } else if (trackExtra && itemReachableViaAnyEntrance && contentionMin !== undefined && effectiveMinKeysMap.get(sourceRegion) === undefined) {
           // Doors in a wing reachable ONLY via an entrance that isn't placed on
           // the tracker yet. Key logic assumes the player could find that
           // entrance and waste keys back there, so these count toward worst-case
@@ -1307,6 +1346,7 @@ export class DungeonTraverser {
       regionMinKeysUsedNoBK: new Map<string, number>(),
       regionMinKeysUsedContention: new Map<string, number>(),
       regionMinKeysUsedNoBKContention: new Map<string, number>(),
+      regionMinKeysUsedContentionActual: new Map<string, number>(),
       discoveredKeyLocations: new Set<string>(),
       totalKeysAvailable: inventoryKeys,
       regionReviveCap: new Map<string, LogicStatus>(),

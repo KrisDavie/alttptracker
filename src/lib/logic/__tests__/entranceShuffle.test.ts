@@ -263,6 +263,27 @@ describe("Entrance Shuffle", () => {
   });
 
   describe("Partial logic should account for accessibility to all entrances", () => {
+
+    it("[SK Pottery KeyDrop] should mark front of swamp as available with 2 wild small keys and full inventory except hammer", () => {
+      const state = gameState()
+      .withAllItems()
+      .withoutItems(["hammer"])
+      .withSettings({ entranceMode: "crossed", wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" })
+      .withDungeon("sp", { smallKeys: 2, bigKey: true })
+      .withEntranceLink("Dam", "Dam")
+      .withEntranceLink("Lake Hylia Fortune Teller", "Swamp Palace")
+      .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // This should be identical to the non entrance shuffle logic, as the player has access to Dam and SP entrances and has keys to reach these locations
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Pot Row Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
+    });
     it("DP boss should be possible without the small key even if desert main is not placed", () => {
       const result = calculate(
         gameState()
@@ -356,6 +377,22 @@ describe("Entrance Shuffle", () => {
       // logic still accounts for them having access to it for door key logic purposes and therefore they could potentially
       // spend all three on the key doors in the back, this means that this location is possible even though there is only one key door
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible")
+    });
+
+    it("HC Key rat should be possible with the small key even if HC front is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild", enemyDrop: "keys" })
+          .withDungeon("hc", { smallKeys: 1, bigKey: false })
+          .withEntranceLink("Hyrule Castle Secret Entrance Drop", "Sanctuary Grave")
+          .withEntranceLink("Hyrule Castle Secret Entrance Stairs", "Sanctuary")
+      );
+
+      // The player has one of four keys, but even though they have not found the hc front entrances, the key
+      // logic still accounts for them having access to them for door key logic purposes and therefore they could potentially
+      // spend the key on any of the key doors in the fron, this means that this location is possible even though there is only one key door
+      expect(result.locationsLogic["Hyrule Castle - Key Rat Key Drop"]).toBe("possible")
     });
   });
 

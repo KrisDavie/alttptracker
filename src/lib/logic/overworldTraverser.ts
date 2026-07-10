@@ -797,6 +797,18 @@ export class OverworldTraverser {
         if (finalStatus === "ool" && regionReachability.oolReasons) {
           for (const r of regionReachability.oolReasons) reasons.add(r);
         }
+        // The Hyrule Castle big key drops from a guard in a fixed, early spot.
+        // With vanilla doors and unshuffled enemy drops it is guaranteed to be
+        // there, so it must not be downgraded by small-key contention — if the
+        // room is reachable at all, the drop is obtainable.
+        if (
+          locationName === "Hyrule Castle - Big Key Drop" &&
+          this.state.settings.enemyDrop === "none" &&
+          this.state.settings.doors === "vanilla" &&
+          finalStatus !== "unavailable"
+        ) {
+          finalStatus = "available";
+        }
         locationStatuses[locationName] = finalStatus;
         if (finalStatus === "ool" && reasons.size > 0) {
           locationReasons[locationName] = Array.from(reasons);
