@@ -3,6 +3,7 @@ interface ItemData {
   description: string;
   maxCount: number;
   images: string[];
+  levelNames?: string[];
   pseudoImage?: string;
 }
 
@@ -16,7 +17,8 @@ const ItemsData: Record<string, ItemData> = {
       "/items/bow1.png",
       "/items/bow2.png",
       "/items/bow3.png",
-    ]
+    ],
+    levelNames: ["Bow", "Silver Arrows", "Bow and Arrows", "Bow and Silver Arrows"],
   },
   "boomerang": {
     name: "Boomerang",
@@ -27,6 +29,7 @@ const ItemsData: Record<string, ItemData> = {
       "/items/boomerang2.png",
       "/items/boomerang3.png",
     ],
+    levelNames: ["Blue Boomerang", "Red Boomerang", "Boomerangs"],
   },
   "hookshot": {
     name: "Hookshot",
@@ -52,6 +55,7 @@ const ItemsData: Record<string, ItemData> = {
       "/items/mushroom.png",
       "/items/mushroom_turnedin.png",
     ],
+    levelNames: ["Mushroom", "Mushroom Turned In"],
   },
   "powder": {
     name: "Magic Powder",
@@ -79,7 +83,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "bombos": {
     name: "Bombos Medallion",
-    description: "A magical medallion that creates a powerful explosion.",
+    description: "A magical medallion that unleashes a ring of fire, scorching all enemies.",
     maxCount: 1,
     images: [
       "/items/bombos.png",
@@ -87,7 +91,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "ether": {
     name: "Ether Medallion",
-    description: "A magical medallion that unleashes a bolt of lightning.",
+    description: "A magical medallion that calls down lightning and freezes nearby enemies.",
     maxCount: 1,
     images: [
       "/items/ether.png",
@@ -95,7 +99,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "quake": {
     name: "Quake Medallion",
-    description: "A magical medallion that causes an earthquake.",
+    description: "A magical medallion that shakes the earth and can turn ground enemies into slimes.",
     maxCount: 1,
     images: [
       "/items/quake.png",
@@ -111,7 +115,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "hammer": {
     name: "Hammer",
-    description: "A heavy hammer used to smash obstacles and enemies.",
+    description: "A heavy hammer used to smash pegs and enemies.",
     maxCount: 1,
     images: [
       "/items/hammer.png",
@@ -133,6 +137,7 @@ const ItemsData: Record<string, ItemData> = {
       "/items/flute.png",
       "/items/flute_activated.png",
     ],
+    levelNames: ["Flute", "Activated Flute"],
   },
   "net": {
     name: "Bug Net",
@@ -144,7 +149,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "book": {
     name: "Book of Mudora",
-    description: "An ancient book that allows reading Hylian inscriptions.",
+    description: "An ancient book that allows reading the Hylian language.",
     maxCount: 1,
     images: [
       "/items/book.png",
@@ -163,10 +168,11 @@ const ItemsData: Record<string, ItemData> = {
       "/items/bottle_bee.png",
       "/items/bottle_goodbee.png",
     ],
+    levelNames: ["Bottle", "Red Potion", "Green Potion", "Blue Potion", "Fairy", "Bee", "Good Bee"],
   },
   "somaria": {
     name: "Cane of Somaria",
-    description: "A magical cane that creates blocks for puzzle solving.",
+    description: "A magical cane that creates blocks and can fire projectiles.",
     maxCount: 1,
     images: [
       "/items/somaria.png",
@@ -174,7 +180,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "byrna": {
     name: "Cane of Byrna",
-    description: "A magical cane that provides a protective shield.",
+    description: "A magical cane that provides a protective shield and damages nearby enemies.",
     maxCount: 1,
     images: [
       "/items/byrna.png",
@@ -190,7 +196,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "mirror": {
     name: "Magic Mirror",
-    description: "A mirror that teleports the player back to the entrance of dungeons.",
+    description: "A mirror used to return to the starting overworld or a dungeon entrance.",
     maxCount: 1,
     images: [
       "/items/mirror.png",
@@ -214,10 +220,11 @@ const ItemsData: Record<string, ItemData> = {
       "/items/glove1.png",
       "/items/glove2.png",
     ],
+    levelNames: ["Power Glove", "Titan's Mitts"],
   },
   "flippers": {
     name: "Flippers",
-    description: "A swimming aid that allows the player to swim in deep water.",
+    description: "Flippers that allow the player to swim in deep water.",
     maxCount: 1,
     images: [
       "/items/flippers.png",
@@ -234,7 +241,7 @@ const ItemsData: Record<string, ItemData> = {
   },
   "moonpearl": {
     name: "Moon Pearl",
-    description: "An item that allows the player to maintain their human form in the Dark World.",
+    description: "A gem that allows the player to maintain their Hylian form.",
     maxCount: 1,
     images: [
       "/items/moonpearl.png",
@@ -260,6 +267,7 @@ const ItemsData: Record<string, ItemData> = {
       "/items/shield2.png",
       "/items/shield3.png",
     ],
+    levelNames: ["Fighter Shield", "Fire Shield", "Mirror Shield"],
   },
   "sword": {
     name: "Sword",
@@ -271,6 +279,7 @@ const ItemsData: Record<string, ItemData> = {
       "/items/sword3.png",
       "/items/sword4.png",
     ],
+    levelNames: ["Fighter Sword", "Master Sword", "Tempered Sword", "Golden Sword"],
   },
   // TODO: Get green and red mail images
   "mail": {
@@ -281,6 +290,7 @@ const ItemsData: Record<string, ItemData> = {
       "/items/bluemail.png",
       "/items/bluemail.png",
     ],
+    levelNames: ["Blue Mail", "Red Mail"],
   },
 };
 
@@ -293,23 +303,19 @@ export const PrizeImages: Record<string, string> = {
   crystal: "/dungeons/crystal.png",
 };
 
-export const BossImages: Record<string, string> = {
-  unknown: "/dungeons/unknown.png",
-  compass: "/dungeons/compass.png",
-  armos: "/dungeons/armos.png",
-  lanmolas: "/dungeons/lanmolas.png",
-  moldorm: "/dungeons/moldorm.png",
-  helmasaurking: "/dungeons/helmasaur_king.png",
-  arrghus: "/dungeons/arrghus.png",
-  mothula: "/dungeons/mothula.png",
-  blind: "/dungeons/blind.png",
-  kholdstare: "/dungeons/kholdstare.png",
-  vitreous: "/dungeons/vitreous.png",
-  trinexx: "/dungeons/trinexx.png",
-  agahnim: "/dungeons/agahnim0.png",
-  agahnim2: "/dungeons/agahnim20.png",
-  bnc: "/dungeons/ballnchain.png",
+export const PrizeNames: Record<string, string> = {
+  unknown: "Unknown Prize",
+  greenPendant: "Green Pendant",
+  pendant: "Pendant",
+  redCrystal: "Red Crystal",
+  crystal: "Crystal",
 };
 
+export const DungeonItemNames = {
+  smallKey: "Small Key",
+  bigKey: "Big Key",
+  map: "Map",
+  compass: "Compass",
+} as const;
 
 export default ItemsData;

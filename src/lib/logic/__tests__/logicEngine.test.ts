@@ -1282,6 +1282,24 @@ describe("LogicEngine", () => {
 
       expect(result.locationsLogic["Spike Cave"]).toBe("unavailable");
     });
+  });
+
+  describe("Enemy Kill Logic", () => {
+    it("mire 2 should be clearable with somaria alone", () => {
+      const state = gameState()
+      .withItems({boots: 1, somaria: 1})
+      .withSettings({ entranceMode: "crossed" })
+      .withEntranceLink("Dam", "Misery Mire")
+      .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      // Somaria should be enough to clear Mire 2 and reach the spike chest, even without a bow or fire rod
+      expect(result.locationsLogic["Misery Mire - Spike Chest"]).toBe("available");
+    });
 
     it("should require a bow for right side pod", () => {
       const state = gameState().withAllItems().withoutItems(["bow"]).build();

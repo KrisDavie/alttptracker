@@ -169,6 +169,23 @@ describe("Entrance Shuffle", () => {
       // No pearl, cannot open bonk rocks
       expect(result.entrancesLogic["Bonk Fairy (Dark)"]).toBe("unavailable");
     });
+
+     it("crossworld connectors make entrances in the other world available 2 - pyramid fairy", () => {
+      const result = calculate(
+        gameState()
+        .withItems({ bomb: 1 })
+        .withSettings({ entranceMode: "crossed", shuffleLinks: true })
+        .withEntranceLink("Links House", "Links House")
+        .withEntranceLink("Dam", "Elder House (East)")
+        .withEntranceLink("Pyramid Fairy", "Elder House (West)")
+      );
+
+      // Expect east DW entrances to be available due to Dam → Pyramid Fairy connector
+      expect(result.entrancesLogic["Dark Lake Hylia Fairy"]).toBe("available");
+      expect(result.entrancesLogic["Bonk Fairy (Dark)"]).toBe("unavailable");
+
+    });
+   
   });
 
   describe("LW / DW isolation", () => {
@@ -246,6 +263,27 @@ describe("Entrance Shuffle", () => {
   });
 
   describe("Partial logic should account for accessibility to all entrances", () => {
+
+    it("[SK Pottery KeyDrop] should mark front of swamp as available with 2 wild small keys and full inventory except hammer", () => {
+      const state = gameState()
+      .withAllItems()
+      .withoutItems(["hammer"])
+      .withSettings({ entranceMode: "crossed", wildSmallKeys: "wild", pottery: "keys", enemyDrop: "keys" })
+      .withDungeon("sp", { smallKeys: 2, bigKey: true })
+      .withEntranceLink("Dam", "Dam")
+      .withEntranceLink("Lake Hylia Fortune Teller", "Swamp Palace")
+      .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const traverser = new OverworldTraverser(state, logicSet);
+      const result = traverser.calculateAll();
+
+      // This should be identical to the non entrance shuffle logic, as the player has access to Dam and SP entrances and has keys to reach these locations
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Pot Row Pot Key"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Swamp Palace - Trench 1 Pot Key"]).toBe("available");
+    });
     it("DP boss should be possible without the small key even if desert main is not placed", () => {
       const result = calculate(
         gameState()
@@ -283,6 +321,78 @@ describe("Entrance Shuffle", () => {
 
       // The player has no access to a key at all because they have not found the desert north entrance, and cannot find a pot key
       expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("unavailable")
+    });
+
+    it("DP right side should be unavailable without the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 0, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has no access to a key at all because they have not found the desert north entrance, and cannot find a pot key
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("unavailable")
+    });
+
+    it("DP right side should be available with the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 1, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has a small key and can reach the right side of DP. Accessing DP north gives as many keys as small key doors, 
+      // so this location is available even though the desert north entrance is not placed and those keys are unreachable
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available")
+    });
+
+        it("DP right side should be available with the small key if desert north is placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild" })
+          .withDungeon("dp", { smallKeys: 1, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+          .withEntranceLink("Library", "Desert Palace Entrance (North)")
+      );
+
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("available")
+    });
+
+
+    it("DP right side should be unavailable without the small key if desert north is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild", pottery: "keys" })
+          .withDungeon("dp", { smallKeys: 3, bigKey: true })
+          .withEntranceLink("Dam", "Desert Palace Entrance (East)")
+      );
+
+      // The player has three of four keys, but even though they have not found the desert north entrance the key 
+      // logic still accounts for them having access to it for door key logic purposes and therefore they could potentially
+      // spend all three on the key doors in the back, this means that this location is possible even though there is only one key door
+      expect(result.locationsLogic["Desert Palace - Big Key Chest"]).toBe("possible")
+    });
+
+    it("HC Key rat should be possible with the small key even if HC front is not placed", () => {
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withSettings({ entranceMode: "crossed", wildBigKeys: true, wildSmallKeys: "wild", enemyDrop: "keys" })
+          .withDungeon("hc", { smallKeys: 1, bigKey: false })
+          .withEntranceLink("Hyrule Castle Secret Entrance Drop", "Sanctuary Grave")
+          .withEntranceLink("Hyrule Castle Secret Entrance Stairs", "Sanctuary")
+      );
+
+      // The player has one of four keys, but even though they have not found the hc front entrances, the key
+      // logic still accounts for them having access to them for door key logic purposes and therefore they could potentially
+      // spend the key on any of the key doors in the fron, this means that this location is possible even though there is only one key door
+      expect(result.locationsLogic["Hyrule Castle - Key Rat Key Drop"]).toBe("possible")
     });
   });
 
@@ -364,7 +474,49 @@ describe("Entrance Shuffle", () => {
       // Can reach Dam and use it to drain swamp, which should make Swamp Palace entrance chest available
       expect(result.entrancesLogic["Mire Hint"]).toBe("available");
       expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("available");
-    });    
+    });   
+    
+    
+    it("cannot open chests in swamp palace in entrance modes without moonpearl", () => {
+      const state = gameState()
+        .withItems({ bomb: 1, flippers: 1})
+        .withDungeon("sp", { smallKeys: 1 })
+        .withSequenceBreaks({ canSuperBunny: true })
+        .withSettings({ entranceMode: "crossed", wildMaps: true, wildCompasses: true, wildSmallKeys: "wild", wildBigKeys: true, pottery: "keys", enemyDrop: "keys" })
+        .withEntranceLink("Links House", "Links House")
+        .withEntranceLink("Tavern (Front)", "Desert Palace Entrance (East)")
+        .withEntranceLink("Pyramid Fairy", "Desert Palace Entrance (West)")
+        .withEntranceLink("Dark Lake Hylia Fairy", "Swamp Palace")
+        .withEntranceLink("Lake Hylia Fortune Teller", "Dam")
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Swamp Palace - Entrance"]).toBe("unavailable");
+      expect(result.locationsLogic["Pyramid"]).toBe("available");
+    }); 
+
+    
+    it("can reach crystaroller with both mid-TR entrances places", () => {
+      const state = gameState()
+        .withItems({ bomb: 1, sword: 1 })
+        .withDungeon("tr", { bigKey: true })
+        .withSettings({ entranceMode: "crossed", wildMaps: true, wildCompasses: true, wildSmallKeys: "wild", wildBigKeys: true })
+        .withEntranceLink("Links House", "Links House")
+        .withEntranceLink("Lake Hylia Fortune Teller", "Dark Death Mountain Ledge (East)")
+        .withEntranceLink("Lake Hylia Shop", "Dark Death Mountain Ledge (West)")
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Turtle Rock - Crystaroller Room"]).toBe("available");
+    }); 
 
   });
 });

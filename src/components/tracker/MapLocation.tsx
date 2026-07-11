@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setEntranceChecked } from "../../store/checksSlice";
+import { setEntranceChecked, type CheckStatus } from "../../store/checksSlice";
+import { toggleDungeonBoss } from "../../store/dungeonsSlice";
 import { cn } from "@/lib/utils";
 import { locationsData, type LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
+import { useDungeonChestRemaining } from "@/hooks/useDungeonChestRemaining";
 import { mapStatusBg } from "@/hooks/useStatusColors";
-import { LocationTooltip } from "./LocationTooltip";
+import { LocationTooltip, type TooltipListItem } from "./LocationTooltip";
 import { setSelectedEntrance, setCurrentMode, setSelectedLocation, setHoveredMarker } from "@/store/trackerSlice";
 import { connectGenericConnector, setEntranceLink } from "@/store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
@@ -13,6 +15,8 @@ import { useMemo } from "react";
 import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
 import { allConnectorEntrances } from "@/data/entranceConnections";
+import { buildEntranceTooltipName } from "@/lib/entranceTrace";
+import { isDropdown, isPairedEntrance, getEntrancePool } from "@/lib/dropdowns";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 interface MapLocationProps {
@@ -26,8 +30,16 @@ interface MapLocationProps {
 
 function resolveEntranceGroup(name: string | null, entranceMode: string | undefined, zelgaWoods: boolean) {
   if (!name) return null;
-  const group = locationsData[name]?.entrance_modes?.[entranceMode || "none"] ?? null;
-  return group === "skull_doors" && zelgaWoods ? "shuffle" : group;
+  let group = locationsData[name]?.entrance_modes?.[entranceMode || "none"] ?? null;
+  if (group === "skull_doors" && zelgaWoods) group = "shuffle";
+  // Dropdown pooling intersected with the base group: a dropdown may only link
+  // to dropdowns sharing the same base group (e.g. same district), and (outside
+  // insanity) a paired door only to paired doors within that base group.
+  if (group && group !== "vanilla") {
+    if (isDropdown(name, zelgaWoods)) return `${group}:dropdown`;
+    if (entranceMode !== "insanity" && isPairedEntrance(name, zelgaWoods)) return `${group}:pairedDoor`;
+  }
+  return group;
 }
 
 function MapLocation(props: MapLocationProps) {
@@ -56,6 +68,14 @@ function MapLocation(props: MapLocationProps) {
   const to = useSelector((state: RootState) => (isEntrance ? state.entrances[locName]?.to : undefined));
   const entranceCheck = useSelector((state: RootState) => (isEntrance ? state.checks.entranceChecks[locName] : undefined));
   const maxConnectorGroup = useSelector((state: RootState) => Object.values(state.entrances).reduce((max, e) => (e.connectorGroup ? Math.max(max, e.connectorGroup) : max), 0));
+  // Connector-aware tooltip name. Returns a primitive string so the component
+  // only re-renders when the displayed trace actually changes.
+  const connectorTooltipName = useSelector((state: RootState) => {
+    if (!isEntrance) return locName;
+    const linkedTo = state.entrances[locName]?.to;
+    if (!linkedTo) return locName;
+    return buildEntranceTooltipName(locName, linkedTo, state.entrances);
+  });
 
   const mergedLabels = useMemo(() => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }), [entranceLabelOverrides]);
 
@@ -79,6 +99,12 @@ function MapLocation(props: MapLocationProps) {
   const targetLocationName = isEntrance && to ? to : locName;
   const { itemLocations, itemChecks, displayList, status, maxLogicStatus, handleCheckClick, handleGroupExpand, toggleAllChecks, resetGroups, targetName } = useLocationTooltipData(isEntrance ? (to ?? "") : targetLocationName);
 
+  // When this marker maps to a dungeon, mirror its chest counter: once nothing
+  // collectable remains (e.g. un-shuffled dungeon items still sit in "available"
+  // locations) grey the marker out even though logic still reports availability.
+  const { remaining: dungeonChestRemaining } = useDungeonChestRemaining(resolvedDungeonId ?? "");
+  const noNonDungeonItemsLeft = !!resolvedDungeonId && itemLocations.length > 0 && dungeonChestRemaining === 0 && status !== "all";
+
   const xPercent = (location.x / 512) * 100;
   const yPercent = (location.y / 512) * 100;
 
@@ -89,11 +115,16 @@ function MapLocation(props: MapLocationProps) {
     if (e.button === 0 && e.type === "click") {
       if (isEntrance) {
         if (currentMode === "connect" && selectedEntrance) {
-          dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName }));
+          dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName, zelgaWoods, entranceMode }));
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else if (currentMode === "generic_connect" && selectedEntrance !== locName && selectedEntrance) {
-          dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+          // Dropdowns/paired doors can't form generic connectors — the synthetic
+          // connector is two-way and would let a player exit back through a
+          // one-way hole (and bypass forced pairing).
+          if (getEntrancePool(selectedEntrance, entranceMode, zelgaWoods) === "normal" && getEntrancePool(locName, entranceMode, zelgaWoods) === "normal") {
+            dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+          }
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else {
@@ -135,7 +166,10 @@ function MapLocation(props: MapLocationProps) {
         dispatch(setSelectedEntrance([locName, false]));
         dispatch(setCurrentMode("connect"));
       } else if (currentMode === "connect" && selectedEntrance !== locName) {
-        dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+        // Dropdowns/paired doors can't form generic connectors (see above).
+        if (getEntrancePool(selectedEntrance, entranceMode, zelgaWoods) === "normal" && getEntrancePool(locName, entranceMode, zelgaWoods) === "normal") {
+          dispatch(connectGenericConnector({ source: selectedEntrance, destination: locName, connectorId: maxConnectorGroup + 1 }));
+        }
         dispatch(setSelectedEntrance([null, false]));
         dispatch(setCurrentMode("none"));
       }
@@ -157,7 +191,7 @@ function MapLocation(props: MapLocationProps) {
     }
   }
 
-  const isHatched = (!isEntrance || isLinked) && status === "some";
+  const isHatched = (!isEntrance || isLinked) && status === "some" && !noNonDungeonItemsLeft;
 
   // let bgClass: string;
 
@@ -182,10 +216,36 @@ function MapLocation(props: MapLocationProps) {
     }
   }
 
-  // Boss inner-square: when this marker maps to a dungeon and that dungeon has a "- Boss" check
-  const bossLocationKey = resolvedDungeonId ? itemLocations.find((l) => l.endsWith(" - Boss")) : undefined;
-  const bossCheckStatus = bossLocationKey ? itemChecks[bossLocationKey]?.status : undefined;
+  // Boss inner-square: standard dungeons use a "- Boss" location check.
+  // CT/GT have no boss item location; their inset mirrors the Agahnim 1/2 boss
+  // item on the main tracker (dungeon.bossDefeated), coloured by the Agahnim
+  // location's current logic status.
+  const agaLocationName = resolvedDungeonId === "ct" ? "Agahnim 1" : resolvedDungeonId === "gt" ? "Agahnim 2" : null;
+  const agaBossDefeated = useSelector((state: RootState) => (resolvedDungeonId === "ct" || resolvedDungeonId === "gt" ? (state.dungeons[resolvedDungeonId]?.bossDefeated ?? false) : false));
+  const agaLocationLogic = useSelector((state: RootState) =>
+    resolvedDungeonId === "ct" ? state.checks.locationsChecks["Agahnim 1"]?.logic : resolvedDungeonId === "gt" ? state.checks.locationsChecks["Agahnim 2"]?.logic : undefined,
+  );
+
+  const bossLocationKey = resolvedDungeonId && !agaLocationName ? itemLocations.find((l) => l.endsWith(" - Boss")) : undefined;
+  const bossCheckStatus: CheckStatus | undefined = agaLocationName
+    ? { checked: agaBossDefeated, logic: agaLocationLogic ?? "unavailable", manuallyChecked: false, scoutedItems: [] }
+    : bossLocationKey
+      ? itemChecks[bossLocationKey]?.status
+      : undefined;
   const bossBgClass = bossCheckStatus ? (bossCheckStatus.checked ? mapStatusBg("checked") : mapStatusBg(bossCheckStatus.logic)) : undefined;
+
+  // CT/GT: surface the Agahnim boss as a tooltip entry. Clicking it toggles the
+  // main tracker's Aga boss item (dungeon.bossDefeated) rather than a location check.
+  const bossTooltipItem: TooltipListItem | undefined =
+    agaLocationName && bossCheckStatus ? { type: "item", key: agaLocationName, info: { displayName: agaLocationName, status: bossCheckStatus } } : undefined;
+
+  function handleTooltipCheckClick(key: string, checked: boolean) {
+    if (agaLocationName && key === agaLocationName && (resolvedDungeonId === "ct" || resolvedDungeonId === "gt")) {
+      dispatch(toggleDungeonBoss({ dungeon: resolvedDungeonId }));
+      return;
+    }
+    handleCheckClick(key, checked);
+  }
 
   const isScoutSelected = !isEntrance && currentMode === "scout" && selectedLocation === locName;
   const isScoutHoverHighlighted = !isEntrance && !!hoveredScout && !!scoutedItems && scoutedItems.some((s) => scoutedItemsEqual(s, hoveredScout));
@@ -193,27 +253,37 @@ function MapLocation(props: MapLocationProps) {
   const firstScoutIcon = firstScout ? getScoutedItemIcon(firstScout) : undefined;
 
   const isRound = isEntrance && itemLocations.length === 0 && !showAsDiamond;
-  const isFaded = ((entranceCheck?.checked && !isLinked) || status === "all") && !showAsDiamond;
+  const isFaded = ((entranceCheck?.checked && !isLinked) || status === "all" || noNonDungeonItemsLeft) && !showAsDiamond;
   // Hide entrances that don't match the currently selected entrance group
   const hidden = !!(selfEntranceGroup && selectedEntranceGroup && selectedEntranceGroup !== selfEntranceGroup);
   // Highlight entrances in the same group as the selected entrance
   const highlightGroup = !!(selfEntranceGroup && selectedEntranceGroup === selfEntranceGroup);
 
-  const tooltipName = isEntrance && targetName && targetName !== locName ? `${locName} → ${targetName}` : locName;
+  const tooltipName = isEntrance && targetName && targetName !== locName ? connectorTooltipName : locName;
   const singleCheck = itemLocations.length === 1 ? { ...itemChecks[itemLocations[0]], key: itemLocations[0] } : isEntrance && !isLinked && entranceCheck ? { key: locName, status: entranceCheck, displayName: locName } : undefined;
 
   let bgClass = getBgClass();
 
-  const itemChecksStatusSet = new Set(itemLocations.map((loc) => itemChecks?.[loc]?.status.logic).filter((status): status is LogicStatus => !!status));
+  const itemChecksStatusSet = new Set(
+    itemLocations
+      .filter((loc) => !itemChecks?.[loc]?.status.checked)
+      .map((loc) => itemChecks?.[loc]?.status.logic)
+      .filter((status): status is LogicStatus => !!status)
+  );
 
   if (itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
     bgClass = "bg-status-someAvailable";
   }
 
+  // No non-dungeon items left: grey out regardless of remaining logic availability.
+  if (noNonDungeonItemsLeft) {
+    bgClass = mapStatusBg("checked");
+  }
+
   return (
     <div
       key={locName}
-      className={cn("absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20", props.className, hidden && "hidden", currentMode === "connect" && "cursor-crosshair", isFaded && "opacity-80")}
+      className={cn("absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 group z-10 hover:z-20", props.className, hidden && "hidden", currentMode === "connect" && "cursor-crosshair")}
       style={{ top: `${yPercent}%`, left: `${xPercent}%` }}
       onMouseOver={handleMouseEnter}
       onMouseOut={handleMouseLeave}
@@ -226,6 +296,7 @@ function MapLocation(props: MapLocationProps) {
       <div
         className={cn(
           "absolute inset-0 border",
+          isFaded && "opacity-80",
           !labelColor && (showAsDiamond && !["bg-status-connector", "bg-status-checked"].includes(bgClass) ? "border-status-connector" : "border-black"),
           bgClass,
           isRound && "rounded-full",
@@ -238,7 +309,6 @@ function MapLocation(props: MapLocationProps) {
         )}
         style={labelColor ? { borderColor: labelColor, borderWidth: "2px" } : undefined}
       >
-        {showInsetBossSquare && bossBgClass && <div className={cn("absolute inset-1 border border-black pointer-events-none", bossBgClass, bossCheckStatus?.checked && "opacity-80")} />}
         {firstScoutIcon && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -252,14 +322,19 @@ function MapLocation(props: MapLocationProps) {
           />
         )}
       </div>
+      {/* Boss inset rendered as a sibling so it keeps its own colour/opacity
+          instead of inheriting the faded square's opacity when greyed out. */}
+      {showInsetBossSquare && bossBgClass && (
+        <div className={cn("absolute inset-1 border border-black pointer-events-none", showAsDiamond && "rotate-45", bossBgClass, bossCheckStatus?.checked && "opacity-80")} />
+      )}
       {showTooltip && (
         <LocationTooltip
           name={tooltipName}
           xPercent={xPercent}
           yPercent={yPercent}
-          items={itemLocations.length > 1 ? displayList : undefined}
-          singleCheck={singleCheck}
-          onCheckClick={handleCheckClick}
+          items={bossTooltipItem ? [...displayList, bossTooltipItem] : itemLocations.length > 1 ? displayList : undefined}
+          singleCheck={bossTooltipItem ? undefined : singleCheck}
+          onCheckClick={handleTooltipCheckClick}
           onGroupExpand={handleGroupExpand}
           onClose={resetGroups}
           scoutedItems={!isEntrance ? scoutedItems : undefined}

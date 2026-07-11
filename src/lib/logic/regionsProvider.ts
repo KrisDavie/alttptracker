@@ -275,6 +275,53 @@ function applyEntranceShuffle(
   const copied = new Set<string>();
   const entranceMode = state.settings.entranceMode;
 
+  // Overworld "pocket" regions (e.g. Pyramid Crack) are entered from a feeder
+  // overworld region via a gated exit (canOpenPyramidFairy) but define no exit
+  // back out. A player deposited inside one by a shuffled connector would be
+  // stuck. In reality you can always walk back out of the pocket even if you
+  // couldn't re-enter it — the gate only controls entry. Precompute each
+  // region's overworld egress and a feeder so we can add a free egress exit
+  // whenever a connector/reverse link deposits a player into a pocket.
+  //
+  // Feeders are limited to genuine two-way overworld adjacencies: drop exits
+  // (ledge/water drops, e.g. "River Bend Water Drop") are one-directional — you
+  // can't climb back up — so they are never used as a free egress target.
+  const OVERWORLD_TYPES = new Set(["LightWorld", "DarkWorld"]);
+  const isDropExit = (exitName: string) => /\bDrop\b/i.test(exitName);
+  const hasOverworldEgress = new Set<string>();
+  const pocketFeeder = new Map<string, { source: string; type: string }>();
+  for (const [regionName, regionLogic] of Object.entries(regions)) {
+    if (!regionLogic.exits) continue;
+    for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+      if (!exit?.to || !OVERWORLD_TYPES.has(exit.type)) continue;
+      hasOverworldEgress.add(regionName);
+      // Only genuine (non-drop) overworld links qualify as a free egress feeder.
+      if (!isDropExit(exitName) && !pocketFeeder.has(exit.to)) {
+        pocketFeeder.set(exit.to, { source: regionName, type: exit.type });
+      }
+    }
+  }
+
+  const freeRequirements: WorldLogic = { Open: {}, Inverted: {} };
+
+  /**
+   * If `regionName` is an overworld pocket (no overworld egress of its own but
+   * fed by a gated overworld exit), add a free exit back to its feeder so a
+   * connector/reverse-link deposit isn't a dead end.
+   */
+  const ensurePocketEgress = (regionName: string): void => {
+    const region = result[regionName];
+    if (!region || !OVERWORLD_TYPES.has(region.type)) return;
+    if (hasOverworldEgress.has(regionName)) return;
+    const feeder = pocketFeeder.get(regionName);
+    if (!feeder) return;
+    const exits = getOrCopyExits(result, regionName, copied);
+    const egressName = `Pocket Egress to ${feeder.source}`;
+    if (exits[egressName]) return;
+    exits[egressName] = { to: feeder.source, type: feeder.type, requirements: freeRequirements };
+    hasOverworldEgress.add(regionName);
+  };
+
   // --- Forward pass: sever or remap entrance exits ---
   const reverseLinks = new Map<string, string>(); // destination entrance → source entrance
   const genericConnectors = new Map<string, string[]>();
@@ -374,6 +421,8 @@ function applyEntranceShuffle(
       if (sourceOverworld) {
         const sourceRegion = result[sourceOverworld];
         setExitTo(interiorExits, targetReturnExitName, sourceOverworld, sourceRegion?.type ?? "LightWorld");
+        // If the linker's overworld is a gated pocket, ensure it can be walked out of.
+        ensurePocketEgress(sourceOverworld);
       }
     } else {
       // Nobody linked to this entrance — sever the return exit
@@ -395,6 +444,8 @@ function applyEntranceShuffle(
           type: sourceRegion?.type ?? "LightWorld",
           requirements: emptyRequirements
         };
+        // If a connector endpoint's overworld is a gated pocket, ensure egress.
+        ensurePocketEgress(parentOverworld);
       }
     }
 

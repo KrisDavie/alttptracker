@@ -7,6 +7,7 @@ import { getPresetById, resolvePresetFromSlug } from "@/data/launcherPresets";
 import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
+import { parseSnapshotJson, importSnapshotToNewSession } from "@/lib/stateSnapshot";
 import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
@@ -14,6 +15,7 @@ import { LaunchCard } from "./launch/LaunchCard";
 import { GameSettingsTabs } from "./launch/GameSettingsTabs";
 import { SpriteSelector } from "./launch/SpriteSelector";
 import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
+import { getEventLogPopoutDimensions, getMapPopoutDimensions, getTrackerWindowSizeForEventLogMode, TILE } from "@/lib/trackerSizing";
 
 const LaunchPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -35,6 +37,7 @@ const LaunchPage: React.FC = () => {
   const [alerts, setAlerts] = useState<string | null>(null);
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [nextLadder, setNextLadder] = useState<{ presetId: string; name: string; time: Date } | null>(null);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
 
   // Load sessions from IndexedDB
   useEffect(() => {
@@ -120,7 +123,7 @@ const LaunchPage: React.FC = () => {
         try {
           await fetch(`http://${autotrackHost}:${autotrackPort}`, {
             mode: "no-cors",
-            signal: AbortSignal.timeout(2000),
+            signal: AbortSignal.timeout(500),
           });
           if (!cancelled) setAutotrackStatus("connected");
         } catch {
@@ -141,12 +144,12 @@ const LaunchPage: React.FC = () => {
               ws.close();
               if (!cancelled) setAutotrackStatus("disconnected");
             }
-          }, 2000);
+          }, 500);
         } catch {
           if (!cancelled) setAutotrackStatus("disconnected");
         }
       }
-    }, 10000);
+    }, 1000);
     return () => {
       cancelled = true;
       clearTimeout(timer);
@@ -209,28 +212,24 @@ const LaunchPage: React.FC = () => {
         if (presetState.dungeons) await idbDriver.setItem(prefix + "dungeons", JSON.stringify(presetState.dungeons));
       }
 
-      const isMapPopout = settings.mapMode === "popoutNormal" || settings.mapMode === "popoutVertical";
+      const { mapMode, eventLogMode } = settings;
+      const isMapPopout = mapMode === "popoutNormal" || mapMode === "popoutVertical";
+      const isEventLogPopout = eventLogMode === "popout";
 
       if (isMapPopout) {
-        const mapUrl = `/map?id=${encodeURIComponent(id!)}`;
-        const trackerUrl = `/tracker?id=${encodeURIComponent(id!)}`;
+        const trackerSize = getTrackerWindowSizeForEventLogMode(mapMode, eventLogMode);
+        const mapSize = getMapPopoutDimensions(mapMode);
 
-        window.open(trackerUrl, "_blank", `width=${448},height=${448}`);
-
-        const w = settings.mapMode === "popoutNormal" ? 896 : 448;
-        const h = settings.mapMode === "popoutVertical" ? 896 : 448;
-        window.open(mapUrl, "_blank", `width=${w},height=${h}`);
-
+        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${TILE},height=${trackerSize.height}`);
+        window.open(`/map?id=${encodeURIComponent(id!)}`, "_blank", `width=${mapSize.width},height=${mapSize.height}`);
       } else {
+        const { width, height } = getTrackerWindowSizeForEventLogMode(mapMode, eventLogMode);
+        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${width},height=${height}`);
+      }
 
-        const windowSizes: Record<string, { w: number; h: number }> = {
-          off: { w: 448, h: 448 },
-          normal: { w: 1344, h: 449 },
-          compact: { w: 448, h: 672 },
-          vertical: { w: 448, h: 1344 },
-        };
-        const { w, h } = windowSizes[settings.mapMode] ?? windowSizes.normal;
-        window.open(`/tracker?id=${encodeURIComponent(id!)}`, "_blank", `width=${w},height=${h}`);
+      if (isEventLogPopout) {
+        const { width, height } = getEventLogPopoutDimensions();
+        window.open(`/event-log?id=${encodeURIComponent(id!)}`, "_blank", `width=${width},height=${height}`);
       }
     },
     [settings, spriteName, sessionName, selectedPresetId, startingItems],
@@ -246,6 +245,20 @@ const LaunchPage: React.FC = () => {
     await togglePin(id);
     setSessions(await getSessions());
   }, []);
+
+  // Restore a session from a downloaded state file: seeds a new session and opens it.
+  const handleRestoreFile = useCallback(async (file: File) => {
+    setRestoreError(null);
+    try {
+      const text = await file.text();
+      const snapshot = parseSnapshotJson(text);
+      const id = await importSnapshotToNewSession(snapshot);
+      setSessions(await getSessions());
+      launchTracker(id);
+    } catch (err) {
+      setRestoreError(`Could not import session: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }, [launchTracker]);
 
   const unpinnedCount = sessions.filter((s) => !s.pinned).length;
   const canCreateSession = unpinnedCount > 0 || sessions.length < MAX_SESSIONS;
@@ -273,6 +286,14 @@ const LaunchPage: React.FC = () => {
             </div>
           )}
 
+          {/* Session restore error */}
+          {restoreError && (
+            <div className="flex items-start gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm text-red-600">
+              <AlertOctagon className="size-4 mt-0.5 shrink-0" />
+              <span className="whitespace-pre-line">{restoreError}</span>
+            </div>
+          )}
+
           <PresetSection nextLadder={nextLadder} applyPreset={applyPreset} />
 
           <LaunchCard
@@ -286,6 +307,7 @@ const LaunchPage: React.FC = () => {
             onLaunch={launchTracker}
             onDeleteSession={handleDeleteSession}
             onTogglePin={handleTogglePin}
+            onRestoreFile={handleRestoreFile}
           />
 
           <div className="relative flex flex-col lg:block">

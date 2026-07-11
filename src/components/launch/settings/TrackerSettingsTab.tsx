@@ -100,6 +100,22 @@ export function TrackerSettingsTab({
               <SettingSwitch label="Always Show Small Keys" checked={settings.alwaysShowSmallKeys} onChange={(v) => updateSetting("alwaysShowSmallKeys", v)} />
               <SettingSwitch label="Show Key Totals" checked={settings.showKeyTotals} onChange={(v) => updateSetting("showKeyTotals", v)} />
               <SettingSwitch label="Show Inset Boss Square" checked={settings.showInsetBossSquare} onChange={(v) => updateSetting("showInsetBossSquare", v)} />
+              <SettingSelect
+                label="Event Log"
+                value={settings.eventLogMode}
+                onChange={(v) => updateSetting("eventLogMode", v as SettingsState["eventLogMode"])}
+                options={[
+                  { value: "off", label: "Off" },
+                  { value: "attached", label: "Attached" },
+                  { value: "popout", label: "Popout" },
+                ]}
+              />
+              <SettingSwitch
+                label="Log Triforce Pieces"
+                checked={settings.logTriforcePieces}
+                disabled={settings.eventLogMode === "off"}
+                onChange={(v) => updateSetting("logTriforcePieces", v)}
+              />
             </div>
           </div>
         </CardContent>

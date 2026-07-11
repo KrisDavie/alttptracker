@@ -491,24 +491,15 @@ export class OverworldTraverser {
     if (!current) return; // Can't update non-existent region, shouldn't happen though
 
     const combinedLinkState = combineLinkStates(current.linkState, newLinkState);
-    if (combinedLinkState !== current.linkState) {
-      // A better link-state path has been found; combine status too.
-      const combinedStatus = combineStatuses(current.status, newStatus);
-      ctx.reachable.set(regionName, {
-        status: combinedStatus,
-        linkState: combinedLinkState,
-        oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
-      });
-    } else {
-      const combinedStatus = combineStatuses(current.status, newStatus);
-      if (combinedStatus !== current.status) {
-        ctx.reachable.set(regionName, {
-          status: combinedStatus,
-          linkState: current.linkState,
-          oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
-        });
-      }
-    }
+    const combinedStatus = combineStatuses(current.status, newStatus);
+    // Nothing improved — leave the region untouched.
+    if (combinedLinkState === current.linkState && combinedStatus === current.status) return;
+
+    ctx.reachable.set(regionName, {
+      status: combinedStatus,
+      linkState: combinedLinkState,
+      oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
+    });
   }
 
   /**
@@ -590,9 +581,16 @@ export class OverworldTraverser {
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
           ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
         } else if (isBetterStatus(newStatus, existingPortal.status)) {
-          // Update to better status
+          // Update to better status. If the previous status was the partial-mode
+          // discovery placeholder ("unavailable"), its link state is a fiction —
+          // it defaults to "link" when the source region isn't actually reachable
+          // (which happens for portals only reachable through a dungeon connector,
+          // since the actual-inventory BFS skips Dungeon exits). Replace it with
+          // the real reaching link state instead of combining, so a portal only
+          // reachable as a bunny isn't wrongly upgraded to "link".
+          const wasPlaceholder = existingPortal.status === "unavailable";
           existingPortal.status = newStatus;
-          existingPortal.linkState = combineLinkStates(newLinkState, existingPortal.linkState);
+          existingPortal.linkState = wasPlaceholder ? newLinkState : combineLinkStates(newLinkState, existingPortal.linkState);
           existingPortal.keyCost = Math.min(existingPortal.keyCost, regionKeyCost);
           existingPortal.oolReasons = portalOolReasons;
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, existingPortal);
@@ -679,18 +677,17 @@ export class OverworldTraverser {
       // Incorporate dungeon region statuses (always use latest traversal).
       for (const [regionName, regionState] of result.regionStatuses) {
         const existing = ctx.reachable.get(regionName);
-        if (!existing) {
+        if (!existing || existing.status !== regionState.status) {
+          // If the region was previously only "unavailable" (e.g. from an earlier
+          // traversal seeded by a placeholder portal entry), its link state is a
+          // fiction — adopt the new one rather than combining, so a genuinely
+          // bunny-only dungeon region isn't wrongly upgraded to "link".
+          const staleUnavailable = !!existing && existing.status === "unavailable";
           ctx.reachable.set(regionName, {
             status: regionState.status,
-            linkState: regionState.linkState,
-            crystalStates: regionState.crystalStates,
-            oolReasons: regionState.oolReasons,
-          });
-          madeProgress = true;
-        } else if (existing.status !== regionState.status) {
-          ctx.reachable.set(regionName, {
-            status: regionState.status,
-            linkState: combineLinkStates(existing.linkState, regionState.linkState),
+            // Combine link states when the region was already genuinely known;
+            // otherwise adopt the dungeon's.
+            linkState: existing && !staleUnavailable ? combineLinkStates(existing.linkState, regionState.linkState) : regionState.linkState,
             crystalStates: regionState.crystalStates,
             oolReasons: regionState.oolReasons,
           });
@@ -799,6 +796,18 @@ export class OverworldTraverser {
         // Merge region-level ool reasons (e.g. from dungeon traversal: die-to-revive, hover)
         if (finalStatus === "ool" && regionReachability.oolReasons) {
           for (const r of regionReachability.oolReasons) reasons.add(r);
+        }
+        // The Hyrule Castle big key drops from a guard in a fixed, early spot.
+        // With vanilla doors and unshuffled enemy drops it is guaranteed to be
+        // there, so it must not be downgraded by small-key contention — if the
+        // room is reachable at all, the drop is obtainable.
+        if (
+          locationName === "Hyrule Castle - Big Key Drop" &&
+          this.state.settings.enemyDrop === "none" &&
+          this.state.settings.doors === "vanilla" &&
+          finalStatus !== "unavailable"
+        ) {
+          finalStatus = "available";
         }
         locationStatuses[locationName] = finalStatus;
         if (finalStatus === "ool" && reasons.size > 0) {

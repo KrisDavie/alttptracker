@@ -4,25 +4,31 @@
  * On construction, pre-computes ExitMeta for every dungeon exit
  * (isSKDoor, isBKDoor, isPairedWithBK, isBidirectional, isOverworld).
  *
- * THREE PHASES (only run for wildSmallKeys === "wild"):
+ * KEY-LOGIC PASSES (1 and 2 only run for wildSmallKeys === "wild"):
  *
  * 1. DIJKSTRA (minKeysUsed) — best-case keys to reach each region.
- *    Uses actual inventory. Key doors are weight-1 edges. Iterates until
- *    convergence (canReach deps may resolve mid-pass). A second pass without
- *    BK populates minKeysUsedNoBK when the player lacks BK in partial mode.
+ *    Run as several seeded passes:
+ *      - actual inventory, assuming BK (regionMinKeysUsed),
+ *      - actual inventory without BK (regionMinKeysUsedNoBK; copied from the
+ *        BK pass when the player has BK or in dangerous mode),
+ *      - partial mode only: "contention" passes seeded from every dungeon
+ *        entrance region with the all-items evaluator (…Contention maps), so
+ *        door-counting reflects entrances/items the player COULD reach.
+ *    Key doors are weight-1 edges; each pass iterates until convergence
+ *    (canReach deps may resolve mid-pass).
  *
  * 2. BFS (maxKeysUsed) — worst-case keys per region.
  *    For each pending key door, defer it, explore everything else, then open
  *    it last; regions reachable only after that door get elevated maxKeysUsed.
- *    In partial mode runs once with all-items, then once with actual inventory
- *    (items can hide contention when an alternate path needs an item the
- *    player doesn't have). maxKeysUsed is then propagated through canReach
- *    dependencies and parent→child edges.
+ *    Partial mode runs once with all-items, then once with actual inventory
+ *    (items can hide contention when an alternate path needs a missing item).
+ *    maxKeysUsed is then propagated through canReach deps and parent→child edges.
  *
- * 3. FINAL BFS — per-region status.
- *    Discovery BFS tracks per-crystal-state entry statuses. A fixed-point
- *    loop counts collectable keys by minKeys threshold. Status is then
- *    "unavailable" (keys < minKeys), "possible" (contention) or "available".
+ * 3. FINAL BFS — per-region status (ALWAYS runs).
+ *    Discovery BFS tracks per-crystal-state entry statuses. When wild keys are
+ *    enabled, a fixed-point loop counts collectable keys by minKeys threshold
+ *    and status becomes "unavailable" (keys < minKeys), "possible" (contention)
+ *    or "available"; otherwise key status is "available".
  *
  * KEY CONCEPTS:
  * - Protection: "partial" assumes all items for key counting; "dangerous"
@@ -37,7 +43,7 @@ import type { LogicSet } from "./logicMapper";
 import { RequirementEvaluator, type EvaluationContext } from "./requirementEvaluator";
 import { getLogicStateForWorld, createAllItemsState, isBetterStatus, minimumStatus } from "./logicHelpers";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
-import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle, DOOR_PREFIX_TO_DUNGEON } from "./dungeonConstants";
+import { OVERWORLD_REGION_TYPES, isPotteryKeyShuffle, DOOR_PREFIX_TO_DUNGEON, PORTAL_TO_DUNGEON } from "./dungeonConstants";
 import { bunnyRevivableEntrances, superbunnyRevivableEntrances, swordSuperbunnyRevivableEntrances } from "@/data/logic/superbunnyLogic";
 
 export interface DungeonRegionState {
@@ -65,6 +71,13 @@ interface DungeonContext {
   regionMinKeysUsedContention: Map<string, number>;
   /** Min-keys map without BK, seeded from every internal entrance region (partial mode). */
   regionMinKeysUsedNoBKContention: Map<string, number>;
+  /**
+   * Min-keys map seeded from every internal entrance region but evaluated with
+   * the player's ACTUAL items (partial mode). Used to tell entrance-gated wings
+   * (countable as entrance-shuffle contention) apart from item-gated wings that
+   * the player couldn't enter even if the entrance were placed.
+   */
+  regionMinKeysUsedContentionActual: Map<string, number>;
   discoveredKeyLocations: Set<string>;
   totalKeysAvailable: number;
   /** reviveCap applied to each region (only "ool" when die-to-revive is needed in noglitches). */
@@ -123,7 +136,6 @@ export class DungeonTraverser {
     const prefixes = Object.entries(DOOR_PREFIX_TO_DUNGEON)
       .filter(([, id]) => id === this.dungeonId)
       .map(([prefix]) => prefix);
-    if (prefixes.length === 0) return result;
     for (const regionLogic of Object.values(this.regions)) {
       if (!regionLogic.exits) continue;
       // Only consider portal regions: those with at least one exit back to
@@ -137,6 +149,30 @@ export class DungeonTraverser {
         if (prefixes.some((p) => exit.to!.startsWith(p))) {
           result.add(exit.to);
         }
+      }
+    }
+
+    // Also identify portal regions directly by name. This catches portals whose
+    // entrance exit has been severed by entrance shuffle (so `exit.to` above is
+    // null) and portals whose region name isn't matched by the door prefixes
+    // (e.g. "Hyrule Castle South Portal"). A portal is a dungeon-side region
+    // (non-overworld) that still exposes an overworld-typed return exit.
+    //
+    // Only in entrance shuffle: these represent entrances the player could have
+    // linked but hasn't. In vanilla the player is restricted to the actual
+    // entrance, so seeding every portal would over-inflate key contention.
+    if (this.state.settings.entranceMode !== "none") {
+      const portalPrefixes = Object.entries(PORTAL_TO_DUNGEON)
+        .filter(([, id]) => id === this.dungeonId)
+        .map(([prefix]) => prefix);
+      for (const [regionName, regionLogic] of Object.entries(this.regions)) {
+        if (!regionLogic.exits) continue;
+        if (OVERWORLD_REGION_TYPES.has(regionLogic.type)) continue;
+        if (!portalPrefixes.some((p) => regionName.startsWith(p))) continue;
+        const hasOverworldExit = Object.values(regionLogic.exits).some(
+          (e) => e.type !== undefined && OVERWORLD_REGION_TYPES.has(e.type),
+        );
+        if (hasOverworldExit) result.add(regionName);
       }
     }
     return result;
@@ -238,9 +274,7 @@ export class DungeonTraverser {
       if (!actuallyHasBigKey && this.protection === "partial") {
         this.dijkstraMinKeys(ctx, entryRegions, dijkstraKeyCost, this.requirementEvaluator, false);
       } else {
-        for (const [region, keys] of ctx.regionMinKeysUsed) {
-          ctx.regionMinKeysUsedNoBK.set(region, keys);
-        }
+        DungeonTraverser.copyMap(ctx.regionMinKeysUsed, ctx.regionMinKeysUsedNoBK);
       }
 
       // Pass 3 (partial mode): contention dijkstra seeded from every internal
@@ -259,18 +293,16 @@ export class DungeonTraverser {
         if (!actuallyHasBigKey) {
           this.dijkstraMinKeys(ctx, contentionEntries, contentionKeyCost, keyCountingEvaluator, false, ctx.regionMinKeysUsedNoBKContention, false);
         } else {
-          for (const [region, keys] of ctx.regionMinKeysUsedContention) {
-            ctx.regionMinKeysUsedNoBKContention.set(region, keys);
-          }
+          DungeonTraverser.copyMap(ctx.regionMinKeysUsedContention, ctx.regionMinKeysUsedNoBKContention);
         }
+        // All-entrances reachability with ACTUAL items, so entrance-shuffle
+        // contention can exclude wings the player couldn't enter anyway (e.g.
+        // hammer-gated) even if their entrance were placed.
+        this.dijkstraMinKeys(ctx, contentionEntries, contentionKeyCost, this.requirementEvaluator, true, ctx.regionMinKeysUsedContentionActual, false);
       } else {
         // Dangerous mode: contention map mirrors actual-inventory map.
-        for (const [region, keys] of ctx.regionMinKeysUsed) {
-          ctx.regionMinKeysUsedContention.set(region, keys);
-        }
-        for (const [region, keys] of ctx.regionMinKeysUsedNoBK) {
-          ctx.regionMinKeysUsedNoBKContention.set(region, keys);
-        }
+        DungeonTraverser.copyMap(ctx.regionMinKeysUsed, ctx.regionMinKeysUsedContention);
+        DungeonTraverser.copyMap(ctx.regionMinKeysUsedNoBK, ctx.regionMinKeysUsedNoBKContention);
       }
 
       // BFS maxKeys: reset entry regions to original keyCost (not penalized)
@@ -347,49 +379,35 @@ export class DungeonTraverser {
     ctx: DungeonContext,
     entryRegions: Map<string, { linkState: LinkState }>,
   ): { bigKeyGated: Set<string>; smallKeyGated: Set<string> } {
-    const reachableNoBK = new Set<string>();
-    const reachableNoSK = new Set<string>();
-    const queueBK: string[] = [];
-    const queueSK: string[] = [];
-
-    for (const [regionName] of entryRegions) {
-      if (ctx.reachable.has(regionName)) {
-        reachableNoBK.add(regionName);
-        reachableNoSK.add(regionName);
-        queueBK.push(regionName);
-        queueSK.push(regionName);
+    // BFS from entry regions that refuses to traverse the given key-door type;
+    // any reachable region NOT visited is gated behind that key type.
+    const bfsSkippingDoorType = (skipBKDoors: boolean): Set<string> => {
+      const reached = new Set<string>();
+      const queue: string[] = [];
+      for (const [regionName] of entryRegions) {
+        if (ctx.reachable.has(regionName)) {
+          reached.add(regionName);
+          queue.push(regionName);
+        }
       }
-    }
-
-    // BFS skipping BK doors
-    while (queueBK.length > 0) {
-      const current = queueBK.shift()!;
-      const regionLogic = this.regions[current];
-      if (!regionLogic?.exits) continue;
-      for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
-        if (!exit.to) continue;
-        const meta = this.getExitMeta(current, exitName);
-        if (meta.isOverworld || !ctx.reachable.has(exit.to) || reachableNoBK.has(exit.to)) continue;
-        if (meta.isBKDoor) continue;
-        reachableNoBK.add(exit.to);
-        queueBK.push(exit.to);
+      while (queue.length > 0) {
+        const current = queue.shift()!;
+        const regionLogic = this.regions[current];
+        if (!regionLogic?.exits) continue;
+        for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
+          if (!exit.to) continue;
+          const meta = this.getExitMeta(current, exitName);
+          if (meta.isOverworld || !ctx.reachable.has(exit.to) || reached.has(exit.to)) continue;
+          if (skipBKDoors ? meta.isBKDoor : meta.isSKDoor) continue;
+          reached.add(exit.to);
+          queue.push(exit.to);
+        }
       }
-    }
+      return reached;
+    };
 
-    // BFS skipping SK doors
-    while (queueSK.length > 0) {
-      const current = queueSK.shift()!;
-      const regionLogic = this.regions[current];
-      if (!regionLogic?.exits) continue;
-      for (const [exitName, exit] of Object.entries(regionLogic.exits)) {
-        if (!exit.to) continue;
-        const meta = this.getExitMeta(current, exitName);
-        if (meta.isOverworld || !ctx.reachable.has(exit.to) || reachableNoSK.has(exit.to)) continue;
-        if (meta.isSKDoor) continue;
-        reachableNoSK.add(exit.to);
-        queueSK.push(exit.to);
-      }
-    }
+    const reachableNoBK = bfsSkippingDoorType(true);
+    const reachableNoSK = bfsSkippingDoorType(false);
 
     const bigKeyGated = new Set<string>();
     const smallKeyGated = new Set<string>();
@@ -760,9 +778,7 @@ export class DungeonTraverser {
       // Seed entry ool reasons from portal (e.g. dark room navigation to reach dungeon)
       const portalReasons = entryOolReasons?.get(regionName);
       if (thisEntryStatus === "ool" && portalReasons?.length) {
-        let set = ctx.regionEntryOolReasons.get(regionName);
-        if (!set) { set = new Set<string>(); ctx.regionEntryOolReasons.set(regionName, set); }
-        for (const r of portalReasons) set.add(r);
+        this.addEntryOolReasons(ctx, regionName, portalReasons);
       }
       // Use the best status if this region is also another entry portal
       const entryKey = `${regionName}|orange`;
@@ -891,23 +907,17 @@ export class DungeonTraverser {
 
           // Propagate exit ool reasons to destination region
           if (exitReasons.size > 0) {
-            let destReasons = ctx.regionEntryOolReasons.get(exit.to);
-            if (!destReasons) { destReasons = new Set<string>(); ctx.regionEntryOolReasons.set(exit.to, destReasons); }
-            for (const r of exitReasons) destReasons.add(r);
+            this.addEntryOolReasons(ctx, exit.to, exitReasons);
           }
           // If this region's revive cap caused ool for exit traversal, propagate it too
           if (reviveCap === "ool" && cappedRegionEntryStatus === "ool") {
-            let destReasons = ctx.regionEntryOolReasons.get(exit.to);
-            if (!destReasons) { destReasons = new Set<string>(); ctx.regionEntryOolReasons.set(exit.to, destReasons); }
-            destReasons.add("canDungeonBunnyRevive");
+            this.addEntryOolReasons(ctx, exit.to, ["canDungeonBunnyRevive"]);
           }
           // If entry status (from portal) is ool, propagate those reasons to children too
           if (cappedRegionEntryStatus === "ool") {
             const regionEntryReasons = ctx.regionEntryOolReasons.get(region);
             if (regionEntryReasons?.size) {
-              let destReasons = ctx.regionEntryOolReasons.get(exit.to);
-              if (!destReasons) { destReasons = new Set<string>(); ctx.regionEntryOolReasons.set(exit.to, destReasons); }
-              for (const r of regionEntryReasons) destReasons.add(r);
+              this.addEntryOolReasons(ctx, exit.to, regionEntryReasons);
             }
           }
 
@@ -926,8 +936,13 @@ export class DungeonTraverser {
             const existing = ctx.reachable.get(exit.to)!;
             if (!existing.crystalStates.has(crystalState)) {
               existing.crystalStates.add(crystalState);
-              // Set entry status for this new crystal state path
-              regionEntryStatus.set(`${exit.to}|${crystalState}`, effectiveEntryStatus);
+              // Set entry status for this new crystal state path, but never
+              // downgrade a better value already recorded (e.g. by a crystal
+              // switch toggle) — the upgrade check below handles improvements.
+              const existingEntry = regionEntryStatus.get(`${exit.to}|${crystalState}`);
+              if (!existingEntry || isBetterStatus(effectiveEntryStatus, existingEntry)) {
+                regionEntryStatus.set(`${exit.to}|${crystalState}`, effectiveEntryStatus);
+              }
               queue.push({ region: exit.to, crystalState, fromEntryStatus: effectiveEntryStatus });
             }
           }
@@ -954,7 +969,16 @@ export class DungeonTraverser {
           })
         ) {
           const newCrystalState = this.toggleCrystalState(crystalState);
-          queue.push({ region, crystalState: newCrystalState, fromEntryStatus: cappedRegionEntryStatus });
+          // The toggled crystal state is reached with THIS region's entry status.
+          // Record it (upgrading if better) so a worse-status path that already
+          // reached the region in the toggled state — e.g. an unavailable gap
+          // crossing from another entrance — can't suppress this better path.
+          const toggleKey = `${region}|${newCrystalState}`;
+          const currentToggleStatus = regionEntryStatus.get(toggleKey);
+          if (!currentToggleStatus || isBetterStatus(cappedRegionEntryStatus, currentToggleStatus)) {
+            regionEntryStatus.set(toggleKey, cappedRegionEntryStatus);
+            queue.push({ region, crystalState: newCrystalState, fromEntryStatus: cappedRegionEntryStatus });
+          }
         }
       }
     }
@@ -1039,19 +1063,52 @@ export class DungeonTraverser {
         const sourceRegion = this.findDoorSourceRegion(doorName);
         if (!sourceRegion) continue;
         const contentionMin = effectiveMinKeysMapContention.get(sourceRegion);
-        if (contentionMin !== 0) continue;
         const reverseDoor = this.findReverseDoor(doorName, ctx.pendingKeyDoors);
-        if (!(reverseDoor && seenContention.has(reverseDoor))) {
-          seenContention.add(doorName);
-          doorsAtThreshold0++;
-        }
-        if (trackExtra && effectiveMinKeysMap.get(sourceRegion) !== 0) {
+        // A door only creates entrance-shuffle contention if its source is
+        // reachable with the player's ACTUAL items via some entrance. Item-gated
+        // wings (e.g. requiring hammer) can't absorb keys even if their entrance
+        // were placed, so they must not inflate worst-case contention.
+        const itemReachableViaAnyEntrance = ctx.regionMinKeysUsedContentionActual.has(sourceRegion);
+        if (contentionMin === 0) {
+          // Front-side branching doors reachable without spending a key (assuming all entrances).
+          if (!(reverseDoor && seenContention.has(reverseDoor))) {
+            seenContention.add(doorName);
+            doorsAtThreshold0++;
+          }
+          if (trackExtra && itemReachableViaAnyEntrance && effectiveMinKeysMap.get(sourceRegion) !== 0) {
+            if (!(reverseDoor && seenExtra.has(reverseDoor))) {
+              seenExtra.add(doorName);
+              extraContentionBranches++;
+            }
+          }
+        } else if (trackExtra && itemReachableViaAnyEntrance && contentionMin !== undefined && effectiveMinKeysMap.get(sourceRegion) === undefined) {
+          // Doors in a wing reachable ONLY via an entrance that isn't placed on
+          // the tracker yet. Key logic assumes the player could find that
+          // entrance and waste keys back there, so these count toward worst-case
+          // contention even at deeper key thresholds.
           if (!(reverseDoor && seenExtra.has(reverseDoor))) {
             seenExtra.add(doorName);
             extraContentionBranches++;
           }
         }
       }
+    }
+
+    // Offset extra entrance-shuffle contention by the keys those same unplaced
+    // wings provide. The worst-case model assumes the player could reach an
+    // unplaced entrance to waste keys on its wing's doors — but reaching that
+    // wing also yields any in-place keys located there. When a wing supplies as
+    // many keys as it has doors, exploring it is key-neutral and cannot cause a
+    // softlock, so it shouldn't count as contention. Keys shuffled out of the
+    // wing (e.g. pottery/keydrop shuffle) are not counted, preserving contention
+    // in those modes.
+    if (trackExtra && extraContentionBranches > 0) {
+      let extraContentionKeys = 0;
+      for (const regionName of effectiveMinKeysMapContention.keys()) {
+        if (effectiveMinKeysMap.has(regionName)) continue;
+        extraContentionKeys += this.smallKeysInRegion(regionName).length;
+      }
+      extraContentionBranches = Math.max(0, extraContentionBranches - extraContentionKeys);
     }
 
     // Precompute unique door pairs and per-region protected door counts for
@@ -1265,6 +1322,21 @@ export class DungeonTraverser {
     }
   }
 
+  /** Add ool-reason keys to a region's accumulated entry-reasons set, creating it on first use. */
+  private addEntryOolReasons(ctx: DungeonContext, region: string, reasons: Iterable<string>): void {
+    let set = ctx.regionEntryOolReasons.get(region);
+    if (!set) {
+      set = new Set<string>();
+      ctx.regionEntryOolReasons.set(region, set);
+    }
+    for (const r of reasons) set.add(r);
+  }
+
+  /** Shallow-copy all entries from one min-keys map into another. */
+  private static copyMap(src: Map<string, number>, dst: Map<string, number>): void {
+    for (const [region, keys] of src) dst.set(region, keys);
+  }
+
   private initializeDungeonContext(entryRegions: Map<string, { linkState: LinkState }>, inventoryKeys: number, entryKeyCost: Map<string, number> = new Map()): DungeonContext {
     const ctx: DungeonContext = {
       reachable: new Map<string, DungeonRegionState>(),
@@ -1274,6 +1346,7 @@ export class DungeonTraverser {
       regionMinKeysUsedNoBK: new Map<string, number>(),
       regionMinKeysUsedContention: new Map<string, number>(),
       regionMinKeysUsedNoBKContention: new Map<string, number>(),
+      regionMinKeysUsedContentionActual: new Map<string, number>(),
       discoveredKeyLocations: new Set<string>(),
       totalKeysAvailable: inventoryKeys,
       regionReviveCap: new Map<string, LogicStatus>(),

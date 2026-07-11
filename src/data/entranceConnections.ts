@@ -25,6 +25,14 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
     type: "cave",
     entrances: ["Hyrule Castle Secret Entrance Drop", "Hyrule Castle Secret Entrance Stairs"],
   },
+  "ganon_drop": {
+    type: "cave",
+    entrances: ["Pyramid Hole", "Pyramid Entrance"],
+  },
+  "north_fariy": {
+    type: "cave",
+    entrances: ["North Fairy Cave Drop", "North Fairy Cave"],
+  },
   "spectacle_rock_cave": {
     type: "cave",
     entrances: ["Spectacle Rock Cave (Bottom)", "Spectacle Rock Cave Peak", "Spectacle Rock Cave"],
@@ -108,8 +116,11 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
       "Hyrule Castle Entrance (South)",
       "Hyrule Castle Entrance (West)",
       "Hyrule Castle Entrance (East)",
+      "Sanctuary Grave",
+      "Sanctuary"
     ],
   },
+
 };
 
 export const allConnectorEntrances = Object.values(entranceConnectorGroups).flatMap(group => group.entrances);

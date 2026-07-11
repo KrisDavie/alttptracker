@@ -294,6 +294,8 @@ export class GameStateBuilder {
   withEntranceLink(entrance: string, destination: string): this {
     if (this.entrances[entrance]) {
       this.entrances[entrance] = { ...this.entrances[entrance], to: destination };
+    } else {
+      throw new Error(`Entrance ${entrance} does not exist in the current state.`);
     }
     return this;
   }

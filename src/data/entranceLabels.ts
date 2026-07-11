@@ -38,7 +38,7 @@ export const defaultEntranceLabels: Record<string, EntranceLabel> = {
     // LW Important
     "Potion Shop": { label: "Potion", color: "#00fa9a" }, // MediumSpringGreen
     "Sahasrahlas Hut": { label: "Saha", color: "#00fa9a" }, // MediumSpringGreen
-    "Bat Cave Cave": { label: "Bat", color: "#00fa9a" },
+    "Bat Cave Drop": { label: "Bat", color: "#00fa9a" },
     "Sick Kids House": { label: "Kid", color: "#00fa9a" },
     "Dam": { label: "Dam", color: "#00fa9a" },
     "Library": { label: "Lib", color: "#00fa9a" },

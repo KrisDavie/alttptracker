@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { REMEMBER_REHYDRATED } from "redux-remember";
 import { entranceLocations } from "@/data/locationsData";
+import { getDropdownPartner } from "@/lib/dropdowns";
 
 export interface EntranceData {
   checked: boolean;
@@ -77,10 +78,29 @@ export const entrancesSlice = createSlice({
       const { entrance, note } = action.payload;
       state[entrance].note = note;
     },
-    setEntranceLink: (state, action: PayloadAction<{ entrance: string; to: string | null }>) => {
-      const { entrance, to } = action.payload;
+    setEntranceLink: (state, action: PayloadAction<{ entrance: string; to: string | null; zelgaWoods?: boolean; entranceMode?: string }>) => {
+      const { entrance, to, zelgaWoods = false, entranceMode } = action.payload;
       state[entrance].to = to;
       state[entrance].checked = to !== null;
+
+      // Forced dropdown pairing: a dropdown (hole) and its associated entrance
+      // (door) move together in every mode except insanity. Linking one side
+      // implies partner(entrance) → partner(to); unlinking clears the partner.
+      if (entranceMode && entranceMode !== "insanity" && entranceMode !== "none") {
+        const partner = getDropdownPartner(entrance, zelgaWoods);
+        if (partner && state[partner]) {
+          if (to === null) {
+            state[partner].to = null;
+            state[partner].checked = false;
+          } else {
+            const toPartner = getDropdownPartner(to, zelgaWoods);
+            if (toPartner) {
+              state[partner].to = toPartner;
+              state[partner].checked = true;
+            }
+          }
+        }
+      }
     },
     connectGenericConnector: (state, action: { payload: { source: string; destination: string; connectorId: number } }) => {
       const { source, destination, connectorId } = action.payload;

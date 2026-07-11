@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
-import { Trash2, Rocket, ChevronRight, Pin, PinOff } from "lucide-react";
+import { Trash2, Rocket, ChevronRight, Pin, PinOff, Upload } from "lucide-react";
+import { useRef } from "react";
 import { getPresetById } from "@/data/launcherPresets";
 import { MAX_SESSIONS, DISPLAY_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { prettifySpriteName, formatRelativeTime } from "@/lib/launchHelpers";
@@ -20,13 +21,15 @@ interface LaunchCardProps {
   onLaunch: (sessionId?: string) => void;
   onDeleteSession: (id: string) => void;
   onTogglePin: (id: string) => void;
+  onRestoreFile: (file: File) => void;
 }
 
 export function LaunchCard({
   sessionName, setSessionName, spriteName, selectedPresetId,
   sessions, sessionsLoaded, canCreateSession,
-  onLaunch, onDeleteSession, onTogglePin,
+  onLaunch, onDeleteSession, onTogglePin, onRestoreFile,
 }: LaunchCardProps) {
+  const restoreInputRef = useRef<HTMLInputElement>(null);
   return (
     <Card className="border-primary/30 bg-primary/5">
       <CardContent className="py-1 space-y-4">
@@ -59,6 +62,31 @@ export function LaunchCard({
             <Badge variant="secondary" className="text-xs whitespace-nowrap">
               {sessions.length}/{MAX_SESSIONS} saved sessions
             </Badge>
+            <input
+              ref={restoreInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (file) onRestoreFile(file);
+              }}
+            />
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="cursor-pointer"
+                  onClick={() => restoreInputRef.current?.click()}
+                >
+                  <Upload className="size-4 mr-2" />
+                  Import Session
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Restore a session from a downloaded state file</TooltipContent>
+            </Tooltip>
             <Button
               size="lg"
               className="cursor-pointer text-base px-8 font-semibold"

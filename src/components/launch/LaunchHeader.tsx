@@ -1,8 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Sun, Moon, Monitor, Coffee, MessageCircle, Wifi, WifiOff } from "lucide-react";
+import { Sun, Moon, Monitor, Coffee, MessageCircle, Wifi, WifiOff, TriangleAlert } from "lucide-react";
 import type { Theme } from "@/components/ThemeContext";
+import { useLocalNetworkAccess, shouldWarnLocalNetworkAccess } from "@/lib/localNetworkAccess";
 
 interface LaunchHeaderProps {
   theme: Theme;
@@ -14,6 +15,8 @@ interface LaunchHeaderProps {
 }
 
 export function LaunchHeader({ theme, setTheme, autotrackStatus, autotrackProtocol, autotrackHost, autotrackPort }: LaunchHeaderProps) {
+  const lnaState = useLocalNetworkAccess();
+  const showLnaWarning = autotrackStatus !== "connected" && shouldWarnLocalNetworkAccess(lnaState);
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">
@@ -44,6 +47,21 @@ export function LaunchHeader({ theme, setTheme, autotrackStatus, autotrackProtoc
                   : `No autotracker found at ${autotrackHost}:${autotrackPort}`}
             </TooltipContent>
           </Tooltip>
+
+          {/* Local network access warning */}
+          {showLnaWarning && (
+            <Tooltip>
+              <TooltipTrigger render={<div className="flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs text-amber-600 dark:text-amber-500" />}>
+                <TriangleAlert className="size-4" />
+                <span className="hidden md:inline">Local network {lnaState === "prompt" ? "may be " : ""}blocked</span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                {lnaState === "denied"
+                  ? "Local network access is blocked for this site. Autotracking can't reach a device on your computer until you allow local network access in your browser's site settings."
+                  : "Your browser may ask for permission to access your local network when autotracking connects. Allow it so the tracker can reach SNI/QUsb2snes."}
+              </TooltipContent>
+            </Tooltip>
+          )}
 
           <Separator orientation="vertical" className="h-6" />
 

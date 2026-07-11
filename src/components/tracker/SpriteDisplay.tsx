@@ -26,6 +26,7 @@ function SpriteDisplay({ spriteName = "link" }: SpriteDisplayProps) {
     }
     dispatch(setItemCount({ itemName: key, count: finalCount }));
   }
+
   return (
     <div
       style={{

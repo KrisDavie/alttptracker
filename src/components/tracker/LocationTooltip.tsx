@@ -141,8 +141,18 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
           </div>
         ) : (
           <>
-            <div className="font-bold border-b border-gray-500 mb-1 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-              {name}
+            <div className="border-b border-gray-500 mb-1 whitespace-pre" onClick={(e) => e.stopPropagation()}>
+              {(() => {
+                const [firstLine, ...restLines] = name.split("\n");
+                return (
+                  <>
+                    <div className="font-bold">{firstLine}</div>
+                    {restLines.length > 0 && (
+                      <div className={cn("font-normal opacity-70", size === "md" ? "text-2xs" : "text-4xs")}>{restLines.join("\n")}</div>
+                    )}
+                  </>
+                );
+              })()}
               {note && <div className={cn("mt-1 italic opacity-90", size === "md" ? "text-2xs" : "text-4xs")}>NOTE: {note}</div>}
             </div>
 
