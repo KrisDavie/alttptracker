@@ -167,7 +167,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
   );
 
   const ModalButtons = (
-    <div className={cn("absolute bottom-1 z-30 flex gap-1 pointer-events-auto", world === "lw" ? "right-1" : "left-1")}>
+    <div className={cn("absolute bottom-1 z-10 flex gap-1 pointer-events-auto", world === "lw" ? "right-1" : "left-1")}>
       {["vertical", "popoutVertical"].includes(mapMode)
         ? world === "lw" && (
             <>
