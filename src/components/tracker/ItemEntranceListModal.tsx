@@ -140,7 +140,7 @@ function ItemEntranceListModal() {
               <span className="block truncate">
                 {source}{" "}
                 <span className="text-white font-medium" title={source}>
-                ({to === "" ? "unplaced" : to})
+                {linkedChildren.length > 0 ? "" : `(${to === "" ? "unplaced" : to})`}
                 </span>
               </span>
               {linkedChildren.length > 0 && (
