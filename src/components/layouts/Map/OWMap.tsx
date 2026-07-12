@@ -6,10 +6,11 @@ import MapLocation from "@/components/tracker/MapLocation";
 import { locationsData, entranceLocations, type LocationData } from "@/data/locationsData";
 import { getActiveLocations, getDungeonIdForEntry, isSecondaryEntrance, isReplacedByEntrances } from "@/lib/logic/locationMapper";
 
-import { setSelectedEntrance, setCurrentMode } from "@/store/trackerSlice";
+import { setSelectedEntrance, setCurrentMode, setModalOpen } from "@/store/trackerSlice";
 import { cn } from "@/lib/utils";
 import type { Rect } from "@/lib/labelPlacement";
 import EntranceLabelOverlay from "@/components/tracker/EntranceLabelOverlay";
+import { List } from "lucide-react";
 
 interface OWMapProps {
   world?: "lw" | "dw";
@@ -135,6 +136,51 @@ function OWMap({ world = "lw" }: OWMapProps) {
     };
   });
 
+  const connectionListButton = (
+    <button
+      type="button"
+      title="Connections list"
+      aria-label="Open connections list"
+      onClick={() => dispatch(setModalOpen("connections"))}
+      className={cn(
+        "flex items-center justify-center rounded border border-gray-500 bg-gray-900/80 text-gray-200 hover:bg-gray-700 hover:border-gray-300 transition-colors cursor-pointer",
+        mapMode === "compact" ? "w-5 h-5" : "w-6 h-6"
+      )}
+    >
+      <List className={cn(mapMode === "compact" ? "w-3.5 h-3.5" : "w-4.5 h-4.5")} />
+    </button>
+  );
+
+  const itemEntranceButton = (
+    <button
+      type="button"
+      title="Entrances with items"
+      aria-label="Open item entrances list"
+      onClick={() => dispatch(setModalOpen("itemEntrances"))}
+      className={cn(
+        "flex items-center justify-center rounded border border-gray-500 bg-gray-900/80 hover:bg-gray-700 hover:border-gray-300 transition-colors cursor-pointer",
+        mapMode === "compact" ? "w-5 h-5" : "w-6 h-6"
+      )}
+    >
+      <img src="/dungeons/smallchest.png" alt="" className="w-3/4 h-3/4" style={{ imageRendering: "pixelated" }} />
+    </button>
+  );
+
+  const ModalButtons = (
+    <div className={cn("absolute bottom-1 z-30 flex gap-1 pointer-events-auto", world === "lw" ? "right-1" : "left-1")}>
+      {["vertical", "popoutVertical"].includes(mapMode)
+        ? world === "lw" && (
+            <>
+              {connectionListButton}
+              {itemEntranceButton}
+            </>
+          )
+        : world === "lw"
+          ? itemEntranceButton
+          : connectionListButton}
+    </div>
+  );
+
   return (
     <div
       className={cn("w-full h-full relative", currentMode === "connect" && "cursor-crosshair")}
@@ -153,9 +199,8 @@ function OWMap({ world = "lw" }: OWMapProps) {
         <MapLocation key={name} name={name} location={location} type={type} className={`hover:origin-center hover:scale-150 ${size}`} tooltip={true} isEntrance={type === "entrance"} />
       ))}
 
-      {mapMode !== "off" && entranceMode !== "none" && entranceLabelsMode !== "off" && (
-        <EntranceLabelOverlay obstacles={mapObstacles} />
-      )}
+      {mapMode !== "off" && entranceMode !== "none" && entranceLabelsMode !== "off" && <EntranceLabelOverlay obstacles={mapObstacles} />}
+      {entranceMode !== "none" && ModalButtons}
     </div>
   );
 }

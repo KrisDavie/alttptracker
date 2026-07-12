@@ -247,9 +247,12 @@ function MapLocation(props: MapLocationProps) {
     handleCheckClick(key, checked);
   }
 
-  const isScoutSelected = !isEntrance && currentMode === "scout" && selectedLocation === locName;
-  const isScoutHoverHighlighted = !isEntrance && !!hoveredScout && !!scoutedItems && scoutedItems.some((s) => scoutedItemsEqual(s, hoveredScout));
-  const firstScout = !isEntrance && scoutedItems && scoutedItems.length > 0 ? scoutedItems[0] : undefined;
+  // Scouting is available on any non-entrance marker, and on entrances that are
+  // linked to a location containing items
+  const canShowScout = !isEntrance || (isLinked && itemLocations.length > 0);
+  const isScoutSelected = canShowScout && currentMode === "scout" && selectedLocation === locName;
+  const isScoutHoverHighlighted = canShowScout && !!hoveredScout && !!scoutedItems && scoutedItems.some((s) => scoutedItemsEqual(s, hoveredScout));
+  const firstScout = canShowScout && scoutedItems && scoutedItems.length > 0 ? scoutedItems[0] : undefined;
   const firstScoutIcon = firstScout ? getScoutedItemIcon(firstScout) : undefined;
 
   const isRound = isEntrance && itemLocations.length === 0 && !showAsDiamond;
@@ -311,7 +314,7 @@ function MapLocation(props: MapLocationProps) {
       >
         {firstScoutIcon && (
           <div
-            className="absolute inset-0 pointer-events-none"
+            className={cn("absolute inset-0 pointer-events-none", showAsDiamond && "-rotate-45")}
             style={{
               backgroundImage: `url(${firstScoutIcon})`,
               backgroundPosition: "center",
@@ -337,7 +340,7 @@ function MapLocation(props: MapLocationProps) {
           onCheckClick={handleTooltipCheckClick}
           onGroupExpand={handleGroupExpand}
           onClose={resetGroups}
-          scoutedItems={!isEntrance ? scoutedItems : undefined}
+          scoutedItems={canShowScout ? scoutedItems : undefined}
           note={note ?? undefined}
         />
       )}

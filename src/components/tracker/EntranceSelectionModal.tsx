@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { setModalClose, setCurrentMode, setSelectedEntrance } from "../../store/trackerSlice";
+import { setModalClose, setCurrentMode, setSelectedEntrance, setSelectedLocation } from "../../store/trackerSlice";
 import { setEntranceLink, setNote } from "../../store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { getEntrancePool } from "@/lib/dropdowns";
+import { getActiveLocations } from "@/lib/logic/locationMapper";
 import { Button } from "../ui/button";
 import { useMemo, type JSX } from "react";
 import { Input } from "../ui/input";
@@ -18,10 +19,17 @@ function EntranceSelectionModal() {
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
   const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
+  const settings = useSelector((state: RootState) => state.settings);
+  const linkedTo = useSelector((state: RootState) => (selectedEntrance ? state.entrances[selectedEntrance]?.to : null));
   const note = useSelector((state: RootState) => {
     if (!selectedEntrance) return "";
     return state.entrances[selectedEntrance]?.note || "";
   });
+
+  // Scouting is only meaningful when the entrance is linked to a location that
+  // actually contains item checks (a shop, cave, etc.).
+  const linkedItemLocations = useMemo(() => (linkedTo ? getActiveLocations(linkedTo, settings) : []), [linkedTo, settings]);
+  const canScout = linkedItemLocations.length > 0;
 
   if (mapMode === "off" || !entranceModalOpen || !selectedEntrance) return null;
 
@@ -48,6 +56,13 @@ function EntranceSelectionModal() {
   const handleConnectButton = () => {
     dispatch(setCurrentMode("generic_connect"));
     dispatch(setModalClose());
+  };
+
+  const handleScout = () => {
+    const entrance = selectedEntrance;
+    dispatch(setSelectedEntrance([null, false]));
+    dispatch(setCurrentMode("scout"));
+    dispatch(setSelectedLocation(entrance));
   };
 
   function getEntranceButton(entrance: string): JSX.Element {
@@ -177,7 +192,7 @@ function EntranceSelectionModal() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2 w-full max-w-xs mt-6">
+      <div className="flex flex-col gap-2 w-full max-w-xs mt-4">
         {/* Input for notes */}
         <div className="flex flex-col gap-1 w-full">
           <Input
@@ -186,15 +201,23 @@ function EntranceSelectionModal() {
             value={note}
             onKeyDown={(e) => { if (e.key === "Enter"){ handleCancel() } }}
           />
-            
         </div>
 
         <div className="flex justify-between gap-2 w-full">
           <Button variant="default" className="flex bg-indigo-600 hover:bg-indigo-500 font-bold" onClick={handleSelectFromMap}>
             Select Destination on Map
           </Button>
-          <Button variant="default" disabled={selectedPool !== "normal"} className="w-35 flex font-bold bg-indigo-600 hover:bg-indigo-500" onClick={handleConnectButton}>
+          <Button variant="default" disabled={selectedPool !== "normal"} className="w-20 flex font-bold bg-indigo-600 hover:bg-indigo-500" onClick={handleConnectButton}>
             Connect
+          </Button>
+          <Button
+            variant="default"
+            disabled={!canScout}
+            title={canScout ? "Scout an item at this entrance" : "This entrance is not linked to a location with items"}
+            className="flex-1 font-bold bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40"
+            onClick={handleScout}
+          >
+            Scout
           </Button>
         </div>
 

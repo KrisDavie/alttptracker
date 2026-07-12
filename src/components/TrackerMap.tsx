@@ -7,6 +7,8 @@ import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
 import { Loader2 } from "lucide-react";
 import StatusBar from "./tracker/StatusBar";
 import EntranceSelectionModal from "./tracker/EntranceSelectionModal";
+import ConnectionListModal from "./tracker/ConnectionListModal";
+import ItemEntranceListModal from "./tracker/ItemEntranceListModal";
 
 export function TrackerMap() {
   const rehydrated = useSelector((state: RootState) => state.trackerState.rehydrated);
@@ -78,6 +80,10 @@ export function TrackerMap() {
               <EntranceSelectionModal />
             </div>
           )}
+          <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
+            <ConnectionListModal />
+            <ItemEntranceListModal />
+          </div>
           <EntranceLinesOverlay />
           <StatusBar />
 

@@ -5,7 +5,7 @@ import type { ScoutedItem } from "./scoutsSlice";
 
 export interface TrackerState {
    currentMode: "none" | "scout" | "connect" | "generic_connect" |  "entrance_select" | "follower";
-   modalOpen: "none" | "mystery" | "entrance" 
+   modalOpen: "none" | "mystery" | "entrance" | "connections" | "itemEntrances"
    selectedLocation: string | null;
    selectedEntrance: string | null;
    hoveredMarker: string | null;

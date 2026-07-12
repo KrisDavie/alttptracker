@@ -6,6 +6,8 @@ import CommunityLayoutItems from "@/components/layouts/CommunityTracker/Communit
 import OWMap from "@/components/layouts/Map/OWMap";
 import EntranceLinesOverlay from "@/components/tracker/EntranceLinesOverlay";
 import EntranceSelectionModal from "@/components/tracker/EntranceSelectionModal";
+import ConnectionListModal from "@/components/tracker/ConnectionListModal";
+import ItemEntranceListModal from "@/components/tracker/ItemEntranceListModal";
 import { Loader2 } from "lucide-react";
 import StatusBar from "./tracker/StatusBar";
 import EventLogPanel from "./tracker/EventLogPanel";
@@ -80,15 +82,10 @@ export function Tracker() {
       >
         <div
           style={{ width: `${trackerWidth}px`, height: `${trackerHeight}px`, flexShrink: 0 }}
-          className={`flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
+          className={`relative flex ${isVertical || isCompact ? "flex-col" : "flex-row"} items-start`}
         >
           <div style={{ width: `${TILE}px`, height: `${TILE}px`, flexShrink: 0 }} className="relative">
             <CommunityLayoutItems />
-            {isCompact && entranceModalOpen && selectedEntrance && (
-              <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
-                <EntranceSelectionModal />
-              </div>
-            )}
           </div>
           {showMaps && !['popoutNormal', 'popoutVertical'].includes(mapMode) && (
             <div
@@ -103,6 +100,12 @@ export function Tracker() {
                   <EntranceSelectionModal />
                 </div>
               )}
+              {!isCompact && (
+                <div className="absolute top-0 left-0 w-full h-full z-100 pointer-events-none">
+                  <ConnectionListModal />
+                  <ItemEntranceListModal />
+                </div>
+              )}
               <EntranceLinesOverlay />
               <StatusBar />
               <div
@@ -114,6 +117,14 @@ export function Tracker() {
               >
                 {maps}
               </div>
+            </div>
+          )}
+          {isCompact && (
+            <div className="absolute inset-0 z-100 pointer-events-none">
+              <ConnectionListModal />
+              <ItemEntranceListModal />
+              {entranceModalOpen && selectedEntrance && (
+                <EntranceSelectionModal />)}
             </div>
           )}
         </div>

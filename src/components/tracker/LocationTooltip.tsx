@@ -129,16 +129,24 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
     <div ref={tooltipRef} className={tooltipClasses} onMouseLeave={onClose}>
       <div className={tooltipInnerClasses}>
         {singleCheck ? (
-          <div>
-            <div className="font-bold flex gap-2 whitespace-nowrap items-baseline">
-              <span>{name}</span>
-              <span
-                className={cn("w-12 text-right", tooltipStatusText(singleCheck.status.checked ? "checked" : singleCheck.status.logic))}
-                title={singleCheck.status.logic === "ool" && singleCheck.status.oolReasons?.length ? `Requires: ${singleCheck.status.oolReasons.map(getSequenceBreakLabel).join(", ")}` : undefined}
-              >{singleCheck.status.checked ? "checked" : singleCheck.status.logic}{singleCheck.status.logic === "ool" && singleCheck.status.oolReasons?.length ? " ?" : ""}</span>
-            </div>
-            {note && <div className={cn("mt-1 italic opacity-90", size === "md" ? "text-2xs" : "text-4xs")}>NOTE: {note}</div>}
-          </div>
+          (() => {
+            const [firstLine, ...restLines] = name.split("\n");
+            return (
+              <div>
+                <div className="font-bold flex gap-2 whitespace-nowrap items-baseline">
+                  <span>{firstLine}</span>
+                  <span
+                    className={cn("w-12 text-right", tooltipStatusText(singleCheck.status.checked ? "checked" : singleCheck.status.logic))}
+                    title={singleCheck.status.logic === "ool" && singleCheck.status.oolReasons?.length ? `Requires: ${singleCheck.status.oolReasons.map(getSequenceBreakLabel).join(", ")}` : undefined}
+                  >{singleCheck.status.checked ? "checked" : singleCheck.status.logic}{singleCheck.status.logic === "ool" && singleCheck.status.oolReasons?.length ? " ?" : ""}</span>
+                </div>
+                {restLines.length > 0 && (
+                  <div className={cn("font-normal opacity-70 whitespace-pre", size === "md" ? "text-2xs" : "text-4xs")}>{restLines.join("\n")}</div>
+                )}
+                {note && <div className={cn("mt-1 italic opacity-90", size === "md" ? "text-2xs" : "text-4xs")}>NOTE: {note}</div>}
+              </div>
+            );
+          })()
         ) : (
           <>
             <div className="border-b border-gray-500 mb-1 whitespace-pre" onClick={(e) => e.stopPropagation()}>
