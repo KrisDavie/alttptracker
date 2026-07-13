@@ -500,6 +500,14 @@ export class OverworldTraverser {
       linkState: combinedLinkState,
       oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
     });
+
+    // The region's reachability improved (better status and/or link state). Re-queue
+    // it so its exits are re-evaluated and the improvement propagates downstream.
+    // Without this, a region first reached via an "ool" (or bunny) path and later
+    // upgraded to "available" would leave already-processed downstream regions stuck
+    // at the worse status. Statuses and link states only ever improve monotonically,
+    // so re-queueing is bounded and terminates.
+    ctx.queue.push(regionName);
   }
 
   /**

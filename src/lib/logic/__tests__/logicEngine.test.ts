@@ -1785,6 +1785,25 @@ describe("LogicEngine", () => {
       expect(result.locationsLogic["Tower of Hera - Basement Cage"]).toBe("available");
       expect(result.locationsLogic["Tower of Hera - Big Key Chest"]).toBe("available");
     });
+
+    it("should not downgrade a location that is already available", () => {
+      // Same setup but WITH lantern — entry is "available", locations should be "available"
+      const state = gameState()
+        .withItems({ glove: 1, mirror: 1, hammer: 1, moonpearl: 1})
+        .withSequenceBreaks({ canNavigateDarkRooms: true })
+        .withSettings({ entranceMode: "crossed" })
+        .withEntranceLink("Dam", "Old Man Cave (West)")
+        .withEntranceLink("Pyramid Fairy", "Old Man Cave (East)")
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Pyramid"]).toBe("available");
+      expect(result.locationsLogic["Catfish"]).toBe("available");
+    });
   });
 });
 

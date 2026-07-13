@@ -32,8 +32,8 @@ function renderLocationWithLogic(locationName: string, store?: TestStore) {
 }
 
 describe("E2E: Default settings", () => {
-  it("Link's House map square should be available with default settings", async () => {
-    renderLocationWithLogic("Link's House");
+  it("Links House map square should be available with default settings", async () => {
+    renderLocationWithLogic("Links House");
 
     // LogicProvider runs the logic engine in a useEffect, so we need to wait
     // for the Redux dispatch cycle to complete and the component to re-render.
@@ -44,8 +44,8 @@ describe("E2E: Default settings", () => {
     });
   });
 
-  it("Link's House tooltip should display 'available' status", async () => {
-    renderLocationWithLogic("Link's House");
+  it("Links House tooltip should display 'available' status", async () => {
+    renderLocationWithLogic("Links House");
 
     await waitFor(() => {
       // The tooltip renders the status text for a single-check location
