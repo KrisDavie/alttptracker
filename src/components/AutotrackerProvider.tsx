@@ -48,6 +48,8 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
   const { isConnected, connectionType, selectedDevice, romName, host, port } = autotrackerState;
   const [autoTrackingData, setAutoTrackingData] = useState<Record<string, Uint8Array>>({});
   const [qusb2Websocket, setQusb2Websocket] = useState<WebSocket | null>(null);
+  // Bumped to trigger a gentle QUsb2snes reconnect a short delay after the socket closes.
+  const [reconnectNonce, setReconnectNonce] = useState(0);
 
   const checks = useSelector((state: RootState) => state.checks.locationsChecks);
   const checksRef = useRef(checks);
@@ -68,6 +70,42 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
   }, [items]);
 
   const lastGoalCounterRef = useRef<number | null>(null);
+  // Guards against overlapping poll cycles interleaving requests on the single ordered
+  // QUsb2snes socket (misaligned responses would flip romName and cause a runaway re-poll).
+  const pollingRef = useRef(false);
+
+  // Own the QUsb2snes WebSocket lifecycle in isolation. This effect depends only on the
+  // connection-defining values, so the socket isn't recreated on every poll/state change,
+  // and it is always closed on cleanup — preventing StrictMode/re-run socket leaks that make
+  // multiple clients contend for the device (which stalls reads, e.g. "stuck on rom name").
+  useEffect(() => {
+    if (!autotrackingEnabled || isPassivePage || connectionType !== "qusb2snes" || !host || !port) {
+      return;
+    }
+    let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
+    const ws = new WebSocket(`ws://${host}:${port}`);
+    ws.binaryType = "arraybuffer";
+    ws.onopen = () => setQusb2Websocket(ws);
+    ws.onclose = () => {
+      setQusb2Websocket((cur) => (cur === ws ? null : cur));
+      dispatch(setConnected({ selectedDevice: null, isConnected: false }));
+      dispatch(setConnectionStatus("disconnected"));
+      // Gentle reconnect: retry once after a delay when the socket actually closes.
+      // (Only on real close — never on read failures — to avoid reconnect storms.)
+      reconnectTimer = setTimeout(() => setReconnectNonce((n) => n + 1), 2000);
+    };
+    ws.onerror = () => {
+      dispatch(setConnected({ selectedDevice: null, isConnected: false }));
+      dispatch(setConnectionStatus("connection error"));
+    };
+    return () => {
+      // Detach handlers before closing so teardown doesn't dispatch during unmount/re-run.
+      ws.onopen = ws.onclose = ws.onerror = null;
+      clearTimeout(reconnectTimer);
+      ws.close();
+      setQusb2Websocket((cur) => (cur === ws ? null : cur));
+    };
+  }, [connectionType, host, port, autotrackingEnabled, isPassivePage, dispatch, reconnectNonce]);
 
   // Connecting and querying data
   useEffect(() => {
@@ -79,25 +117,6 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
     if (!host || !port) {
       console.error("Host or port not set for autotracker connection");
       return;
-    }
-
-    if (connectionType === "qusb2snes") {
-      if (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN) {
-        const ws = new WebSocket(`ws://${host}:${port}`);
-        ws.binaryType = "arraybuffer";
-        ws.onopen = () => {
-          setQusb2Websocket(ws);
-        };
-        ws.onclose = () => {
-          setQusb2Websocket(null);
-          dispatch(setConnected({ selectedDevice: null, isConnected: false }));
-          dispatch(setConnectionStatus("disconnected"));
-        };
-        ws.onerror = () => {
-          dispatch(setConnected({ selectedDevice: null, isConnected: false }));
-          dispatch(setConnectionStatus("connection error"));
-        };
-      }
     }
 
     // --- Transport-agnostic helpers ---
@@ -125,8 +144,11 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       if (connectionType === "sni") {
         dispatch(setConnected({ selectedDevice: device, isConnected: true }));
       } else {
-        // Attach to the device (no response expected)
+        // usb2snes finishes attaching asynchronously and will ignore/wedge on a read issued
+        // too soon after Attach (especially a ROM read like the romname at 0x7fc0). Awaiting
+        // an Info reply acts as a readiness barrier so the first GetAddress doesn't hang.
         qusb2snesSend(qusb2Websocket!, "Attach", [device]);
+        await qusb2snesRequest(qusb2Websocket!, "Info");
         dispatch(setConnected({ selectedDevice: device, isConnected: true }));
       }
     }
@@ -166,51 +188,59 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         return;
       }
 
-      if (!isConnected) {
-        try {
-          const devices = await fetchDevices();
-          if (devices.length === 0) {
-            dispatch(setConnectionStatus("no devices found"));
-            return;
-          }
-          await connectToDevice(devices);
-        } catch (error) {
-          console.error("Error during device discovery:", error);
-          dispatch(setConnectionStatus("device discovery failed - ensure SNI/QUsb2snes is running and reachable"));
-        }
-      } else {
-        const newData: Record<string, Uint8Array> = {};
-        let fetchFailed = false;
-        for (const [name, range] of Object.entries(MEMORY_RANGES)) {
+      // Skip if a previous cycle is still running. Overlapping cycles interleave requests on
+      // the single ordered QUsb2snes socket, misaligning responses and causing a poll storm.
+      if (pollingRef.current) return;
+      pollingRef.current = true;
+      try {
+        if (!isConnected) {
           try {
-            const data = await fetchMemoryRange(range.start, range.size);
-            if (data) {
-              if (name === "romname") {
-                const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, "");
-                if (romName !== fetchedRomName) {
-                  dispatch(setRomName(fetchedRomName));
-                }
-              } else if (name === "gamemode") {
-                const gameMode = data[0];
-                if (![0x07, 0x09, 0x0b].includes(gameMode)) {
-                  break; // Invalid game mode, skip processing
-                }
-              } else {
-                newData[name] = data;
-              }
+            const devices = await fetchDevices();
+            if (devices.length === 0) {
+              dispatch(setConnectionStatus("no devices found"));
+              return;
             }
+            await connectToDevice(devices);
           } catch (error) {
-            console.error(`Error fetching memory range ${range.start.toString(16)}-${(range.start + range.size - 1).toString(16)}:`, error);
-            fetchFailed = true;
-            break;
+            console.error("Error during device discovery:", error);
+            dispatch(setConnectionStatus("device discovery failed - ensure SNI/QUsb2snes is running and reachable"));
+          }
+        } else {
+          const newData: Record<string, Uint8Array> = {};
+          let fetchFailed = false;
+          for (const [name, range] of Object.entries(MEMORY_RANGES)) {
+            try {
+              const data = await fetchMemoryRange(range.start, range.size);
+              if (data) {
+                if (name === "romname") {
+                  const fetchedRomName = new TextDecoder().decode(data).replace(/\0/g, "");
+                  if (romName !== fetchedRomName) {
+                    dispatch(setRomName(fetchedRomName));
+                  }
+                } else if (name === "gamemode") {
+                  const gameMode = data[0];
+                  if (![0x07, 0x09, 0x0b].includes(gameMode)) {
+                    break; // Invalid game mode, skip processing
+                  }
+                } else {
+                  newData[name] = data;
+                }
+              }
+            } catch (error) {
+              console.error(`Error fetching memory range ${range.start.toString(16)}-${(range.start + range.size - 1).toString(16)}:`, error);
+              fetchFailed = true;
+              break;
+            }
+          }
+          if (fetchFailed) {
+            dispatch(setConnected({ selectedDevice: null, isConnected: false }));
+            dispatch(setConnectionStatus("connection lost"));
+          } else {
+            setAutoTrackingData(newData);
           }
         }
-        if (fetchFailed) {
-          dispatch(setConnected({ selectedDevice: null, isConnected: false }));
-          dispatch(setConnectionStatus("connection lost"));
-        } else {
-          setAutoTrackingData(newData);
-        }
+      } finally {
+        pollingRef.current = false;
       }
     };
 
