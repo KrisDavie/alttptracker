@@ -9,6 +9,20 @@ import ItemsData from "@/data/itemData";
 export const LAUNCHER_PREFS_KEY = "muffins_launcher_prefs";
 export const RECENT_SPRITES_KEY = "muffins_recent_sprites";
 export const MAX_RECENT_SPRITES = 6;
+export const AUTOTRACK_PREFS_KEY = "muffins_autotrack_prefs";
+
+/** Autotracker connection preferences — persisted globally (not per-session). */
+export interface AutotrackPrefs {
+  protocol: "sni" | "qusb2snes";
+  host: string;
+  port: number;
+}
+
+export const DEFAULT_AUTOTRACK_PREFS: AutotrackPrefs = {
+  protocol: "sni",
+  host: "localhost",
+  port: 8190,
+};
 
 /** Persisted launcher preferences — derived from REMEMBERED_SETTINGS registry. */
 export type LauncherPrefs = Pick<SettingsState, RememberedSettingsKey>;
@@ -24,6 +38,31 @@ export function loadLauncherPrefs(): Partial<LauncherPrefs> {
 
 export function saveLauncherPrefs(prefs: LauncherPrefs) {
   localStorage.setItem(LAUNCHER_PREFS_KEY, JSON.stringify(prefs));
+}
+
+/** Load persisted autotracker connection preferences (protocol/host/port). */
+export function loadAutotrackPrefs(): AutotrackPrefs {
+  try {
+    const raw = localStorage.getItem(AUTOTRACK_PREFS_KEY);
+    if (!raw) return { ...DEFAULT_AUTOTRACK_PREFS };
+    const parsed = JSON.parse(raw) as Partial<AutotrackPrefs>;
+    return {
+      protocol: parsed.protocol === "qusb2snes" ? "qusb2snes" : "sni",
+      host: typeof parsed.host === "string" ? parsed.host : DEFAULT_AUTOTRACK_PREFS.host,
+      port: typeof parsed.port === "number" ? parsed.port : DEFAULT_AUTOTRACK_PREFS.port,
+    };
+  } catch {
+    return { ...DEFAULT_AUTOTRACK_PREFS };
+  }
+}
+
+/** Persist autotracker connection preferences (protocol/host/port). */
+export function saveAutotrackPrefs(prefs: AutotrackPrefs) {
+  try {
+    localStorage.setItem(AUTOTRACK_PREFS_KEY, JSON.stringify(prefs));
+  } catch {
+    // Ignore write failures (e.g. storage disabled in private mode).
+  }
 }
 
 /**

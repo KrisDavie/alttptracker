@@ -8,7 +8,7 @@ import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
 import { parseSnapshotJson, importSnapshotToNewSession } from "@/lib/stateSnapshot";
-import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState } from "@/lib/launchHelpers";
+import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState, loadAutotrackPrefs, saveAutotrackPrefs } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
 import { LaunchCard } from "./launch/LaunchCard";
@@ -20,6 +20,7 @@ import { getEventLogPopoutDimensions, getMapPopoutDimensions, getTrackerWindowSi
 const LaunchPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
   const savedPrefs = useMemo(() => loadLauncherPrefs(), []);
+  const savedAutotrack = useMemo(() => loadAutotrackPrefs(), []);
   const [settings, setSettings] = useState<SettingsState>(() =>
     applyLauncherPrefs(DEFAULT_SETTINGS, savedPrefs)
   );
@@ -28,9 +29,9 @@ const LaunchPage: React.FC = () => {
   const [sessions, setSessions] = useState<TrackerSession[]>([]);
   const [sessionsLoaded, setSessionsLoaded] = useState(false);
   const [recentSprites, setRecentSprites] = useState<string[]>(() => loadRecentSprites());
-  const [autotrackHost, setAutotrackHost] = useState("localhost");
-  const [autotrackPort, setAutotrackPort] = useState(8190);
-  const [autotrackProtocol, setAutotrackProtocol] = useState<"sni" | "qusb2snes">("sni");
+  const [autotrackHost, setAutotrackHost] = useState(savedAutotrack.host);
+  const [autotrackPort, setAutotrackPort] = useState(savedAutotrack.port);
+  const [autotrackProtocol, setAutotrackProtocol] = useState<"sni" | "qusb2snes">(savedAutotrack.protocol);
   const [autotrackStatus, setAutotrackStatus] = useState<"checking" | "connected" | "disconnected">("checking");
   const [sessionName, setSessionName] = useState("");
   const [motd, setMotd] = useState<string | null>(null);
@@ -83,6 +84,11 @@ const LaunchPage: React.FC = () => {
   useEffect(() => {
     saveLauncherPrefs(buildLauncherPrefs({ ...settings, spriteName }));
   }, [spriteName, settings]);
+
+  // Persist autotracker connection settings globally so they're remembered across launches.
+  useEffect(() => {
+    saveAutotrackPrefs({ protocol: autotrackProtocol, host: autotrackHost, port: autotrackPort });
+  }, [autotrackProtocol, autotrackHost, autotrackPort]);
 
   // Fetch MOTD from public/motd.txt
   // Lets us update the launch page with important announcements without needing a full redeploy or relying on third-party services for dynamic content

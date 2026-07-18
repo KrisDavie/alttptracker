@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { loadAutotrackPrefs } from "@/lib/launchHelpers";
 
 export interface AutotrackerState {
   isConnected: boolean;
@@ -12,15 +13,17 @@ export interface AutotrackerState {
   romName?: string | null;
 }
 
+const savedAutotrackPrefs = loadAutotrackPrefs();
+
 const initialState: AutotrackerState = {
   isConnected: false,
   deviceList: [],
   selectedDevice: null,
   status: "disconnected",
-  connectionType: "sni",
+  connectionType: savedAutotrackPrefs.protocol,
   error: null,
-  host: "localhost",
-  port: 8190,
+  host: savedAutotrackPrefs.host,
+  port: savedAutotrackPrefs.port,
   romName: null,
 };
 
