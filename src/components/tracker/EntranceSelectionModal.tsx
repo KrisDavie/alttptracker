@@ -6,6 +6,7 @@ import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { getEntrancePool } from "@/lib/dropdowns";
 import { getActiveLocations } from "@/lib/logic/locationMapper";
 import { Button } from "../ui/button";
+import { ModalBackdrop } from "./ModalBackdrop";
 import { useMemo, type JSX } from "react";
 import { Input } from "../ui/input";
 
@@ -90,6 +91,8 @@ function EntranceSelectionModal() {
   }
 
   return (
+    <>
+    <ModalBackdrop onClose={handleCancel} />
     <div
       className={`absolute inset-x-8 ${["compact"].includes(mapMode) ? "inset-y-0.5" : "inset-y-6"} bg-gray-900/95 border-2 border-gray-600 rounded-lg flex flex-col items-center text-white p-4 z-50 shadow-2xl overflow-hidden pointer-events-auto max-h-max`}
     >
@@ -231,6 +234,7 @@ function EntranceSelectionModal() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -19,6 +19,7 @@ import { getSessionInstanceId } from "@/lib/sessionHelper";
 import { buildPresetIDBState } from "@/lib/launchHelpers";
 import { getPresetById } from "@/data/launcherPresets";
 import { cn } from "@/lib/utils";
+import { ModalBackdrop } from "./ModalBackdrop";
 
 function MysteryModal() {
   const dispatch = useDispatch();
@@ -131,7 +132,9 @@ function MysteryModal() {
   const eventLogOptionsDisabled = localSettings.eventLogMode === "off";
 
   return (
-    <div className="w-100 h-100 bg-white m-6 border-gray-800 border-4 text-black grid grid-rows-7">
+    <>
+    <ModalBackdrop onClose={() => dispatch(setModalClose())} />
+    <div className="relative z-50 w-100 h-100 bg-white m-6 border-gray-800 border-4 text-black grid grid-rows-7">
       <div className="row-span-1 flex flex-row justify-between items-center mx-3">
         <h2 className="font-bold font-roboto">Change Flags</h2>
         <div className="flex flex-row">
@@ -344,6 +347,7 @@ function MysteryModal() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import { setModalClose, setSelectedEntrance } from "@/store/trackerSlice";
 import { entranceLocations, locationsData } from "@/data/locationsData";
 import { getActiveLocations, getDungeonIdForEntry, isSecondaryEntrance } from "@/lib/logic/locationMapper";
 import { Button } from "../ui/button";
+import { ModalBackdrop } from "./ModalBackdrop";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 
@@ -118,7 +119,14 @@ function ItemEntranceListModal() {
   const compact = mapMode === "compact";
   const remaining = rows.filter((r) => !r.cleared).length;
 
+  const handleClose = () => {
+    dispatch(setSelectedEntrance([null, false]));
+    dispatch(setModalClose());
+  };
+
   return (
+    <>
+    <ModalBackdrop onClose={handleClose} />
     <div
       className={`absolute inset-x-8 ${compact ? "inset-y-0.5" : "inset-y-6"} bg-gray-900/95 border-2 border-gray-600 rounded-lg flex flex-col text-white p-4 z-50 shadow-2xl overflow-hidden pointer-events-auto`}
     >
@@ -175,6 +183,7 @@ function ItemEntranceListModal() {
         </Button>
       </div>
     </div>
+    </>
   );
 }
 
