@@ -193,7 +193,13 @@ export const placeLabels = (labels: LabelInput[], obstacles: MarkerObstacle, con
     obs[myKey] = bestRect;
     pl.x = bestRect.x;
     pl.y = bestRect.y;
-    pl.needsLeader = !bestName.startsWith("top") || bestName.startsWith("topL") || bestName.startsWith("topR");
+    // Only recompute needsLeader when the label actually moved to a new
+    // candidate. When the existing placement wins (bestName === ""), keep the
+    // flag from pass 1 — recomputing from the empty name wrongly forced a
+    // leader line onto labels that never moved.
+    if (bestName !== "") {
+      pl.needsLeader = !bestName.startsWith("top") || bestName.startsWith("topL") || bestName.startsWith("topR");
+    }
   }
 
   return placedLabels;

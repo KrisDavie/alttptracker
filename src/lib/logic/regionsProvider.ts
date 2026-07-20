@@ -26,6 +26,7 @@
 import type { ExitLogic, GameState, LogicRequirement, LogicState, RegionLogic, WorldLogic } from "@/data/logic/logicTypes";
 import { entranceLocations } from "@/data/locationsData";
 import { whirlpoolRegistry, parallelLinks } from "@/data/logic/owData";
+import { getEntranceGroup } from "@/lib/dropdowns";
 
 // ─── Shared metadata computed once for all transforms ──────────────────
 
@@ -226,7 +227,7 @@ function applyEntranceShuffleNoMap(
   const menuExits: Record<string, { to: string; type: string; requirements: typeof emptyRequirements }> = {};
 
   for (const [entranceName, locData] of Object.entries(entranceLocations)) {
-    const pool = locData.entrance_modes?.[entranceMode];
+    const pool = getEntranceGroup(entranceName, entranceMode, !!state.settings.zelgaWoods);
     if (!pool || pool === "vanilla") continue;
 
     const portalRegions = locData.entranceRegions;
@@ -326,8 +327,8 @@ function applyEntranceShuffle(
   const reverseLinks = new Map<string, string>(); // destination entrance → source entrance
   const genericConnectors = new Map<string, string[]>();
 
-  for (const [entranceName, locData] of Object.entries(entranceLocations)) {
-    const pool = locData.entrance_modes?.[entranceMode];
+  for (const entranceName of Object.keys(entranceLocations)) {
+    const pool = getEntranceGroup(entranceName, entranceMode, !!state.settings.zelgaWoods);
     if (!pool || pool === "vanilla") continue;
 
     if (!state.settings.shuffleLinks) {
@@ -370,7 +371,7 @@ function applyEntranceShuffle(
 
   // --- Reverse pass: remap interior return exits ---
   for (const [entranceName, locData] of Object.entries(entranceLocations)) {
-    const pool = locData.entrance_modes?.[entranceMode];
+    const pool = getEntranceGroup(entranceName, entranceMode, !!state.settings.zelgaWoods);
     if (!pool || pool === "vanilla") continue;
 
     // Skip entrances kept vanilla above

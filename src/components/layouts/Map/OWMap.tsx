@@ -5,6 +5,7 @@ import type { RootState } from "../../../store/store";
 import MapLocation from "@/components/tracker/MapLocation";
 import { locationsData, entranceLocations, type LocationData } from "@/data/locationsData";
 import { getActiveLocations, getDungeonIdForEntry, isSecondaryEntrance, isReplacedByEntrances } from "@/lib/logic/locationMapper";
+import { getEntranceGroup } from "@/lib/dropdowns";
 
 import { setSelectedEntrance, setCurrentMode, setModalOpen } from "@/store/trackerSlice";
 import { cn } from "@/lib/utils";
@@ -70,7 +71,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
       // Entrance mode: show individual entrance markers, hide unified parent entries
       if (isReplacedByEntrances(locationKey)) return null;
       // Only show entrances that are not shuffled in the current entrance mode
-      if (location.entrance && location.entrance_modes?.[entranceMode] !== "vanilla") return null;
+      if (location.entrance && getEntranceGroup(locationKey, entranceMode, settings.zelgaWoods) !== "vanilla") return null;
     } else {
       // Non-entrance mode: show unified entries, hide secondary entrances
       if (isSecondaryEntrance(locationKey)) return null;
@@ -111,7 +112,7 @@ function OWMap({ world = "lw" }: OWMapProps) {
     if (entranceMode === "none") return null;
     const location = entranceLocations[locationKey];
     if (location.world !== world) return null;
-    if (location.entrance_modes?.[entranceMode] === "vanilla") return null;
+    if (getEntranceGroup(locationKey, entranceMode, settings.zelgaWoods) === "vanilla") return null;
     if (locationKey.includes("Inverted") && settings.worldState === "open") return null;
 
     // If the entrance is linked to a dungeon entry, use the larger dungeon-size marker.
@@ -166,16 +167,23 @@ function OWMap({ world = "lw" }: OWMapProps) {
     </button>
   );
 
+  // In inverted world states the DW map renders first (left / top), so anchor
+  // the buttons by layout position rather than world identity — the first map
+  // anchors to its right edge and the second to its left edge, keeping both
+  // buttons at the seam in the middle of the combined map.
+  const dwFirst = ["inverted", "inverted_1", "standverted"].includes(settings.worldState);
+  const isFirstMap = dwFirst ? world === "dw" : world === "lw";
+
   const ModalButtons = (
-    <div className={cn("absolute bottom-1 z-10 flex gap-1 pointer-events-auto", world === "lw" ? "right-1" : "left-1")}>
+    <div className={cn("absolute bottom-1 z-10 flex gap-1 pointer-events-auto", isFirstMap ? "right-1" : "left-1")}>
       {["vertical", "popoutVertical"].includes(mapMode)
-        ? world === "lw" && (
+        ? isFirstMap && (
             <>
               {connectionListButton}
               {itemEntranceButton}
             </>
           )
-        : world === "lw"
+        : isFirstMap
           ? itemEntranceButton
           : connectionListButton}
     </div>

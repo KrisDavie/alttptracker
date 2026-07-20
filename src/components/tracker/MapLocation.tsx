@@ -3,7 +3,7 @@ import type { RootState } from "../../store/store";
 import { setEntranceChecked, type CheckStatus } from "../../store/checksSlice";
 import { toggleDungeonBoss } from "../../store/dungeonsSlice";
 import { cn } from "@/lib/utils";
-import { locationsData, type LocationData } from "@/data/locationsData";
+import { type LocationData } from "@/data/locationsData";
 import { useLocationTooltipData } from "@/hooks/useLocationTooltipData";
 import { useDungeonChestRemaining } from "@/hooks/useDungeonChestRemaining";
 import { mapStatusBg } from "@/hooks/useStatusColors";
@@ -16,7 +16,7 @@ import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
 import { allConnectorEntrances } from "@/data/entranceConnections";
 import { buildEntranceTooltipName } from "@/lib/entranceTrace";
-import { isDropdown, isPairedEntrance, getEntrancePool } from "@/lib/dropdowns";
+import { isDropdown, isPairedEntrance, getEntrancePool, getEntranceGroup } from "@/lib/dropdowns";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 interface MapLocationProps {
@@ -30,8 +30,8 @@ interface MapLocationProps {
 
 function resolveEntranceGroup(name: string | null, entranceMode: string | undefined, zelgaWoods: boolean) {
   if (!name) return null;
-  let group = locationsData[name]?.entrance_modes?.[entranceMode || "none"] ?? null;
-  if (group === "skull_doors" && zelgaWoods) group = "shuffle";
+  // Zelga-aware base group (skull woods drops/doors join the normal pools).
+  const group = getEntranceGroup(name, entranceMode || "none", zelgaWoods);
   // Dropdown pooling intersected with the base group: a dropdown may only link
   // to dropdowns sharing the same base group (e.g. same district), and (outside
   // insanity) a paired door only to paired doors within that base group.
@@ -115,7 +115,11 @@ function MapLocation(props: MapLocationProps) {
     if (e.button === 0 && e.type === "click") {
       if (isEntrance) {
         if (currentMode === "connect" && selectedEntrance) {
-          dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName, zelgaWoods, entranceMode }));
+          // Clicking the selected marker itself is a cancel gesture — never
+          // link an entrance to itself.
+          if (selectedEntrance !== locName) {
+            dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName, zelgaWoods, entranceMode }));
+          }
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else if (currentMode === "generic_connect" && selectedEntrance !== locName && selectedEntrance) {
@@ -274,7 +278,10 @@ function MapLocation(props: MapLocationProps) {
       .filter((status): status is LogicStatus => !!status)
   );
 
-  if (itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
+  // Don't clobber the selection highlight or a connector diamond's colour —
+  // those take precedence over the mixed-status "someAvailable" indicator.
+  const keepPriorityBg = locName === selectedEntrance || bgClass === mapStatusBg("connector");
+  if (!keepPriorityBg && itemChecksStatusSet.size != 1 && itemChecksStatusSet.has("available")) {
     bgClass = "bg-status-someAvailable";
   }
 

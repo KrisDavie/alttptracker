@@ -1,4 +1,5 @@
 import { dropdownLinks } from "@/data/dropdownData";
+import { locationsData } from "@/data/locationsData";
 
 /**
  * Dropdown pairing helpers.
@@ -97,4 +98,92 @@ export function getEntrancePool(entrance: string, entranceMode: string, zelgaWoo
   if (isDropdown(entrance, zelgaWoods)) return "dropdown";
   if (entranceMode !== "insanity" && isPairedEntrance(entrance, zelgaWoods)) return "pairedDoor";
   return "normal";
+}
+
+/**
+ * Zelga Woods entrance-group overrides (OWR `skullwoods: "followlinked"`).
+ *
+ * In zelgawoods mode the Skull Woods forest changes shape:
+ * - Two NEW drop-downs exist — First Section Hole (North) and Second Section
+ *   Hole — which join the normal drop pool (paired with their doors, like
+ *   Kakariko Well Drop/Cave).
+ * - The southeast holes — First Section Hole (East)/(West) — connect VANILLA
+ *   in every mode and must not be shuffled or severed.
+ * - The three skull doors join the normal door pool per mode (First Section
+ *   Door and Second Section Door (East) as forced partners of the new drops;
+ *   Second Section Door (West) as a free pool entrance).
+ *
+ * Without zelgawoods, the base `entrance_modes` groups (skull_drops /
+ * skull_doors) apply unchanged.
+ */
+const ZELGA_DROP_MODES: Record<string, string> = {
+  dungeonssimple: "vanilla",
+  dungeonsfull: "vanilla",
+  lite: "drops",
+  lean: "drops",
+  simple: "shuffle",
+  restricted: "shuffle",
+  full: "shuffle",
+  district: "northwest_hyrule",
+  swapped: "swap",
+  crossed: "shuffle",
+  insanity: "shuffle",
+  vanilla: "vanilla",
+};
+
+const ZELGA_DOOR_MODES: Record<string, string> = {
+  dungeonssimple: "vanilla",
+  dungeonsfull: "vanilla",
+  lite: "shuffle",
+  lean: "shuffle",
+  simple: "shuffle",
+  restricted: "shuffle",
+  full: "shuffle",
+  district: "northwest_hyrule",
+  swapped: "swap",
+  crossed: "shuffle",
+  insanity: "shuffle",
+  vanilla: "vanilla",
+};
+
+const ZELGA_VANILLA_MODES: Record<string, string> = {
+  dungeonssimple: "vanilla",
+  dungeonsfull: "vanilla",
+  lite: "vanilla",
+  lean: "vanilla",
+  simple: "vanilla",
+  restricted: "vanilla",
+  full: "vanilla",
+  district: "vanilla",
+  swapped: "vanilla",
+  crossed: "vanilla",
+  insanity: "vanilla",
+  vanilla: "vanilla",
+};
+
+const ZELGA_GROUP_OVERRIDES: Record<string, Record<string, string>> = {
+  // GREEN: stay vanilla in every mode
+  "Skull Woods First Section Hole (East)": ZELGA_VANILLA_MODES,
+  "Skull Woods First Section Hole (West)": ZELGA_VANILLA_MODES,
+  // RED: the two new drop-downs behave like a standard drop (cf. Kakariko Well Drop)
+  "Skull Woods First Section Hole (North)": ZELGA_DROP_MODES,
+  "Skull Woods Second Section Hole": ZELGA_DROP_MODES,
+  // Doors behave like a standard door entrance (cf. Kakariko Well Cave)
+  "Skull Woods First Section Door": ZELGA_DOOR_MODES,
+  "Skull Woods Second Section Door (East)": ZELGA_DOOR_MODES,
+  "Skull Woods Second Section Door (West)": ZELGA_DOOR_MODES,
+};
+
+/**
+ * Resolve the entrance group for an entrance in the given entrance mode,
+ * applying Zelga Woods overrides when the setting is enabled. This is the
+ * single source of truth — map markers, link-target filtering and the logic
+ * graph (entrance severing) must all agree on it.
+ */
+export function getEntranceGroup(name: string, entranceMode: string, zelgaWoods: boolean): string | null {
+  const base = locationsData[name]?.entrance_modes?.[entranceMode] ?? null;
+  if (!zelgaWoods) return base;
+  const override = ZELGA_GROUP_OVERRIDES[name];
+  if (!override) return base;
+  return override[entranceMode] ?? base;
 }
