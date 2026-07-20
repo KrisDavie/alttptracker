@@ -29,7 +29,15 @@ function GoalSelector({ type }: GoalSelectorProps) {
     options["trinity"] = { img: "/dungeons/trinity.png", settings: { goal: "trinity" } };
     options["pedestal"] = { img: "/dungeons/pedestal.png", settings: { goal: "pedestal" } };
     options["triforce_hunt"] = { img: "/dungeons/triforce_hunt.png", settings: { goal: "triforce_hunt" } };
+    options["ganonhunt"] = { img: "/dungeons/ganonhunt.png", settings: { goal: "ganonhunt" } };
+    options["ad"] = { img: "/dungeons/alldungeons.png", settings: { goal: "ad" } };
+    options["completionist"] = { img: "/dungeons/ganon_completionist.png", settings: { goal: "completionist" } };
     curOption = goal === "ganon" || goal === "fast_ganon" ? `${goal}_${ganonVulnerable}` : goal;
+    // Combinations without a dedicated icon (e.g. ganonVulnerable "other")
+    // fall back to the plain goal icon rather than crashing the tracker.
+    if (!options[curOption]) {
+      curOption = goal === "fast_ganon" ? "fast_ganon_random" : goal === "ganon" ? "ganon_random" : goal;
+    }
 
   } else if (type === "gtOpen") {
     options["random"] = { img: "/dungeons/crystal_random.png", settings: { gtOpen: "random" } };
@@ -49,7 +57,7 @@ function GoalSelector({ type }: GoalSelectorProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
         <div className="h-full w-full flex items-center justify-center">
-          <img src={options[curOption].img} className="rounded-md"/>
+          {options[curOption]?.img && <img src={options[curOption].img} className="rounded-md"/>}
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-black" side="right" align="start" sideOffset={4} alignOffset={0} collisionAvoidance={{ side: "none", align: "none" }}>

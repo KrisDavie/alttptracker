@@ -53,9 +53,12 @@ export function RandomizerTab({ settings, updateSetting, startingItems, setStart
             options={[
               { value: "fast_ganon", label: "Fast Ganon" },
               { value: "ganon", label: "Defeat Ganon" },
-              // { value: "ad", label: "All Dungeons" },
+              { value: "ad", label: "All Dungeons" },
               { value: "pedestal", label: "Pedestal" },
               { value: "triforce_hunt", label: "Triforce Hunt" },
+              { value: "ganonhunt", label: "Ganonhunt" },
+              { value: "completionist", label: "Completionist" },
+              { value: "trinity", label: "Trinity" },
             ]}
           />
           <SettingSelect
