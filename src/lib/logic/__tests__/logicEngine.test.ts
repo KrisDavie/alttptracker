@@ -96,6 +96,42 @@ describe("LogicEngine", () => {
       // Can now reach big key drop if keys used correctly
       expect(result.locationsLogic["Hyrule Castle - Big Key Drop"]).toBe("available");
     });
+
+    it("[SK] marks Boomerang Chest and Zelda's Chest  as possible with 0 wild small keys", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("hc", { smallKeys: 0 }).build();
+      const traverser = new OverworldTraverser(state, getLogicSet("noglitches"));
+      const result = traverser.calculateAll();
+
+
+      expect(result.locationsLogic["Hyrule Castle - Map Chest"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("possible");
+      expect(result.locationsLogic["Hyrule Castle - Zelda's Chest"]).toBe("possible");
+    });
+
+    it("[SK] marks Boomerang Chest and Zelda's Chest as available with 1 wild small key", () => {
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild" }).withDungeon("hc", { smallKeys: 1 }).build();
+      const traverser = new OverworldTraverser(state, getLogicSet("noglitches"));
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("available");
+      expect(result.locationsLogic["Hyrule Castle - Zelda's Chest"]).toBe("available");
+    });
+
+    it("[SK BK Crossed] marks Boomerang Chest and Zelda's Chest as available with 1 wild small key", () => {
+      // Same setup but WITH lantern — entry is "available", locations should be "available"
+      const state = gameState().withAllItems().withSettings({ wildSmallKeys: "wild", wildBigKeys: true, entranceMode: "crossed" }).withDungeon("hc", { smallKeys: 1 })
+        .withEntranceLink("Dam", "Hyrule Castle Entrance (South)")
+        .build();
+
+      const logicSet = getLogicSet("noglitches");
+      const { regions, metadata } = buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state);
+      const traverser = new OverworldTraverser(state, { ...logicSet, regions }, metadata);
+      const result = traverser.calculateAll();
+
+      expect(result.locationsLogic["Hyrule Castle - Boomerang Chest"]).toBe("available");
+      // Without keydrop, the big key for HC is in its vanilla location so we should not track it separately
+      expect(result.locationsLogic["Hyrule Castle - Zelda's Chest"]).toBe("available");
+    });
   });
 
   describe("Eastern Palace Key Logic", () => {

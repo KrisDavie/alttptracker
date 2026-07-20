@@ -58,7 +58,12 @@ import {
 interface OverworldTraverserContext {
   reachable: Map<string, RegionReachability>;
   queue: string[];
-  blockedExits: { exitName: string; exit: ExitLogic[string]; from: string }[];
+  // Exits pending re-evaluation, keyed "from|exitName". Contains exits that
+  // evaluated "unavailable" AND exits that evaluated below "available" (ool /
+  // possible) — both can improve later when a canReach target becomes
+  // reachable, and must then be allowed to upgrade an already-reached
+  // destination. Accessibility must never be downgraded, only upgraded.
+  blockedExits: Map<string, { exitName: string; exit: ExitLogic[string]; from: string }>;
   pendingDungeons: Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>;
   // Track ALL discovered portals for each dungeon across all iterations
   // keyCost tracks how many keys were used to reach this portal (if reached via dungeon exit)
@@ -75,7 +80,9 @@ interface RouteSearchContext {
 }
 
 const doorPrefixToDungeon = DOOR_PREFIX_TO_DUNGEON;
-const portalToDungeon = PORTAL_TO_DUNGEON;
+// Hoisted: these are iterated in hot per-location loops.
+const DOOR_PREFIXES = Object.keys(DOOR_PREFIX_TO_DUNGEON);
+const PORTAL_PREFIX_ENTRIES = Object.entries(PORTAL_TO_DUNGEON);
 
 /** Merge two oolReasons arrays into a deduplicated string array, or undefined if both are empty. */
 function mergeOolReasons(a?: string[], b?: string[]): string[] | undefined {
@@ -108,6 +115,14 @@ export class OverworldTraverser {
   // Pre-computed metadata from the regions graph (shared with regionsProvider)
   private metadata: RegionMetadata;
   private canReachFromInProgress: Set<string> = new Set();
+  // Route results cached once traversal has reached its fixed point (the
+  // reachable map is frozen from then on, so canReachFrom answers are stable).
+  // Never populated during traversal — statuses still evolve there.
+  private routeResultCache: Map<string, LogicStatus> = new Map();
+  private routeCacheEnabled = false;
+  // Identity of the reachable map the cache was built against — a different
+  // map (e.g. evaluateLocations called with a custom snapshot) invalidates it.
+  private routeCacheForMap?: Map<string, RegionReachability>;
 
   constructor(state: GameState, logicSet: LogicSet, metadataOrProtection?: RegionMetadata | "partial" | "dangerous", protection?: "partial" | "dangerous") {
     // Support legacy signature: (state, logicSet, protection?)
@@ -349,6 +364,14 @@ export class OverworldTraverser {
     }
 
     const searchKey = `${sourceRegion}\u0000${targetRegion}`;
+    if (this.routeCacheEnabled) {
+      if (this.routeCacheForMap !== knownReachable) {
+        this.routeResultCache.clear();
+        this.routeCacheForMap = knownReachable;
+      }
+      const cached = this.routeResultCache.get(searchKey);
+      if (cached !== undefined) return cached;
+    }
     if (this.canReachFromInProgress.has(searchKey)) {
       return "unavailable";
     }
@@ -357,7 +380,11 @@ export class OverworldTraverser {
     try {
       const sourceStatus = knownSource?.status ?? "available";
       const routeStatus = this.searchRouteFromRegion(sourceRegion, targetRegion, knownSource?.linkState ?? "link");
-      return minimumStatus(sourceStatus, routeStatus);
+      const result = minimumStatus(sourceStatus, routeStatus);
+      if (this.routeCacheEnabled) {
+        this.routeResultCache.set(searchKey, result);
+      }
+      return result;
     } finally {
       this.canReachFromInProgress.delete(searchKey);
     }
@@ -370,18 +397,24 @@ export class OverworldTraverser {
     return { locationsLogic, locationReasons, entrancesLogic };
   }
 
+  // Memo: region → dungeon id (called per location per evaluation pass).
+  private dungeonIdByRegion = new Map<string, string | undefined>();
+
   private getDungeonIdFromRegion(regionName: string): string | undefined {
-    const dungeonPrefixes = Object.keys(doorPrefixToDungeon);
-    for (const prefix of dungeonPrefixes) {
+    if (this.dungeonIdByRegion.has(regionName)) return this.dungeonIdByRegion.get(regionName);
+    let result: string | undefined;
+    for (const prefix of DOOR_PREFIXES) {
       if (regionName.startsWith(prefix)) {
-        return doorPrefixToDungeon[prefix];
+        result = doorPrefixToDungeon[prefix];
+        break;
       }
     }
-    return undefined;
+    this.dungeonIdByRegion.set(regionName, result);
+    return result;
   }
 
   private getDungeonIdFromPortal(portalName: string): string | undefined {
-    for (const [prefix, dungeonId] of Object.entries(portalToDungeon)) {
+    for (const [prefix, dungeonId] of PORTAL_PREFIX_ENTRIES) {
       if (portalName.startsWith(prefix)) {
         return dungeonId;
       }
@@ -403,7 +436,7 @@ export class OverworldTraverser {
     return {
       reachable,
       queue: [...startRegions],
-      blockedExits: [],
+      blockedExits: new Map(),
       pendingDungeons: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>(),
       allDiscoveredPortals: new Map<string, Map<string, { linkState: LinkState; status: LogicStatus; keyCost: number; oolReasons?: string[] }>>(),
       overworldKeyCost: new Map<string, number>(),
@@ -486,18 +519,20 @@ export class OverworldTraverser {
     return !!this.state.settings.sequenceBreaks?.canSuperBunny;
   }
 
-  private updateIfBetter(regionName: string, newStatus: LogicStatus, newLinkState: LinkState, ctx: OverworldTraverserContext, newOolReasons?: string[]): void {
+  /** Upgrade a region's reachability if the new values are better. Returns true if anything changed. */
+  private updateIfBetter(regionName: string, newStatus: LogicStatus, newLinkState: LinkState, ctx: OverworldTraverserContext, newOolReasons?: string[]): boolean {
     const current = ctx.reachable.get(regionName);
-    if (!current) return; // Can't update non-existent region, shouldn't happen though
+    if (!current) return false; // Can't update non-existent region, shouldn't happen though
 
     const combinedLinkState = combineLinkStates(current.linkState, newLinkState);
     const combinedStatus = combineStatuses(current.status, newStatus);
     // Nothing improved — leave the region untouched.
-    if (combinedLinkState === current.linkState && combinedStatus === current.status) return;
+    if (combinedLinkState === current.linkState && combinedStatus === current.status) return false;
 
     ctx.reachable.set(regionName, {
       status: combinedStatus,
       linkState: combinedLinkState,
+      crystalStates: current.crystalStates,
       oolReasons: combinedStatus === "ool" ? mergeOolReasons(current.oolReasons, newOolReasons) : undefined,
     });
 
@@ -508,6 +543,7 @@ export class OverworldTraverser {
     // at the worse status. Statuses and link states only ever improve monotonically,
     // so re-queueing is bounded and terminates.
     ctx.queue.push(regionName);
+    return true;
   }
 
   /**
@@ -528,8 +564,8 @@ export class OverworldTraverser {
     return evaluator.evaluateWorldLogic(exit.requirements, evalCtx);
   }
 
-  private processExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): void {
-    if (!exit?.to) return;
+  private processExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromRegionReachability: RegionReachability, ctx: OverworldTraverserContext): boolean {
+    if (!exit?.to) return false;
 
     // OWR: Block flute exits to tiles whose effective world prevents flute usage.
     // In Open mode, can only flute to effectively-LW tiles.
@@ -539,11 +575,12 @@ export class OverworldTraverser {
       if (destOwid != null) {
         const effectiveWorld = this.getEffectiveWorld(destOwid);
         if ((!this.isInverted && effectiveWorld === "dark") || (this.isInverted && effectiveWorld === "light")) {
-          return; // Can't flute to this tile — wrong effective world
+          return false; // Can't flute to this tile — wrong effective world
         }
       }
     }
 
+    const recheckKey = `${fromRegion}|${exitName}`;
     const currentReachability = ctx.reachable.get(exit.to);
 
     // For dungeon exits in partial mode, use all-items evaluator to discover portals
@@ -553,11 +590,12 @@ export class OverworldTraverser {
     const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx, exit.type === "Dungeon" && !!this.allItemsEvaluator, exitReasons);
 
     if (exitStatus === "unavailable") {
-      ctx.blockedExits.push({ exitName, exit, from: fromRegion });
-      return;
+      ctx.blockedExits.set(recheckKey, { exitName, exit, from: fromRegion });
+      return false;
     }
 
     if (exit.type === "Dungeon") {
+      let madeProgress = false;
       const dungeonId = this.getDungeonIdFromPortal(exit.to);
       if (dungeonId) {
         const newLinkState = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
@@ -588,6 +626,7 @@ export class OverworldTraverser {
         if (!existingPortal) {
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
           ctx.allDiscoveredPortals.get(dungeonId)!.set(exit.to, { linkState: newLinkState, status: newStatus, keyCost: regionKeyCost, oolReasons: portalOolReasons });
+          madeProgress = true;
         } else if (isBetterStatus(newStatus, existingPortal.status)) {
           // Update to better status. If the previous status was the partial-mode
           // discovery placeholder ("unavailable"), its link state is a fiction —
@@ -602,9 +641,20 @@ export class OverworldTraverser {
           existingPortal.keyCost = Math.min(existingPortal.keyCost, regionKeyCost);
           existingPortal.oolReasons = portalOolReasons;
           ctx.pendingDungeons.get(dungeonId)!.set(exit.to, existingPortal);
+          madeProgress = true;
+        }
+
+        // Keep the exit registered for re-evaluation until the portal reaches
+        // "available" — its requirements (or the source region's status) may
+        // still improve when other regions become reachable.
+        const portalNow = ctx.allDiscoveredPortals.get(dungeonId)!.get(exit.to)!;
+        if (portalNow.status === "available") {
+          ctx.blockedExits.delete(recheckKey);
+        } else {
+          ctx.blockedExits.set(recheckKey, { exitName, exit, from: fromRegion });
         }
       }
-      return; // We process dungeon entrances separately
+      return madeProgress; // We process dungeon entrances separately
     }
 
     const newLinkState = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
@@ -613,6 +663,7 @@ export class OverworldTraverser {
       ? mergeOolReasons(fromRegionReachability.oolReasons, exitReasons?.size ? Array.from(exitReasons) : undefined)
       : undefined;
 
+    let madeProgress: boolean;
     if (!currentReachability) {
       ctx.reachable.set(exit.to, {
         status: newStatus,
@@ -620,9 +671,21 @@ export class OverworldTraverser {
         oolReasons: newOolReasons,
       });
       ctx.queue.push(exit.to);
+      madeProgress = true;
     } else {
-      this.updateIfBetter(exit.to, newStatus, newLinkState, ctx, newOolReasons);
+      madeProgress = this.updateIfBetter(exit.to, newStatus, newLinkState, ctx, newOolReasons);
     }
+
+    // An exit that didn't evaluate fully "available" (ool / possible) may still
+    // improve when a canReach target becomes reachable — keep it registered so
+    // re-evaluation can upgrade the destination later. Never downgrade.
+    if (exitStatus === "available") {
+      ctx.blockedExits.delete(recheckKey);
+    } else {
+      ctx.blockedExits.set(recheckKey, { exitName, exit, from: fromRegion });
+    }
+
+    return madeProgress;
   }
 
   private processPendingDungeons(ctx: OverworldTraverserContext): boolean {
@@ -719,13 +782,19 @@ export class OverworldTraverser {
           ctx.overworldKeyCost.set(resolvedTo, exitInfo.keysUsedToReach);
         }
 
+        const newLink = this.computeLinkStateForExit(exitInfo.linkState, resolvedType, exitName, resolvedTo);
         if (!ctx.reachable.has(resolvedTo)) {
-          const newLink = this.computeLinkStateForExit(exitInfo.linkState, resolvedType, exitName, resolvedTo);
           ctx.reachable.set(resolvedTo, {
             status: exitInfo.status,
             linkState: newLink,
           });
           ctx.queue.push(resolvedTo);
+          madeProgress = true;
+        } else if (this.updateIfBetter(resolvedTo, exitInfo.status, newLink, ctx)) {
+          // The region was already reached (possibly via a worse path, e.g. an
+          // out-of-logic overworld route processed before dungeons ran). The
+          // dungeon exit provides a better status/link state — upgrade it and
+          // let updateIfBetter's re-queue propagate the improvement downstream.
           madeProgress = true;
         }
       }
@@ -896,6 +965,7 @@ export class OverworldTraverser {
       if (exitDef?.requirements) {
         const evalCtx: EvaluationContext = {
           regionName: parentRegion,
+          linkState: regionReachability.linkState,
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
           canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, reachable),
           effectiveWorldState: this.getEffectiveWorldState(parentRegion, exitDef.to),
@@ -1032,48 +1102,31 @@ export class OverworldTraverser {
     return result;
   }
 
+  /**
+   * Re-evaluate exits registered for re-checking (unavailable / ool / possible
+   * results). Routes through processExit so:
+   * - already-reached destinations are upgraded (never downgraded) via updateIfBetter,
+   * - Dungeon-type exits go through the portal/pendingDungeons path (with the
+   *   discovery evaluator) instead of leaking interior regions into the BFS,
+   * - exits self-manage their registration (dropped once fully "available").
+   */
   private reevaluateBlockedExits(ctx: OverworldTraverserContext): boolean {
     let madeProgress = false;
-    const stillBlocked: { exitName: string; exit: ExitLogic[string]; from: string }[] = [];
 
-    for (const { exitName, exit, from } of ctx.blockedExits) {
-      if (!exit?.to) continue; // Severed exit, drop it
-
-      if (ctx.reachable.has(exit.to)) continue; // Already reachable
-
-      if (!ctx.reachable.has(from)) {
-        console.warn(`Blocked exit from unreachable region: ${from} -> ${exit.to}`);
-        stillBlocked.push({ exitName, exit, from });
-        continue; // Can't evaluate if the from region isn't reachable
+    // Snapshot: processExit mutates ctx.blockedExits while we iterate.
+    for (const { exitName, exit, from } of Array.from(ctx.blockedExits.values())) {
+      if (!exit?.to) {
+        ctx.blockedExits.delete(`${from}|${exitName}`);
+        continue; // Severed exit, drop it
       }
 
-      const fromRegionReachability = ctx.reachable.get(from)!;
+      const fromRegionReachability = ctx.reachable.get(from);
+      if (!fromRegionReachability) continue; // Wait until the source region is reached
 
-      const evalCtx: EvaluationContext = {
-        regionName: from,
-        linkState: fromRegionReachability.linkState,
-        canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
-        canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
-        effectiveWorldState: this.getEffectiveWorldState(from, exit.to),
-      };
-
-      const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exit.requirements, evalCtx);
-
-      if (exitStatus !== "unavailable") {
-        const newLink = this.computeLinkStateForExit(fromRegionReachability.linkState, exit.type, exitName, exit.to);
-        const newStatus = minimumStatus(fromRegionReachability.status, exitStatus);
-
-        ctx.reachable.set(exit.to, {
-          status: newStatus,
-          linkState: newLink,
-        });
-        ctx.queue.push(exit.to);
+      if (this.processExit(exitName, exit, from, fromRegionReachability, ctx)) {
         madeProgress = true;
-      } else {
-        stillBlocked.push({ exitName, exit, from });
       }
     }
-    ctx.blockedExits = stillBlocked;
     return madeProgress;
   }
 
@@ -1166,6 +1219,8 @@ export class OverworldTraverser {
   }
 
   public traverse(): Map<string, RegionReachability> {
+    this.routeCacheEnabled = false;
+    this.routeResultCache.clear();
     const ctx = this.initStartRegions();
 
     // In partial mode, first discover all reachable portals with all-items
@@ -1210,6 +1265,10 @@ export class OverworldTraverser {
         madeProgress = true;
       }
     }
+    // The reachable map is now at its fixed point — canReachFrom route
+    // searches over it are stable and safe to memoize for the (much hotter)
+    // location/entrance evaluation passes.
+    this.routeCacheEnabled = true;
     return ctx.reachable;
   }
 }

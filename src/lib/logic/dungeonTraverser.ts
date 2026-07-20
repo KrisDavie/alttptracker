@@ -64,6 +64,8 @@ export interface DungeonTraversalResult {
 interface DungeonContext {
   reachable: Map<string, DungeonRegionState>;
   pendingKeyDoors: string[];
+  /** Same contents as pendingKeyDoors — O(1) membership for the Dijkstra hot loop. */
+  pendingKeyDoorSet: Set<string>;
   regionMaxKeysUsed: Map<string, number>;
   regionMinKeysUsed: Map<string, number>;
   regionMinKeysUsedNoBK: Map<string, number>;
@@ -95,6 +97,22 @@ interface ExitMeta {
   isOverworld: boolean;      // exit leads to an overworld region
 }
 
+/**
+ * Exit metadata shared across DungeonTraverser instances. The metadata is a
+ * per-exit property of the (immutable) regions graph plus the world state —
+ * it is identical for all 13 dungeons, so building it once per graph+worldState
+ * saves 13 full-graph scans (with requirement-tree walks) per logic recompute.
+ * WeakMap keyed on the regions object: the entry dies with the graph.
+ */
+interface SharedExitMeta {
+  exitMeta: Map<string, ExitMeta>;
+  exitToSourceRegion: Map<string, string>;
+}
+const sharedExitMetaCache = new WeakMap<object, Map<string, SharedExitMeta>>();
+
+/** Per-graph cache of computeAllEntranceRegions results, keyed "dungeonId|entranceActive". */
+const sharedEntranceRegionsCache = new WeakMap<object, Map<string, Set<string>>>();
+
 export class DungeonTraverser {
   private state: GameState;
   private regions: Record<string, RegionLogic>;
@@ -125,9 +143,42 @@ export class DungeonTraverser {
     this.requirementEvaluator = new RequirementEvaluator(state, this.regions);
 
     this.actuallyHasBigKey = !state.settings.wildBigKeys || !!state.dungeons[dungeonId]?.bigKey;
-    this.buildExitMetadata();
+
+    // Exit metadata depends only on the graph + worldState — share across
+    // instances (all dungeons, and across recomputes while the graph object
+    // is unchanged, e.g. item-only changes).
+    let byMode = sharedExitMetaCache.get(this.regions);
+    if (!byMode) {
+      byMode = new Map();
+      sharedExitMetaCache.set(this.regions, byMode);
+    }
+    const modeKey = state.settings.worldState;
+    let shared = byMode.get(modeKey);
+    if (!shared) {
+      this.buildExitMetadata();
+      shared = { exitMeta: this.exitMeta, exitToSourceRegion: this.exitToSourceRegion };
+      byMode.set(modeKey, shared);
+    } else {
+      this.exitMeta = shared.exitMeta;
+      this.exitToSourceRegion = shared.exitToSourceRegion;
+    }
+
     this.effectivelyHasBigKey = protection === "partial" || this.actuallyHasBigKey;
-    this.allEntranceRegions = this.computeAllEntranceRegions();
+
+    // Entrance regions depend only on the graph + dungeonId + whether
+    // entrance shuffle is active.
+    let entranceCache = sharedEntranceRegionsCache.get(this.regions);
+    if (!entranceCache) {
+      entranceCache = new Map();
+      sharedEntranceRegionsCache.set(this.regions, entranceCache);
+    }
+    const entranceKey = `${dungeonId}|${state.settings.entranceMode !== "none"}`;
+    let entranceRegions = entranceCache.get(entranceKey);
+    if (!entranceRegions) {
+      entranceRegions = this.computeAllEntranceRegions();
+      entranceCache.set(entranceKey, entranceRegions);
+    }
+    this.allEntranceRegions = entranceRegions;
   }
 
   /** Find every region this dungeon's entrances lead to (regardless of overworld link state). */
@@ -475,7 +526,8 @@ export class DungeonTraverser {
             const countsAsKeyDoor = meta.isSKDoor && !meta.isPairedWithBK && !doorAlreadyOpened;
 
             // Collect pending doors for BFS (first pass only, real key-consuming doors)
-            if (collectPendingDoors && assumeBigKey && meta.isSKDoor && !meta.isPairedWithBK && !ctx.pendingKeyDoors.includes(exitName)) {
+            if (collectPendingDoors && assumeBigKey && meta.isSKDoor && !meta.isPairedWithBK && !ctx.pendingKeyDoorSet.has(exitName)) {
+              ctx.pendingKeyDoorSet.add(exitName);
               ctx.pendingKeyDoors.push(exitName);
             }
 
@@ -1222,7 +1274,12 @@ export class DungeonTraverser {
               if (keyRegion) {
                 const keyMinKeys = effectiveMinKeysMap.get(keyRegion) ?? 0;
 
-                // Downstream: need >= maxKeysUsed to reach key, or gated without backtrack
+                // Downstream: need >= maxKeysUsed to reach key, or only reachable
+                // through the target region itself. A key gated by the target can
+                // never help open the way TO the target — even if the player could
+                // backtrack with it afterwards, obtaining it requires the target
+                // to already be reached (e.g. HC boomerang guard's drop must not
+                // make the boomerang door "affordable").
                 const isDownstreamByThreshold = keyMinKeys >= effectiveMaxKeys;
                 let isGatedByTarget = false;
                 if (!isDownstreamByThreshold) {
@@ -1230,12 +1287,7 @@ export class DungeonTraverser {
                   if (!gatedByCache.has(gateKey)) {
                     gatedByCache.set(gateKey, this.isRegionGatedBy(keyRegion, regionName, ctx));
                   }
-                  if (gatedByCache.get(gateKey)!) {
-                    if (!backtrackCache.has(keyRegion)) {
-                      backtrackCache.set(keyRegion, this.canReachEntryFromRegion(keyRegion, ctx));
-                    }
-                    isGatedByTarget = !backtrackCache.get(keyRegion)!;
-                  }
+                  isGatedByTarget = gatedByCache.get(gateKey)!;
                 }
                 const isDownstream = isDownstreamByThreshold || isGatedByTarget;
 
@@ -1341,6 +1393,7 @@ export class DungeonTraverser {
     const ctx: DungeonContext = {
       reachable: new Map<string, DungeonRegionState>(),
       pendingKeyDoors: [],
+      pendingKeyDoorSet: new Set<string>(),
       regionMaxKeysUsed: new Map<string, number>(),
       regionMinKeysUsed: new Map<string, number>(),
       regionMinKeysUsedNoBK: new Map<string, number>(),

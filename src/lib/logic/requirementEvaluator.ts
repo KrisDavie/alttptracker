@@ -1,6 +1,7 @@
 import type { CrystalSwitchState, LinkState, LogicRequirement, LogicState, LogicStatus, RegionLogic, WorldLogic } from "@/data/logic/logicTypes";
 import type { GameState } from "@/data/logic/logicTypes";
 import { getLogicStateForWorld, minimumStatus, maximumStatus } from "./logicHelpers";
+import { DungeonsData } from "@/data/dungeonData";
 
 export interface EvaluationContext {
   dungeonId?: string;
@@ -347,7 +348,7 @@ export class RequirementEvaluator {
       case "canGetBonkableItem":
         return maximumStatus(this.resolveSimple("boots", ctx), minimumStatus(this.resolveSimple("quake", ctx), this.resolveSimple("sword", ctx)));
       case "canCrossEnergyBarrier":
-        return this.boolToStatus(this.hasItem("swordbeams") || this.hasItem("cape")); // || TODO: Add swordless logic
+        return maximumStatus(this.resolveSimple("swordbeams", ctx), this.boolToStatus(this.hasItem("cape"))); // || TODO: Add swordless logic
       case "canOpenGT":
         if (this.state.settings.gtOpen === "locksmith") {
           return this.resolveSimple("canCollectLocksmith", ctx);
@@ -438,6 +439,11 @@ export class RequirementEvaluator {
           return "available";
         }
         if (ctx.dungeonId) {
+          // HC Exception. TODO maybe harden to check can kill? Pots should always allow
+          const totLocs = DungeonsData[ctx.dungeonId]?.totalLocations;
+          if (totLocs?.bigkeydrops && !totLocs?.bigkey && this.state.settings.enemyDrop === "none") {
+            return "available";
+          }
           return this.boolToStatus(this.state.dungeons[ctx.dungeonId]?.bigKey ?? false);
         }
         return "unavailable";
