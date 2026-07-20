@@ -13,28 +13,7 @@ import { updateMultipleLocations, type CheckStatus } from "@/store/checksSlice";
 import { updateMultipleItems } from "@/store/itemsSlice";
 import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
 import { addEvent } from "@/store/eventLogSlice";
-
-/** Send a QUsb2snes command and await its single response message. */
-function qusb2snesRequest(ws: WebSocket, opcode: string, operands: string[] = []): Promise<MessageEvent> {
-  return new Promise((resolve, reject) => {
-    const onMessage = (event: MessageEvent) => {
-      ws.removeEventListener("error", onError);
-      resolve(event);
-    };
-    const onError = (event: Event) => {
-      ws.removeEventListener("message", onMessage);
-      reject(new Error(`QUsb2snes WebSocket error during ${opcode}: ${event}`));
-    };
-    ws.addEventListener("message", onMessage, { once: true });
-    ws.addEventListener("error", onError, { once: true });
-    ws.send(JSON.stringify({ Opcode: opcode, Space: "SNES", Operands: operands }));
-  });
-}
-
-/** Send a QUsb2snes command that doesn't produce a response (e.g. Attach). */
-function qusb2snesSend(ws: WebSocket, opcode: string, operands: string[] = []) {
-  ws.send(JSON.stringify({ Opcode: opcode, Space: "SNES", Operands: operands }));
-}
+import { qusb2snesRequest, qusb2snesBinaryRequest, qusb2snesSend } from "@/lib/qusb2snes";
 
 interface AutotrackerProviderProps {
   children: React.ReactNode;
@@ -172,12 +151,12 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         if (!qusb2Websocket || qusb2Websocket.readyState !== WebSocket.OPEN) {
           throw new Error("WebSocket not connected for QUsb2snes");
         }
-        const response = await qusb2snesRequest(
+        return await qusb2snesBinaryRequest(
           qusb2Websocket,
           "GetAddress",
           [requestAddress.toString(16), size.toString(16)],
+          size,
         );
-        return new Uint8Array(response.data as ArrayBuffer);
       }
     }
 
@@ -337,8 +316,10 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         }
         case "bombs": itemUpdates["bomb"] = val > 0 ? 1 : 0; break;
         case "mushroom": {
+          // 0x08 = mushroom handed to the witch (turned in), 0x20 = mushroom in inventory.
+          // Turned-in takes precedence — check it first, or it can never be reached.
           const bits = val & 0x28;
-          itemUpdates["mushroom"] = bits & 0x28 ? 1 : bits & 0x08 ? 2 : 0;
+          itemUpdates["mushroom"] = bits & 0x08 ? 2 : bits & 0x20 ? 1 : 0;
           break;
         }
         case "powder":
