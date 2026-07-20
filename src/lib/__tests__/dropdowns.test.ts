@@ -5,6 +5,7 @@ import {
   isPairedEntrance,
   getEntrancePool,
   getForcedPartnerLink,
+  isHiddenPairedDoor,
 } from "@/lib/dropdowns";
 import reducer, { setEntranceLink } from "@/store/entrancesSlice";
 
@@ -47,6 +48,30 @@ describe("dropdown helpers", () => {
     });
     // No forcing when either side isn't paired.
     expect(getForcedPartnerLink("Dam", "Sanctuary", false)).toBeUndefined();
+  });
+
+  it("hides the paired door (cave) side but never the drop, outside insanity", () => {
+    // Door side is hidden; drop side stays visible.
+    expect(isHiddenPairedDoor("Kakariko Well Cave", "crossed", false)).toBe(true);
+    expect(isHiddenPairedDoor("Kakariko Well Drop", "crossed", false)).toBe(false);
+    // Unpaired entrances are never hidden.
+    expect(isHiddenPairedDoor("Dam", "crossed", false)).toBe(false);
+    // Insanity keeps both sides (they shuffle independently).
+    expect(isHiddenPairedDoor("Kakariko Well Cave", "insanity", false)).toBe(false);
+  });
+
+  it("only hides Skull Woods doors when zelgaWoods is enabled", () => {
+    // Non-zelga: Skull Woods front entrances form a shuffle pool — nothing hidden.
+    expect(isHiddenPairedDoor("Skull Woods First Section Door", "crossed", false)).toBe(false);
+    expect(isHiddenPairedDoor("Skull Woods Second Section Door (East)", "crossed", false)).toBe(false);
+    // Zelga: the two zelga pairs hide their door side, showing the drop.
+    expect(isHiddenPairedDoor("Skull Woods First Section Door", "crossed", true)).toBe(true);
+    expect(isHiddenPairedDoor("Skull Woods Second Section Door (East)", "crossed", true)).toBe(true);
+    expect(isHiddenPairedDoor("Skull Woods First Section Hole (North)", "crossed", true)).toBe(false);
+    expect(isHiddenPairedDoor("Skull Woods Second Section Hole", "crossed", true)).toBe(false);
+    // The vanilla southeast holes are not part of a pair, so never hidden.
+    expect(isHiddenPairedDoor("Skull Woods First Section Hole (East)", "crossed", true)).toBe(false);
+    expect(isHiddenPairedDoor("Skull Woods First Section Hole (West)", "crossed", true)).toBe(false);
   });
 });
 

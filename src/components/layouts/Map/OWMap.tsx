@@ -5,7 +5,7 @@ import type { RootState } from "../../../store/store";
 import MapLocation from "@/components/tracker/MapLocation";
 import { locationsData, entranceLocations, type LocationData } from "@/data/locationsData";
 import { getActiveLocations, getDungeonIdForEntry, isSecondaryEntrance, isReplacedByEntrances } from "@/lib/logic/locationMapper";
-import { getEntranceGroup } from "@/lib/dropdowns";
+import { getEntranceGroup, isHiddenPairedDoor } from "@/lib/dropdowns";
 
 import { setSelectedEntrance, setCurrentMode, setModalOpen } from "@/store/trackerSlice";
 import { cn } from "@/lib/utils";
@@ -114,6 +114,9 @@ function OWMap({ world = "lw" }: OWMapProps) {
     if (location.world !== world) return null;
     if (getEntranceGroup(locationKey, entranceMode, settings.zelgaWoods) === "vanilla") return null;
     if (locationKey.includes("Inverted") && settings.worldState === "open") return null;
+    // In non-insanity modes a dropdown and its paired door are forcibly linked;
+    // hide the redundant door (cave) marker and show only the drop.
+    if (isHiddenPairedDoor(locationKey, entranceMode, settings.zelgaWoods)) return null;
 
     // If the entrance is linked to a dungeon entry, use the larger dungeon-size marker.
     const linkedTo = entrances[locationKey]?.to;

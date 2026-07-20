@@ -2,11 +2,13 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { entranceConnectorGroups } from "../../data/entranceConnections";
 import { locationsData, entranceLocations } from "../../data/locationsData";
+import { isHiddenPairedDoor } from "@/lib/dropdowns";
 
 export default function EntranceLinesOverlay() {
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
   const worldState = useSelector((state: RootState) => state.settings.worldState);
   const entranceMode = useSelector((state: RootState) => state.settings.entranceMode);
+  const zelgaWoods = useSelector((state: RootState) => state.settings.zelgaWoods);
   const connectionLinesMode = useSelector((state: RootState) => state.settings.connectionLinesMode);
   const connectionLineColor = useSelector((state: RootState) => state.settings.connectionLineColor);
   const entrances = useSelector((state: RootState) => state.entrances);
@@ -24,6 +26,9 @@ export default function EntranceLinesOverlay() {
   }
 
   for (const [owName, entranceData] of Object.entries(entrances)) {
+    // Hidden paired doors (see isHiddenPairedDoor) aren't drawn on the map, so
+    // skip their links too — this removes the tiny drop↔door connector line.
+    if (isHiddenPairedDoor(owName, entranceMode, zelgaWoods)) continue;
     if (entranceData.to) {
       const groupId = vanillaToGroup.get(entranceData.to);
       if (groupId) {

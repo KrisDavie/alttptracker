@@ -6,6 +6,17 @@ function findConnectorGroupBySide(side: string) {
   return Object.values(entranceConnectorGroups).find((g) => g.entrances.includes(side));
 }
 
+/**
+ * Return every side (entrance) of the named connector group that the given side
+ * belongs to, or undefined if it isn't part of a named connector group. Used to
+ * aggregate all interior locations reachable across a connector complex (e.g.
+ * every Skull Woods section) into a single entrance tooltip.
+ */
+export function getConnectorGroupSides(side: string | null | undefined): string[] | undefined {
+  if (!side) return undefined;
+  return findConnectorGroupBySide(side)?.entrances;
+}
+
 /** Find the overworld entrance that the player exits at when leaving the given connector side. */
 function findEntranceLinkingTo(side: string, entrances: EntrancesState): string | undefined {
   return Object.keys(entrances).find((name) => entrances[name]?.to === side);

@@ -14,8 +14,8 @@ import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { useMemo } from "react";
 import { getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { getScoutedItemIcon, scoutedItemsEqual } from "@/lib/scoutedItems";
-import { allConnectorEntrances } from "@/data/entranceConnections";
-import { buildEntranceTooltipName } from "@/lib/entranceTrace";
+import { allConnectorEntrances, getConnectorGroup } from "@/data/entranceConnections";
+import { buildEntranceTooltipName, getConnectorGroupSides } from "@/lib/entranceTrace";
 import { isDropdown, isPairedEntrance, getEntrancePool, getEntranceGroup } from "@/lib/dropdowns";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
@@ -81,7 +81,8 @@ function MapLocation(props: MapLocationProps) {
 
   // ---- Derived entrance state ----
   const isLinked = !!(isEntrance && to);
-  const isConnector = !!(isEntrance && to && (allConnectorEntrances.includes(to) || to.startsWith("Unknown Connector") || to.startsWith("Generic Connector")));
+  // TODO Support insanity and show dropdowns as connectors
+  const isConnector = !!(isEntrance && to && ((allConnectorEntrances.includes(to) && !getConnectorGroup(to)?.isDropdown) || to.startsWith("Unknown Connector") || to.startsWith("Generic Connector")));
   const dungeonId = getDungeonIdForEntry(to ?? "");
   const isLinkedToDungeon = isEntrance && to ? !!dungeonId : false;
   const showAsDiamond = isConnector && !isLinkedToDungeon;
@@ -97,7 +98,17 @@ function MapLocation(props: MapLocationProps) {
 
   // We use the `to` field if it's an entrance and it's resolved, otherwise the name itself
   const targetLocationName = isEntrance && to ? to : locName;
-  const { itemLocations, itemChecks, displayList, status, maxLogicStatus, handleCheckClick, handleGroupExpand, toggleAllChecks, resetGroups, targetName } = useLocationTooltipData(isEntrance ? (to ?? "") : targetLocationName);
+  // When the target is one side of a connector complex (e.g. a Skull Woods
+  // section), aggregate every other side's interior locations so the tooltip
+  // surfaces the whole complex (Big Chest, etc.), not just the entered side.
+  const connectorSideEntries = useMemo(() => {
+    if (!isEntrance || !to) return undefined;
+    const sides = getConnectorGroupSides(to);
+    if (!sides) return undefined;
+    const others = sides.filter((s) => s !== to);
+    return others.length > 0 ? others : undefined;
+  }, [isEntrance, to]);
+  const { itemLocations, itemChecks, displayList, status, maxLogicStatus, handleCheckClick, handleGroupExpand, toggleAllChecks, resetGroups, targetName } = useLocationTooltipData(isEntrance ? (to ?? "") : targetLocationName, connectorSideEntries);
 
   // When this marker maps to a dungeon, mirror its chest counter: once nothing
   // collectable remains (e.g. un-shuffled dungeon items still sit in "available"
@@ -115,11 +126,8 @@ function MapLocation(props: MapLocationProps) {
     if (e.button === 0 && e.type === "click") {
       if (isEntrance) {
         if (currentMode === "connect" && selectedEntrance) {
-          // Clicking the selected marker itself is a cancel gesture — never
-          // link an entrance to itself.
-          if (selectedEntrance !== locName) {
-            dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName, zelgaWoods, entranceMode }));
-          }
+          // Link the selected entrance to the clicked one.
+          dispatch(setEntranceLink({ entrance: selectedEntrance, to: locName, zelgaWoods, entranceMode }));
           dispatch(setSelectedEntrance([null, false]));
           dispatch(setCurrentMode("none"));
         } else if (currentMode === "generic_connect" && selectedEntrance !== locName && selectedEntrance) {

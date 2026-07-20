@@ -187,3 +187,17 @@ export function getEntranceGroup(name: string, entranceMode: string, zelgaWoods:
   if (!override) return base;
   return override[entranceMode] ?? base;
 }
+
+/**
+ * In non-insanity modes a dropdown (hole) and its paired door move together, so
+ * the door side is redundant on the map. Returns true when `entrance` is the
+ * door (partner) side of an active dropdown pair and should be hidden, leaving
+ * only the drop marker (which also removes the tiny drop↔door connector line).
+ * Skull Woods is handled automatically: its pairs are only active with the
+ * zelgaWoods setting, so in non-zelga modes none of its front entrances hide.
+ */
+export function isHiddenPairedDoor(entrance: string, entranceMode: string, zelgaWoods: boolean): boolean {
+  if (entranceMode === "insanity") return false;
+  const pair = getDropdownPairFor(entrance, zelgaWoods);
+  return !!pair && pair.partner === entrance;
+}

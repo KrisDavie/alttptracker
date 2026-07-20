@@ -1,87 +1,95 @@
 // TODO: Consider marking one way entrances differently
 export interface EntranceConnectorGroup {
-  type: 'cave' | 'dungeon';
+  type: "cave" | "dungeon";
   entrances: string[];
+  isDropdown?: boolean; // Whether this group is a dropdown (hole) entrance and its partner door
 }
 
-export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGroup  } = {
-  "lost_woods_hideout": {
+export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGroup } = {
+  lost_woods_hideout: {
     type: "cave",
     entrances: ["Lost Woods Hideout Drop", "Lost Woods Hideout Stump"],
+    isDropdown: true,
   },
-  "lumberjack_tree": {
+  lumberjack_tree: {
     type: "cave",
     entrances: ["Lumberjack Tree Tree", "Lumberjack Tree Cave"],
+    isDropdown: true,
   },
-  "kakariko_well": {
+  kakariko_well: {
     type: "cave",
     entrances: ["Kakariko Well Drop", "Kakariko Well Cave"],
+    isDropdown: true,
   },
-  "bat_cave": {
+  bat_cave: {
     type: "cave",
     entrances: ["Bat Cave Drop", "Bat Cave Cave"],
+    isDropdown: true,
   },
-  "hc_secret_entrance": {
+  hc_secret_entrance: {
     type: "cave",
     entrances: ["Hyrule Castle Secret Entrance Drop", "Hyrule Castle Secret Entrance Stairs"],
+    isDropdown: true,
   },
-  "ganon_drop": {
+  ganon_drop: {
     type: "cave",
     entrances: ["Pyramid Hole", "Pyramid Entrance"],
+    isDropdown: true,
   },
-  "north_fariy": {
+  north_fariy: {
     type: "cave",
     entrances: ["North Fairy Cave Drop", "North Fairy Cave"],
+    isDropdown: true,
   },
-  "spectacle_rock_cave": {
+  spectacle_rock_cave: {
     type: "cave",
     entrances: ["Spectacle Rock Cave (Bottom)", "Spectacle Rock Cave Peak", "Spectacle Rock Cave"],
   },
-  "spiral_cave": {
+  spiral_cave: {
     type: "cave",
     entrances: ["Spiral Cave", "Spiral Cave (Bottom)"],
   },
-  "fairy_ascension_cave": {
+  fairy_ascension_cave: {
     type: "cave",
     entrances: ["Fairy Ascension Cave (Bottom)", "Fairy Ascension Cave (Top)"],
   },
-  "paradox_cave": {
+  paradox_cave: {
     type: "cave",
     entrances: ["Paradox Cave (Bottom)", "Paradox Cave (Middle)", "Paradox Cave (Top)"],
   },
-  "death_mountain_return_cave": {
+  death_mountain_return_cave: {
     type: "cave",
     entrances: ["Death Mountain Return Cave (West)", "Death Mountain Return Cave (East)"],
   },
-  "old_man_cave": {
+  old_man_cave: {
     type: "cave",
     entrances: ["Old Man Cave (East)", "Old Man Cave (West)"],
   },
-  "old_man_house": {
+  old_man_house: {
     type: "cave",
     entrances: ["Old Man House (Bottom)", "Old Man House (Top)"],
   },
-  "elder_house": {
+  elder_house: {
     type: "cave",
     entrances: ["Elder House (West)", "Elder House (East)"],
   },
-  "brothers_connector": {
+  brothers_connector: {
     type: "cave",
     entrances: ["Two Brothers House (West)", "Two Brothers House (East)"],
   },
-  "hookshot_cave": {
+  hookshot_cave: {
     type: "cave",
     entrances: ["Hookshot Cave", "Hookshot Cave Back Entrance"],
   },
-  "superbunny_cave": {
+  superbunny_cave: {
     type: "cave",
     entrances: ["Superbunny Cave (Top)", "Superbunny Cave (Bottom)"],
   },
-  "bumper_cave": {
+  bumper_cave: {
     type: "cave",
     entrances: ["Bumper Cave (Bottom)", "Bumper Cave (Top)"],
   },
-  "skull_woods": {
+  skull_woods: {
     type: "dungeon",
     entrances: [
       "Skull Woods First Section Door",
@@ -93,34 +101,22 @@ export const entranceConnectorGroups: { [groupId: string]: EntranceConnectorGrou
       "Skull Woods Second Section Hole",
     ],
   },
-  "turtle_rock": {
+  turtle_rock: {
     type: "dungeon",
-    entrances: [
-      "Turtle Rock",
-      "Dark Death Mountain Ledge (West)",
-      "Dark Death Mountain Ledge (East)",
-      "Turtle Rock Isolated Ledge Entrance",
-    ],
+    entrances: ["Turtle Rock", "Dark Death Mountain Ledge (West)", "Dark Death Mountain Ledge (East)", "Turtle Rock Isolated Ledge Entrance"],
   },
-  "desert_palace": {
+  desert_palace: {
     type: "dungeon",
-    entrances: [
-      "Desert Palace Entrance (West)",
-      "Desert Palace Entrance (South)",
-      "Desert Palace Entrance (East)",
-    ],
+    entrances: ["Desert Palace Entrance (West)", "Desert Palace Entrance (South)", "Desert Palace Entrance (East)"],
   },
-  "hyrule_castle": {
+  hyrule_castle: {
     type: "dungeon",
-    entrances: [
-      "Hyrule Castle Entrance (South)",
-      "Hyrule Castle Entrance (West)",
-      "Hyrule Castle Entrance (East)",
-      "Sanctuary Grave",
-      "Sanctuary"
-    ],
+    entrances: ["Hyrule Castle Entrance (South)", "Hyrule Castle Entrance (West)", "Hyrule Castle Entrance (East)", "Sanctuary Grave", "Sanctuary"],
   },
-
 };
 
-export const allConnectorEntrances = Object.values(entranceConnectorGroups).flatMap(group => group.entrances);
+export const allConnectorEntrances = Object.values(entranceConnectorGroups).flatMap((group) => group.entrances);
+
+export const getConnectorGroup = (entranceName: string): EntranceConnectorGroup | undefined => {
+  return Object.values(entranceConnectorGroups).find((group) => group.entrances.includes(entranceName));
+};

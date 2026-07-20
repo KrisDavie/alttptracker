@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
+import { allConnectorEntrances, getConnectorGroup } from "@/data/entranceConnections";
+import { getActiveLocations, getDungeonIdForEntry } from "@/lib/logic/locationMapper";
 import { placeLabels } from "@/lib/labelPlacement";
 import type { Rect } from "@/lib/labelPlacement";
 import { useMemo } from "react";
@@ -11,10 +13,17 @@ interface EntranceLabelOverlayProps {
 
 const MAP_SIZE = 512;
 
+function isConnectorTarget(to: string): boolean {
+  // TODO Support insanity and show dropdowns as connectors
+  return (allConnectorEntrances.includes(to) && (!getConnectorGroup(to)?.isDropdown)) || to.startsWith("Generic Connector") || to.startsWith("Unknown Connector");
+}
+
 export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlayProps) {
   const entrances = useSelector((state: RootState) => state.entrances);
   const entranceLabelOverrides = useSelector((state: RootState) => state.settings.entranceLabelOverrides);
   const mapMode = useSelector((state: RootState) => state.settings.mapMode);
+  const settings = useSelector((state: RootState) => state.settings);
+  const locationsChecks = useSelector((state: RootState) => state.checks.locationsChecks);
 
   const mergedLabels = useMemo(
     () => ({ ...defaultEntranceLabels, ...entranceLabelOverrides }),
@@ -50,6 +59,15 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
     for (const entrance of Object.keys(entrances)) {
       const placed = entrances[entrance].to;
       if (!placed) continue;
+      // Hide the label once a simple destination is fully cleared. Connectors and
+      // dungeons keep their labels (they stay navigationally relevant even after
+      // all their items are collected).
+      if (!isConnectorTarget(placed) && !getDungeonIdForEntry(placed)) {
+        const locs = getActiveLocations(placed, settings);
+        if (locs.length > 0 && locs.every((l) => locationsChecks[l]?.checked)) {
+          continue;
+        }
+      }
       const labelInfo = mergedLabels[placed];
       const ob = obstaclesPct[entrance];
       if (labelInfo && ob) {
@@ -65,7 +83,7 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
       }
     }
     return result;
-  }, [entrances, mergedLabels, obstaclesPct]);
+  }, [entrances, mergedLabels, obstaclesPct, settings, locationsChecks]);
 
   const placedLabels = useMemo(
     () => placeLabels(labelsToPlace, obstaclesPct, {
