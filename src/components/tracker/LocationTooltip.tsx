@@ -41,82 +41,109 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
   const itemTextClass = size === "md" ? "text-2xs" : "text-4xs";
   const statusWidth = size === "md" ? "w-14" : "w-8";
 
-  // JS-based repositioning for autoPosition tooltips (chest counters).
-  // Keeps the tooltip within the scaled tracker container's screen-space bounds.
-  // The tracker uses CSS transform:scale(), so we compare offsetWidth vs
-  // getBoundingClientRect to derive the effective scale for coordinate conversion.
+  // The base horizontal translate applied by the CSS classes below. Repositioning
+  // composes corrections on top of this so it works regardless of the anchor.
+  const baseTranslateX = autoPosition ? "-50%" : name === "Ganons Tower" ? "-55.5556%" : xPercent < 25 ? "0px" : xPercent > 75 ? "0px" : "-50%";
+
+  // JS-based repositioning to keep a tooltip within the scaled tracker container's
+  // screen-space bounds. The tracker uses CSS transform:scale(), so we compare
+  // offsetWidth vs getBoundingClientRect to derive the effective scale for
+  // screen→local coordinate conversion. Used by both chest-counter tooltips
+  // (autoPosition) and map tooltips.
   const reposition = useCallback(() => {
     const el = tooltipRef.current;
     if (!el) return;
 
-    // Reset inline overrides so CSS classes set the initial position
+    // Reset inline overrides so the CSS classes define the starting position
     el.style.translate = "";
     el.style.removeProperty("top");
     el.style.removeProperty("bottom");
     el.style.removeProperty("padding-top");
     el.style.removeProperty("padding-bottom");
-
-    const localWidth = el.offsetWidth;
-    const screenRect = el.getBoundingClientRect();
-    const scale = localWidth > 0 ? screenRect.width / localWidth : 1;
+    el.style.removeProperty("max-width");
 
     // Find the tracker container's screen-space bounds
     const boundsEl = el.closest("[data-tracker-bounds]");
     const bounds = boundsEl ? boundsEl.getBoundingClientRect() : { left: 0, right: document.documentElement.clientWidth, top: 0, bottom: window.innerHeight };
 
-    // Horizontal correction (screen-space → local-space)
-    let dxScreen = 0;
-    if (screenRect.right > bounds.right - 4) {
-      dxScreen = bounds.right - 4 - screenRect.right;
-    }
-    if (screenRect.left + dxScreen < bounds.left + 4) {
-      dxScreen = bounds.left + 4 - screenRect.left;
-    }
-    if (dxScreen !== 0) {
-      const dxLocal = dxScreen / scale;
-      el.style.translate = `calc(-50% + ${dxLocal}px) 0`;
+    const localWidth = el.offsetWidth;
+    let rect = el.getBoundingClientRect();
+    const scale = localWidth > 0 ? rect.width / localWidth : 1;
+
+    // Shrink to fit when the tooltip is wider than the available bounds
+    const maxScreenWidth = bounds.right - bounds.left - 8;
+    if (rect.width > maxScreenWidth && scale > 0) {
+      el.style.maxWidth = `${maxScreenWidth / scale}px`;
+      rect = el.getBoundingClientRect();
     }
 
-    // Vertical: flip above/below if needed
-    if (screenRect.top < bounds.top) {
+    // Vertical: flip above/below if the current side overflows
+    if (rect.top < bounds.top) {
       el.style.bottom = "auto";
       el.style.top = "100%";
       el.style.paddingTop = "0.25rem";
       el.style.paddingBottom = "0";
-    } else if (screenRect.bottom > bounds.bottom) {
+    } else if (rect.bottom > bounds.bottom) {
       el.style.top = "auto";
       el.style.bottom = "100%";
       el.style.paddingBottom = "0.25rem";
       el.style.paddingTop = "0";
     }
-  }, []);
+    rect = el.getBoundingClientRect();
+
+    // Horizontal clamp (screen-space delta needed to fit inside bounds)
+    let dxScreen = 0;
+    if (rect.right > bounds.right - 4) dxScreen = bounds.right - 4 - rect.right;
+    if (rect.left + dxScreen < bounds.left + 4) dxScreen = bounds.left + 4 - rect.left;
+
+    // Vertical clamp (in case a flipped tooltip still overflows)
+    let dyScreen = 0;
+    if (rect.bottom > bounds.bottom - 4) dyScreen = bounds.bottom - 4 - rect.bottom;
+    if (rect.top + dyScreen < bounds.top + 4) dyScreen = bounds.top + 4 - rect.top;
+
+    if ((dxScreen !== 0 || dyScreen !== 0) && scale > 0) {
+      const dxLocal = dxScreen / scale;
+      const dyLocal = dyScreen / scale;
+      el.style.translate = `calc(${baseTranslateX} + ${dxLocal}px) ${dyLocal}px`;
+    }
+  }, [baseTranslateX]);
 
   useEffect(() => {
-    if (!autoPosition) return;
     const el = tooltipRef.current;
     if (!el) return;
 
-    let rafId = requestAnimationFrame(reposition);
+    let rafId = 0;
     const scheduleReposition = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(reposition);
     };
 
     window.addEventListener("resize", scheduleReposition);
+
     let ro: ResizeObserver | undefined;
-    if (typeof ResizeObserver !== "undefined") {
-      ro = new ResizeObserver(scheduleReposition);
-      ro.observe(el);
+    const parent = el.parentElement;
+    if (autoPosition) {
+      // Chest-counter tooltips: reposition on mount and whenever their size changes.
+      scheduleReposition();
+      if (typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(scheduleReposition);
+        ro.observe(el);
+      }
+    } else {
+      // Map tooltips: reposition lazily when the marker is hovered (avoids a
+      // layout pass for every marker on mount).
+      parent?.addEventListener("mouseenter", scheduleReposition);
     }
 
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", scheduleReposition);
       ro?.disconnect();
+      parent?.removeEventListener("mouseenter", scheduleReposition);
     };
   }, [autoPosition, reposition]);
 
-  // Map tooltips: CSS-only positioning based on xPercent/yPercent
+  // Map tooltips: CSS-only base positioning based on xPercent/yPercent
   const tooltipXClasses = name === "Ganons Tower" ? "left-3/9 -translate-x-5/9" : xPercent < 25 ? "left-0 translate-x-0" : xPercent > 75 ? "right-0 translate-x-0" : "left-1/2 -translate-x-1/2";
 
   const tooltipClasses = autoPosition
@@ -133,15 +160,15 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
             const [firstLine, ...restLines] = name.split("\n");
             return (
               <div>
-                <div className="font-bold flex gap-2 whitespace-nowrap items-baseline">
-                  <span>{firstLine}</span>
+                <div className="font-bold flex gap-2 items-baseline">
+                  <span className="min-w-0 wrap-break-word">{firstLine}</span>
                   <span
-                    className={cn("w-12 text-right", tooltipStatusText(singleCheck.status.checked ? "checked" : singleCheck.status.logic))}
+                    className={cn("w-12 shrink-0 text-right", tooltipStatusText(singleCheck.status.checked ? "checked" : singleCheck.status.logic))}
                     title={singleCheck.status.logic === "ool" && singleCheck.status.oolReasons?.length ? `Requires: ${singleCheck.status.oolReasons.map(getSequenceBreakLabel).join(", ")}` : undefined}
                   >{singleCheck.status.checked ? "checked" : singleCheck.status.logic}{singleCheck.status.logic === "ool" && singleCheck.status.oolReasons?.length ? " ?" : ""}</span>
                 </div>
                 {restLines.length > 0 && (
-                  <div className={cn("font-normal opacity-70 whitespace-pre", size === "md" ? "text-2xs" : "text-4xs")}>{restLines.join("\n")}</div>
+                  <div className={cn("font-normal opacity-70 whitespace-pre-wrap wrap-break-word", size === "md" ? "text-2xs" : "text-4xs")}>{restLines.join("\n")}</div>
                 )}
                 {note && <div className={cn("mt-1 italic opacity-90", size === "md" ? "text-2xs" : "text-4xs")}>NOTE: {note}</div>}
               </div>
@@ -149,12 +176,12 @@ export function LocationTooltip({ name, xPercent, yPercent, items, singleCheck, 
           })()
         ) : (
           <>
-            <div className="border-b border-gray-500 mb-1 whitespace-pre" onClick={(e) => e.stopPropagation()}>
+            <div className="border-b border-gray-500 mb-1 whitespace-pre-wrap wrap-break-word" onClick={(e) => e.stopPropagation()}>
               {(() => {
                 const [firstLine, ...restLines] = name.split("\n");
                 return (
                   <>
-                    <div className="font-bold">{firstLine}</div>
+                    <div className="font-bold wrap-break-word">{firstLine}</div>
                     {restLines.length > 0 && (
                       <div className={cn("font-normal opacity-70", size === "md" ? "text-2xs" : "text-4xs")}>{restLines.join("\n")}</div>
                     )}
