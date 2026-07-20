@@ -43,7 +43,7 @@ export default function EntranceLinesOverlay() {
     }
   }
 
-  const isVertical = mapMode === "vertical";
+  const isVertical = mapMode === "vertical" || mapMode === "popoutVertical";
   const w1 = ["inverted", "inverted_1", "standverted"].includes(worldState) ? "dw" : "lw";
   
   // Calculate absolute % coordinates based on layout
