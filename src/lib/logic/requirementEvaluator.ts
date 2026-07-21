@@ -235,9 +235,9 @@ export class RequirementEvaluator {
         return this.boolToStatus(this.state.dungeons["ct"].bossDefeated);
       case "agahnim2":
         return this.boolToStatus(this.state.dungeons["gt"].bossDefeated);
-      case "bombs":
+      case "bomb":
         if (ctx.linkState !== "link") return "unavailable";
-        return this.boolToStatus(this.hasItem("bomb"));
+        return this.boolToStatus(this.hasItem("bomb") || this.hasItem("bombcapacity"));
       case "bottle":
         return this.boolToStatus(this.getBottleCount() > 0);
       case "bow":

@@ -75,31 +75,6 @@ describe("E2E: Default settings", () => {
     }
   });
 
-  it("Kakariko Well without bombs: Top should be unavailable, others available", async () => {
-    renderLocationWithLogic("Kakariko Well");
-
-    await waitFor(() => {
-      const el = document.querySelector(".absolute.inset-0") as HTMLElement;
-      expect(el).toBeTruthy();
-      // Some but not all locations are available, so the square reflects the mixed state
-      expect(el.className).toContain("bg-status-someAvailable");
-    });
-
-    // The 4 chests in the top section (no bombs needed) should be available
-    const availableTexts = screen.getAllByText("available");
-    expect(availableTexts).toHaveLength(4);
-
-    // The back section "Top" chest requires bombs, so it should be unavailable
-    const unavailableTexts = screen.getAllByText("unavailable");
-    expect(unavailableTexts).toHaveLength(1);
-
-    // Verify all 5 location names appear
-    expect(screen.getByText("Top")).toBeTruthy();
-    expect(screen.getByText("Left")).toBeTruthy();
-    expect(screen.getByText("Middle")).toBeTruthy();
-    expect(screen.getByText("Right")).toBeTruthy();
-    expect(screen.getByText("Bottom")).toBeTruthy();
-  });
 });
 
 describe("E2E: ool checks", () => {

@@ -21369,6 +21369,7 @@ export const SPECIAL_HANDLE_INVENTORY_ITEMS: MultiInventoryItemLocation[] = [
   { name: "Inventory - bow", type: LocationType.InventoryItem, wramAddress: 0xf5f38e, mask: 0x00, phWramAddress: 0xf5f340, phMask: 0x00 },
   { name: "Inventory - boomerang", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f341, phMask: 0x00 },
   { name: "Inventory - bombs", type: LocationType.InventoryItem, wramAddress: 0xf5f343, mask: 0x00, phWramAddress: 0xf5f343, phMask: 0x00 },
+  { name: "Inventory - bombcapacity", type: LocationType.InventoryItem, wramAddress: 0xf5f370, mask: 0x00, phWramAddress: 0xf5f370, phMask: 0x00 },
   { name: "Inventory - mushroom", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x00, phWramAddress: 0xf5f344, phMask: 0x00 },
   { name: "Inventory - powder", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x10, phWramAddress: 0xf5f344, phMask: 0x00 },
   { name: "Inventory - shovel", type: LocationType.InventoryItem, wramAddress: 0xf5f38c, mask: 0x04, phWramAddress: 0xf5f34c, phMask: 0x00 },

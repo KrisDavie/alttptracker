@@ -244,9 +244,10 @@ export class OverworldTraverser {
     return regionName === "Menu" || regionName === "Flute Sky" || this.regions[regionName]?.type === "Menu";
   }
 
-  private evaluateRouteExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: RouteSearchContext): LogicStatus {
+  private evaluateRouteExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: RouteSearchContext, linkState: LinkState = "link"): LogicStatus {
     const evalCtx: EvaluationContext = {
       regionName: fromRegion,
+      linkState,
       canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
       canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
       effectiveWorldState: this.getEffectiveWorldState(fromRegion, exit.to),
@@ -277,7 +278,7 @@ export class OverworldTraverser {
   private processRouteExit(exitName: string, exit: ExitLogic[string], fromRegion: string, fromReachability: RegionReachability, ctx: RouteSearchContext): boolean {
     if (!exit?.to || this.isResetRegion(exit.to)) return false;
 
-    const exitStatus = this.evaluateRouteExitRequirements(exit, fromRegion, ctx);
+    const exitStatus = this.evaluateRouteExitRequirements(exit, fromRegion, ctx, fromReachability.linkState);
     if (exitStatus === "unavailable") {
       ctx.blockedExits.push({ exitName, exit, from: fromRegion });
       return false;
@@ -300,7 +301,7 @@ export class OverworldTraverser {
         continue;
       }
 
-      const exitStatus = this.evaluateRouteExitRequirements(exit, from, ctx);
+      const exitStatus = this.evaluateRouteExitRequirements(exit, from, ctx, fromReachability.linkState);
       if (exitStatus === "unavailable") {
         stillBlocked.push({ exitName, exit, from });
         continue;
@@ -550,10 +551,13 @@ export class OverworldTraverser {
    * Evaluate exit requirements. When `forDiscovery` is true, uses the all-items
    * evaluator (partial mode) to discover portals reachable with full inventory.
    * Pass `reasons` to collect sequence-break keys when the result is "ool".
+   * `linkState` is the player's state at `fromRegion`; it gates link-only actions
+   * (e.g. bombs) that a bunny cannot perform.
    */
-  private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext, forDiscovery = false, reasons?: Set<string>): LogicStatus {
+  private evaluateExitRequirements(exit: ExitLogic[string], fromRegion: string, ctx: OverworldTraverserContext, forDiscovery = false, reasons?: Set<string>, linkState: LinkState = "link"): LogicStatus {
     const evalCtx: EvaluationContext = {
       regionName: fromRegion,
+      linkState,
       canReachRegion: (name: string) => ctx.reachable.get(name)?.status ?? "unavailable",
       canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, ctx.reachable),
       effectiveWorldState: this.getEffectiveWorldState(fromRegion, exit.to),
@@ -586,8 +590,12 @@ export class OverworldTraverser {
     // For dungeon exits in partial mode, use all-items evaluator to discover portals
     // that would be reachable with full inventory.
     // Collect reasons for non-dungeon exits so oolReasons can be propagated.
+    const forDiscovery = exit.type === "Dungeon" && !!this.allItemsEvaluator;
     const exitReasons = (exit.type !== "Dungeon") ? new Set<string>() : undefined;
-    const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx, exit.type === "Dungeon" && !!this.allItemsEvaluator, exitReasons);
+    // Discovery assumes full inventory (incl. moon pearl) so the player is Link;
+    // otherwise use the actual link state at the source region.
+    const exitLinkState = forDiscovery ? "link" : fromRegionReachability.linkState;
+    const exitStatus = this.evaluateExitRequirements(exit, fromRegion, ctx, forDiscovery, exitReasons, exitLinkState);
 
     if (exitStatus === "unavailable") {
       ctx.blockedExits.set(recheckKey, { exitName, exit, from: fromRegion });
@@ -602,7 +610,7 @@ export class OverworldTraverser {
         // For dungeon portals in partial mode, compute actual status with real
         // inventory (the exitStatus came from the all-items evaluator for discovery).
         const portalExitReasons = new Set<string>();
-        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx, false, portalExitReasons) : exitStatus;
+        const actualExitStatus = this.allItemsEvaluator ? this.evaluateExitRequirements(exit, fromRegion, ctx, false, portalExitReasons, fromRegionReachability.linkState) : exitStatus;
         const newStatus = minimumStatus(fromRegionReachability.status, actualExitStatus === "unavailable" ? "unavailable" : actualExitStatus);
         const portalOolReasons = newStatus === "ool"
           ? mergeOolReasons(fromRegionReachability.oolReasons, portalExitReasons.size ? Array.from(portalExitReasons) : undefined)

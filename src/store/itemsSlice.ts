@@ -27,6 +27,8 @@ initialState["bottle1"] = { ...itemInitialState };
 initialState["bottle2"] = { ...itemInitialState };
 initialState["bottle3"] = { ...itemInitialState };
 initialState["bottle4"] = { ...itemInitialState };
+// Track bomb capacity separately from bombs, since it can be upgraded independently of the number of bombs carried.
+initialState["bombcapacity"] = { ...itemInitialState, amount: 10 };
 
 export const itemsSlice = createSlice({
   name: "items",
