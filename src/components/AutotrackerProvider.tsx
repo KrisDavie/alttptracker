@@ -318,9 +318,8 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
         case "bombcapacity": itemUpdates["bombcapacity"] = val; break;
         case "mushroom": {
           // 0x08 = mushroom handed to the witch (turned in), 0x20 = mushroom in inventory.
-          // Turned-in takes precedence — check it first, or it can never be reached.
           const bits = val & 0x28;
-          itemUpdates["mushroom"] = bits & 0x08 ? 2 : bits & 0x20 ? 1 : 0;
+          itemUpdates["mushroom"] = bits & 0x20 ? 1 : bits & 0x08 ? 2 : 0;
           break;
         }
         case "powder":
