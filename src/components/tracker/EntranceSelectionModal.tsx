@@ -3,7 +3,7 @@ import type { RootState } from "../../store/store";
 import { setModalClose, setCurrentMode, setSelectedEntrance, setSelectedLocation } from "../../store/trackerSlice";
 import { setEntranceLink, setNote } from "../../store/entrancesSlice";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
-import { getEntrancePool } from "@/lib/dropdowns";
+import { getEntrancePool, getDropdownPairFor } from "@/lib/dropdowns";
 import { getActiveLocations } from "@/lib/logic/locationMapper";
 import { Button } from "../ui/button";
 import { ModalBackdrop } from "./ModalBackdrop";
@@ -70,8 +70,17 @@ function EntranceSelectionModal() {
     const entranceInfo = mergedLabels[entrance] || defaultEntranceLabels[entrance];
     const label = entranceInfo ? entranceInfo.label : entrance;
     const color = entranceInfo ? entranceInfo.color : "#888888";
-    // Only targets in the same pool as the selected entrance are valid.
-    const disabled = getEntrancePool(entrance, entranceMode, zelgaWoods) !== selectedPool;
+
+    // A dropdown-paired "key location" (Sanctuary, Bat Cave, Ganon drop) can be
+    // targeted from either side. Resolve the link to the side matching the
+    // selected entrance's pool
+    const pair = getDropdownPairFor(entrance, zelgaWoods);
+    let target = entrance;
+    let disabled = getEntrancePool(entrance, entranceMode, zelgaWoods) !== selectedPool;
+    if (pair && (selectedPool === "dropdown" || selectedPool === "pairedDoor")) {
+      target = selectedPool === "dropdown" ? pair.drop : pair.partner;
+      disabled = false;
+    }
 
     return (
       <Button
@@ -83,7 +92,7 @@ function EntranceSelectionModal() {
           backgroundColor: `${color}50`,
           borderColor: `${color}`,
         }}
-        onClick={() => handleGenericLink(entrance)}
+        onClick={() => handleGenericLink(target)}
       >
         {label}
       </Button>

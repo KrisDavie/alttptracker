@@ -33,6 +33,7 @@ export const defaultEntranceLabels: Record<string, EntranceLabel> = {
     // Start Locs
     "Links House": { label: "Link", color: "#98fb98" }, // PaleGreen
     "Sanctuary": { label: "Sanc", color: "#98fb98" },
+    "Sanctuary Grave": { label: "Sanc", color: "#98fb98" },
     "Old Man House (Bottom)": { label: "Mount", color: "#98fb98" },
 
     // LW Important
