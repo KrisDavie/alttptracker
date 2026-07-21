@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
-import { DEFAULT_APP_BACKGROUND, DEFAULT_STATUS_COLORS } from "@/store/settingsSlice";
+import { DEFAULT_APP_BACKGROUND, DEFAULT_STATUS_COLORS, DEFAULT_CONNECTION_LINE_COLOR } from "@/store/settingsSlice";
 import type { LogicStatus } from "@/data/logic/logicTypes";
 
 /**
@@ -14,6 +14,7 @@ import type { LogicStatus } from "@/data/logic/logicTypes";
 export function useApplyStatusColors() {
   const customColors = useSelector((state: RootState) => state.settings.customColors);
   const appBackground = useSelector((state: RootState) => state.settings.appBackground ?? DEFAULT_APP_BACKGROUND);
+  const connectionLineColor = useSelector((state: RootState) => state.settings.connectionLineColor ?? DEFAULT_CONNECTION_LINE_COLOR);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -24,10 +25,15 @@ export function useApplyStatusColors() {
       root.style.setProperty(`--status-text-${key}`, value);
     }
 
+    // Connector diamonds share the connection-line colour, so a single setting
+    // drives both the connection lines and the connector markers.
+    root.style.setProperty("--status-connector", connectionLineColor);
+    root.style.setProperty("--status-text-connector", connectionLineColor);
+
     // Apply background to both root and body so transparency works for OBS overlays.
     root.style.background = appBackground;
     document.body.style.background = appBackground;
-  }, [customColors, appBackground]);
+  }, [customColors, appBackground, connectionLineColor]);
 }
 
 /** Map bg class for a logic status on map markers */

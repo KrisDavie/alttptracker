@@ -116,7 +116,7 @@ export function ColoursTab({ settings, updateSetting }: ColoursTabProps) {
                 label="Connection lines"
                 description="Lines connecting shuffled entrances"
                 value={settings.connectionLineColor}
-                onChange={(v) => updateSetting("connectionLineColor", v)}
+                onChange={(v) => {updateSetting("connectionLineColor", v)}}
                 alpha
               />
             </div>
