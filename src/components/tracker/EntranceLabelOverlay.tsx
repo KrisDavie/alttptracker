@@ -2,7 +2,8 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { defaultEntranceLabels } from "@/data/entranceLabels";
 import { allConnectorEntrances, getConnectorGroup } from "@/data/entranceConnections";
-import { getActiveLocations, getDungeonIdForEntry } from "@/lib/logic/locationMapper";
+// import { getActiveLocations, getDungeonIdForEntry } from "@/lib/logic/locationMapper";
+import { getActiveLocations } from "@/lib/logic/locationMapper";
 import { placeLabels } from "@/lib/labelPlacement";
 import type { Rect } from "@/lib/labelPlacement";
 import { useMemo } from "react";
@@ -62,7 +63,8 @@ export default function EntranceLabelOverlay({ obstacles }: EntranceLabelOverlay
       // Hide the label once a simple destination is fully cleared. Connectors and
       // dungeons keep their labels (they stay navigationally relevant even after
       // all their items are collected).
-      if (!isConnectorTarget(placed) && !getDungeonIdForEntry(placed)) {
+      // if (!isConnectorTarget(placed) && !getDungeonIdForEntry(placed)) {
+      if (!isConnectorTarget(placed)) {
         const locs = getActiveLocations(placed, settings);
         if (locs.length > 0 && locs.every((l) => locationsChecks[l]?.checked)) {
           continue;
