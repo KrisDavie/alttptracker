@@ -36933,6 +36933,26 @@ export const logic_regions: Record<string, RegionLogic> = {
                     "Open": {},
                     "Inverted": {}
                 }
+            },
+            "SW Big Chest Bomb Jump": {
+                "to": "Skull Big Chest",
+                "type": "Dungeon",
+                "requirements": {
+                    "Open": {
+                        "always": {
+                            "allOf": [
+                                "canBombJump"
+                            ]
+                        }
+                    },
+                    "Inverted": {
+                        "always": {
+                            "allOf": [
+                                "canBombJump"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "entrances": [],

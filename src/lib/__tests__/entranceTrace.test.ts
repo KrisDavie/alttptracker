@@ -86,7 +86,7 @@ describe("connector-group location aggregation", () => {
     }
     // Aggregating the whole connector complex reveals the Big Chest...
     expect(union.has("Skull Woods - Big Chest")).toBe(true);
-    // ...even though the entered side alone does not reach it.
-    expect(getActiveLocations(entered, DEFAULT_SETTINGS)).not.toContain("Skull Woods - Big Chest");
+    // Bomb jump also gives an edge revealing big chest
+    expect(getActiveLocations(entered, DEFAULT_SETTINGS)).toContain("Skull Woods - Big Chest");
   });
 });

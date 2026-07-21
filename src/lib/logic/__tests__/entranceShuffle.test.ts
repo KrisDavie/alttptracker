@@ -536,4 +536,36 @@ describe("Entrance Shuffle", () => {
       expect(result.entranceReasons["Hyrule Castle Entrance (South)"]).toContain("canReachHCMain");
     });
   });
+
+  describe("Skull Woods front connection (entrance mode)", () => {
+    const buildRegions = (builder: ReturnType<typeof gameState>) => {
+      const state = builder.build();
+      const logicSet = getLogicSet("noglitches");
+      return buildEffectiveRegions(logicSet.regions as Record<string, RegionLogic>, state).regions;
+    };
+
+    it("adds the east→west pass-through edge in non-insanity, non-zelga entrance modes", () => {
+      const regions = buildRegions(gameState().withAllItems().withSettings({ entranceMode: "crossed" }));
+      const edge = regions["Skull Woods Forest"].exits["Skull Woods First Section Pass Through"];
+      expect(edge?.to).toBe("Skull Woods Forest (West)");
+    });
+
+    it("does not add the edge in insanity, with zelga woods, or outside entrance mode", () => {
+      const insanity = buildRegions(gameState().withAllItems().withSettings({ entranceMode: "insanity" }));
+      expect(insanity["Skull Woods Forest"].exits["Skull Woods First Section Pass Through"]).toBeUndefined();
+
+      const zelga = buildRegions(gameState().withAllItems().withSettings({ entranceMode: "crossed", zelgaWoods: true }));
+      expect(zelga["Skull Woods Forest"].exits["Skull Woods First Section Pass Through"]).toBeUndefined();
+
+      const none = buildRegions(gameState().withAllItems().withSettings({ entranceMode: "none" }));
+      expect(none["Skull Woods Forest"].exits["Skull Woods First Section Pass Through"]).toBeUndefined();
+    });
+
+    it("makes the west forest reachable without placing entrances", () => {
+      const noFire = calculate(
+        gameState().withAllItems().withSettings({ entranceMode: "crossed" })
+      );
+      expect(noFire.entrancesLogic["Skull Woods Second Section Door (West)"]).toBe("available");
+    });
+  });
 });

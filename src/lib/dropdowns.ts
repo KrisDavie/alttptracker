@@ -162,10 +162,10 @@ const ZELGA_VANILLA_MODES: Record<string, string> = {
 };
 
 const ZELGA_GROUP_OVERRIDES: Record<string, Record<string, string>> = {
-  // GREEN: stay vanilla in every mode
+  // stay vanilla in every mode
   "Skull Woods First Section Hole (East)": ZELGA_VANILLA_MODES,
   "Skull Woods First Section Hole (West)": ZELGA_VANILLA_MODES,
-  // RED: the two new drop-downs behave like a standard drop (cf. Kakariko Well Drop)
+  // the two new drop-downs behave like a standard drop (cf. Kakariko Well Drop)
   "Skull Woods First Section Hole (North)": ZELGA_DROP_MODES,
   "Skull Woods Second Section Hole": ZELGA_DROP_MODES,
   // Doors behave like a standard door entrance (cf. Kakariko Well Cave)

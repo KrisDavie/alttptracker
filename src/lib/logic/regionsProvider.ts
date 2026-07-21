@@ -694,6 +694,7 @@ export function buildEffectiveRegions(
   let regions = baseRegions as Record<string, RegionLogic>;
 
   regions = applyEntranceShuffle(regions, effectiveState, metadata);
+  regions = applySkullWoodsFrontConnection(regions, effectiveState);
   regions = applyTileFlipRemaps(regions, effectiveState, metadata);
   regions = applyLayoutRemaps(regions, effectiveState, metadata);
   regions = applyWhirlpoolRemaps(regions, effectiveState, metadata);
@@ -704,6 +705,40 @@ export function buildEffectiveRegions(
 
 
   return { regions, metadata };
+}
+
+/**
+ * In entrance shuffle (any mode except insanity, with Zelga Woods disabled) the
+ * Skull Woods first section always physically links the east forest to the west
+ * forest. This function applies the necessary logic changes to reflect that.
+ */
+function applySkullWoodsFrontConnection(
+  regions: Record<string, RegionLogic>,
+  state: GameState,
+): Record<string, RegionLogic> {
+  const mode = state.settings.entranceMode;
+  if (mode === "none" || mode === "insanity" || state.settings.zelgaWoods) {
+    return regions;
+  }
+  const source = regions["Skull Woods Forest"];
+  if (!source || !regions["Skull Woods Forest (West)"]) return regions;
+
+  const result = { ...regions };
+  result["Skull Woods Forest"] = {
+    ...source,
+    exits: {
+      ...source.exits,
+      "Skull Woods First Section Pass Through": {
+        to: "Skull Woods Forest (West)",
+        type: "DarkWorld",
+        requirements: {
+          Open: {},
+          Inverted: {},
+        },
+      },
+    },
+  };
+  return result;
 }
 
 /** 
