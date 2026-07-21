@@ -4237,8 +4237,13 @@ export const logic_regions: Record<string, RegionLogic> = {
                 "requirements": {
                     "Open": {
                         "always": {
-                            "allOf": [
-                                "mirror"
+                            "anyOf": [
+                                {
+                                    "allOf": [
+                                        "mirror"
+                                    ]
+                                },
+                                "canReachHCMain"
                             ]
                         }
                     },

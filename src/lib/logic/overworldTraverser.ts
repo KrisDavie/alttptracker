@@ -393,8 +393,8 @@ export class OverworldTraverser {
   public calculateAll() {
     const reachableRegions = this.traverse();
     const { locationStatuses: locationsLogic, locationReasons } = this.evaluateLocations(reachableRegions);
-    const entrancesLogic = this.evaluateEntrances(reachableRegions);
-    return { locationsLogic, locationReasons, entrancesLogic };
+    const { entranceStatuses: entrancesLogic, entranceReasons } = this.evaluateEntrances(reachableRegions);
+    return { locationsLogic, locationReasons, entrancesLogic, entranceReasons };
   }
 
   // Memo: region → dungeon id (called per location per evaluation pass).
@@ -942,8 +942,9 @@ export class OverworldTraverser {
     return { locationStatuses, locationReasons };
   }
 
-  public evaluateEntrances(reachable: Map<string, RegionReachability>): Record<string, LogicStatus> {
+  public evaluateEntrances(reachable: Map<string, RegionReachability>): { entranceStatuses: Record<string, LogicStatus>; entranceReasons: Record<string, string[]> } {
     const entranceStatuses: Record<string, LogicStatus> = {};
+    const entranceReasons: Record<string, string[]> = {};
     for (const entranceName of Object.keys(entranceLocations)) {
       // Find the overworld region containing this entrance
       const parentRegion = this.metadata.entranceToParentRegion.get(entranceName);
@@ -962,6 +963,8 @@ export class OverworldTraverser {
       // require interaction (e.g. bonk rocks need boots + moonpearl).
       const parentRegionLogic = this.regions[parentRegion];
       const exitDef = parentRegionLogic?.exits?.[entranceName];
+      const reasons = new Set<string>();
+      let finalStatus: LogicStatus;
       if (exitDef?.requirements) {
         const evalCtx: EvaluationContext = {
           regionName: parentRegion,
@@ -969,15 +972,29 @@ export class OverworldTraverser {
           canReachRegion: (name: string) => reachable.get(name)?.status ?? "unavailable",
           canReachFromRegion: (source: string, target: string) => this.canReachFromRegion(source, target, reachable),
           effectiveWorldState: this.getEffectiveWorldState(parentRegion, exitDef.to),
+          reasons,
         };
         const exitStatus = this.requirementEvaluator.evaluateWorldLogic(exitDef.requirements, evalCtx);
-        entranceStatuses[entranceName] = minimumStatus(regionReachability.status, exitStatus);
+        finalStatus = minimumStatus(regionReachability.status, exitStatus);
       } else {
         // No exit found or no requirements — entrance is freely accessible
-        entranceStatuses[entranceName] = regionReachability.status;
+        finalStatus = regionReachability.status;
+      }
+      entranceStatuses[entranceName] = finalStatus;
+
+      // Surface the sequence-break reasons that make the entrance "ool": those
+      // from the entrance's own exit requirements plus the ones inherited from
+      // the parent region's reachability (e.g. reaching HC main via canReachHCMain).
+      if (finalStatus === "ool") {
+        if (regionReachability.oolReasons) {
+          for (const r of regionReachability.oolReasons) reasons.add(r);
+        }
+        if (reasons.size > 0) {
+          entranceReasons[entranceName] = Array.from(reasons);
+        }
       }
     }
-    return entranceStatuses;
+    return { entranceStatuses, entranceReasons };
   }
 
   /**

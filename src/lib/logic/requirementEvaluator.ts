@@ -618,6 +618,12 @@ export class RequirementEvaluator {
         return this.boolToStatus(this.state.settings.logicMode !== "noglitches" && this.hasItem("boots") && (this.hasItem("mirror") || this.getBottleCount() > 0));
       case "canSpinSpeedClip":
         return this.boolToStatus(this.state.settings.logicMode !== "noglitches" && this.hasItem("boots") && (this.hasItem("sword") || this.hasItem("hookshot")));
+      
+      // This is a meta check to show HC main as out of logic
+      case "canReachHCMain":
+        if (this.state.dungeons["ct"].bossDefeated) return "unavailable";
+        ctx.reasons?.add("canReachHCMain");
+        return "ool";
       default:
         // Covers all simple item checks - works because all items are counted now rather than boolean
         // Putting this here allows us to use more complex logic conditions above (i.e. flute)

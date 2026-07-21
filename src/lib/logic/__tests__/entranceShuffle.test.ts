@@ -519,4 +519,21 @@ describe("Entrance Shuffle", () => {
     }); 
 
   });
+
+  describe("Entrance ool reasons", () => {
+    it("surfaces the canReachHCMain ool reason on the HC south entrance", () => {
+      // Open world, no mirror, Agahnim (CT) still alive: reaching HC main relies
+      // on the canReachHCMain sequence break, so the entrance resolves to "ool"
+      // and must carry that reason for the tooltip to explain why.
+      const result = calculate(
+        gameState()
+          .withAllItems()
+          .withoutItems(["mirror"])
+          .withSettings({ entranceMode: "crossed" })
+      );
+
+      expect(result.entrancesLogic["Hyrule Castle Entrance (South)"]).toBe("ool");
+      expect(result.entranceReasons["Hyrule Castle Entrance (South)"]).toContain("canReachHCMain");
+    });
+  });
 });

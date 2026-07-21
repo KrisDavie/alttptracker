@@ -36,6 +36,7 @@ export const SEQUENCE_BREAK_LABELS: Record<string, string> = {
   canMirrorWrap: "Mirror Wrap",
   canHookClip: "Hook Clip",
   canDarkRoomNavigateBlind: "Dark Room Navigation (Blind)",
+  canReachHCMain: "Dropdown Access or Mirror for HC Main",
 };
 
 export function getSequenceBreakLabel(key: string): string {

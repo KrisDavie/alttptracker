@@ -73,8 +73,8 @@ export const checksSlice = createSlice({
         manuallyChecked: manual,
       };
     },
-    updateLogicStatuses: (state, action: PayloadAction<{ locationsLogic: Record<string, LogicStatus>; locationReasons?: Record<string, string[]>; entrancesLogic: Record<string, LogicStatus> }>) => {
-      const { locationsLogic, locationReasons, entrancesLogic } = action.payload;
+    updateLogicStatuses: (state, action: PayloadAction<{ locationsLogic: Record<string, LogicStatus>; locationReasons?: Record<string, string[]>; entrancesLogic: Record<string, LogicStatus>; entranceReasons?: Record<string, string[]> }>) => {
+      const { locationsLogic, locationReasons, entrancesLogic, entranceReasons } = action.payload;
       Object.entries(locationsLogic).forEach(([location, logicStatus]) => {
         if (state.locationsChecks[location]) {
           state.locationsChecks[location].logic = logicStatus;
@@ -93,6 +93,16 @@ export const checksSlice = createSlice({
       Object.entries(entrancesLogic).forEach(([entrance, logicStatus]) => {
         if (state.entranceChecks[entrance]) {
           state.entranceChecks[entrance].logic = logicStatus;
+          const newReasons = logicStatus === "ool" ? (entranceReasons?.[entrance] ?? undefined) : undefined;
+          const oldReasons = state.entranceChecks[entrance].oolReasons;
+          // Only update if changed to avoid Redux referential equality causing infinite loops.
+          const reasonsChanged =
+            newReasons === undefined
+              ? oldReasons !== undefined
+              : !oldReasons || newReasons.length !== oldReasons.length || newReasons.some((r, i) => r !== oldReasons[i]);
+          if (reasonsChanged) {
+            state.entranceChecks[entrance].oolReasons = newReasons;
+          }
         }
       });
     },
