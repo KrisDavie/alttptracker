@@ -18,9 +18,13 @@ function SpriteDisplay({ spriteName = "link" }: SpriteDisplayProps) {
   const moonPearlCollected = useSelector((state: RootState) => state.items["moonpearl"]?.amount ?? 0);
   const currentMode = useSelector((state: RootState) => state.trackerState.currentMode);
   const selectedLocation = useSelector((state: RootState) => state.trackerState.selectedLocation);
+  const spriteFromRom = useSelector((state: RootState) => state.settings.spriteFromRom);
+  const romSprite = useSelector((state: RootState) => state.autotracker.romSprite);
 
 
-  const spriteImage = `/sprites/${spriteName}_tunic${moonPearlCollected ? "" : "bunny"}${collected + 1}.png`;
+  const variant = `tunic${moonPearlCollected ? "" : "bunny"}${collected + 1}`;
+  // The ROM's sprite once autotracking has read it, else the chosen one
+  const spriteImage = (spriteFromRom && romSprite?.[variant]) || `/sprites/${spriteName}_${variant}.png`;
 
   function setCount(newCount: number) {
     let finalCount = newCount;

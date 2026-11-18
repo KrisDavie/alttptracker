@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { loadAutotrackPrefs } from "@/lib/launchHelpers";
+import type { RomSpriteImages } from "@/lib/romSprite";
 
 export interface AutotrackerState {
   isConnected: boolean;
@@ -11,6 +12,8 @@ export interface AutotrackerState {
   host: string | null;
   port: number | null;
   romName?: string | null;
+  /** The player sprite read from the ROM, kept after disconnecting; null until one is read */
+  romSprite: RomSpriteImages | null;
 }
 
 const savedAutotrackPrefs = loadAutotrackPrefs();
@@ -25,6 +28,7 @@ const initialState: AutotrackerState = {
   host: savedAutotrackPrefs.host,
   port: savedAutotrackPrefs.port,
   romName: null,
+  romSprite: null,
 };
 
 export const autotrackerSlice = createSlice({
@@ -33,6 +37,9 @@ export const autotrackerSlice = createSlice({
   reducers: {
     setRomName: (state, action: PayloadAction<string | null>) => {
       state.romName = action.payload 
+    },
+    setRomSprite: (state, action: PayloadAction<RomSpriteImages | null>) => {
+      state.romSprite = action.payload;
     },
     setAutotrackingSettings: (state, action: { payload: Partial<AutotrackerState> }) => {
       const newState = { ...state, ...action.payload };
@@ -69,5 +76,5 @@ export const autotrackerSlice = createSlice({
   },
 });
 
-export const { setRomName, setAutotrackingSettings, setConnected, setConnectionStatus, setDeviceList, setSelectedDevice, setError } = autotrackerSlice.actions;
+export const { setRomName, setRomSprite, setAutotrackingSettings, setConnected, setConnectionStatus, setDeviceList, setSelectedDevice, setError } = autotrackerSlice.actions;
 export default autotrackerSlice.reducer;

@@ -154,6 +154,8 @@ export interface SettingsState {
   connectionLinesMode: "none" | "caves" | "dungeons" | "all";
   connectionLineColor: string;
   spriteName: string;
+  /** Show the sprite autotracking reads from the ROM instead of spriteName, once it's read */
+  spriteFromRom: boolean;
   colouredChests: boolean;
   showMapTooltips: boolean;
   showChestTooltips: boolean;
@@ -229,6 +231,7 @@ export const initialState: SettingsState = {
   connectionLinesMode: "all",
   connectionLineColor: "#ff00f9ff",
   spriteName: "link",
+  spriteFromRom: true,
   colouredChests: true,
   showMapTooltips: true,
   showChestTooltips: true,

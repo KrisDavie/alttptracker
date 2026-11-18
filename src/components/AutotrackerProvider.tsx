@@ -3,7 +3,7 @@ import { DUNGEON_ITEMS, getRangeFromAddress, MEMORY_RANGES, SPECIAL_HANDLE_INVEN
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { setConnected, setConnectionStatus, setDeviceList, setRomName } from "@/store/autotrackerSlice";
+import { setConnected, setConnectionStatus, setDeviceList, setRomName, setRomSprite } from "@/store/autotrackerSlice";
 import { DeviceMemoryClient, DevicesClient } from "@/sni/sni.client";
 import { AddressSpace, MemoryMapping } from "@/sni/sni";
 import { locationsData } from "@/data/locationsData";
@@ -14,6 +14,7 @@ import { updateMultipleItems } from "@/store/itemsSlice";
 import { updateDungeonState, type DungeonState } from "@/store/dungeonsSlice";
 import { addEvent } from "@/store/eventLogSlice";
 import { qusb2snesRequest, qusb2snesBinaryRequest, qusb2snesSend } from "@/lib/qusb2snes";
+import { ROM_SPRITE_RANGES, romSpriteImages } from "@/lib/romSprite";
 
 interface AutotrackerProviderProps {
   children: React.ReactNode;
@@ -52,6 +53,8 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
   // Guards against overlapping poll cycles interleaving requests on the single ordered
   // QUsb2snes socket (misaligned responses would flip romName and cause a runaway re-poll).
   const pollingRef = useRef(false);
+  // The ROM the player sprite was last read from (or a read was tried), so each ROM is read once
+  const spriteRomNameRef = useRef<string | null>(null);
 
   // Own the QUsb2snes WebSocket lifecycle in isolation. This effect depends only on the
   // connection-defining values, so the socket isn't recreated on every poll/state change,
@@ -160,6 +163,19 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
       }
     }
 
+    // Read the player sprite from the ROM. A device that can't read ROM keeps the sprite as it was
+    // instead of dropping the connection.
+    async function readRomSprite(): Promise<void> {
+      try {
+        const sheet = await fetchMemoryRange(ROM_SPRITE_RANGES.sheet.start, ROM_SPRITE_RANGES.sheet.size);
+        const palettes = await fetchMemoryRange(ROM_SPRITE_RANGES.palettes.start, ROM_SPRITE_RANGES.palettes.size);
+        const images = sheet && palettes ? romSpriteImages(sheet, palettes) : null;
+        if (images) dispatch(setRomSprite(images));
+      } catch (error) {
+        console.error("Error reading the sprite from the ROM:", error);
+      }
+    }
+
     // --- Shared polling loop ---
     const poll = async () => {
       // For QUsb2snes, wait until the WebSocket is actually open before doing anything
@@ -196,6 +212,10 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
                   if (romName !== fetchedRomName) {
                     dispatch(setRomName(fetchedRomName));
                   }
+                  if (fetchedRomName && spriteRomNameRef.current !== fetchedRomName) {
+                    spriteRomNameRef.current = fetchedRomName;
+                    await readRomSprite();
+                  }
                 } else if (name === "gamemode") {
                   const gameMode = data[0];
                   if (![0x07, 0x09, 0x0b].includes(gameMode)) {
@@ -212,6 +232,7 @@ export const AutotrackerProvider: React.FC<AutotrackerProviderProps> = ({ childr
             }
           }
           if (fetchFailed) {
+            spriteRomNameRef.current = null;
             dispatch(setConnected({ selectedDevice: null, isConnected: false }));
             dispatch(setConnectionStatus("connection lost"));
           } else {

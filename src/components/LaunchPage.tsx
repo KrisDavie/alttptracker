@@ -8,12 +8,13 @@ import ItemsData from "@/data/itemData";
 import { getSessions, createSession, deleteSession, togglePin, MAX_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
 import { idbDriver } from "@/lib/idbDriver";
 import { parseSnapshotJson, importSnapshotToNewSession } from "@/lib/stateSnapshot";
-import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState, loadAutotrackPrefs, saveAutotrackPrefs } from "@/lib/launchHelpers";
+import { loadLauncherPrefs, saveLauncherPrefs, buildLauncherPrefs, applyLauncherPrefs, loadRecentSprites, pushRecentSprite, buildPresetIDBState, loadAutotrackPrefs, saveAutotrackPrefs, prettifySpriteName } from "@/lib/launchHelpers";
 import { LaunchHeader } from "./launch/LaunchHeader";
 import { PresetSection } from "./launch/PresetSection";
 import { LaunchCard } from "./launch/LaunchCard";
 import { GameSettingsTabs } from "./launch/GameSettingsTabs";
 import { SpriteSelector } from "./launch/SpriteSelector";
+import { readRomSprite, type RomSprite } from "@/lib/readRomSprite";
 import { initialState as DEFAULT_SETTINGS } from "@/store/settingsSlice";
 import { getEventLogPopoutDimensions, getMapPopoutDimensions, getTrackerWindowSizeForEventLogMode, TILE } from "@/lib/trackerSizing";
 
@@ -33,6 +34,7 @@ const LaunchPage: React.FC = () => {
   const [autotrackPort, setAutotrackPort] = useState(savedAutotrack.port);
   const [autotrackProtocol, setAutotrackProtocol] = useState<"sni" | "qusb2snes">(savedAutotrack.protocol);
   const [autotrackStatus, setAutotrackStatus] = useState<"checking" | "connected" | "disconnected">("checking");
+  const [romSprite, setRomSprite] = useState<RomSprite | null>(null);
   const [sessionName, setSessionName] = useState("");
   const [motd, setMotd] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<string | null>(null);
@@ -162,6 +164,25 @@ const LaunchPage: React.FC = () => {
     };
   }, [autotrackHost, autotrackPort, autotrackProtocol]);
 
+  // Read the ROM's sprite once the autotracker connects, retrying until a device has a ROM loaded
+  useEffect(() => {
+    if (autotrackStatus !== "connected") return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const attempt = async () => {
+      const images = await readRomSprite({ protocol: autotrackProtocol, host: autotrackHost, port: autotrackPort }).catch(() => null);
+      if (cancelled) return;
+      if (images) setRomSprite(images);
+      else timer = setTimeout(attempt, 3000);
+    };
+    attempt();
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      setRomSprite(null);
+    };
+  }, [autotrackStatus, autotrackHost, autotrackPort, autotrackProtocol]);
+
   const updateSetting = useCallback(<K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -188,6 +209,11 @@ const LaunchPage: React.FC = () => {
     });
   }, []);
 
+  // The ROM's sprite while it's used; a bundled one is launched by name, else its image is kept
+  const usedRomSprite = settings.spriteFromRom ? romSprite : null;
+  const launchSpriteName = usedRomSprite ? (usedRomSprite.name ?? spriteName) : spriteName;
+  const launchRomImage = usedRomSprite && !usedRomSprite.name ? usedRomSprite.images.tunic1 : undefined;
+
   const launchTracker = useCallback(
     async (sessionId?: string) => {
       let id = sessionId;
@@ -195,20 +221,22 @@ const LaunchPage: React.FC = () => {
 
       if (isNewSession) {
         // Create session with current settings including the selected sprite
-        const launchSettings = { ...settings, spriteName };
-        const session = await createSession(launchSettings, sessionName || undefined, spriteName, selectedPresetId ?? undefined, undefined, startingItems);
+        const launchSettings = { ...settings, spriteName: launchSpriteName };
+        const session = await createSession(launchSettings, sessionName || undefined, launchSpriteName, selectedPresetId ?? undefined, undefined, startingItems, launchRomImage);
         id = session.id;
         setSessions(await getSessions());
       }
 
-      pushRecentSprite(spriteName);
-      setRecentSprites(loadRecentSprites());
+      if (!launchRomImage) {
+        pushRecentSprite(launchSpriteName);
+        setRecentSprites(loadRecentSprites());
+      }
 
       const prefix = `alttptracker_session_${id}_`;
 
       if (isNewSession) {
         // Persist settings with the spriteName included
-        await idbDriver.setItem(prefix + "settings", JSON.stringify({ ...settings, spriteName }));
+        await idbDriver.setItem(prefix + "settings", JSON.stringify({ ...settings, spriteName: launchSpriteName }));
 
         const preset = selectedPresetId ? getPresetById(selectedPresetId) : undefined;
         const presetState = buildPresetIDBState(startingItems, preset, settings);
@@ -238,7 +266,7 @@ const LaunchPage: React.FC = () => {
         window.open(`/event-log?id=${encodeURIComponent(id!)}`, "_blank", `width=${width},height=${height}`);
       }
     },
-    [settings, spriteName, sessionName, selectedPresetId, startingItems],
+    [settings, launchSpriteName, launchRomImage, sessionName, selectedPresetId, startingItems],
   );
 
   const handleDeleteSession = useCallback(async (id
@@ -305,7 +333,8 @@ const LaunchPage: React.FC = () => {
           <LaunchCard
             sessionName={sessionName}
             setSessionName={setSessionName}
-            spriteName={spriteName}
+            spriteImage={launchRomImage ?? `/sprites/${launchSpriteName}_tunic1.png`}
+            spriteLabel={launchRomImage ? "ROM sprite" : prettifySpriteName(launchSpriteName)}
             selectedPresetId={selectedPresetId}
             sessions={sessions}
             sessionsLoaded={sessionsLoaded}
@@ -336,7 +365,14 @@ const LaunchPage: React.FC = () => {
 
             {/* Sidebar: Sprite */}
             <div className="mt-6 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:bottom-0 lg:w-[320px] flex flex-col h-full">
-              <SpriteSelector spriteName={spriteName} setSpriteName={setSpriteName} recentSprites={recentSprites} />
+              <SpriteSelector
+                spriteName={spriteName}
+                setSpriteName={setSpriteName}
+                spriteFromRom={settings.spriteFromRom}
+                setSpriteFromRom={(fromRom) => updateSetting("spriteFromRom", fromRom)}
+                romSprite={romSprite}
+                recentSprites={recentSprites}
+              />
             </div>
           </div>
 
