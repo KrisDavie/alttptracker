@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import SpriteDisplay from "../SpriteDisplay";
 import { renderWithStore, createTestStore } from "./renderWithStore";
 import { setItemCount } from "@/store/itemsSlice";
+import { setRomSprite } from "@/store/autotrackerSlice";
+import { setSettings } from "@/store/settingsSlice";
 
 function getSpriteEl() {
   return document.querySelector("[style*='background-image']") as HTMLElement;
@@ -23,6 +25,23 @@ describe("SpriteDisplay", () => {
     const bg = getSpriteEl().style.backgroundImage;
     expect(bg).toContain("link_tunic1.png");
     expect(bg).not.toContain("bunny");
+  });
+
+  it("should show the ROM's sprite once autotracking has read it", () => {
+    const store = createTestStore();
+    store.dispatch(setItemCount({ itemName: "moonpearl", count: 1 }));
+    store.dispatch(setItemCount({ itemName: "mail", count: 1 }));
+    store.dispatch(setRomSprite({ tunic2: "data:image/png;base64,ROMBLUE", tunicbunny2: "data:image/png;base64,ROMBUNNY" }));
+    renderWithStore(<SpriteDisplay spriteName="zelda" />, { store });
+    expect(getSpriteEl().style.backgroundImage).toContain("ROMBLUE");
+  });
+
+  it("should show the chosen sprite when the ROM's is turned off", () => {
+    const store = createTestStore();
+    store.dispatch(setRomSprite({ tunicbunny1: "data:image/png;base64,ROMBUNNY" }));
+    store.dispatch(setSettings({ spriteFromRom: false }));
+    renderWithStore(<SpriteDisplay spriteName="zelda" />, { store });
+    expect(getSpriteEl().style.backgroundImage).toContain("zelda_tunicbunny1.png");
   });
 
   it("should use custom spriteName in image path", () => {

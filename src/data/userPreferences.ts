@@ -23,6 +23,7 @@ export const REMEMBERED_SETTINGS = [
   "mapMode",
   "connectionLinesMode",
   "spriteName",
+  "spriteFromRom",
   "entranceLabelsMode",
   "showInsetBossSquare",
   "useOldStyleDungeonSquares",

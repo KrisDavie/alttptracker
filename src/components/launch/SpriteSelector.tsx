@@ -5,15 +5,24 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SPRITE_NAMES from "@/data/spriteNames";
 import { prettifySpriteName } from "@/lib/launchHelpers";
+import type { RomSprite } from "@/lib/readRomSprite";
+import { SettingSwitch } from "./SettingControls";
 
 interface SpriteSelectorProps {
   spriteName: string;
   setSpriteName: (name: string) => void;
+  spriteFromRom: boolean;
+  setSpriteFromRom: (fromRom: boolean) => void;
+  /** The sprite read from the connected autotracker's ROM; null while not connected */
+  romSprite: RomSprite | null;
   recentSprites: string[];
 }
 
-export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: SpriteSelectorProps) {
+export function SpriteSelector({ spriteName, setSpriteName, spriteFromRom, setSpriteFromRom, romSprite, recentSprites }: SpriteSelectorProps) {
   const [spriteSearch, setSpriteSearch] = useState("");
+  // Off without a ROM to read, keeping the saved preference for when there is one
+  const usesRom = romSprite !== null && spriteFromRom;
+  const preview = (variant: string) => (usesRom && romSprite.images[variant]) || `/sprites/${spriteName}_${variant}.png`;
 
   const filteredSprites = useMemo(() => {
     if (!spriteSearch) return SPRITE_NAMES;
@@ -31,7 +40,7 @@ export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: Spr
         <div className="flex items-center justify-center gap-4">
           <div className="text-center">
             <img
-              src={`/sprites/${spriteName}_tunic1.png`}
+              src={preview("tunic1")}
               alt={spriteName}
               className="w-16 h-16 mx-auto"
               style={{ imageRendering: "pixelated" }}
@@ -40,7 +49,7 @@ export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: Spr
           </div>
           <div className="text-center">
             <img
-              src={`/sprites/${spriteName}_tunicbunny1.png`}
+              src={preview("tunicbunny1")}
               alt={`${spriteName} bunny`}
               className="w-16 h-16 mx-auto"
               style={{ imageRendering: "pixelated" }}
@@ -48,10 +57,21 @@ export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: Spr
             <span className="text-[10px] text-muted-foreground mt-1 block">Bunny</span>
           </div>
         </div>
-        <div className="text-center text-xs font-medium">{prettifySpriteName(spriteName)}</div>
+        <div className="text-center text-xs font-medium">{usesRom ? (romSprite.name ? prettifySpriteName(romSprite.name) : "ROM sprite") : prettifySpriteName(spriteName)}</div>
+        <SettingSwitch
+          label="Use the ROM's sprite when autotracking"
+          checked={usesRom}
+          onChange={setSpriteFromRom}
+          disabled={romSprite === null}
+          description={
+            romSprite === null
+              ? "Connect the autotracker to a device with a ROM loaded to use the sprite from the ROM."
+              : "Autotracking reads the sprite from the ROM and shows it in place of a chosen sprite."
+          }
+        />
 
         {/* Recent sprites quick-select */}
-        {recentSprites.length > 0 && (
+        {!usesRom && recentSprites.length > 0 && (
           <div className="space-y-1">
             <Label className="text-[10px] text-muted-foreground">Recent</Label>
             <div className="flex items-center gap-1.5">
@@ -74,32 +94,36 @@ export function SpriteSelector({ spriteName, setSpriteName, recentSprites }: Spr
           </div>
         )}
 
-        <Input
-          placeholder="Search sprites..."
-          value={spriteSearch}
-          onChange={(e) => setSpriteSearch(e.target.value)}
-          className="h-7 text-xs"
-        />
-        <ScrollArea className="flex-1 min-h-40">
-          <div className="grid grid-cols-5 gap-1 p-0.5">
-            {filteredSprites.map((name: string) => (
-              <button
-                key={name}
-                onClick={() => setSpriteName(name)}
-                className={`aspect-square rounded-sm border transition-all cursor-pointer ${name === spriteName ? "border-primary bg-primary/10" : "border-transparent hover:bg-muted"}`}
-                title={prettifySpriteName(name)}
-              >
-                <img
-                  src={`/sprites/${name}_tunic1.png`}
-                  alt={name}
-                  className="w-full h-full object-contain"
-                  style={{ imageRendering: "pixelated" }}
-                  loading="lazy"
-                />
-              </button>
-            ))}
-          </div>
-        </ScrollArea>
+        {!usesRom && (
+          <>
+            <Input
+              placeholder="Search sprites..."
+              value={spriteSearch}
+              onChange={(e) => setSpriteSearch(e.target.value)}
+              className="h-7 text-xs"
+            />
+            <ScrollArea className="flex-1 min-h-40">
+              <div className="grid grid-cols-5 gap-1 p-0.5">
+                {filteredSprites.map((name: string) => (
+                  <button
+                    key={name}
+                    onClick={() => setSpriteName(name)}
+                    className={`aspect-square rounded-sm border transition-all cursor-pointer ${name === spriteName ? "border-primary bg-primary/10" : "border-transparent hover:bg-muted"}`}
+                    title={prettifySpriteName(name)}
+                  >
+                    <img
+                      src={`/sprites/${name}_tunic1.png`}
+                      alt={name}
+                      className="w-full h-full object-contain"
+                      style={{ imageRendering: "pixelated" }}
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          </>
+        )}
       </CardContent>
     </Card>
   );

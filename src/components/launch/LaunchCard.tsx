@@ -8,12 +8,14 @@ import { Trash2, Rocket, ChevronRight, Pin, PinOff, Upload } from "lucide-react"
 import { useRef } from "react";
 import { getPresetById } from "@/data/launcherPresets";
 import { MAX_SESSIONS, DISPLAY_SESSIONS, type TrackerSession } from "@/lib/sessionManager";
-import { prettifySpriteName, formatRelativeTime } from "@/lib/launchHelpers";
+import { formatRelativeTime } from "@/lib/launchHelpers";
 
 interface LaunchCardProps {
   sessionName: string;
   setSessionName: (name: string) => void;
-  spriteName: string;
+  /** The sprite a new session gets: its image and name */
+  spriteImage: string;
+  spriteLabel: string;
   selectedPresetId: string | null;
   sessions: TrackerSession[];
   sessionsLoaded: boolean;
@@ -25,7 +27,7 @@ interface LaunchCardProps {
 }
 
 export function LaunchCard({
-  sessionName, setSessionName, spriteName, selectedPresetId,
+  sessionName, setSessionName, spriteImage, spriteLabel, selectedPresetId,
   sessions, sessionsLoaded, canCreateSession,
   onLaunch, onDeleteSession, onTogglePin, onRestoreFile,
 }: LaunchCardProps) {
@@ -45,12 +47,12 @@ export function LaunchCard({
               {/* Sprite preview */}
               <div className="flex items-center gap-2">
                 <img
-                  src={`/sprites/${spriteName}_tunic1.png`}
-                  alt={spriteName}
+                  src={spriteImage}
+                  alt={spriteLabel}
                   className="w-8 h-8"
                   style={{ imageRendering: "pixelated" }}
                 />
-                <span className="text-xs text-muted-foreground">{prettifySpriteName(spriteName)}</span>
+                <span className="text-xs text-muted-foreground">{spriteLabel}</span>
               </div>
               {selectedPresetId && (() => {
                 const p = getPresetById(selectedPresetId);
@@ -113,10 +115,10 @@ export function LaunchCard({
                       className="flex items-center rounded-sm border px-2 py-1.5 group hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                        {session.spriteName && (
+                        {(session.romSprite || session.spriteName) && (
                           <img
-                            src={`/sprites/${session.spriteName}_tunic1.png`}
-                            alt={session.spriteName}
+                            src={session.romSprite ?? `/sprites/${session.spriteName}_tunic1.png`}
+                            alt={session.romSprite ? "ROM sprite" : session.spriteName}
                             className="w-5 h-5 shrink-0"
                             style={{ imageRendering: "pixelated" }}
                           />

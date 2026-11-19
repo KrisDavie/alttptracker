@@ -8,6 +8,8 @@ export interface TrackerSession {
   lastAccessedAt: number;
   settings: Partial<SettingsState>;
   spriteName?: string;
+  /** The ROM's sprite (a PNG data URL) when it isn't one of the bundled sprites */
+  romSprite?: string;
   presetId?: string;
   startingItems?: Record<string, number>;
   pinned?: boolean;
@@ -77,7 +79,8 @@ export async function createSession(
   spriteName?: string,
   presetId?: string,
   providedId?: string,
-  startingItems?: Record<string, number>
+  startingItems?: Record<string, number>,
+  romSprite?: string
 ): Promise<TrackerSession> {
   const id = providedId || crypto.randomUUID().slice(0, 8);
   const session: TrackerSession = {
@@ -89,6 +92,7 @@ export async function createSession(
     spriteName,
     presetId,
     startingItems,
+    romSprite,
   };
   const db = await openDB();
   // Auto-prune BEFORE adding: remove oldest unpinned sessions to make room
